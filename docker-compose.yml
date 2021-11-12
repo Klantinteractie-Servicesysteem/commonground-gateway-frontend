@@ -1,0 +1,59 @@
+version: "3.4"
+
+services:
+  pwa:
+    &pwa
+    image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
+    build: pwa
+    depends_on:
+      - php
+    ports:
+      - "81:3000"
+  
+  php:
+    &php
+    image: ghcr.io/conductionnl/commonground-gateway-php:dev
+    depends_on:
+      - db
+    volumes:
+      - ./gateway:/srv/api/fixtures:rw,cached
+      - ./certs:/var/certs:rw,cached
+    environment:
+      #- DATABASE_URL=postgres://api-platform:!ChangeMe!@db/api?serverVersion=10.1
+      - DATABASE_URL=mysql://api-platform:!ChangeMe!@db/api?serverVersion=10.1
+      - AUTH_ENABLED=false
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - APP_REPRO=example
+    ports:
+      - "82:80"
+
+  api:
+    &nginx
+    image: ghcr.io/conductionnl/commonground-gateway-nginx:latest
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=php
+      - NGINX_ENV=${APP_ENV}
+
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=api
+      - MYSQL_USER=api-platform
+      - MYSQL_PASSWORD=!ChangeMe!
+    volumes:
+      - db-mysql:/var/lib/mysql:rw
+    ports:
+      - "3366:3306"
+
+  redis:
+    image: redis:4-alpine
+
+volumes:
+  db-data: {}
+  db-mysql: {}

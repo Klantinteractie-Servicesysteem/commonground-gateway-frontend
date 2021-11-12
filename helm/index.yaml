@@ -1,0 +1,40 @@
+apiVersion: v1
+entries:
+  commonground-gateway:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-10-29T12:15:49.6798493+02:00"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.9.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 15.3.2
+    description: A Helm chart for Kubernetes
+    digest: 2c2091d5eacc5738a7500dcfc6161cb73005a7479a1c22078c077e30fcf49d1e
+    name: commonground-gateway
+    type: application
+    urls:
+    - charts/commonground-gateway-0.1.2.tgz
+    version: 0.1.2
+  proto-pwa:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2021-10-29T12:15:49.6668538+02:00"
+    dependencies:
+    - alias: gateway
+      condition: gateway.enabled
+      name: commonground-gateway
+      repository: https://raw.githubusercontent.com/ConductionNL/commonground-gateway/master/api/helm/
+      version: 0.1.2
+    description: A Helm chart for the Verhuizen PWA of 's-Hertogenbosch
+    digest: 808fa814e052cf9c20ac725107ab3ef411e25ca824ae7b305344ae29c41b95b6
+    name: proto-pwa
+    type: application
+    urls:
+    - proto-pwa-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-10-29T12:15:49.6528497+02:00"

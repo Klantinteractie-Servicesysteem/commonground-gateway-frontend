@@ -1,0 +1,6 @@
+dependencies:
+- name: commonground-gateway
+  repository: https://raw.githubusercontent.com/ConductionNL/commonground-gateway/master/api/helm/
+  version: 0.1.2
+digest: sha256:f2091500c00c7d1e9ed6a1cc09ddd5a446bea91b8c64d3e4011a1f883463b8ad
+generated: "2021-10-29T12:11:43.5654215+02:00"
