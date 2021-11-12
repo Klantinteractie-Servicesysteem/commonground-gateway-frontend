@@ -5,16 +5,7 @@ import {useUrlContext} from "../../context/urlContext";
 import {getUser, isLoggedIn, logout} from "../../services/auth";
 import {navigate} from "gatsby-link";
 import {useEffect} from "react";
-const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  appbar: {
-  },
-  text: {
-  },
-}));
-
+import {Link} from "gatsby";
 
 const handleLogout = (context) => {
 
@@ -29,8 +20,6 @@ const handleLogout = (context) => {
 
 export default function MainMenu() {
 
-  const classes = useStyles();
-
   const handleLogout = () => {
       logout();
       navigate("/");
@@ -44,26 +33,10 @@ export default function MainMenu() {
       <nav className="topnav"   >
         <ul className="utrecht-topnav__list" >
           <li className="utrecht-topnav__item">
-            {
-              isLoggedIn() &&
-              <span className="utrecht-topnav__link">
-              {
-                getUser().name
-              }
-                </span>
-            }
+            <Link to={'/'} className="utrecht-topnav__link" >Home</Link>
           </li>
           <li className="utrecht-topnav__item" >
-            {
-              isLoggedIn()
-                ?
-                <span className="utrecht-topnav__link" onClick={handleLogout} >Uitloggen</span>
-                :
-                <a className="utrecht-topnav__link"
-                  href={context.baseUrl + "/digid/login?returnUrl=" + context.frontendUrl + "/redirect"}>
-                  Inloggen
-                </a>
-            }
+            <Link to={'/logs'} className="utrecht-topnav__link" >Logs</Link>
           </li>
         </ul>
       </nav>
