@@ -1,18 +1,18 @@
 version: "3.4"
 
 services:
-  pwa:
-    &pwa
-    image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build: pwa
-    depends_on:
-      - php
-    ports:
-      - "81:3000"
+#  pwa:
+#    &pwa
+#    image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
+#    build: pwa
+#    depends_on:
+#      - php
+#    ports:
+#      - "81:3000"
   
   php:
     &php
-    image: ghcr.io/conductionnl/commonground-gateway-php:dev
+    image: ghcr.io/conductionnl/commonground-gateway-php:admin-V1.0.211112
     depends_on:
       - db
     volumes:
