@@ -1,10 +1,7 @@
 import * as React from "react"
-import { Link } from "gatsby"
 import Layout from "../components/common/layout";
 import {useUrlContext} from "../context/urlContext";
-import DigiDImg from "../images/digid_button.svg";
 import { UtrechtHeading1 } from "@utrecht/web-component-library-react";
-import { getUser, isLoggedIn, logout } from "../services/auth";
 
 const IndexPage = () => {
   const context = useUrlContext();
@@ -29,7 +26,7 @@ const IndexPage = () => {
               <div className="col-8">test2</div>
               <div className="col-6">test3</div>
             </div>
-           
+
           </div>
         </main>
       </Layout>

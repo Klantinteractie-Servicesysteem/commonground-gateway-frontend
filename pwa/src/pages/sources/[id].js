@@ -1,10 +1,8 @@
 import * as React from "react"
-import { useEffect, useState } from "react";
-import { Link } from "gatsby"
+import { useState } from "react";
 import Layout from "../../components/common/layout";
 import ActionMenu from "../../components/common/actionMenu";
 import {useUrlContext} from "../../context/urlContext";
-import { getUser, isLoggedIn, logout } from "../../services/auth";
 
 const IndexPage = () => {
   const context = useUrlContext();

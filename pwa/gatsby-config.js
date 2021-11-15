@@ -4,18 +4,7 @@ require("dotenv").config({
 
 module.exports = {
   pathPrefix: "/commonground-gateway-frontend",
-  siteMetadata: {
-    siteUrl: "https://www.yourdomain.tld",
-    title: "pwa",
-  },
   plugins: [
-    `gatsby-plugin-ts`,
-    {
-      resolve: `gatsby-plugin-material-ui`,
-      options: {
-        pathToEmotionCacheProps: `src/emotion-cache-props`,
-      },
-    },
     {
       resolve: `gatsby-plugin-csp`,
       options: {

@@ -4,7 +4,6 @@ import { Link } from "gatsby"
 import Layout from "../../components/common/layout";
 import ActionMenu from "../../components/common/actionMenu";
 import {useUrlContext} from "../../context/urlContext";
-import { getUser, isLoggedIn, logout } from "../../services/auth";
 
 const IndexPage = () => {
   const context = useUrlContext();
@@ -12,12 +11,6 @@ const IndexPage = () => {
   const pageDescription = "On this page u can view and create your gateways sources.";
 
   const [sources, setSources] = useState(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-        getSources();
-    }
-  }, []);
 
   const getSources = () => {
     fetch(context.adminUrl + "/gateways", {
@@ -32,6 +25,11 @@ const IndexPage = () => {
       });
   }
 
+  useEffect(() => {
+      getSources();
+  }, []);
+
+
   return (
       <Layout>
       <main>
@@ -41,13 +39,13 @@ const IndexPage = () => {
            </div>
            <div className="col-9">
             <title>Gateway - Sources</title>
-          <h1 class="utrecht-heading-1 utrecht-heading-1--distanced">Sources</h1>
+          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Sources</h1>
 
           <Link to="/sources/new">
-             <button class="utrecht-button" type="button">Create source</button>
+             <button className="utrecht-button" type="button">Create source</button>
           </Link>
 
-            <div class="utrecht-html">
+            <div className="utrecht-html">
               <table lang="nl" summary="Overview of sources fetched from the gateway." class="">
                 {/*<caption></caption>*/}
                 <thead>
