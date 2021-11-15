@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 
-export default function ActionMenu() {
+export default function ActionMenu({pageDescription = null}) {
 
   return (
     <nav className="utrecht-sidenav">
@@ -32,6 +32,17 @@ export default function ActionMenu() {
           <a className="utrecht-sidenav__link" href="/">logs</a><span></span>
         </li>
       </ul>
+
+      {
+        pageDescription !== null &&
+        <>
+          <br /><br />
+          <p className="utrecht-paragraph">
+            {pageDescription}
+          </p>
+
+        </>
+      }
     </nav>
   );
 }

@@ -34,10 +34,10 @@ export default function MainMenu() {
           <li className="utrecht-topnav__item">
             <Link to={'/'} className="utrecht-topnav__link" >Home</Link>
           </li>
-          <li className="utrecht-topnav__item" >
+          <li className="utrecht-topnav__item">
             <Link to={'/sources'} className="utrecht-topnav__link" >Sources</Link>
           </li>
-          <li className="utrecht-topnav__item" >
+          <li className="utrecht-topnav__item">
             <Link to={'/entities'} className="utrecht-topnav__link" >Entities</Link>
           </li>
           <li className="utrecht-topnav__item" >
