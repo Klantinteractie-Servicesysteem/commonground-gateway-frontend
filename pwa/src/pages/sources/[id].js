@@ -43,34 +43,7 @@ const IndexPage = () => {
             <title>Sources - {id}</title>
             <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">{id}</h1>
 
-            <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" value={id}>
-
-            <div class="utrecht-html">
-              <table lang="nl" summary="Overview of sources fetched from the gateway." class="">
-                {/*<caption></caption>*/}
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">View</th>
-                  </tr>
-                </thead>
-                  {
-                  sources !== null &&
-                  <tbody>
-                    {
-                      sources.map((row) => (
-                        <tr>
-                          <td>{row.name}</td>
-                          <td>{row.location}</td>
-                          <td><Link to={"/sources/" + row.id}>View</Link></td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                  }
-              </table>
-          </div>
+            <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" value={id} />
          </div>
         </div>
         </main>
