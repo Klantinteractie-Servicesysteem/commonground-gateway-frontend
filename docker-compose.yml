@@ -12,7 +12,7 @@ services:
   
   php:
     &php
-    image: ghcr.io/conductionnl/commonground-gateway-php:admin-V1.0.211112
+    image: ghcr.io/conductionnl/commonground-gateway-php:admin
     depends_on:
       - db
     volumes:
