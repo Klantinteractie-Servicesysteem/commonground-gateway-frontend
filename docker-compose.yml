@@ -4,7 +4,9 @@ services:
   pwa:
     &pwa
     image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build: pwa
+    build:
+      context: pwa
+      dockerfile: Dockerfile
     depends_on:
       - php
     ports:
