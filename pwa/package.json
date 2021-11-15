@@ -8,7 +8,7 @@
     "gatsby"
   ],
   "scripts": {
-    "develop": "gatsby develop -H 0.0.0.0",
+    "develop": "gatsby develop",
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
@@ -19,7 +19,7 @@
     "@utrecht/design-tokens": "1.0.0-alpha.51",
     "@utrecht/web-component-library-react": "1.0.0-alpha.57",
     "@utrecht/web-component-library-stencil": "1.0.0-alpha.57",
-    "bootstrap": "^5.1.3",
+    "bootstrap": "^4.5.3",
     "dotenv": "^10.0.0",
     "gatsby": "^4.1.6",
     "gatsby-plugin-csp": "^1.1.3",

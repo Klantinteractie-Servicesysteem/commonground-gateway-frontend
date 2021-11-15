@@ -2,6 +2,7 @@ import React from "react"
 import Footer from "./footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
+import "bootstrap/dist/css/bootstrap.css";
 
 export default function Layout({ children }) {
     return (
