@@ -30,7 +30,7 @@ export default function Layout({ children }) {
               </Helmet>
               <div className="utrecht-document nijmegen-theme">
                 <div className="utrecht-page">
-                  <Header/>
+                  {/*<Header/>*/}
                   <MainMenu />
                     <div className="utrecht-page-content">
                   <Container>
