@@ -5,6 +5,7 @@ import {UrlContextWrapper} from "./src/context/urlContext";
 import {Helmet} from "react-helmet";
 import {UserContextWrapper} from "./src/context/userContext";
 import "./src/styles/layout.css"
+import "./src/styles/main.css"
 
 export const wrapRootElement = ({ element }) => (
     <UserContextWrapper>
