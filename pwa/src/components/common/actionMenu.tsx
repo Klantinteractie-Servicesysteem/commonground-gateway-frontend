@@ -29,7 +29,7 @@ export default function ActionMenu() {
           <a className="utrecht-sidenav__link" href="/">Configuration</a><span></span>
         </li>
         <li className="utrecht-sidenav__item">
-          <a className="utrecht-sidenav__link" href="/">loguit</a><span></span>
+          <a className="utrecht-sidenav__link" href="/">logs</a><span></span>
         </li>
       </ul>
     </nav>
