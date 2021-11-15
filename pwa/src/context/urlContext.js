@@ -7,6 +7,7 @@ export function UrlContextWrapper({ children }) {
   let sharedState = {};
   let meUrl;
   let apiUrl;
+  let adminUrl;
   let baseUrl;
   let frontendUrl;
   let organization;
@@ -15,6 +16,7 @@ export function UrlContextWrapper({ children }) {
     if (window.location.href.includes('http://localhost')) {
       meUrl = 'http://localhost/me';
       apiUrl = 'http://localhost/api';
+      adminUrl = 'http://localhost/admin';
       baseUrl = 'http://localhost';
       frontendUrl = 'http://localhost:3000';
       organization = 'http://webresourcecatalogus.conduction.svc.cluster.local/organizations/b2d3176e-f1c6-4365-ab86-dd253c65fc43';
@@ -30,6 +32,7 @@ export function UrlContextWrapper({ children }) {
   sharedState = {
     meUrl: meUrl,
     apiUrl: apiUrl,
+    adminUrl: adminUrl,
     baseUrl: baseUrl,
     frontendUrl: frontendUrl,
     organization: organization,

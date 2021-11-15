@@ -16,7 +16,7 @@ export default function Footer() {
       <Grid container spacing={{xs: 5}}>
         <Grid item xs={12} sm={4} >
           <Box>
-            <h3 className="utrecht-heading-3 utrecht-heading-3--distanced">Diensten</h3>
+            <h3 className="utrecht-heading-3 utrecht-heading-3--distanced">Menu</h3>
           </Box>
           <Link to={"/moving"} className="utrecht-link utrecht-link--hover">Verhuizen</Link> <br/>
           <Link to={"/marriage"} className="utrecht-link">Huwelijk</Link> <br/>
