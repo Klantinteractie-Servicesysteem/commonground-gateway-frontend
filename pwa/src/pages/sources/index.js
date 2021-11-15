@@ -29,6 +29,9 @@ const IndexPage = () => {
         if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
           setSources(data['hydra:member']);
         }
+      })
+      .catch((error) => {
+        console.log(error)
       });
   }
 
