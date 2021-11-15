@@ -18,7 +18,7 @@ export default function Footer() {
           <Box>
             <h3 className="utrecht-heading-3 utrecht-heading-3--distanced">Diensten</h3>
           </Box>
-          <Link to={"/moving"} className="utrecht-link">Verhuizen</Link> <br/>
+          <Link to={"/moving"} className="utrecht-link utrecht-link--hover">Verhuizen</Link> <br/>
           <Link to={"/marriage"} className="utrecht-link">Huwelijk</Link> <br/>
           <Link to={"/certificates"} className="utrecht-link">Uittreksels</Link> <br/>
         </Grid>
@@ -47,11 +47,6 @@ export default function Footer() {
               <strong>Donderdag: 9.00 - 20.00</strong><br/>
               <strong>Vrijdag: 9.00 - 17.00</strong>
             </p>
-          </div>
-        </Grid>
-        <Grid item xs={12}>
-          <div style={{marginTop: 'auto', marginLeft: 'auto', width: "fit-content"}}>
-            <ThemeSwitcher/>
           </div>
         </Grid>
       </Grid>

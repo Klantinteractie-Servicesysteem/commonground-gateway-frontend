@@ -11,6 +11,12 @@ export const wrapRootElement = ({ element }) => (
       <UrlContextWrapper>
         {element}
         <Helmet>
+          <link
+            href="https://unpkg.com/@utrecht/component-library-css/dist/bem.css"
+            rel="stylesheet"
+          />
+
+          <meta name="theme-color" content="hsl(0 0% 95%)" />
           <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
                 integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
                 crossOrigin="anonymous" />
