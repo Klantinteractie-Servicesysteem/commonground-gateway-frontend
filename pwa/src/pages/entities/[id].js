@@ -1,7 +1,6 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
 import Breadcrumbs from "../../components/common/breadcrumbs";
-import { Grid } from "@mui/material";
 import ActionMenu from "../../components/common/actionMenu";
 import AttributeTable from "../../components/entities/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
@@ -12,11 +11,11 @@ const IndexPage = () => {
   return (
     <Layout>
       <main>
-        <Grid container>
-          <Grid item sm={3}>
+        <div className="row">
+          <div className="col-12 col-sm-3">
             <ActionMenu />
-          </Grid>
-          <Grid item sm={9}>
+          </div>
+          <div className="col-12 col-sm9">
             <Breadcrumbs items={[{ name: 'Home/', href: '/' }, { name: 'Entities/', href: '/entities' }, { name: 'Attributes' }]} />
             <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Attributes</h1>
             <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">
@@ -32,8 +31,8 @@ const IndexPage = () => {
             <div className="utrecht-html">
               <LogsTable/>
             </div>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </main>
     </Layout>
   )
