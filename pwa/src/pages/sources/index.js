@@ -13,7 +13,7 @@ const IndexPage = () => {
   const [sources, setSources] = useState(null);
 
   const getSources = () => {
-    fetch(context.adminUrl + "/gateways", {
+    fetch(context.apiUrl + "/gateways", {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -22,6 +22,9 @@ const IndexPage = () => {
         if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
           setSources(data['hydra:member']);
         }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
   }
 

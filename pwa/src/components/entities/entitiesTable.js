@@ -13,8 +13,7 @@ export default function EntitiesTable() {
   }, []);
 
   const getEntities = () => {
-    fetch(context.apiUrl + '/gateway/entities', {
-      method: 'POST',
+    fetch(context.apiUrl + '/entities', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
@@ -24,6 +23,9 @@ export default function EntitiesTable() {
         if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
           setEntities(data['hydra:member']);
         }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
   }
 
