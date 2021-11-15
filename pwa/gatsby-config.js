@@ -3,7 +3,7 @@ require("dotenv").config({
 });
 
 module.exports = {
-  pathPrefix: "/pip-demodam",
+  pathPrefix: "/commonground-gateway-frontend",
   siteMetadata: {
     siteUrl: "https://www.yourdomain.tld",
     title: "pwa",
