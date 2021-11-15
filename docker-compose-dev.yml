@@ -4,15 +4,26 @@ services:
   pwa:
     &pwa
     image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build: pwa
+    build:
+        context: pwa
+        dockerfile: Dockerfile-dev
     depends_on:
       - php
     ports:
-      - "81:3000"
+        - "8000:8000"
+        - "9929:9929"
+        - "9230:9230"
+    volumes:
+        - /app/node_modules
+        - ./pwa/src:/app/src
+    environment:
+        - NODE_ENV=development
+        - GATSBY_WEBPACK_PUBLICPATH=/
+        - CHOKIDAR_USEPOLLING=1
   
   php:
     &php
-    image: ghcr.io/conductionnl/commonground-gateway-php:admin-V1.0.211112
+    image: ghcr.io/conductionnl/commonground-gateway-php:latest
     depends_on:
       - db
     volumes:
