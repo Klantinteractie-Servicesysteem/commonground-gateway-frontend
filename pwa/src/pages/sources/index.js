@@ -74,7 +74,7 @@ const IndexPage = () => {
                   <div className="col-12">
                     {
                       showSpinner == true ?
-                    <div className="text-center pt-5">
+                    <div className="text-center px-5">
                       <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
                         <span class="sr-only">Loading...</span>
                       </div>
@@ -90,7 +90,7 @@ const IndexPage = () => {
                           </tr>
                         </thead>
                         {
-                          sources !== null &&
+                          sources !== null && sources.length > 0 ?
                             <tbody>
                               {
                                 sources.map((row) => (
@@ -101,6 +101,14 @@ const IndexPage = () => {
                                   </tr>
                                 ))
                               }
+                              </tbody> :
+                            <tbody>
+                              <tr>
+                                <td>No results found</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
                             </tbody>
                          }
                       </table>

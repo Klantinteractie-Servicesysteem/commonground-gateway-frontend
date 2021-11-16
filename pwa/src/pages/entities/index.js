@@ -11,13 +11,7 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <Link to="/entities/new">
-              <button className="utrecht-button float-right" type="button">Create entity</button>
-            </Link>
-
-            <div className="utrecht-html">
               <EntitiesTable/>
-            </div>
           </div>
         </div>
       </main>
