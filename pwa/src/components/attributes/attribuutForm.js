@@ -143,7 +143,7 @@ export default function AttributeForm({id}) {
               <div className="row">
                 <div className="col-6">
                   <label htmlFor="endpointInput">Type</label>
-                  <select name="auth" id="authInput" className="utrecht-select utrecht-select--html-select">
+                  <select name="type" id="typeInput" className="utrecht-select utrecht-select--html-select">
                     {
                       attribute !== null && attribute.type !== null ?
                         <option selected value={attribute.type}>{attribute.type}</option> :
@@ -192,8 +192,8 @@ export default function AttributeForm({id}) {
                   </select>
                 </div>
                 <div className="col-6">
-                  <label htmlFor="nameInput">Format</label>
-                  <select name="auth" id="authInput" className="utrecht-select utrecht-select--html-select">
+                  <label htmlFor="formatInput">Format</label>
+                  <select name="format" id="formatInput" className="utrecht-select utrecht-select--html-select">
                     {
                       attribute !== null && attribute.format !== null ?
                         <option selected value={attribute.format}>{attribute.format}</option> :
