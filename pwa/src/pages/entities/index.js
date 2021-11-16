@@ -7,7 +7,7 @@ import {Link} from "gatsby";
 
 const IndexPage = () => {
   return (
-    <Layout>
+    <Layout title={"Entities"} subtext={"An overview of your Entity objects"}>
       <main>
         <div className="row">
           <div className="col-12">
