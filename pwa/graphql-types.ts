@@ -253,7 +253,6 @@ export type SiteBuildTimeArgs = {
 export type SiteSiteMetadata = {
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  siteUrl?: Maybe<Scalars['String']>;
 };
 
 export type SiteFunction = Node & {
@@ -302,7 +301,6 @@ export type SitePlugin = Node & {
 };
 
 export type SitePluginPluginOptions = {
-  pathToEmotionCacheProps?: Maybe<Scalars['String']>;
   disableOnDev?: Maybe<Scalars['Boolean']>;
   mergeScriptHashes?: Maybe<Scalars['Boolean']>;
   mergeStyleHashes?: Maybe<Scalars['Boolean']>;
@@ -1170,7 +1168,6 @@ export type DirectorySortInput = {
 export type SiteSiteMetadataFilterInput = {
   title?: Maybe<StringQueryOperatorInput>;
   description?: Maybe<StringQueryOperatorInput>;
-  siteUrl?: Maybe<StringQueryOperatorInput>;
 };
 
 export type SiteConnection = {
@@ -1222,7 +1219,6 @@ export type SiteFieldsEnum =
   | 'buildTime'
   | 'siteMetadata___title'
   | 'siteMetadata___description'
-  | 'siteMetadata___siteUrl'
   | 'port'
   | 'host'
   | 'pathPrefix'
@@ -1590,7 +1586,6 @@ export type SitePluginFilterInput = {
 };
 
 export type SitePluginPluginOptionsFilterInput = {
-  pathToEmotionCacheProps?: Maybe<StringQueryOperatorInput>;
   disableOnDev?: Maybe<BooleanQueryOperatorInput>;
   mergeScriptHashes?: Maybe<BooleanQueryOperatorInput>;
   mergeStyleHashes?: Maybe<BooleanQueryOperatorInput>;
@@ -1793,7 +1788,6 @@ export type SitePageFieldsEnum =
   | 'pluginCreator___browserAPIs'
   | 'pluginCreator___ssrAPIs'
   | 'pluginCreator___pluginFilepath'
-  | 'pluginCreator___pluginOptions___pathToEmotionCacheProps'
   | 'pluginCreator___pluginOptions___disableOnDev'
   | 'pluginCreator___pluginOptions___mergeScriptHashes'
   | 'pluginCreator___pluginOptions___mergeStyleHashes'
@@ -1975,7 +1969,6 @@ export type SitePluginFieldsEnum =
   | 'browserAPIs'
   | 'ssrAPIs'
   | 'pluginFilepath'
-  | 'pluginOptions___pathToEmotionCacheProps'
   | 'pluginOptions___disableOnDev'
   | 'pluginOptions___mergeScriptHashes'
   | 'pluginOptions___mergeStyleHashes'

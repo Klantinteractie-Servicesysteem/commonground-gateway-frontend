@@ -6,6 +6,6 @@
     "jsx": "preserve",
     "moduleResolution": "node",
     "allowJs": true,
-    "outDir": "./build"
+    "outDir": "./build",
   }
 }
