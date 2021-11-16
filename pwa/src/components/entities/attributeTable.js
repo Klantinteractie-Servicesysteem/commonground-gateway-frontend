@@ -7,6 +7,7 @@ export default function AttributeTable() {
   const [attributes, setAttributes] = React.useState(null);
   const context = useUrlContext();
 
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       getAttributes();
@@ -14,17 +15,22 @@ export default function AttributeTable() {
   }, []);
 
   const getAttributes = () => {
-    fetch(context.apiUrl + '/gateway/attributes', {
-      method: 'POST',
+    fetch(context.apiUrl + '/attributes', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data)
-        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-          setAttributes(data['hydra:member']);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
         }
+      })
+      .then((data) => {
+        setAttributes(data['hydra:member']);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
   }
 
@@ -46,7 +52,7 @@ export default function AttributeTable() {
             <tr>
               <td>{row.name}</td>
               <td>{row.type}</td>
-              <td><a className="utrecht-link utrecht-link--hover" href={"/entities/" + row.id}>Bekijken</a></td>
+              <td><a className="utrecht-link utrecht-link--hover" href={"/attributes/" + row.id}>Bekijken</a></td>
             </tr>
           ))
         }

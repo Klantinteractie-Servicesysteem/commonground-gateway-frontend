@@ -1,15 +1,114 @@
 import * as React from "react";
+import {useUrlContext} from "../../context/urlContext";
+import { useEffect, useState } from "react";
 
-export default function EntityForm() {
+export default function EntityForm({id}) {
+  console.log(id)
+  const context = useUrlContext();
+  const [entity, setEntity] = React.useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  if (id !== "new") {
+    let pageDescription = "Edit your entity on this page.";
+  } else {
+    let pageDescription = "Create your new entity on this page";
+  }
+
+  const getEntity = () => {
+    fetch(context.apiUrl + "/entities/" + id, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(entity)
+        setEntity(data);
+      });
+  }
+
+  const saveEntity = () => {
+    setShowSpinner(true);
+
+    let url = context.apiUrl + '/entities';
+    let method = 'POST';
+    if (id !== 'new') {
+      url = url + '/' + id;
+      method = 'PUT';
+    }
+
+    let nameInput = document.getElementById('nameInput');
+    let endpointInput = document.getElementById('endpointInput');
+    let descriptionInput = document.getElementById('descriptionInput');
+
+    let body = {
+      name: nameInput.value,
+      endpoint: endpointInput.value,
+      description: descriptionInput.value,
+    }
+
+    fetch(url, {
+      method: method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log('Saved source:', data);
+        setEntity(data);
+        setShowSpinner(false);
+      })
+      .catch ((error) => {
+        console.error('Error:', error);
+      });
+  }
+
+  useEffect(() => {
+    if (id !== "new") {
+      getEntity();
+    }
+  }, []);
 
   return (
-    <div className="utrecht-html">
-      <label htmlFor="name">Name</label>
-      <input type="text" id="name"/><br/>
-      <label htmlFor="endpoint">Endpoint</label>
-      <input type="text" id="endpoint"/><br/>
-      <label htmlFor="description">Description</label>
-      <input type="text" id="description"/>
+    <div className="row">
+          <div className="col-4">
+            <button className="utrecht-button float-right" type="button" onClick={saveEntity}>Save</button>
+          </div>
+
+        {showSpinner === false ?
+          <form id="dataForm" onSubmit={saveEntity}>
+            <div className="col-6">
+            <label htmlFor="nameInput">Name</label>
+            {
+              entity !== null && entity.name !== null ?
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"
+                       defaultValue={entity.name}/> :
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"/>
+            }
+            </div>
+            <br/>
+            <div className="col-6">
+            <label htmlFor="endpointInput">Endpoint</label>
+            {
+              entity !== null && entity.endpoint !== null ?
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"
+                       defaultValue={entity.endpoint}/> :
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"/>
+            }
+            </div>
+            <br/>
+            <div className="col-6">
+            <label htmlFor="descriptionInput">Description</label>
+            {
+              entity !== null && entity.description !== null ?
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput"
+                       defaultValue={entity.description}/> :
+                <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput"/>
+            }
+            </div>
+          </form> :
+          <p className="utrecht-paragraph">Saving..</p>
+        }
     </div>
   );
 }
