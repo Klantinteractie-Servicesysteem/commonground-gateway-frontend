@@ -2,7 +2,6 @@ import * as React from "react"
 import { useEffect, useState } from "react";
 import { Link } from "gatsby"
 import Layout from "../../components/common/layout";
-import ActionMenu from "../../components/common/actionMenu";
 import { useUrlContext } from "../../context/urlContext";
 
 const IndexPage = () => {
@@ -51,11 +50,14 @@ const IndexPage = () => {
                     <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Sources</h4>
                   </div>
                   <div className="col-6 text-right">
-                    <Link to="">
+                    <a class="utrecht-link">
                       <i className="fas fa-question mr-1"></i>
                       <span className="mr-2">Help</span>
-                    </Link>
-                    <button onClick={getSources} className="utrecht-button utrecht-button-sm btn-sm mr-2"><i className="fas fa-sync-alt mr-2"></i>Refresh</button>
+                    </a>
+                    <a class="utrecht-link" onClick={getSources}>
+                      <i className="fas fa-sync-alt mr-1"></i>
+                      <span className="mr-2">Refresh</span>
+                    </a>
                     <Link to="/sources/new">
                       <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>
                     </Link>
@@ -90,7 +92,7 @@ const IndexPage = () => {
                                   <tr>
                                     <td>{row.name}</td>
                                     <td>{row.location}</td>
-                                    <td><Link to={"/sources/" + row.id}>View</Link></td>
+                                    <td className="text-right"><Link to={"/sources/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                                   </tr>
                                 ))
                               }
