@@ -18,11 +18,10 @@ export default function EntitiesTable() {
       headers: {'Content-Type': 'application/json'},
     })
       .then((response) => {
-        console.log(response);
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error('something went wrong');
+          throw new Error(response.statusText);
         }
       })
       .then((data) => {
