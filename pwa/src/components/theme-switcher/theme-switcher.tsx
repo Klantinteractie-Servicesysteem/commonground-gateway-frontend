@@ -18,14 +18,6 @@ const ThemeSwitcher = () => {
 
   return (
     <Fragment>
-      <Helmet>
-        <link
-          href="https://unpkg.com/@utrecht/component-library-css/dist/bem.css"
-          rel="stylesheet"
-        />
-
-        <meta name="theme-color" content="hsl(0 0% 95%)" />
-      </Helmet>
       {scriptLoaded && (
         // @ts-ignore
         <nl-theme-switcher // @ts-ignore

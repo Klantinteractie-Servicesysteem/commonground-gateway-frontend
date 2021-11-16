@@ -8,7 +8,7 @@ services:
     depends_on:
       - php
     ports:
-      - "81:3000"
+      - "81:80"
   
   php:
     &php

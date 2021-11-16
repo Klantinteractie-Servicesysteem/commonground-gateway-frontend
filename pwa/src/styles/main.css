@@ -1,0 +1,13 @@
+.utrecht-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.utrecht-page__content {
+    height: 100vh;
+}
+
+.utrecht-page-footer {
+    margin-top: auto;
+}
