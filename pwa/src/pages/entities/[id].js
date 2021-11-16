@@ -4,6 +4,7 @@ import Breadcrumbs from "../../components/common/breadcrumbs";
 import ActionMenu from "../../components/common/actionMenu";
 import AttributeTable from "../../components/attributes/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
+import DataTable from "../../components/entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
 
@@ -16,7 +17,7 @@ const IndexPage = (props) => {
           <div className="col-12">
 
             <div className="page-top-item">
-              <Tabs items={[{name: 'main', id: 'main', active: true}, {name: 'attributes', id: 'attributes'}, {name: 'data', id: 'data'}]}/>
+              <Tabs items={[{name: 'Main', id: 'main', active: true}, {name: 'Attributes', id: 'attributes'}, {name: 'Data', id: 'data'}, {name: 'Logs', id: 'logs'}]}/>
             </div>
 
             <div className="tab-content">
@@ -27,6 +28,9 @@ const IndexPage = (props) => {
                 <AttributeTable/>
               </div>
               <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab"><br/>
+                <DataTable/>
+              </div>
+              <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="data-tab"><br/>
                 <LogsTable/>
               </div>
             </div>
