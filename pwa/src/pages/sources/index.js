@@ -45,7 +45,7 @@ const IndexPage = () => {
           <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Sources</h1>
 
           <Link to="/sources/new">
-             <button className="utrecht-button" type="button">Create source</button>
+             <button className="utrecht-button float-right" type="button">Create source</button>
           </Link>
 
             <div className="utrecht-html">
