@@ -6,6 +6,7 @@ import AttributeTable from "../../components/attributes/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
 import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
+import {Link} from "gatsby";
 
 
 const IndexPage = (props) => {
@@ -24,6 +25,11 @@ const IndexPage = (props) => {
                 <EntityForm id={props.params.id}/>
               </div>
               <div className="tab-pane" id="attributes" role="tabpanel" aria-labelledby="attributes-tab"><br/>
+                <div className="row">
+                <Link to="/attributes/new">
+                  <button className="utrecht-button float-right" type="button">Create attribute</button>
+                </Link>
+                </div>
                 <AttributeTable/>
               </div>
               <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab"><br/>

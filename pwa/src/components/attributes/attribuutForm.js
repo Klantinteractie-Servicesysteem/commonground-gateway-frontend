@@ -93,7 +93,7 @@ export default function AttributeForm({id}) {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log('Saved source:', data);
+        console.log('Saved attribute:', data);
         setAttribute(data);
         setShowSpinner(false);
       })
@@ -110,12 +110,11 @@ export default function AttributeForm({id}) {
 
   return (
     <div className="row">
-      <div className="col-4">
-        <button className="utrecht-button float-right" type="button" onClick={saveAttribute}>Save</button>
-      </div>
-
       {showSpinner === false ?
         <form id="dataForm" onSubmit={saveAttribute}>
+          <div className="col-12">
+            <button className="utrecht-button float-right" type="submit">Save</button>
+          </div>
           <div className="card">
             <div className="card-body">
               <div className="row">
@@ -129,7 +128,7 @@ export default function AttributeForm({id}) {
                   }
                 </div>
                 <div className="col-6">
-                  <label htmlFor="nameInput">Description</label>
+                  <label htmlFor="descriptionInput">Description</label>
                   {
                     attribute !== null && attribute.description !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
@@ -329,15 +328,15 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.mustBeUnique !== null ?
                       <div className="utrecht-html">
-                        <label htmlFor="radio">True</label>
+                        <label htmlFor="true">True</label>
                         <input type="radio" id="false" name="mustBeUnique" checked/>
-                        <label htmlFor="radio">False</label>
+                        <label htmlFor="false">False</label>
                         <input type="radio" id="true" name="mustBeUnique"/>
                       </div> :
                       <div className="utrecht-html">
-                        <label htmlFor="radio">True</label>
+                        <label htmlFor="true">True</label>
                         <input type="radio" id="false" name="mustBeUnique"/>
-                        <label htmlFor="radio">False</label>
+                        <label htmlFor="false">False</label>
                         <input type="radio" id="true" name="mustBeUnique"/>
                       </div>}
                 </div>
@@ -365,6 +364,7 @@ export default function AttributeForm({id}) {
                   }
                 </div>
               </div>
+              <br/>
               <div className="row">
                 <div className="col-6">
                   <label htmlFor="nameInput">Maximum</label>
@@ -385,10 +385,234 @@ export default function AttributeForm({id}) {
                   }
                 </div>
               </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="exclusiveMaximum">ExclusiveMaximum</label>
+                  {
+                    attribute !== null && attribute.exclusiveMaximum !== null ?
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="exclusiveMaximum" name="true" checked/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="exclusiveMaximum" name="false"/>
+                      </div> :
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="exclusiveMaximum" name="true"/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="exclusiveMaximum" name="false"/>
+                      </div>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="exclusiveMinimum">ExclusiveMinimum</label>
+                  {
+                    attribute !== null && attribute.exclusiveMinimum !== null ?
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="false" name="exclusiveMinimum" checked/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="true" name="exclusiveMinimum"/>
+                      </div> :
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="false" name="exclusiveMinimum"/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="true" name="exclusiveMinimum"/>
+                      </div>}
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="maxLengthInput">MaxLength</label>
+                  {
+                    attribute !== null && attribute.maxLength !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxLength"
+                             id="maxLengthInput"
+                             defaultValue={attribute.maxLength}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxLength"
+                             id="maxLengthInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="minLengthInput">MinLength</label>
+                  {
+                    attribute !== null && attribute.minLength !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minLength"
+                             id="minLengthInput"
+                             defaultValue={attribute.minLength}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minLength"
+                             id="minLengthInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="maxItemsInput">MaxItems</label>
+                  {
+                    attribute !== null && attribute.maxItems !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxItems" id="maxItemsInput"
+                             defaultValue={attribute.maxItems}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxItems"
+                             id="maxItemsInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="minItemsInput">MinItems</label>
+                  {
+                    attribute !== null && attribute.minItems !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minItems" id="minItemsInput"
+                             defaultValue={attribute.minItems}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minItems"
+                             id="minItemsInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="maxDateInput">MaxDate</label>
+                  {
+                    attribute !== null && attribute.maxDate !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxDate" id="maxDateInput"
+                             defaultValue={attribute.maxDate}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maxDate" id="maxDateInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="minDateInput">MinDate</label>
+                  {
+                    attribute !== null && attribute.minDate !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minDate" id="minDateInput"
+                             defaultValue={attribute.minDate}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minDate" id="minDateInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="uniqueItems">UniqueItems</label>
+                  {
+                    attribute !== null && attribute.uniqueItems !== null ?
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="false" name="uniqueItems" checked/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="true" name="uniqueItems"/>
+                      </div> :
+                      <div className="utrecht-html">
+                        <label htmlFor="true">True</label>
+                        <input type="radio" id="false" name="uniqueItems"/>
+                        <label htmlFor="false">False</label>
+                        <input type="radio" id="true" name="uniqueItems"/>
+                      </div>}
+                </div>
+                <div className="col-6">
+                  <label htmlFor="minPropertiesInput">MinProperties</label>
+                  {
+                    attribute !== null && attribute.minProperties !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minProperties"
+                             id="minPropertiesInput"
+                             defaultValue={attribute.minProperties}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minProperties"
+                             id="minPropertiesInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="enumInput">Enum</label>
+                  {
+                    attribute !== null && attribute.enum !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="enum" id="enumInput"
+                             defaultValue={attribute.enum}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="enum" id="enumInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="allOfInput">AllOf</label>
+                  {
+                    attribute !== null && attribute.allOf !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="allOf" id="allOfInput"
+                             defaultValue={attribute.allOf}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="allOf" id="allOfInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="oneOfInput">OneOf</label>
+                  {
+                    attribute !== null && attribute.oneOf !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="oneOf" id="oneOfInput"
+                             defaultValue={attribute.oneOf}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="oneOf" id="oneOfInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="anyOfInput">AnyOf</label>
+                  {
+                    attribute !== null && attribute.anyOf !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="anyOf" id="anyOfInput"
+                             defaultValue={attribute.anyOf}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="anyOf" id="anyOfInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="notInput">Not</label>
+                  {
+                    attribute !== null && attribute.not !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="not" id="notInput"
+                             defaultValue={attribute.not}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="not" id="notInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="itemsInput">Items</label>
+                  {
+                    attribute !== null && attribute.items !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="items" id="itemsInput"
+                             defaultValue={attribute.items}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="items" id="itemsInput"/>
+                  }
+                </div>
+              </div>
+              <br/>
+              <div className="row">
+                <div className="col-6">
+                  <label htmlFor="additionalPropertiesInput">AdditionalProperties</label>
+                  {
+                    attribute !== null && attribute.additionalProperties !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="additionalProperties"
+                             id="additionalPropertiesInput"
+                             defaultValue={attribute.additionalProperties}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="additionalProperties"
+                             id="additionalPropertiesInput"/>
+                  }
+                </div>
+                <div className="col-6">
+                  <label htmlFor="requiredIfInput">RequiredIf</label>
+                  {
+                    attribute !== null && attribute.requiredIf !== null ?
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="requiredIf"
+                             id="requiredIfInput"
+                             defaultValue={attribute.requiredIf}/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="requiredIf"
+                             id="requiredIfInput"/>
+                  }
+                </div>
+              </div>
             </div>
           </div>
-
-
         </form> :
         <p className="utrecht-paragraph">Saving..</p>
       }

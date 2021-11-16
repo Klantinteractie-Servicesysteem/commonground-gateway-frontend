@@ -66,7 +66,7 @@ export default function EntityForm({id}) {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log('Saved source:', data);
+        console.log('Saved entity:', data);
         setEntity(data);
         setShowSpinner(false);
       })
