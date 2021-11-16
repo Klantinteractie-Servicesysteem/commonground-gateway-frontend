@@ -28,3 +28,61 @@
     vertical-align: middle;
     border: 1px solid transparent;
 }
+
+.utrecht-card {
+    border-radius: 5px !important;
+    background-color: #ffffff !important;
+    margin-bottom: 30px !important;
+    -webkit-box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
+    -moz-box-shadow: 2px 6px 15px 0px rgba(69, 65, 78, 0.1) !important;
+    box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
+    border: 0px !important;
+}
+
+.utrecht-card-header {
+    padding: 1rem 1.25rem !important;
+    background-color: transparent !important;
+    border-bottom: 1px solid #ebecec !important;
+}
+
+.utrecht-card-head-row {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.utrecht-card-title {
+    margin: 0 !important;
+    color: #2A2F5B !important; 
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    line-height: 1.6 !important;
+}
+
+.utrecht-html table thead th {
+    border-bottom-width: 2px;
+    font-weight: 600;
+    border-bottom: 0 !important;
+    font-size: 14px;
+    border-top-width: 0px;
+    border-bottom: 1px solid;
+    border-color: #ebedf2 !important;
+    padding: 0 25px !important;
+    height: 60px;
+    vertical-align: middle !important;
+    border-top: 0 !important;
+}
+
+.utrecht-html table tbody {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+    .utrecht-html table tbody td {
+        font-size: 14px;
+        border-top-width: 0px;
+        border-top: 0 !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        border-color: #ebedf2 !important;
+        padding: 0 25px !important;
+        height: 60px;
+        vertical-align: middle !important;
+    }
