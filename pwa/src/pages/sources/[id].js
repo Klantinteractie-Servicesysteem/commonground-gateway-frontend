@@ -92,10 +92,7 @@ const IndexPage = (props) => {
       <Layout>
       <main>
         <div className="row">
-          <div className="col-3">
-            <ActionMenu pageDescription={pageDescription} />
-           </div>
-          <div className="col-9">
+          <div className="col-12">
             {
               source !== null && source.name !== null ?
                 <title>Sources - {source.name}</title> :
