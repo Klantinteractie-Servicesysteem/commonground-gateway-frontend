@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "gatsby"
 import Layout from "../../components/common/layout";
 import ActionMenu from "../../components/common/actionMenu";
-import {useUrlContext} from "../../context/urlContext";
+import { useUrlContext } from "../../context/urlContext";
 
 const IndexPage = () => {
   const context = useUrlContext();
@@ -29,54 +29,73 @@ const IndexPage = () => {
   }
 
   useEffect(() => {
-      getSources();
+    getSources();
   }, []);
 
 
   return (
-      <Layout>
+    <Layout>
       <main>
         <div className="row">
-           <div className="col-12">
+          <div className="col-12">
             <title>Gateway - Sources</title>
-          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Sources</h1>
 
-          <Link to="/sources/new">
-             <button className="utrecht-button float-right" type="button">Create source</button>
-          </Link>
+            <div className="utrecht-card card">
 
-            <div className="utrecht-html">
-              <table lang="nl" summary="Overview of sources fetched from the gateway." class="">
-                {/*<caption></caption>*/}
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">View</th>
-                  </tr>
-                </thead>
-                  {
-                  sources !== null &&
-                  <tbody>
-                    {
-                      sources.map((row) => (
-                        <tr>
-                          <td>{row.name}</td>
-                          <td>{row.location}</td>
-                          <td><Link to={"/sources/" + row.id}>View</Link></td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                  }
-              </table>
+              <div className="utrecht-card-header card-header">
+                <div className="utrecht-card-head-row card-head-row row">
+                  <div className="col-6">
+                    <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Sources</h4>
+                  </div>
+                  <div className="col-6 text-right">
+                    <Link to="/sources/new">
+                      <button className="utrecht-button utrecht-button-sm btn-sm mr-2"><i class="fas fa-plus mr-2"></i>Create</button>
+                    </Link>
+                    <Link>
+                      <button className="utrecht-button utrecht-button-sm btn-sm"><i class="fas fa-question mr-2"></i>Help</button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="utrecht-card-body card-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div className="utrecht-html">
+                      <table lang="nl" summary="Overview of sources fetched from the gateway." className="table">
+                        {/*<caption></caption>*/}
+                        <thead>
+                          <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Location</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        {
+                          sources !== null &&
+                          <tbody>
+                            {
+                              sources.map((row) => (
+                                <tr>
+                                  <td>{row.name}</td>
+                                  <td>{row.location}</td>
+                                  <td><Link to={"/sources/" + row.id}>View</Link></td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        }
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
-         </div>
-        </div>
         </main>
       </Layout>
 
-  )
+      )
 }
 
-export default IndexPage
+      export default IndexPage
