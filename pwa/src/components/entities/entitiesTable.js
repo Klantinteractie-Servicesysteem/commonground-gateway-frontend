@@ -25,6 +25,7 @@ export default function EntitiesTable() {
         }
       })
       .then((data) => {
+        console.log(data)
         setEntities(data['hydra:member']);
       })
       .catch((error) => {

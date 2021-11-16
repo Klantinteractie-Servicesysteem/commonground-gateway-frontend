@@ -5,28 +5,30 @@ import ActionMenu from "../../components/common/actionMenu";
 import AttributeTable from "../../components/entities/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
 import EntityForm from "../../components/entities/entityForm";
+import Tabs from "../../components/common/tabs";
 
 
-const IndexPage = () => {
+const IndexPage = (props) => {
   return (
     <Layout>
       <main>
         <div className="row">
           <div className="col-12">
-            <Breadcrumbs items={[{ name: 'Home/', href: '/' }, { name: 'Entities/', href: '/entities' }, { name: 'Attributes' }]} />
-            <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Attributes</h1>
-            <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">
-              U can view your entity with attributes here.</h4>
-            <div className="utrecht-html">
-              <AttributeTable/>
-            </div>
-            <br/>
-            <EntityForm/>
-            <br/>
-            <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">
-              U can view your logs from this entity here.</h4>
-            <div className="utrecht-html">
-              <LogsTable/>
+            <Breadcrumbs items={[{ name: 'Home/', href: '/' }, { name: 'Entities/', href: '/entities' }, { name: 'Entity' }]} />
+            <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Entity</h1>
+
+            <Tabs items={[{name: 'main', id: 'main', active: true}, {name: 'attributes', id: 'attributes'}, {name: 'data', id: 'data'}]}/>
+
+            <div className="tab-content">
+              <div className="tab-pane active" id="main" role="tabpanel" aria-labelledby="main-tab"><br/>
+                <EntityForm id={props.params.id}/>
+              </div>
+              <div className="tab-pane" id="attributes" role="tabpanel" aria-labelledby="attributes-tab"><br/>
+                <AttributeTable/>
+              </div>
+              <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab"><br/>
+                <LogsTable/>
+              </div>
             </div>
           </div>
         </div>
