@@ -1,11 +1,10 @@
-FROM node:alpine as builder
-
+FROM node:14 AS builder
+# Set working directory
 WORKDIR /app
-
-COPY package.json .
-RUN npm install
+# Copy all files from current directory to working dir in image
 COPY . .
-RUN ["npm", "run", "build"]
+# install node modules and build assets
+RUN yarn install && yarn build
 
 FROM nginx
 EXPOSE 80

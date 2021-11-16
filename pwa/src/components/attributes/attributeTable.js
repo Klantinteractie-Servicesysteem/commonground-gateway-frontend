@@ -1,19 +1,21 @@
 import * as React from "react";
-import {useEffect} from "react";
 import {useUrlContext} from "../../context/urlContext";
+import {useEffect} from "react";
 
-export default function EntitiesTable() {
-  const [entities, setEntities] = React.useState(null);
+
+export default function AttributeTable() {
+  const [attributes, setAttributes] = React.useState(null);
   const context = useUrlContext();
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      getEntities();
+      getAttributes();
     }
   }, []);
 
-  const getEntities = () => {
-    fetch(context.apiUrl + '/entities', {
+  const getAttributes = () => {
+    fetch(context.apiUrl + '/attributes', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
@@ -25,7 +27,7 @@ export default function EntitiesTable() {
         }
       })
       .then((data) => {
-        setEntities(data['hydra:member']);
+        setAttributes(data['hydra:member']);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -40,21 +42,19 @@ export default function EntitiesTable() {
           <thead>
           <tr>
             <th scope="col">Name</th>
-            <th scope="col" className="numeric">Endpoint</th>
-            <th scope="col" className="numeric">Route</th>
+            <th scope="col" className="numeric">Type</th>
             <th scope="col" className="text"></th>
           </tr>
           </thead>
           {
-            entities !== null &&
+            attributes !== null &&
             <tbody>
             {
-              entities.map((row) => (
+              attributes.map((row) => (
                 <tr>
                   <td>{row.name}</td>
-                  <td>{row.endpoint}</td>
-                  <td>{row.route}</td>
-                  <td><a className="utrecht-link utrecht-link--hover" href={"/entities/" + row.id}>Bekijken</a></td>
+                  <td>{row.type}</td>
+                  <td><a className="utrecht-link utrecht-link--hover" href={"/attributes/" + row.id}>Bekijken</a></td>
                 </tr>
               ))
             }
