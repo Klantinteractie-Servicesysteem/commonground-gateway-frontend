@@ -29,11 +29,7 @@ export default function ActionMenu({pageDescription = null}) {
           <Link className="utrecht-sidenav__link" to="/configuration">Configuration</Link>
         </li>
         <li className="utrecht-sidenav__item">
-<<<<<<< HEAD
-          <a className="utrecht-sidenav__link" href="/">logs</a><span></span>
-=======
           <Link className="utrecht-sidenav__link" to="/logs">logs</Link>
->>>>>>> development
         </li>
       </ul>
 
