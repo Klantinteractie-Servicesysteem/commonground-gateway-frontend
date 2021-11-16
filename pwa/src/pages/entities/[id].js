@@ -12,10 +12,7 @@ const IndexPage = () => {
     <Layout>
       <main>
         <div className="row">
-          <div className="col-12 col-sm-3">
-            <ActionMenu />
-          </div>
-          <div className="col-12 col-sm9">
+          <div className="col-12">
             <Breadcrumbs items={[{ name: 'Home/', href: '/' }, { name: 'Entities/', href: '/entities' }, { name: 'Attributes' }]} />
             <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Attributes</h1>
             <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">
