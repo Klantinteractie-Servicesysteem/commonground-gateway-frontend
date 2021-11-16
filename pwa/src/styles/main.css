@@ -1,3 +1,4 @@
+/* These make sure the footer stays at the bottom */
 .utrecht-page {
     display: flex;
     flex-direction: column;
@@ -10,4 +11,18 @@
 
 .utrecht-page-footer {
     margin-top: auto;
+}
+
+/* Footer has no border-top var yes */
+.utrecht-page-footer {
+    border-top: 1px solid #eee;
+}
+
+/* Logo height */
+.logo {
+    height: 40px;
+}
+
+.utrecht-page-header * {
+    color: white !important;
 }
