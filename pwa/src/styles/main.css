@@ -26,3 +26,77 @@
 .utrecht-page-header * {
     color: white !important;
 }
+
+/* pushes top item a little over the header */
+.page-top-item {
+    margin-top: -3.5rem;
+}
+
+/* tabs styling */
+.page-navs {
+    position: relative;
+    display: block;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07);
+    z-index: 1;
+}
+.page-navs .nav .nav-link {
+    padding: 1rem !important;
+}
+.page-navs .nav-line {
+    border: 0px !important;
+}
+.page-navs .nav-line .nav-link {
+    border-bottom-width: 3px !important;
+}
+
+.nav-link {
+ color: #495057 !important;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom: 3px solid #1269DB !important;
+    border-left: 1px solid transparent !important;
+    border-top: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+    color: #1269DB !important;
+}
+
+.nav-tabs .nav-link.active:hover {
+    border-left: 1px solid transparent !important;
+    border-top: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+}
+
+.nav-tabs .nav-link.active:focus {
+    border-left: 1px solid transparent !important;
+    border-top: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+}
+
+.nav-tabs .nav-link:hover {
+    border-left: 1px solid transparent !important;
+    border-top: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+}
+
+.nav-tabs .nav-link:focus {
+    border-left: 1px solid transparent !important;
+    border-top: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+}
+
+.nav-scroller .nav {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+    .page-navs {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+
