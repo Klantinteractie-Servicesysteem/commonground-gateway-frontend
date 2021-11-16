@@ -1,28 +1,8 @@
 version: "3.4"
 
 services:
-  pwa_dev:
-    &pwa_dev
-    image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build:
-        context: pwa
-        dockerfile: Dockerfile-dev
-    depends_on:
-      - php
-    ports:
-        - "8000:8000"
-        - "9929:9929"
-        - "9230:9230"
-    volumes:
-        - /app/node_modules
-        - ./pwa/src:/app/src
-    environment:
-        - NODE_ENV=development
-        - GATSBY_WEBPACK_PUBLICPATH=/
-        - CHOKIDAR_USEPOLLING=1
-  
-  php_dev:
-    &php_dev
+  php:
+    &php
     image: ghcr.io/conductionnl/commonground-gateway-php:admin
     depends_on:
       - db
@@ -39,8 +19,8 @@ services:
     ports:
       - "82:80"
 
-  api_dev:
-    &nginx_dev
+  api:
+    &nginx
     image: ghcr.io/conductionnl/commonground-gateway-nginx:latest
     depends_on:
       - php
@@ -50,7 +30,7 @@ services:
       - NGINX_HOST=php
       - NGINX_ENV=${APP_ENV}
 
-  db_dev:
+  db:
     image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=example
@@ -62,7 +42,7 @@ services:
     ports:
       - "3366:3306"
 
-  redis_dev:
+  redis:
     image: redis:4-alpine
 
 volumes:
