@@ -11,11 +11,6 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <Breadcrumbs items={[{ name: 'Home/', href: '/' }, { name: 'Entities' }]} />
-            <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Entities</h1>
-            <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">
-              U can view your entities here.</h4>
-
             <Link to="/entities/new">
               <button className="utrecht-button float-right" type="button">Create entity</button>
             </Link>

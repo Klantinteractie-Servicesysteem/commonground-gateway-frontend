@@ -58,23 +58,21 @@ export default function EntityForm({id}) {
       method = 'PUT';
     }
 
-
-
-    // fetch(url, {
-    //   method: method,
-    //   credentials: 'include',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(body)
-    // })
-    //   .then(response => response.json())
-    //   .then((data) => {
-    //     console.log('Saved source:', data);
-    //     setEntity(data);
-    //     setShowSpinner(false);
-    //   })
-    //   .catch ((error) => {
-    //     console.error('Error:', error);
-    //   });
+    fetch(url, {
+      method: method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log('Saved source:', data);
+        setEntity(data);
+        setShowSpinner(false);
+      })
+      .catch ((error) => {
+        console.error('Error:', error);
+      });
   }
 
   useEffect(() => {
