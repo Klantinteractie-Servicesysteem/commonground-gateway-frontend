@@ -26,7 +26,31 @@ export default function EntityForm({id}) {
       });
   }
 
-  const saveEntity = () => {
+  const checkInputs = (inputs) => {
+    let valid = true;
+    for (let i = 0; i < inputs.length; i++) {
+     if (inputs[i].length === 0) {
+       valid = false;
+     }
+    }
+
+    return valid;
+  }
+
+  const saveEntity = (event) => {
+
+    event.preventDefault();
+
+    let body = {
+      name: event.target.name.value,
+      endpoint: event.target.endpoint.value,
+      description: event.target.description.value,
+    }
+
+    if (!checkInputs([body.name, body.endpoint])) {
+      return;
+    }
+
     setShowSpinner(true);
 
     let url = context.apiUrl + '/entities';
@@ -36,31 +60,23 @@ export default function EntityForm({id}) {
       method = 'PUT';
     }
 
-    let nameInput = document.getElementById('nameInput');
-    let endpointInput = document.getElementById('endpointInput');
-    let descriptionInput = document.getElementById('descriptionInput');
 
-    let body = {
-      name: nameInput.value,
-      endpoint: endpointInput.value,
-      description: descriptionInput.value,
-    }
 
-    fetch(url, {
-      method: method,
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-      .then(response => response.json())
-      .then((data) => {
-        console.log('Saved source:', data);
-        setEntity(data);
-        setShowSpinner(false);
-      })
-      .catch ((error) => {
-        console.error('Error:', error);
-      });
+    // fetch(url, {
+    //   method: method,
+    //   credentials: 'include',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(body)
+    // })
+    //   .then(response => response.json())
+    //   .then((data) => {
+    //     console.log('Saved source:', data);
+    //     setEntity(data);
+    //     setShowSpinner(false);
+    //   })
+    //   .catch ((error) => {
+    //     console.error('Error:', error);
+    //   });
   }
 
   useEffect(() => {
@@ -71,12 +87,12 @@ export default function EntityForm({id}) {
 
   return (
     <div className="row">
-          <div className="col-4">
-            <button className="utrecht-button float-right" type="button" onClick={saveEntity}>Save</button>
-          </div>
 
         {showSpinner === false ?
           <form id="dataForm" onSubmit={saveEntity}>
+            <div className="col-12">
+              <button className="utrecht-button float-right" type="submit">Save</button>
+            </div>
             <div className="col-6">
             <label htmlFor="nameInput">Name</label>
             {
