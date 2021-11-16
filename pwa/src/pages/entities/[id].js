@@ -2,7 +2,7 @@ import * as React from "react"
 import Layout from "../../components/common/layout";
 import Breadcrumbs from "../../components/common/breadcrumbs";
 import ActionMenu from "../../components/common/actionMenu";
-import AttributeTable from "../../components/entities/attributeTable";
+import AttributeTable from "../../components/attributes/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
 import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
