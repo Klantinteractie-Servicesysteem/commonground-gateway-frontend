@@ -37,10 +37,7 @@ const IndexPage = () => {
       <Layout>
       <main>
         <div className="row">
-          <div className="col-3">
-            <ActionMenu pageDescription={pageDescription} />
-           </div>
-           <div className="col-9">
+           <div className="col-12">
             <title>Gateway - Sources</title>
           <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">Sources</h1>
 
