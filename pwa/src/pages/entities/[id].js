@@ -10,11 +10,14 @@ import Tabs from "../../components/common/tabs";
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title={"Entity"} subtext={"Add or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">
-            <Tabs items={[{name: 'main', id: 'main', active: true}, {name: 'attributes', id: 'attributes'}, {name: 'data', id: 'data'}]}/>
+
+            <div className="page-top-item">
+              <Tabs items={[{name: 'main', id: 'main', active: true}, {name: 'attributes', id: 'attributes'}, {name: 'data', id: 'data'}]}/>
+            </div>
 
             <div className="tab-content">
               <div className="tab-pane active" id="main" role="tabpanel" aria-labelledby="main-tab"><br/>
