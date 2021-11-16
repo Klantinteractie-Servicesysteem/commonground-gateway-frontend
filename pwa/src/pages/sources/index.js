@@ -11,8 +11,10 @@ const IndexPage = () => {
   const pageDescription = "On this page u can view and create your gateways sources.";
 
   const [sources, setSources] = useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const getSources = () => {
+    setShowSpinner(true);
     fetch(context.apiUrl + "/gateways", {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -21,6 +23,7 @@ const IndexPage = () => {
       .then((data) => {
         if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
           setSources(data['hydra:member']);
+          setShowSpinner(false);
         }
       })
       .catch((error) => {
@@ -48,11 +51,13 @@ const IndexPage = () => {
                     <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Sources</h4>
                   </div>
                   <div className="col-6 text-right">
-                    <Link to="/sources/new">
-                      <button className="utrecht-button utrecht-button-sm btn-sm mr-2"><i class="fas fa-plus mr-2"></i>Create</button>
+                    <Link to="">
+                      <i className="fas fa-question mr-1"></i>
+                      <span className="mr-2">Help</span>
                     </Link>
-                    <Link>
-                      <button className="utrecht-button utrecht-button-sm btn-sm"><i class="fas fa-question mr-2"></i>Help</button>
+                    <button onClick={getSources} className="utrecht-button utrecht-button-sm btn-sm mr-2"><i className="fas fa-sync-alt mr-2"></i>Refresh</button>
+                    <Link to="/sources/new">
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>
                     </Link>
                   </div>
                 </div>
@@ -60,6 +65,13 @@ const IndexPage = () => {
               <div className="utrecht-card-body card-body">
                 <div className="row">
                   <div className="col-12">
+                    {
+                      showSpinner == true ?
+                    <div className="text-center pt-5">
+                      <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div> :
                     <div className="utrecht-html">
                       <table lang="nl" summary="Overview of sources fetched from the gateway." className="table">
                         {/*<caption></caption>*/}
@@ -72,20 +84,21 @@ const IndexPage = () => {
                         </thead>
                         {
                           sources !== null &&
-                          <tbody>
-                            {
-                              sources.map((row) => (
-                                <tr>
-                                  <td>{row.name}</td>
-                                  <td>{row.location}</td>
-                                  <td><Link to={"/sources/" + row.id}>View</Link></td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
-                        }
+                            <tbody>
+                              {
+                                sources.map((row) => (
+                                  <tr>
+                                    <td>{row.name}</td>
+                                    <td>{row.location}</td>
+                                    <td><Link to={"/sources/" + row.id}>View</Link></td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                         }
                       </table>
                     </div>
+                    }
                   </div>
                 </div>
               </div>

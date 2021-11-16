@@ -86,3 +86,8 @@
         height: 60px;
         vertical-align: middle !important;
     }
+
+.btn-success:hover {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
