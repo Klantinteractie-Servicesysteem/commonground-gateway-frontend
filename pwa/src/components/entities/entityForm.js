@@ -3,7 +3,6 @@ import {useUrlContext} from "../../context/urlContext";
 import { useEffect, useState } from "react";
 
 export default function EntityForm({id}) {
-  console.log(id)
   const context = useUrlContext();
   const [entity, setEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -21,7 +20,6 @@ export default function EntityForm({id}) {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(entity)
         setEntity(data);
       });
   }
