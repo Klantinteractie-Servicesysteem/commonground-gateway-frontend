@@ -36,7 +36,7 @@ const IndexPage = () => {
 
 
   return (
-    <Layout>
+    <Layout title={"Sources"} subtext={"An overview of your Source objects"}>
       <main>
         <div className="row">
           <div className="col-12">

@@ -7,7 +7,7 @@ const IndexPage = () => {
   const context = useUrlContext();
 
   return (
-      <Layout>
+      <Layout title={"Dashboard"} subtext={"Welcome to the gateway admin dashboard"}>
         <main>
         <UtrechtHeading1>The Quick Brown Fox Jumps Over The Lazy Dog</UtrechtHeading1>
         <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">The Quick Brown Fox Jumps Over The Lazy Dog</h1>
