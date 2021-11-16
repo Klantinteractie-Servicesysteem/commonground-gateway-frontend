@@ -11,3 +11,16 @@
 .utrecht-page-footer {
     margin-top: auto;
 }
+
+.utrecht-page-footer {
+    border-top: 1px solid #eee;
+}
+
+.logo {
+    height: 40px;
+
+}
+
+.logo-container {
+    display: inline;
+}
