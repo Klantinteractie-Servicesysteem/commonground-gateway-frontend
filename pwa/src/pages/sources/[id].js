@@ -10,6 +10,7 @@ const IndexPage = (props) => {
 
   const [source, setSource] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [title, setTitle] = useState("Source");
 
   const getSource = () => {
     fetch(context.apiUrl + "/gateways/" + id, {
@@ -71,6 +72,7 @@ const IndexPage = (props) => {
         console.log('Saved source:', data);
         setSource(data);
         setShowSpinner(false);
+        setTitle(source.name);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -84,7 +86,7 @@ const IndexPage = (props) => {
   }, []);
 
   return (
-    <Layout>
+     <Layout title={title} subtext={"Edit your source here"}>
       <main>
 
 
@@ -123,21 +125,21 @@ const IndexPage = (props) => {
                           <div className="row">
                             <div className="col-6">
                               <div className="form-group">
-                                <span className="utrecht-form-label mb-2">Name</span>
+                                <span className="utrecht-form-label mb-2">Name *</span>
                                 {
                                   source !== null && source.name !== null ?
-                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" defaultValue={source.name} /> :
-                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" />
+                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" defaultValue={source.name} required/> :
+                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" required/>
                                 }
                               </div>
                             </div>
                             <div className="col-6">
                               <div className="form-group">
-                                <span className="utrecht-form-label">Location (url)</span>
+                                <span className="utrecht-form-label">Location (url) *</span>
                                 {
                                   source !== null && source.location !== null ?
-                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="location" id="locationInput" defaultValue={source.location} /> :
-                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="location" id="locationInput" />
+                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="location" id="locationInput" defaultValue={source.location} required/> :
+                                    <input className="utrecht-textbox utrecht-textbox--html-input" name="location" id="locationInput" required/>
                                 }
                               </div>
                             </div>
@@ -165,8 +167,8 @@ const IndexPage = (props) => {
                             </div>
                           </div>
                           <div className="form-group">
-                            <span className="utrecht-form-label">Auth</span>
-                            <select name="auth" id="authInput" class="utrecht-select utrecht-select--html-select">
+                            <span className="utrecht-form-label">Auth *</span>
+                            <select name="auth" id="authInput" class="utrecht-select utrecht-select--html-select" required>
                               <option value=""></option>
                               {
                                 source !== null && source.auth !== null && source.auth == "apikey" ?
