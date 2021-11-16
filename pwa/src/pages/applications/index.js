@@ -15,7 +15,7 @@ const Applications = () => {
             <caption>Uitslag internetpeiling 8 juni tot en met 28 juni</caption>
             <thead>
             <tr>
-              <th scope="col">Username</th>
+              <th scope="col">Applications</th>
               <th scope="col" className="numeric">E-mail</th>
               <th scope="col" className="numeric"></th>
             </tr>
