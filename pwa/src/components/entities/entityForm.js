@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useUrlContext} from "../../context/urlContext";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 export default function EntityForm({id}) {
   const context = useUrlContext();
@@ -16,7 +16,7 @@ export default function EntityForm({id}) {
   const getEntity = () => {
     fetch(context.apiUrl + "/entities/" + id, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
     })
       .then(response => response.json())
       .then((data) => {
@@ -27,9 +27,9 @@ export default function EntityForm({id}) {
   const checkInputs = (inputs) => {
     let valid = true;
     for (let i = 0; i < inputs.length; i++) {
-     if (inputs[i].length === 0) {
-       valid = false;
-     }
+      if (inputs[i].length === 0) {
+        valid = false;
+      }
     }
 
     return valid;
@@ -61,7 +61,7 @@ export default function EntityForm({id}) {
     fetch(url, {
       method: method,
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body)
     })
       .then(response => response.json())
@@ -70,7 +70,7 @@ export default function EntityForm({id}) {
         setEntity(data);
         setShowSpinner(false);
       })
-      .catch ((error) => {
+      .catch((error) => {
         console.error('Error:', error);
       });
   }
@@ -82,45 +82,51 @@ export default function EntityForm({id}) {
   }, []);
 
   return (
-    <div className="row">
+    <div className="card">
+      <div className="card-body">
+        <div className="row">
 
-        {showSpinner === false ?
-          <form id="dataForm" onSubmit={saveEntity}>
-            <div className="col-12">
-              <button className="utrecht-button float-right" type="submit">Save</button>
-            </div>
-            <div className="col-6">
-            <label htmlFor="nameInput">Name</label>
-            {
-              entity !== null && entity.name !== null ?
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"
-                       defaultValue={entity.name}/> :
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"/>
-            }
-            </div>
-            <br/>
-            <div className="col-6">
-            <label htmlFor="endpointInput">Endpoint</label>
-            {
-              entity !== null && entity.endpoint !== null ?
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"
-                       defaultValue={entity.endpoint}/> :
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"/>
-            }
-            </div>
-            <br/>
-            <div className="col-6">
-            <label htmlFor="descriptionInput">Description</label>
-            {
-              entity !== null && entity.description !== null ?
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput"
-                       defaultValue={entity.description}/> :
-                <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput"/>
-            }
-            </div>
-          </form> :
-          <p className="utrecht-paragraph">Saving..</p>
-        }
+          {showSpinner === false ?
+            <form id="dataForm" onSubmit={saveEntity}>
+              <div className="col-12">
+                <button className="utrecht-button float-right" type="submit">Save</button>
+              </div>
+              <div className="col-6">
+                <label htmlFor="nameInput">Name</label>
+                {
+                  entity !== null && entity.name !== null ?
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"
+                           defaultValue={entity.name}/> :
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"/>
+                }
+              </div>
+              <br/>
+              <div className="col-6">
+                <label htmlFor="endpointInput">Endpoint</label>
+                {
+                  entity !== null && entity.endpoint !== null ?
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"
+                           defaultValue={entity.endpoint}/> :
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"/>
+                }
+              </div>
+              <br/>
+              <div className="col-6">
+                <label htmlFor="descriptionInput">Description</label>
+                {
+                  entity !== null && entity.description !== null ?
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
+                           id="descriptionInput"
+                           defaultValue={entity.description}/> :
+                    <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
+                           id="descriptionInput"/>
+                }
+              </div>
+            </form> :
+            <p className="utrecht-paragraph">Saving..</p>
+          }
+        </div>
+      </div>
     </div>
   );
 }

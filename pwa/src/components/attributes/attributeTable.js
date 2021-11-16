@@ -35,29 +35,33 @@ export default function AttributeTable() {
   }
 
   return (
-    <table lang="nl" summary="Overzicht van de stemmen voor en tegen het betaald parkeren." style={{width: "100%"}}>
-      <caption>Hier kunnen we een caption neerzetten</caption>
-      <thead>
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col" className="numeric">Type</th>
-        <th scope="col" className="text"></th>
-      </tr>
-      </thead>
-      {
-        attributes !== null &&
-        <tbody>
-        {
-          attributes.map((row) => (
-            <tr>
-              <td>{row.name}</td>
-              <td>{row.type}</td>
-              <td><a className="utrecht-link utrecht-link--hover" href={"/attributes/" + row.id}>Bekijken</a></td>
-            </tr>
-          ))
-        }
-        </tbody>
-      }
-    </table>
+    <div className="card">
+      <div className="card-body">
+        <table lang="nl" summary="Overzicht van de stemmen voor en tegen het betaald parkeren." style={{width: "100%"}}>
+          <caption>Hier kunnen we een caption neerzetten</caption>
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col" className="numeric">Type</th>
+            <th scope="col" className="text"></th>
+          </tr>
+          </thead>
+          {
+            attributes !== null &&
+            <tbody>
+            {
+              attributes.map((row) => (
+                <tr>
+                  <td>{row.name}</td>
+                  <td>{row.type}</td>
+                  <td><a className="utrecht-link utrecht-link--hover" href={"/attributes/" + row.id}>Bekijken</a></td>
+                </tr>
+              ))
+            }
+            </tbody>
+          }
+        </table>
+      </div>
+    </div>
   );
 }
