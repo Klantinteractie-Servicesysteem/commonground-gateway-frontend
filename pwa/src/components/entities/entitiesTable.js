@@ -17,12 +17,15 @@ export default function EntitiesTable() {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data)
-        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-          setEntities(data['hydra:member']);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
         }
+      })
+      .then((data) => {
+        setEntities(data['hydra:member']);
       })
       .catch((error) => {
         console.error('Error:', error);
