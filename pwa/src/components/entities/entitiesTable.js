@@ -42,7 +42,7 @@ export default function EntitiesTable() {
             <th scope="col">Name</th>
             <th scope="col" className="numeric">Endpoint</th>
             <th scope="col" className="numeric">Route</th>
-            <th scope="col" className="text"></th>
+            <th scope="col" className="text"> </th>
           </tr>
           </thead>
           {
