@@ -21,6 +21,8 @@ export default function EntitiesTable() {
           return response.json();
         } else {
           throw new Error(response.statusText);
+          setShowSpinner(false);
+          setEntities(null);
         }
       })
       .then((data) => {
@@ -29,6 +31,8 @@ export default function EntitiesTable() {
       })
       .catch((error) => {
         console.error('Error:', error);
+        setShowSpinner(false);
+        setEntities(null);
       });
   }
   useEffect(() => {
