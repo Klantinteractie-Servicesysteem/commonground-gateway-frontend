@@ -8,12 +8,6 @@ export default function EntityForm({id}) {
   const [entity, setEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
-  if (id !== "new") {
-    let pageDescription = "Edit your entity on this page.";
-  } else {
-    let pageDescription = "Create your new entity on this page";
-  }
-
   const getEntity = () => {
     fetch(context.apiUrl + "/entities/" + id, {
       credentials: 'include',
@@ -43,8 +37,10 @@ export default function EntityForm({id}) {
     let body = {
       name: event.target.name.value,
       endpoint: event.target.endpoint.value,
-      description: event.target.description.value,
+      description: event.target.description.value ? event.target.description.value : null,
     }
+
+    body = Object.fromEntries(Object.entries(body).filter(([_, v]) => v != null));
 
     if (!checkInputs([body.name, body.endpoint])) {
       return;
@@ -53,11 +49,18 @@ export default function EntityForm({id}) {
     setShowSpinner(true);
 
     let url = context.apiUrl + '/entities';
-    let method = 'POST';
-    if (id !== 'new') {
+    let method = null;
+    if (id === 'new') {
+      method = 'POST';
+    } else {
       url = url + '/' + id;
       method = 'PUT';
     }
+
+    console.log(body);
+    console.log(method);
+    console.log(id);
+    return;
 
     fetch(url, {
       method: method,
