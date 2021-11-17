@@ -15,7 +15,7 @@ const IndexPage = (props) => {
   const getApplication = () => {
     fetch(context.apiUrl + "/applications/" + id, {
       credentials: 'include',
-      headers: {'Content-Type': 'applications/json'},
+      headers: {'Content-Type': 'application/json'},
     })
       .then(response => response.json())
       .then((data) => {

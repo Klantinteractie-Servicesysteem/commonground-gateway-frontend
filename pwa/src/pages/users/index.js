@@ -7,14 +7,13 @@ import { useUrlContext } from "../../context/urlContext";
 const IndexPage = () => {
   const context = useUrlContext();
 
-  const pageDescription = "On this page u can view and create your gateways users.";
 
   const [users, setUsers] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
   const getUsers = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/gateways", {
+    fetch(context.apiUrl + "/", {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -40,7 +39,7 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <title>Gateway - Users</title>
+            <title> - Users</title>
 
             <div className="utrecht-card card">
 
@@ -58,7 +57,7 @@ const IndexPage = () => {
                       <i className="fas fa-sync-alt mr-1"></i>
                       <span className="mr-2">Refresh</span>
                     </a>
-                    <Link to="/sources/new">
+                    <Link to="/users/new">
                       <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>
                     </Link>
                   </div>

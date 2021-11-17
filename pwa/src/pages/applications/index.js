@@ -15,7 +15,7 @@ const IndexPage = () => {
     setShowSpinner(true);
     fetch(context.apiUrl + "/applications/", {
       credentials: 'include',
-      headers: { 'Content-Type': 'applications/json' },
+      headers: { 'Content-Type': 'application/json' },
     })
       .then(response => response.json())
       .then((data) => {
@@ -39,7 +39,7 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <title>Application.php - Applications</title>
+            <title>applications - Applications</title>
 
             <div className="utrecht-card card">
 
@@ -74,7 +74,7 @@ const IndexPage = () => {
                           </div>
                         </div> :
                         <div className="utrecht-html">
-                          <table lang="nl" summary="Overview of applications fetched from the Application.php." className="table">
+                          <table lang="nl" summary="Overview of applications fetched from the applications." className="table">
                             {/*<caption></caption>*/}
                             <thead>
                             <tr>
@@ -91,7 +91,7 @@ const IndexPage = () => {
                                   <tr>
                                     <td>{row.name}</td>
                                     <td>{row.description}</td>
-                                    <td className="text-right"><Link to={"/Application.php/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
+                                    <td className="text-right"><Link to={"/applications/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                                   </tr>
                                 ))
                               }

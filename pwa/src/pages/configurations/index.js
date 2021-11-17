@@ -7,21 +7,20 @@ import { useUrlContext } from "../../context/urlContext";
 const IndexPage = () => {
   const context = useUrlContext();
 
-  const pageDescription = "On this page u can view and create your gateways sources.";
 
-  const [configuration, setConfiguration] = useState(null);
+  const [Configurations, setConfigurations] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const getConfiguration = () => {
+  const getConfigurations = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/gateways", {
+    fetch(context.apiUrl + "/", {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
       .then(response => response.json())
       .then((data) => {
         if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-          setConfiguration(data['hydra:member']);
+          setConfigurations(data['hydra:member']);
           setShowSpinner(false);
         }
       })
@@ -31,34 +30,34 @@ const IndexPage = () => {
   }
 
   useEffect(() => {
-    getConfiguration();
+    getConfigurations();
   }, []);
 
 
   return (
-    <Layout title={"Configuration"} subtext={"An overview of your Configuration objects"}>
+    <Layout title={"Configurations"} subtext={"An overview of your Configurations objects"}>
       <main>
         <div className="row">
           <div className="col-12">
-            <title>Gateway - Configuration</title>
+            <title> - Configurations</title>
 
             <div className="utrecht-card card">
 
               <div className="utrecht-card-header card-header">
                 <div className="utrecht-card-head-row card-head-row row">
                   <div className="col-6">
-                    <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Configuration</h4>
+                    <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Configurations</h4>
                   </div>
                   <div className="col-6 text-right">
                     <a class="utrecht-link">
                       <i className="fas fa-question mr-1"></i>
                       <span className="mr-2">Help</span>
                     </a>
-                    <a class="utrecht-link" onClick={getConfiguration}>
+                    <a class="utrecht-link" onClick={getConfigurations}>
                       <i className="fas fa-sync-alt mr-1"></i>
                       <span className="mr-2">Refresh</span>
                     </a>
-                    <Link to="/configuration/new">
+                    <Link to="/configurations/new">
                       <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>
                     </Link>
                   </div>
@@ -85,14 +84,14 @@ const IndexPage = () => {
                             </tr>
                             </thead>
                             {
-                              configuration !== null &&
+                              Configurations !== null &&
                               <tbody>
                               {
-                                configuration.map((row) => (
+                                Configurations.map((row) => (
                                   <tr>
                                     <td>{row.name}</td>
                                     <td>{row.location}</td>
-                                    <td className="text-right"><Link to={"/configuration/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
+                                    <td className="text-right"><Link to={"/configurations/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                                   </tr>
                                 ))
                               }
