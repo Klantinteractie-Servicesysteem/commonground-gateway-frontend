@@ -8,7 +8,7 @@ export default function LogsTable({ id }) {
 
   const getLogs = () => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/request_logs/${id}`, {
+    fetch(`${context.apiUrl}/request_logs/?entity.id=${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
@@ -30,7 +30,7 @@ export default function LogsTable({ id }) {
 
   React.useEffect(() => {
     getLogs();
-  });
+  }, []);
 
   return (
     <div className="utrecht-card card">

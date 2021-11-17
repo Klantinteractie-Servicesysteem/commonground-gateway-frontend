@@ -11,7 +11,7 @@ export default function DataTable({id}) {
 
   const getData = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + '/object_entities/' + id, {
+    fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
@@ -33,7 +33,7 @@ export default function DataTable({id}) {
 
   useEffect(() => {
       getData();
-  });
+  },[]);
 
   return (
     <div className="utrecht-card card">
