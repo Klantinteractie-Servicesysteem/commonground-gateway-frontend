@@ -1,39 +1,48 @@
-import makeStyles from '@mui/styles/makeStyles';
-import AppBar from '@mui/material/AppBar';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import {Stack} from "@mui/material";
 import * as React from "react";
-
-const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-
-  appbar: {
-    backgroundColor: '#AD9156',
-    boxShadow: "none"
-  },
-
-}));
-
+import {Link} from "gatsby";
 
 export default function MainMenu() {
 
-  const classes = useStyles();
-
   return (
     <div className="utrecht-navhtml">
-      <nav className="topnav">
-        <ul className="utrecht-topnav__list">
-          <li className="utrecht-topnav__item">
-            <a className="utrecht-topnav__link utrecht-topnav__link--current" href="/">Home</a>
-          </li>
-          <li className="utrecht-topnav__item">
-            <a className="utrecht-topnav__link"
-               href="https://demodam.org/" target="_blank">Demodam.org</a>
-          </li>,
-        </ul>
+      <nav className="topnav utrecht-topnav__list">
+        <div className="container">
+          <div className="d-inline">
+            <ul className="utrecht-topnav__list" >
+              <li>
+                <div className="d-flex align-items-center h-100 justify-content-center">
+                  <a href="https://conduction.nl" target="_blank">
+                    <img className="logo" alt=""  src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGFhZ18xIiBkYXRhLW5hbWU9IkxhYWcgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzAwIDMwMCI+PHBhdGggZD0iTTE0OS43MiwyOCwzOCw5Mi41djEyOUwxNDkuNzIsMjg2bDExMS43Mi02NC41VjkyLjVaTTIzMywyMDUuMDZsLTgzLjI1LDQ4LjA3TDY2LjQ3LDIwNS4wNlYxMDguOTRsODMuMjUtNDguMDdMMjMzLDEwOC45NFoiIHN0eWxlPSJmaWxsOiNmZmYiLz48cG9seWdvbiBwb2ludHM9IjE0OS40NCAxMjQuNTIgMTc1LjYxIDEzOS42MiAyMDYuMDUgMTIyLjA0IDE0OS40NCA4OS4zNiA5MC44NyAxMjMuMTggOTAuODcgMTkwLjgyIDE0OS40NCAyMjQuNjQgMjA2LjA1IDE5MS45NiAxNzUuNjEgMTc0LjM4IDE0OS40NCAxODkuNDggMTIxLjMyIDE3My4yNCAxMjEuMzIgMTQwLjc2IDE0OS40NCAxMjQuNTIiIHN0eWxlPSJmaWxsOiNmZmYiLz48L3N2Zz4=" />
+                  </a>
+                </div>
+              </li>
+              <li className="utrecht-topnav__item">
+                <Link to={'/'} className="utrecht-topnav__link" >Dashboard</Link>
+              </li>
+              <li className="utrecht-topnav__item">
+                <Link to={'/sources'} className="utrecht-topnav__link" >Sources</Link>
+              </li>
+              <li className="utrecht-topnav__item">
+                <Link to={'/entities'} className="utrecht-topnav__link" >Entities</Link>
+              </li>
+              <li className="utrecht-topnav__item" >
+                <Link to={'/endpoints'} className="utrecht-topnav__link" >Endpoints</Link>
+              </li>
+              <li className="utrecht-topnav__item" >
+                <Link to={'/applications'} className="utrecht-topnav__link" >Applications</Link>
+              </li>
+              {/*<li className="utrecht-topnav__item" >*/}
+              {/*  <Link to={'/users'} className="utrecht-topnav__link" >Users</Link>*/}
+              {/*</li>*/}
+              {/*<li className="utrecht-topnav__item" >*/}
+              {/*  <Link to={'/configuration'} className="utrecht-topnav__link" >Configuration</Link>*/}
+              {/*</li>*/}
+              <li className="utrecht-topnav__item" >
+                <Link to={'/logs'} className="utrecht-topnav__link"  >Logs</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
       </nav>
     </div>
   );

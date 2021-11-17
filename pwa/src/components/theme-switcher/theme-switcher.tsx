@@ -13,20 +13,11 @@ const ThemeSwitcher = () => {
     if (themeSwitcherScript === 'ready') {
       setScriptLoaded(true);
     }
-    console.log(themeSwitcherScript);
   }, [themeSwitcherScript]);
 
 
   return (
     <Fragment>
-      <Helmet>
-        <link
-          href="https://unpkg.com/@utrecht/component-library-css/dist/bem.css"
-          rel="stylesheet"
-        />
-
-        <meta name="theme-color" content="hsl(0 0% 95%)" />
-      </Helmet>
       {scriptLoaded && (
         // @ts-ignore
         <nl-theme-switcher // @ts-ignore
@@ -43,6 +34,11 @@ const ThemeSwitcher = () => {
               href: 'https://unpkg.com/@nl-design-system-unstable/amsterdam-design-tokens/dist/index.css',
             },
             {
+              className: 'almere-theme',
+              title: 'Almere',
+              href: 'https://unpkg.com/@conductionnl/almere-design-tokens/dist/index.css',
+            },
+            {
               className: 'bodegraven-theme',
               title: '1901',
               href: 'https://unpkg.com/@nl-design-system-unstable/bodegraven-design-tokens/dist/index.css',
@@ -51,6 +47,16 @@ const ThemeSwitcher = () => {
               className: 'borne-theme',
               title: '0147',
               href: 'https://unpkg.com/@nl-design-system-unstable/borne-design-tokens/dist/index.css',
+            },
+            {
+              className: 'conduction-theme',
+              title: 'Conduction',
+              href: 'https://unpkg.com/@conductionnl/conduction-design-tokens/dist/index.css',
+            },
+            {
+              className: 'denbosch-theme',
+              title: 'Den Bosch',
+              href: 'https://unpkg.com/@conductionnl/denbosch-design-tokens/dist/index.css',
             },
             {
               className: 'drechterland-theme',
@@ -99,8 +105,8 @@ const ThemeSwitcher = () => {
             },
             {
               className: 'nijmegen-theme',
-              title: '0268',
-              href: 'https://unpkg.com/@nl-design-system-unstable/nijmegen-design-tokens/dist/index.css',
+              title: 'Nijmegen',
+              href: 'https://unpkg.com/@conductionnl/nijmegen-design-tokens/dist/index.css',
             },
             {
               className: 'noordoostpolder-theme',
@@ -156,6 +162,11 @@ const ThemeSwitcher = () => {
               className: 'zwolle-theme',
               title: '0193',
               href: 'https://unpkg.com/@nl-design-system-unstable/zwolle-design-tokens/dist/index.css',
+            },
+            {
+              className: 'zoetermeer-theme',
+              title: 'Zoetermeer',
+              href: 'https://unpkg.com/@conductionnl/zoetermeer-design-tokens/dist/index.css',
             },
           ])}
         />
