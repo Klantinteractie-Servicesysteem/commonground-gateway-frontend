@@ -75,6 +75,7 @@ export default function EntitiesTable() {
                         <th scope="col">Name</th>
                         <th scope="col">Endpoint</th>
                         <th scope="col">Route</th>
+                        <th scope="col">Source</th>
                         <th scope="col"></th>
                       </tr>
                     </thead>
@@ -87,6 +88,7 @@ export default function EntitiesTable() {
                               <td>{row.name}</td>
                               <td>{row.endpoint}</td>
                               <td>{row.route}</td>
+                                  <td>{row.gateway !== null && row.gateway.name}</td>
                               <td className="text-right"><Link to={"/entities/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                             </tr>
                           ))
