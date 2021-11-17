@@ -15,7 +15,7 @@ const IndexPage = (props) => {
   const getApplication = () => {
     fetch(context.apiUrl + "/applications/" + id, {
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'applications/json'},
     })
       .then(response => response.json())
       .then((data) => {
@@ -26,7 +26,7 @@ const IndexPage = (props) => {
   const saveApplication = () => {
     setShowSpinner(true);
 
-    let url = context.apiUrl + '/Application.php';
+    let url = context.apiUrl + '/applications';
     let method = 'POST';
     if (id != 'new') {
       url = url + '/' + id;
@@ -46,12 +46,12 @@ const IndexPage = (props) => {
     fetch(url, {
       method: method,
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'applications/json'},
       body: JSON.stringify(body)
     })
       .then(response => response.json())
       .then((data) => {
-        console.log('Saved application:', data);
+        console.log('Saved applications:', data);
         setApplication(data);
         setShowSpinner(false);
         setTitle(application.name);
