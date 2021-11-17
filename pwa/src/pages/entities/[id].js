@@ -15,7 +15,7 @@ const IndexPage = (props) => {
   const [entity, setEntity] = React.useState(null);
   const [title, setTitle] = useState("Entity");
   const [showSpinner, setShowSpinner] = useState(false);
-  const [id, setId] = useState("new");
+  const [id, setId] = useState(props.params.id);
 
 
   const getEntity = () => {
