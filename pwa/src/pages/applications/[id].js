@@ -46,7 +46,7 @@ const IndexPage = (props) => {
     fetch(url, {
       method: method,
       credentials: 'include',
-      headers: {'Content-Type': 'applications/json'},
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body)
     })
       .then(response => response.json())
@@ -54,7 +54,7 @@ const IndexPage = (props) => {
         console.log('Saved applications:', data);
         setApplication(data);
         setShowSpinner(false);
-        setTitle(application.name);
+        setTitle(data.name);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -68,7 +68,7 @@ const IndexPage = (props) => {
   }, []);
 
   return (
-    <Layout title={title} subtext={"Edit your source here"}>
+    <Layout title={title} subtext={"Edit your application here"}>
       <main>
 
 
@@ -81,7 +81,7 @@ const IndexPage = (props) => {
                     <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Values</h4>
                   </div>
                   <div className="col-6 text-right">
-                    <Link className="utrecht-link" to="/application">
+                    <Link className="utrecht-link" to="/applications">
                       <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2"><i
                         className="fas fa-long-arrow-alt-left mr-2"></i>Back
                       </button>
@@ -121,13 +121,13 @@ const IndexPage = (props) => {
                             </div>
                             <div className="col-6">
                               <div className="form-group">
-                                <span className="utrecht-form-label">description (url) *</span>
+                                <span className="utrecht-form-label">description</span>
                                 {
                                   application !== null && application.description !== null ?
                                     <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
-                                           id="descriptionInput" defaultValue={application.description} required/> :
+                                           id="descriptionInput" defaultValue={application.description} /> :
                                     <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
-                                           id="descriptionInput" required/>
+                                           id="descriptionInput" />
                                 }
                               </div>
                             </div>

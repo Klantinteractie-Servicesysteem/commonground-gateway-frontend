@@ -19,10 +19,9 @@ const IndexPage = () => {
     })
       .then(response => response.json())
       .then((data) => {
-        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
           setApplications(data['hydra:member']);
-          setShowSpinner(false);
-        }
+        setShowSpinner(false);
+        console.log(data);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -84,7 +83,7 @@ const IndexPage = () => {
                             </tr>
                             </thead>
                             {
-                              applications !== null &&
+                              applications !== null && applications.length > 0 ?
                               <tbody>
                               {
                                 applications.map((row) => (
@@ -95,7 +94,14 @@ const IndexPage = () => {
                                   </tr>
                                 ))
                               }
-                              </tbody>
+                                </tbody> :
+                                <tbody>
+                                      <tr>
+                                    <td>No results found</td>
+                                    <td></td>
+                                    <td></td>
+                                  </tr>
+                                </tbody>
                             }
                           </table>
                         </div>
