@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "gatsby"
 import Layout from "../../components/common/layout";
 import { useUrlContext } from "../../context/urlContext";
+import Modal from "../../components/common/modal";
 
 const IndexPage = () => {
   const context = useUrlContext();
@@ -34,6 +35,9 @@ const IndexPage = () => {
     getSources();
   }, []);
 
+  let modalContent = () => <>
+    Test
+    </>
 
   return (
     <Layout title={"Sources"} subtext={"An overview of your Source objects"}>
@@ -50,10 +54,11 @@ const IndexPage = () => {
                     <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Sources</h4>
                   </div>
                   <div className="col-6 text-right">
-                    <a class="utrecht-link">
+                    <Modal id="helpModal" hideButton={true} content={modalContent} />
+                    <button class="utrecht-link button-no-style" data-toggle="modal" data-target={"#helpModal"}>
                       <i className="fas fa-question mr-1"></i>
                       <span className="mr-2">Help</span>
-                    </a>
+                    </button>
                     <a class="utrecht-link" onClick={getSources}>
                       <i className="fas fa-sync-alt mr-1"></i>
                       <span className="mr-2">Refresh</span>
@@ -69,7 +74,7 @@ const IndexPage = () => {
                   <div className="col-12">
                     {
                       showSpinner == true ?
-                    <div className="text-center pt-5">
+                    <div className="text-center px-5">
                       <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
                         <span class="sr-only">Loading...</span>
                       </div>
@@ -85,7 +90,7 @@ const IndexPage = () => {
                           </tr>
                         </thead>
                         {
-                          sources !== null &&
+                          sources !== null && sources.length > 0 ?
                             <tbody>
                               {
                                 sources.map((row) => (
@@ -96,6 +101,14 @@ const IndexPage = () => {
                                   </tr>
                                 ))
                               }
+                              </tbody> :
+                            <tbody>
+                              <tr>
+                                <td>No results found</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
                             </tbody>
                          }
                       </table>

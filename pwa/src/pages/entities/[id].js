@@ -2,6 +2,7 @@ import * as React from "react"
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
+import DataTable from "../../components/entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
 import {Link} from "gatsby";
@@ -15,7 +16,7 @@ const IndexPage = (props) => {
           <div className="col-12">
 
             <div className="page-top-item">
-              <Tabs items={[{name: 'main', id: 'main', active: true}, {name: 'attributes', id: 'attributes'}, {name: 'data', id: 'data'}]}/>
+              <Tabs items={[{name: 'Main', id: 'main', active: true}, {name: 'Attributes', id: 'attributes'}, {name: 'Data', id: 'data'}, {name: 'Logs', id: 'logs'}]}/>
             </div>
 
             <div className="tab-content">
@@ -31,6 +32,9 @@ const IndexPage = (props) => {
                 <AttributeTable/>
               </div>
               <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab"><br/>
+                <DataTable/>
+              </div>
+              <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="data-tab"><br/>
                 <LogsTable/>
               </div>
             </div>

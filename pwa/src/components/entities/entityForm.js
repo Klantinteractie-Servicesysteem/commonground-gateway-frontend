@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useUrlContext} from "../../context/urlContext";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import { Link } from "gatsby"
 
 export default function EntityForm({id}) {
   const context = useUrlContext();
@@ -85,51 +86,77 @@ export default function EntityForm({id}) {
   }, []);
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <div className="row">
+    <div className="utrecht-card card">
+      <form id="dataForm" onSubmit={saveEntity} >
 
-          {showSpinner === false ?
-            <form id="dataForm" onSubmit={saveEntity}>
-              <div className="col-12">
-                <button className="utrecht-button float-right" type="submit">Save</button>
-              </div>
-              <div className="col-6">
-                <label htmlFor="nameInput">Name</label>
-                {
-                  entity !== null && entity.name !== null ?
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"
-                           defaultValue={entity.name}/> :
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput"/>
-                }
-              </div>
-              <br/>
-              <div className="col-6">
-                <label htmlFor="endpointInput">Endpoint</label>
-                {
-                  entity !== null && entity.endpoint !== null ?
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"
-                           defaultValue={entity.endpoint}/> :
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput"/>
-                }
-              </div>
-              <br/>
-              <div className="col-6">
-                <label htmlFor="descriptionInput">Description</label>
-                {
-                  entity !== null && entity.description !== null ?
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
-                           id="descriptionInput"
-                           defaultValue={entity.description}/> :
-                    <input className="utrecht-textbox utrecht-textbox--html-input" name="description"
-                           id="descriptionInput"/>
-                }
-              </div>
-            </form> :
-            <p className="utrecht-paragraph">Saving..</p>
-          }
+      <div className="utrecht-card-header card-header">
+        <div className="utrecht-card-head-row card-head-row row">
+          <div className="col-6">
+            <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Values</h4>
+          </div>
+          <div className="col-6 text-right">
+            <Link className="utrecht-link" to="/entities">
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2"><i className="fas fa-long-arrow-alt-left mr-2"></i>Back</button>
+            </Link>
+            <a className="utrecht-link" onClick={saveEntity}>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-save mr-2"></i>Save</button>
+            </a>
+          </div>
         </div>
       </div>
+      <div className="utrecht-card-body card-body">
+        <div className="row">
+          <div className="col-12">
+            {
+              showSpinner == true ?
+                <div className="text-center py-5">
+                  <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                  </div> :
+                  <>
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="form-group">
+                        <span className="utrecht-form-label mb-2">Name *</span>
+                        {
+                          entity !== null && entity.name !== null ?
+                            <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" defaultValue={entity.name} required /> :
+                            <input className="utrecht-textbox utrecht-textbox--html-input" name="name" id="nameInput" required />
+                        }
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="form-group">
+                        <span className="utrecht-form-label">Endpoint</span>
+                        {
+                          entity !== null && entity.endpoint !== null ?
+                              <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput" defaultValue={entity.endpoint} required /> :
+                              <input className="utrecht-textbox utrecht-textbox--html-input" name="endpoint" id="endpointInput" required />
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group">
+                        <span className="utrecht-form-label">Description</span>
+                        {
+                          entity !== null && entity.description !== null ?
+                              <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput" defaultValue={entity.description} /> :
+                              <input className="utrecht-textbox utrecht-textbox--html-input" name="description" id="descriptionInput" />
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </>
+            }
+          </div>
+        </div>
+        </div>
+      </form>
+
+
     </div>
   );
 }
