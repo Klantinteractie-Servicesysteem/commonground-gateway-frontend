@@ -5,7 +5,7 @@ export default function Modal({ id = 'firstModal', title = "ModalTitle", hideBut
   return (
     <>
       {
-        hideButton == false &&
+        hideButton === false &&
         < button type="button" class="btn btn-primary" data-toggle="modal" data-target={"#" + id}>
           Launch demo modal
         </button>
@@ -25,7 +25,7 @@ export default function Modal({ id = 'firstModal', title = "ModalTitle", hideBut
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               {
-                save == true &&
+                save === true &&
                 <button type="button" class="btn btn-primary">Save changes</button>
               }
             </div>

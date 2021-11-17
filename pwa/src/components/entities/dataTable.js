@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { Link } from "gatsby"
 
-export default function DataTable() {
+export default function DataTable({id}) {
   const [data, setData] = React.useState(null);
   const context = useUrlContext();
 
@@ -11,7 +11,7 @@ export default function DataTable() {
 
   const getData = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + '/object_entities', {
+    fetch(context.apiUrl + '/object_entities/' + id, {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
@@ -33,7 +33,7 @@ export default function DataTable() {
 
   useEffect(() => {
       getData();
-  }, []);
+  });
 
   return (
     <div className="utrecht-card card">
@@ -48,13 +48,13 @@ export default function DataTable() {
               <i className="fas fa-question mr-1"></i>
               <span className="mr-2">Help</span>
             </button>
-            <a class="utrecht-link" onClick={getData}>
+            <button class="utrecht-link button-no-style" onClick={getData}>
               <i className="fas fa-sync-alt mr-1"></i>
               <span className="mr-2">Refresh</span>
-            </a>
-            {/*<Link to="/object_entities/new">*/}
-            {/*  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>*/}
-            {/*</Link>*/}
+            </button>
+            <Link to="/object_entities/new">
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i className="fas fa-plus mr-2"></i>Add</button>
+            </Link>
           </div>
         </div>
       </div>
