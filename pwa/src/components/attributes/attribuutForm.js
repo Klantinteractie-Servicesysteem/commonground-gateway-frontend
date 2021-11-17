@@ -30,9 +30,9 @@ export default function AttributeForm({id}) {
   }
 
   const saveAttribute = (event) => {
-    console.log('hallooooo')
     event.preventDefault();
 
+    // get the inputs and check if set other set null
     let body = {
       name: event.target.name.value,
       description: event.target.description.value ? event.target.description.value : null,
@@ -66,13 +66,12 @@ export default function AttributeForm({id}) {
       // requiredIf: event.target.requiredIf.value ? event.target.requiredIf.value : null,
     }
 
+    // gets the inputs when there are set
     body = Object.fromEntries(Object.entries(body).filter(([_, v]) => v != null));
 
-    // if (!checkInputs([body.name, body.type])) {
-    //   return;
-    // }
-    console.log(body);
-    return;
+    if (!checkInputs([body.name, body.type])) {
+      return;
+    }
 
     setShowSpinner(true);
 
@@ -85,9 +84,6 @@ export default function AttributeForm({id}) {
       method = 'PUT';
     }
 
-    // console.log(method)
-    // console.log(body)
-    // return;
     fetch(url, {
       method: method,
       credentials: 'include',
@@ -248,16 +244,16 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.persistToGateway !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="persistToGateway" name="true" checked/>
+                        <input type="radio" id="persistToGatewayInput" name="persistToGateway" checked/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="persistToGateway" name="false"/>
+                        <input type="radio" id="persistToGatewayInput" name="persistToGateway"/>
                       </div>
                       :
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="persistToGateway" name="true"/>
+                        <input type="radio" id="persistToGatewayInput" name="persistToGateway"/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="persistToGateway" name="false"/>
+                        <input type="radio" id="persistToGatewayInput" name="persistToGateway"/>
                       </div>
                   }
                 </div>
@@ -266,16 +262,16 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.cascade !== null ?
                       <div className="utrecht-html">
-                        <label htmlFor="true">True</label>
-                        <input type="radio" id="cascadeInput" name="true" checked/>
-                        <label htmlFor="false">False</label>
-                        <input type="radio" id="cascadeInput" name="false"/>
+                        <label htmlFor="radio">True</label>
+                        <input type="radio" id="cascadeInput" name="cascade" checked/>
+                        <label htmlFor="radio">False</label>
+                        <input type="radio" id="cascadeInput" name="cascade"/>
                       </div> :
                       <div className="utrecht-html">
-                        <label htmlFor="true">True</label>
-                        <input type="radio" id="cascadeInput" name="true"/>
-                        <label htmlFor="false">False</label>
-                        <input type="radio" id="cascadeInput" name="false"/>
+                        <label htmlFor="radio">True</label>
+                        <input type="radio" id="cascadeInput" name="cascade"/>
+                        <label htmlFor="radio">False</label>
+                        <input type="radio" id="cascadeInput" name="cascade"/>
                       </div>
                   }
                 </div>
@@ -288,15 +284,15 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.searchable !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="searchableInput" name="true" checked/>
+                        <input type="radio" id="searchableInput" name="searchable" checked/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="searchableInput" name="false"/>
+                        <input type="radio" id="searchableInput" name="searchable"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="searchableInput" name="true"/>
+                        <input type="radio" id="searchableInput" name="searchable"/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="searchableInput" name="false"/>
+                        <input type="radio" id="searchableInput" name="searchable"/>
                       </div>
                   }
                 </div>
@@ -314,15 +310,15 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.required !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="requiredInput" name="true" checked/>
+                        <input type="radio" id="requiredInput" name="required" checked value="true"/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="requiredInput" name="false"/>
+                        <input type="radio" id="requiredInput" name="required" value="false"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="radio">True</label>
-                        <input type="radio" id="requiredInput" name="true"/>
+                        <input type="radio" id="requiredInput" name="required" value="true"/>
                         <label htmlFor="radio">False</label>
-                        <input type="radio" id="requiredInput" name="false"/>
+                        <input type="radio" id="requiredInput" name="required" value="false"/>
                       </div>
                   }
                 </div>
@@ -331,16 +327,16 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.mustBeUnique !== null ?
                       <div className="utrecht-html">
-                        <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="mustBeUniqueInput" checked/>
+                        <label htmlFor="radio">True</label>
+                        <input type="radio" id="mustBeUniqueInput" name="mustBeUnique" checked value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="mustBeUniqueInput"/>
+                        <input type="radio" id="mustBeUniqueInput" name="mustBeUnique" value="false"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="mustBeUniqueInput"/>
+                        <input type="radio" id="mustBeUniqueInput" name="mustBeUnique" value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="mustBeUniqueInput"/>
+                        <input type="radio" id="mustBeUniqueInput" name="mustBeUnique" value="false"/>
                       </div>}
                 </div>
               </div>
@@ -361,9 +357,9 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.multipleOf !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="multipleOf"
                              id="multipleOfInput"
-                             defaultValue={attribute.multipleOf}/> :
+                             defaultValue={attribute.multipleOf} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="multipleOf"
-                             id="multipleOfInput"/>
+                             id="multipleOfInput" type="number"/>
                   }
                 </div>
               </div>
@@ -374,8 +370,8 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.maximum !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="maximum" id="maximumInput"
-                             defaultValue={attribute.maximum}/> :
-                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maximum" id="maximumInput"/>
+                             defaultValue={attribute.maximum} type="number"/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="maximum" id="maximumInput" type="number"/>
                   }
                 </div>
                 <div className="col-6">
@@ -383,8 +379,8 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.minimum !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minimum" id="minimumInput"
-                             defaultValue={attribute.minimum}/> :
-                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minimum" id="minimumInput"/>
+                             defaultValue={attribute.minimum} type="number"/> :
+                      <input className="utrecht-textbox utrecht-textbox--html-input" name="minimum" id="minimumInput" type="number"/>
                   }
                 </div>
               </div>
@@ -396,15 +392,15 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.exclusiveMaximum !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="exclusiveMaximumInput" name="true" checked/>
+                        <input type="radio" id="exclusiveMaximumInput" name="exclusiveMaximum" checked value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="exclusiveMaximumInput" name="false"/>
+                        <input type="radio" id="exclusiveMaximumInput" name="exclusiveMaximum" value="false"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="exclusiveMaximumInput" name="true"/>
+                        <input type="radio" id="exclusiveMaximumInput" name="exclusiveMaximum" value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="exclusiveMaximumInput" name="false"/>
+                        <input type="radio" id="exclusiveMaximumInput" name="exclusiveMaximum" value="false"/>
                       </div>
                   }
                 </div>
@@ -414,15 +410,15 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.exclusiveMinimum !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="exclusiveMinimumInput" checked/>
+                        <input type="radio" id="exclusiveMinimumInput" name="exclusiveMinimum" checked value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="exclusiveMinimumInput"/>
+                        <input type="radio" id="exclusiveMinimumInput" name="exclusiveMinimum" value="false"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="exclusiveMinimumInput"/>
+                        <input type="radio" id="exclusiveMinimumInput" name="exclusiveMinimum" value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="exclusiveMinimumInput"/>
+                        <input type="radio" id="exclusiveMinimumInput" name="exclusiveMinimum" value="false"/>
                       </div>}
                 </div>
               </div>
@@ -434,9 +430,9 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.maxLength !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="maxLength"
                              id="maxLengthInput"
-                             defaultValue={attribute.maxLength}/> :
+                             defaultValue={attribute.maxLength} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="maxLength"
-                             id="maxLengthInput"/>
+                             id="maxLengthInput" type="number"/>
                   }
                 </div>
                 <div className="col-6">
@@ -445,9 +441,9 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.minLength !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minLength"
                              id="minLengthInput"
-                             defaultValue={attribute.minLength}/> :
+                             defaultValue={attribute.minLength} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minLength"
-                             id="minLengthInput"/>
+                             id="minLengthInput" type="number"/>
                   }
                 </div>
               </div>
@@ -458,9 +454,9 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.maxItems !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="maxItems" id="maxItemsInput"
-                             defaultValue={attribute.maxItems}/> :
+                             defaultValue={attribute.maxItems} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="maxItems"
-                             id="maxItemsInput"/>
+                             id="maxItemsInput" type="number"/>
                   }
                 </div>
                 <div className="col-6">
@@ -468,9 +464,9 @@ export default function AttributeForm({id}) {
                   {
                     attribute !== null && attribute.minItems !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minItems" id="minItemsInput"
-                             defaultValue={attribute.minItems}/> :
+                             defaultValue={attribute.minItems} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minItems"
-                             id="minItemsInput"/>
+                             id="minItemsInput" type="number"/>
                   }
                 </div>
               </div>
@@ -503,15 +499,15 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.uniqueItems !== null ?
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="uniqueItemsInput" checked/>
+                        <input type="radio" id="uniqueItemsInput" name="uniqueItems" checked value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="uniqueItemsInput"/>
+                        <input type="radio" id="uniqueItemsInput" name="uniqueItems" value="false"/>
                       </div> :
                       <div className="utrecht-html">
                         <label htmlFor="true">True</label>
-                        <input type="radio" id="false" name="uniqueItemsInput"/>
+                        <input type="radio" id="uniqueItemsInput" name="uniqueItems" value="true"/>
                         <label htmlFor="false">False</label>
-                        <input type="radio" id="true" name="uniqueItemsInput"/>
+                        <input type="radio" id="uniqueItemsInput" name="uniqueItems" value="false"/>
                       </div>}
                 </div>
                 <div className="col-6">
@@ -520,9 +516,9 @@ export default function AttributeForm({id}) {
                     attribute !== null && attribute.minProperties !== null ?
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minProperties"
                              id="minPropertiesInput"
-                             defaultValue={attribute.minProperties}/> :
+                             defaultValue={attribute.minProperties} type="number"/> :
                       <input className="utrecht-textbox utrecht-textbox--html-input" name="minProperties"
-                             id="minPropertiesInput"/>
+                             id="minPropertiesInput" type="number"/>
                   }
                 </div>
               </div>
