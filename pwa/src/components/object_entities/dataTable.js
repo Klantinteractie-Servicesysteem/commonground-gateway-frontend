@@ -23,6 +23,7 @@ export default function DataTable({id}) {
         }
       })
       .then((data) => {
+        console.log(data)
         setData(data['hydra:member']);
         setShowSpinner(false);
       })

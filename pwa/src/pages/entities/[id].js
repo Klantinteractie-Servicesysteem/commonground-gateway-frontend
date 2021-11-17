@@ -2,7 +2,7 @@ import * as React from "react"
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import LogsTable from "../../components/entities/logsTable";
-import DataTable from "../../components/entities/dataTable";
+import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
 import {Link} from "gatsby";
