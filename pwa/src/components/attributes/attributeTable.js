@@ -7,7 +7,7 @@ import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 
 
-export default function AttributeTable() {
+export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
   const context = useUrlContext();
   const [showSpinner, setShowSpinner] = useState(false);
@@ -43,7 +43,7 @@ export default function AttributeTable() {
 
   return (
     <div className="utrecht-card card">
-      <CardHeader items={[{title: 'Attributes', modal: '#helpModal', refresh: {getAttributes}, add: '/attributes/new'}]}/>
+      <CardHeader items={[{title: 'Attributes', modal: '#helpModal', refresh: {getAttributes}, add: '/attributes/new', entityId: id}]}/>
       <div className="utrecht-card-body card-body">
         <div className="row">
           <div className="col-12">

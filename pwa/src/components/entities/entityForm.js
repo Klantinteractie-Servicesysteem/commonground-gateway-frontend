@@ -1,15 +1,14 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
-import { useEffect, useState } from "react";
 import { Link } from "gatsby"
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
   const [entity, setEntity] = React.useState(null);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [showSpinner, setShowSpinner] = React.useState(false);
 
   const getEntity = () => {
-    fetch(context.apiUrl + "/entities/" + id, {
+    fetch(`${context.apiUrl}/entities/${id}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -26,7 +25,6 @@ export default function EntityForm({ id }) {
         valid = false;
       }
     }
-
     return valid;
   }
 
@@ -43,7 +41,6 @@ export default function EntityForm({ id }) {
     event.preventDefault();
     setShowSpinner(true);
 
-
     let body = {
       name: event.target.name.value,
       description: event.target.description.value ? event.target.description.value : null,
@@ -52,12 +49,6 @@ export default function EntityForm({ id }) {
       gateway: event.target.gateway.value,
     }
 
-    //if (event.target.extend.checked === true) {
-    //  body.extend = true;
-    //} else {
-    //  body.extend = false;
-    //}
-
     // This removes empty values from the body
     body = removeEmptyValues(body);
 
@@ -65,15 +56,16 @@ export default function EntityForm({ id }) {
       return;
     }
 
+    setShowSpinner(true);
+
     let url = context.apiUrl + '/entities';
     let method = null;
     if (id === 'new') {
       method = 'POST';
     } else {
-      url = url + '/' + id;
+      url = `${url}/${id}`;
       method = 'PUT';
     }
-
 
     fetch(url, {
       method: method,
@@ -83,16 +75,17 @@ export default function EntityForm({ id }) {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log('Saved entity:', data);
         setEntity(data);
         setShowSpinner(false);
+        this.props.history.push('/entities')
       })
       .catch((error) => {
         console.error('Error:', error);
       });
+
   }
 
-  const [sources, setSources] = useState(null);
+  const [sources, setSources] = React.useState(null);
   const getSources = () => {
     fetch(context.apiUrl + "/gateways", {
       credentials: 'include',
@@ -109,7 +102,7 @@ export default function EntityForm({ id }) {
       });
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     getSources();
     if (id !== "new") {
       getEntity();
@@ -119,7 +112,6 @@ export default function EntityForm({ id }) {
   return (
     <div className="utrecht-card card">
       <form id="dataForm" onSubmit={saveEntity} >
-
         <div className="utrecht-card-header card-header">
           <div className="utrecht-card-head-row card-head-row row">
             <div className="col-6">
@@ -137,7 +129,7 @@ export default function EntityForm({ id }) {
           <div className="row">
             <div className="col-12">
               {
-                showSpinner == true ?
+                showSpinner === true ?
                   <div className="text-center py-5">
                     <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
                       <span class="sr-only">Loading...</span>
@@ -215,8 +207,6 @@ export default function EntityForm({ id }) {
           </div>
         </div>
       </form>
-
-
     </div>
   );
 }
