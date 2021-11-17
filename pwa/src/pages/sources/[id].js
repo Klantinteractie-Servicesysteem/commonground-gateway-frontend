@@ -20,6 +20,7 @@ const IndexPage = (props) => {
       .then(response => response.json())
       .then((data) => {
         setSource(data);
+        setTitle(data.name);
       });
   }
 
