@@ -1,5 +1,8 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
+import CardHeader from "../cardHeader";
+import TableHeaders from "../common/tableHeaders";
+import TableCells from "../common/tableCells";
 
 export default function LogsTable({ id }) {
   const [logs, setLogs] = React.useState(null);
@@ -34,92 +37,36 @@ export default function LogsTable({ id }) {
 
   return (
     <div className="utrecht-card card">
-      <div className="utrecht-card-header card-header">
-        <div className="utrecht-card-head-row card-head-row row">
-          <div className="col-6">
-            <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">
-              Logs{" "}
-            </h4>
-          </div>
-          <div className="col-6 text-right">
-            <button
-              class="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target={"#helpModal"}
-            >
-              <i className="fas fa-question mr-1"></i>
-              <span className="mr-2">Help</span>
-            </button>
-            <button class="utrecht-link button-no-style" onClick={getLogs}>
-              <i className="fas fa-sync-alt mr-1"></i>
-              <span className="mr-2">Refresh</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <CardHeader items={[{title: 'Logs', modal: '#helpModal', refresh: {getLogs}, link: null}]}/>
       <div className="utrecht-card-body card-body">
         <div className="row">
           <div className="col-12">
-            {showSpinner === true ? (
-              <div className="text-center px-5">
-                <div
-                  class="spinner-border text-primary"
-                  style={{ width: "3rem", height: "3rem" }}
-                  role="status"
-                >
-                  <span class="sr-only">Loading...</span>
+            {
+              showSpinner === true ?
+                <div className="text-center px-5">
+                  <div className="spinner-border text-primary" style={{width: "3rem", height: "3rem"}} role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div> :
+                <div className="utrecht-html">
+                  <table lang="nl" summary="Overview of object entities fetched from the gateway." className="table">
+                    <TableHeaders headerItems={[{
+                      name: 'Action'
+                    }, {name: 'ObjectId'}, {name: 'Version'}, {name: 'Data'}, {name: 'Username'}, {name: 'Session'}, {name: ''}]}/>
+                    <tbody>
+                    {
+                      logs !== null && logs.length > 0 ?
+                          logs.map((row) => (
+                            <TableCells
+                              cellItems={[{name: row.action}, {name: row.objectId}, {name: row.version}, {name: row.username}, {name: row.session}, {name: 'button', link: `/entities/${row.id}`}]}/>
+                          ))
+                        :
+                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}, {name: ''}, {name: ''}, {name: ''}]}/>
+                    }
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-            ) : (
-              <div className="utrecht-html">
-                <table
-                  lang="nl"
-                  summary="Overview of object entities fetched from the gateway."
-                  className="table"
-                >
-                  {/*<caption></caption>*/}
-                  <thead>
-                    <tr>
-                      <th scope="col">Action</th>
-                      {/*<th scope="col">ObjectId</th>*/}
-                      {/*<th scope="col">ObjectClass</th>*/}
-                      <th scope="col">Version</th>
-                      <th scope="col">Data</th>
-                      <th scope="col">Username</th>
-                      <th scope="col">Session</th>
-                      {/*<th scope="col">Date created</th>*/}
-                      {/*<th scope="col">Date modified</th>*/}
-                    </tr>
-                  </thead>
-                  {logs !== null && logs.length > 0 ? (
-                    <tbody>
-                      {logs.map((row) => (
-                        <tr>
-                          <td>{row.action}</td>
-                          {/*<td>{row.objectId}</td>*/}
-                          {/*<td>{row.objectClass}</td>*/}
-                          <td>{row.version}</td>
-                          <td>{row.data}</td>
-                          <td>{row.username}</td>
-                          <td>{row.session}</td>
-                          {/*<td>{row.dateCreated}</td>*/}
-                          {/*<td>{row.dateModified}</td>*/}
-                        </tr>
-                      ))}
-                    </tbody>
-                  ) : (
-                    <tbody>
-                      <tr>
-                        <td>No results found</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  )}
-                </table>
-              </div>
-            )}
+            }
           </div>
         </div>
       </div>
