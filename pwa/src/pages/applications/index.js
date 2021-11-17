@@ -13,7 +13,7 @@ const IndexPage = () => {
 
   const getApplications = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/Application.php/", {
+    fetch(context.apiUrl + "/applications/", {
       credentials: 'include',
       headers: { 'Content-Type': 'applications/json' },
     })

@@ -13,7 +13,7 @@ const IndexPage = (props) => {
   const [title, setTitle] = useState("Application");
 
   const getApplication = () => {
-    fetch(context.apiUrl + "/Application.php/" + id, {
+    fetch(context.apiUrl + "/applications/" + id, {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
