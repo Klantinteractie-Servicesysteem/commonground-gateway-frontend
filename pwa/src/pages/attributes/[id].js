@@ -3,13 +3,13 @@ import Layout from "../../components/common/layout";
 import AttributeForm from "../../components/attributes/attribuutForm";
 
 
-const IndexPage = () => {
+const IndexPage = (props) => {
   return (
     <Layout>
       <main>
         <div className="row">
           <div className="col-12">
-            <AttributeForm/>
+            <AttributeForm id={props.params.id}/>
           </div>
         </div>
       </main>

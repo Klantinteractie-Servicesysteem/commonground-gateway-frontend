@@ -1,12 +1,12 @@
 import * as React from "react";
 import {useUrlContext} from "../../context/urlContext";
 import {useEffect} from "react";
+import {Link} from "gatsby";
 
 
 export default function AttributeTable() {
   const [attributes, setAttributes] = React.useState(null);
   const context = useUrlContext();
-
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -54,7 +54,7 @@ export default function AttributeTable() {
                 <tr>
                   <td>{row.name}</td>
                   <td>{row.type}</td>
-                  <td><a className="utrecht-link utrecht-link--hover" href={"/attributes/" + row.id}>Bekijken</a></td>
+                  <td className="text-right"><Link to={"/attributes/" + row.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                 </tr>
               ))
             }
