@@ -1,7 +1,6 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
 import EntitiesTable from "../../components/entities/entitiesTable";
-import {Link} from "gatsby";
 
 const IndexPage = () => {
   return (

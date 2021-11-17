@@ -32,10 +32,10 @@ const IndexPage = (props) => {
                 <AttributeTable/>
               </div>
               <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab"><br/>
-                <DataTable/>
+                <DataTable id={props.params.id}/>
               </div>
               <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="data-tab"><br/>
-                <LogsTable/>
+                <LogsTable id={props.params.id}/>
               </div>
             </div>
           </div>
