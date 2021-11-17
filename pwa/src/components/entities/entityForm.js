@@ -34,12 +34,14 @@ export default function EntityForm({id}) {
 
     event.preventDefault();
 
+    // get the inputs and check if set other set null
     let body = {
       name: event.target.name.value,
       endpoint: event.target.endpoint.value,
       description: event.target.description.value ? event.target.description.value : null,
     }
 
+    // gets the inputs when there are set
     body = Object.fromEntries(Object.entries(body).filter(([_, v]) => v != null));
 
     if (!checkInputs([body.name, body.endpoint])) {
@@ -56,11 +58,6 @@ export default function EntityForm({id}) {
       url = url + '/' + id;
       method = 'PUT';
     }
-
-    console.log(body);
-    console.log(method);
-    console.log(id);
-    return;
 
     fetch(url, {
       method: method,
