@@ -41,7 +41,7 @@ export default function Table({ title = "table", helpLink = null, refresh = null
             <div className="col-12">
               {
                 showSpinner == true ?
-                  <div className="text-center pt-5">
+                  <div className="text-center px-5">
                     <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
                       <span class="sr-only">Loading...</span>
                     </div>
