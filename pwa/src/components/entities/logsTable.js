@@ -8,7 +8,7 @@ export default function LogsTable({ id }) {
 
   const getLogs = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/request_logs/" + id, {
+    fetch(`${context.apiUrl}/request_logs/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
