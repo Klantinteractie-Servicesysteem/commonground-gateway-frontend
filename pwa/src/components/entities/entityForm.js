@@ -66,6 +66,8 @@ export default function EntityForm({ id }) {
 
     // retrieve arrays
     let transformations = retrieveArray(event.target, "transformations");
+    let translationConfig = retrieveArray(event.target, "translationConfig");
+    let collectionConfig = retrieveArray(event.target, "collectionConfig");
 
     console.log(transformations);
 
@@ -83,6 +85,18 @@ export default function EntityForm({ id }) {
       body["transformations"] = transformations;
     } else {
       body["transformations"] = [];
+    }
+
+    if (Object.keys(translationConfig).length != 0) {
+      body["translationConfig"] = translationConfig;
+    } else {
+      body["translationConfig"] = [];
+    }
+
+    if (Object.keys(collectionConfig).length != 0) {
+      body["collectionConfig"] = collectionConfig;
+    } else {
+      body["collectionConfig"] = [];
     }
 
     // This removes empty values from the body
@@ -364,11 +378,11 @@ export default function EntityForm({ id }) {
                         id="transformationsAccordion"
                       >
                         <button
-                          class="accordion-button"
+                          class="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target="#transformationsCollapse"
-                          aria-expanded="true"
+                          aria-expanded="false"
                           aria-controls="transformationsCollapse"
                         >
                           Transformations
@@ -376,7 +390,7 @@ export default function EntityForm({ id }) {
                       </h2>
                       <div
                         id="transformationsCollapse"
-                        class="accordion-collapse collapse show"
+                        class="accordion-collapse collapse"
                         aria-labelledby="transformationsAccordion"
                         data-bs-parent="#entityAccordion"
                       >
@@ -387,6 +401,70 @@ export default function EntityForm({ id }) {
                                 entity.transformations
                               )
                             : multiDimensionalArrayInput("transformations")}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2
+                        class="accordion-header"
+                        id="translationConfigAccordion"
+                      >
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#translationConfigCollapse"
+                          aria-expanded="false"
+                          aria-controls="translationConfigCollapse"
+                        >
+                          Translation Config
+                        </button>
+                      </h2>
+                      <div
+                        id="translationConfigCollapse"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="translationConfigAccordion"
+                        data-bs-parent="#entityAccordion"
+                      >
+                        <div class="accordion-body">
+                          {entity !== null
+                            ? multiDimensionalArrayInput(
+                                "translationConfig",
+                                entity.translationConfig
+                              )
+                            : multiDimensionalArrayInput("translationConfig")}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2
+                        class="accordion-header"
+                        id="collectionConfigAccordion"
+                      >
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#collectionConfigCollapse"
+                          aria-expanded="false"
+                          aria-controls="collectionConfigCollapse"
+                        >
+                          Collection Config
+                        </button>
+                      </h2>
+                      <div
+                        id="collectionConfigCollapse"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="collectionConfigAccordion"
+                        data-bs-parent="#entityAccordion"
+                      >
+                        <div class="accordion-body">
+                          {entity !== null
+                            ? multiDimensionalArrayInput(
+                                "collectionConfig",
+                                entity.collectionConfig
+                              )
+                            : multiDimensionalArrayInput("collectionConfig")}
                         </div>
                       </div>
                     </div>
