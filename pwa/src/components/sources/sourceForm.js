@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { Link, navigate } from "gatsby";
-import { createElement } from "../utility/elementCreation";
+import { multiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -16,79 +16,8 @@ export default function SourceForm({ id }) {
       .then((response) => response.json())
       .then((data) => {
         setSource(data);
-        console.log(Object.entries(data.headers));
+        console.log(data);
       });
-  };
-
-  const addProperty = () => {
-    let key = document.getElementById("newKey");
-    let value = document.getElementById("newValue");
-    let form = document.getElementById("newInputs");
-
-    if (key.value.length == 0 || value.value.length == 0) {
-      return;
-    }
-
-    //create row
-    let formGroupRow = createElement("div", ["row", key.value]);
-
-    //set classNames for elements
-
-    // create input value
-    let formGroupColValue = createElement("div", ["col-5"]);
-    let formGroupValue = createElement("div", ["from-group"]);
-    let inputLabel = createElement(
-      "label",
-      ["utrecht-form-label"],
-      { for: value.value },
-      "",
-      key.value
-    );
-    let inputValue = createElement(
-      "input",
-      ["utrecht-textbox", "utrecht-textbox--html-input", "mb-2"],
-      { type: "text", id: value.value, name: `headers[${key.value}]` },
-      value.value
-    );
-
-    //create delete button
-    let formGroupButton = createElement("div", [
-      "col-2",
-      "d-flex",
-      "mt-auto",
-      "mb-3",
-    ]);
-    let deleteButton = createElement(
-      "button",
-      ["utrecht-button", "utrecht-button-sm", "btn-sm", "btn-danger"],
-      { type: "button" },
-      key.value,
-      "Delete",
-      deleteProperty
-    );
-
-    // adds the inputs in the div form-group
-    formGroupValue.appendChild(inputLabel);
-    formGroupValue.appendChild(inputValue);
-    // adds the elements in in the col
-    formGroupColValue.appendChild(formGroupValue);
-    formGroupButton.appendChild(deleteButton);
-    // adds the elements in the row
-    formGroupRow.appendChild(formGroupColValue);
-    formGroupRow.appendChild(formGroupButton);
-    // adds the row to the newInputs div
-    form.appendChild(formGroupRow);
-
-    key.value = "";
-    value.value = "";
-  };
-
-  const deleteProperty = (event) => {
-    let elements = document.getElementsByClassName(event.target.value);
-
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].remove();
-    }
   };
 
   const saveSource = (event) => {
@@ -612,75 +541,35 @@ export default function SourceForm({ id }) {
                         </select>
                       </div>
                     </div>
-                    <span className="utrecht-form-label">Headers</span>
-                    <div id={"newInputs"}>
-                      {source !== null &&
-                        Object.entries(source.headers).map(([key, value]) => {
-                          return (
-                            <div className={`row ${key}`}>
-                              <div className="col-5">
-                                <div className="form-group">
-                                  <label
-                                    htmlFor={value}
-                                    className="utrecht-form-label"
-                                  >
-                                    {key}
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="value"
-                                    name={`headers[${key}]`}
-                                    defaultValue={value}
-                                    className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-2 d-flex mt-auto mb-4">
-                                <button
-                                  value={key}
-                                  onClick={deleteProperty}
-                                  type="button"
-                                  className="utrecht-button utrecht-button-sm btn-sm btn-danger"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
-                    <br />
-                    <div className="separator-solid" />
-                    <h5>Add Headers</h5>
-                    <div className="d-flex">
-                      <div>
-                        <div className="form-group">
-                          <span className="utrecht-form-label">Key</span>
-                          <input
-                            type="text"
-                            id="newKey"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="form-group">
-                          <span className="utrecht-form-label">Value</span>
-                          <input
-                            type="text"
-                            id="newValue"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-2 my-auto">
-                        <button
-                          type={"button"}
-                          className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
-                          onClick={addProperty}
+                    <div class="accordion mt-4" id="sourceAccordion">
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="headersAccordion">
+                          <button
+                            class="accordion-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#headersCollapse"
+                            aria-expanded="true"
+                            aria-controls="headersCollapse"
+                          >
+                            Headers
+                          </button>
+                        </h2>
+                        <div
+                          id="headersCollapse"
+                          class="accordion-collapse collapse show"
+                          aria-labelledby="headersAccordion"
+                          data-bs-parent="#entityAccordion"
                         >
-                          Add
-                        </button>
+                          <div class="accordion-body">
+                            {source !== null
+                              ? multiDimensionalArrayInput(
+                                  "headers",
+                                  source.headers
+                                )
+                              : multiDimensionalArrayInput("headers")}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
