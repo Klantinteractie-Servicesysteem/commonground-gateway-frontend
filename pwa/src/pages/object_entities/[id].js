@@ -1,21 +1,19 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import SourceForm from "../../components/sources/sourceForm";
+import ObjectEntityForm from "../../components/object_entities/object_entityForm";
+
 
 const IndexPage = (props) => {
-  const [title] = React.useState("Source");
-
   return (
-     <Layout title={title} subtext={"Edit or add your source here"}>
+    <Layout>
       <main>
         <div className="row">
           <div className="col-12">
-            <SourceForm id={props.params.id}/>
+            <ObjectEntityForm id={props.params.id}/>
           </div>
         </div>
       </main>
     </Layout>
-
   )
 }
 

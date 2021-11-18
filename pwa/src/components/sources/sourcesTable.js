@@ -5,44 +5,36 @@ import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 import CardHeader from "../cardHeader";
 
-export default function EntitiesTable() {
-  const [entities, setEntities] = React.useState(null);
+export default function SourcesTable() {
   const context = useUrlContext();
+  const [sources, setSources] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const getEntities = () => {
+  const getSources = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + '/entities', {
+    fetch(context.apiUrl + "/gateways", {
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setEntities(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then(response => response.json())
       .then((data) => {
-        setEntities(data['hydra:member']);
-        setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
+          setSources(data['hydra:member']);
+          setShowSpinner(false);
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
-        setShowSpinner(false);
-        setEntities(null);
       });
   }
-  useEffect(() => {
-      getEntities();
-  }, []);
 
+  useEffect(() => {
+    getSources();
+  }, []);
 
   return (
     <div className="utrecht-card card">
-      <CardHeader items={[{title: 'Entities', modal: '#helpModal', refresh: {getEntities}, add: '/entities/new'}]}/>
+      <CardHeader items={[{title: 'Sources', modal: '#helpModal', refresh: {getSources}, add: '/sources/new'}]}/>
       <div className="utrecht-card-body card-body">
         <div className="row">
           <div className="col-12">
@@ -54,19 +46,22 @@ export default function EntitiesTable() {
                   </div>
                 </div> :
                 <div className="utrecht-html">
-                  <table lang="nl" summary="Overview of object entities fetched from the gateway." className="table">
+                  <table lang="nl" summary="Overview of sources fetched from the gateway." className="table">
                     <TableHeaders headerItems={[{
                       name: 'Name'
-                    }, {name: 'Endpoint'}, {name: 'Route'}, {name: 'Source'}, {name: ''}]}/>
+                    }, {name: 'Location'}, {name: ''}]}/>
                     <tbody>
                     {
-                      entities !== null && entities.length > 0 ?
-                        entities.map((row) => (
+                      sources !== null && sources.length > 0 ?
+                        sources.map((row) => (
                           <TableCells
-                            cellItems={[{name: row.name}, {name: row.endpoint}, {name: row.route}, {name: row.source}, {name: 'button', link: `/entities/${row.id}`}]}/>
+                            cellItems={[{name: row.name}, {name: row.location}, {
+                              name: 'button',
+                              link: `/sources/${row.id}`
+                            }]}/>
                         ))
                         :
-                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}, {name: ''} , {name: ''}]}/>
+                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}]}/>
                     }
                     </tbody>
                   </table>
@@ -76,5 +71,5 @@ export default function EntitiesTable() {
         </div>
       </div>
     </div>
-  );
+  )
 }
