@@ -1,17 +1,33 @@
-export const createElement = (tagName, value, type, className, onClick) => {
-  tagName = document.createElement(tagName);
-  tagName.setAttribute('type', type);
-  tagName.setAttribute('id', value);
-  tagName.setAttribute('name', value);
-  tagName.value = value;
+export const createElement = (
+  tagName,
+  className = [],
+  attributes = {},
+  value = "",
+  innerText = "",
+  onclick = null
+) => {
+  // create element
+  let element = document.createElement(tagName);
 
-  if (onClick !== null) {
-    tagName.setAttribute('onClick', onClick);
+  // set element value
+  element.value = value;
+
+  // set element inner text
+  element.innerText = innerText;
+
+  // add attributes to element
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value);
   }
 
+  // add classes to attribute
   for (let i = 0; i < className.length; i++) {
-    tagName.classList.add(className[i]);
+    element.classList.add(className[i]);
   }
 
-  return tagName;
-}
+  if (onclick !== null) {
+    element.addEventListener("click", onclick, false);
+  }
+
+  return element;
+};
