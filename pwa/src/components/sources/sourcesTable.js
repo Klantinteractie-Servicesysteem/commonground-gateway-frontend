@@ -7,38 +7,34 @@ import CardHeader from "../cardHeader";
 import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
 
-export default function EntitiesTable() {
-  const [entities, setEntities] = React.useState(null);
+export default function SourcesTable() {
   const context = useUrlContext();
+  const [sources, setSources] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const getEntities = () => {
+  const getSources = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/entities", {
+    fetch(context.apiUrl + "/gateways", {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setEntities(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
-        setEntities(data["hydra:member"]);
-        setShowSpinner(false);
+        if (
+          data["hydra:member"] !== undefined &&
+          data["hydra:member"] !== null
+        ) {
+          setSources(data["hydra:member"]);
+          setShowSpinner(false);
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setShowSpinner(false);
-        setEntities(null);
       });
   };
+
   useEffect(() => {
-    getEntities();
+    getSources();
   }, []);
 
   return (
@@ -46,10 +42,10 @@ export default function EntitiesTable() {
       <CardHeader
         items={[
           {
-            title: "Entities",
+            title: "Sources",
             modal: "#helpModal",
-            refresh: getEntities,
-            add: "/entities/new",
+            refresh: getSources,
+            add: "/sources/new",
           },
         ]}
       />
@@ -70,7 +66,7 @@ export default function EntitiesTable() {
               <div className="utrecht-html">
                 <table
                   lang="nl"
-                  summary="Overview of object entities fetched from the gateway."
+                  summary="Overview of sources fetched from the gateway."
                   className="table"
                 >
                   <TableHeaders
@@ -78,21 +74,17 @@ export default function EntitiesTable() {
                       {
                         name: "Name",
                       },
-                      { name: "Endpoint" },
-                      { name: "Route" },
-                      { name: "Source" },
+                      { name: "Location" },
                       { name: "" },
                     ]}
                   />
                   <tbody>
-                    {entities !== null && entities.length > 0 ? (
-                      entities.map((row) => (
+                    {sources !== null && sources.length > 0 ? (
+                      sources.map((row) => (
                         <TableCells
                           cellItems={[
                             { name: row.name },
-                            { name: row.endpoint },
-                            { name: row.route },
-                            { name: row.gateway.name },
+                            { name: row.location },
                             {
                               renderItem: () => {
                                 return (
@@ -100,7 +92,7 @@ export default function EntitiesTable() {
                                     <div className="d-flex">
                                       <Link
                                         className="ml-auto"
-                                        to={`/entities/${row.id}`}
+                                        to={`/sources/${row.id}`}
                                       >
                                         <button className="utrecht-button btn-sm btn-success">
                                           <i className="fas fa-edit pr-1"></i>
@@ -132,17 +124,15 @@ export default function EntitiesTable() {
                           { name: "No results found" },
                           { name: "" },
                           { name: "" },
-                          { name: "" },
-                          { name: "" },
                         ]}
                       />
                     )}
                   </tbody>
                 </table>
-                {entities !== null &&
-                  entities.map((item) => (
+                {sources !== null &&
+                  sources.map((item) => (
                     <>
-                      <DeleteModal data={item} useFunction={getEntities} />
+                      <DeleteModal data={item} useFunction={getSources} />
                     </>
                   ))}
               </div>
