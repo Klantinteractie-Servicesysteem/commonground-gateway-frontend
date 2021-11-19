@@ -8,7 +8,6 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { ArrayInput } from "../utility/ArrayInput";
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
