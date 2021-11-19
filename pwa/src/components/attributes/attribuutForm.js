@@ -1,15 +1,14 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { Link, navigate } from "gatsby";
-import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
-import { ArrayInput } from "../utility/ArrayInput";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-
+import { ArrayInputComponent } from "../utility/arrayInput";
+import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
 export default function AttributeForm({ id, entity }) {
   const context = useUrlContext();
   const [attribute, setAttribute] = React.useState(null);
@@ -1424,9 +1423,12 @@ export default function AttributeForm({ id, entity }) {
                       >
                         <div class="accordion-body">
                           {attribute !== null ? (
-                            <ArrayInput target={"enum"} data={attribute.enum} />
+                            <ArrayInputComponent
+                              target={"enum"}
+                              data={attribute.enum}
+                            />
                           ) : (
-                            <ArrayInput target={"enum"} />
+                            <ArrayInputComponent target={"enum"} />
                           )}
                         </div>
                       </div>

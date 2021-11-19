@@ -10,7 +10,7 @@ import { deleteElementFunction, addElement } from "./elementCreation";
  * @param {string|null} name Name used for the labels.
  * @returns Jsx of the generated form.
  */
-export const ArrayInput = ({ target, data = null, name = null }) => {
+export const ArrayInputComponent = ({ target, data = null, name = null }) => {
   const deleteElement = deleteElementFunction;
   return (
     <>
