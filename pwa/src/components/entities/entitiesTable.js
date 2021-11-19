@@ -4,6 +4,8 @@ import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 import CardHeader from "../cardHeader";
+import { Link } from "gatsby";
+import DeleteModal from "../modals/deleteModal";
 
 export default function EntitiesTable() {
   const [entities, setEntities] = React.useState(null);
@@ -91,7 +93,36 @@ export default function EntitiesTable() {
                             { name: row.endpoint },
                             { name: row.route },
                             { name: row.gateway.name },
-                            { name: "button", link: `/entities/${row.id}` },
+                            {
+                              renderItem: () => {
+                                return (
+                                  <>
+                                    <div className="d-flex">
+                                      <Link
+                                        className="ml-auto"
+                                        to={`/entities/${row.id}`}
+                                      >
+                                        <button className="utrecht-button btn-sm btn-success">
+                                          <i className="fas fa-edit pr-1"></i>
+                                          Edit
+                                        </button>
+                                      </Link>
+                                      <button
+                                        className="utrecht-button btn-sm btn-danger ml-2"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={`#item-${row.id.replaceAll(
+                                          "-",
+                                          ""
+                                        )}`}
+                                      >
+                                        <i className="fas fa-trash" />
+                                      </button>
+                                    </div>
+                                  </>
+                                );
+                              },
+                            },
                           ]}
                         />
                       ))
@@ -108,6 +139,12 @@ export default function EntitiesTable() {
                     )}
                   </tbody>
                 </table>
+                {entities !== null &&
+                  entities.map((item) => (
+                    <>
+                      <DeleteModal data={item} useFunction={getEntities} />
+                    </>
+                  ))}
               </div>
             )}
           </div>

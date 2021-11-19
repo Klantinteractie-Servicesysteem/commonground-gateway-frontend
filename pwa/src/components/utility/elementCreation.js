@@ -114,3 +114,17 @@ export const deleteElementFunction = (event) => {
     elements[i].remove();
   }
 };
+
+export const closeModal = (id) => {
+  let element = document.createElement("button");
+  let modal = document.getElementById("modalFooter" + id);
+
+  element.setAttribute("data-bs-dismiss", "modal");
+  element.style.display = "none";
+
+  modal.appendChild(element);
+
+  element.click();
+
+  modal.removeChild(element);
+};

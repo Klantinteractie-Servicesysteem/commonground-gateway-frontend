@@ -5,6 +5,7 @@ import { Link } from "gatsby";
 import CardHeader from "../cardHeader";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import DeleteModal from "../modals/deleteModal";
 
 export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
@@ -90,8 +91,34 @@ export default function AttributeTable({ id }) {
                             { name: row.name },
                             { name: row.type },
                             {
-                              name: "button",
-                              link: `/attributes/${row.id}/${id}`,
+                              renderItem: () => {
+                                return (
+                                  <>
+                                    <div className="d-flex">
+                                      <Link
+                                        className="ml-auto"
+                                        to={`/attributes/${row.id}/${id}`}
+                                      >
+                                        <button className="utrecht-button btn-sm btn-success">
+                                          <i className="fas fa-edit pr-1"></i>
+                                          Edit
+                                        </button>
+                                      </Link>
+                                      <button
+                                        className="utrecht-button btn-sm btn-danger ml-2"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={`#item-${row.id.replaceAll(
+                                          "-",
+                                          ""
+                                        )}`}
+                                      >
+                                        <i className="fas fa-trash" />
+                                      </button>
+                                    </div>
+                                  </>
+                                );
+                              },
                             },
                           ]}
                         />
@@ -107,6 +134,12 @@ export default function AttributeTable({ id }) {
                     )}
                   </tbody>
                 </table>
+                {attributes !== null &&
+                  attributes.map((item) => (
+                    <>
+                      <DeleteModal data={item} useFunction={getAttributes} />
+                    </>
+                  ))}
               </div>
             )}
           </div>
