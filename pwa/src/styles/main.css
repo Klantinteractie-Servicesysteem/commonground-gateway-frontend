@@ -223,4 +223,9 @@ a:hover {
     }
 }
 
+.button-no-style {
+    border: none !important;
+    background: inherit !important;
+}
+
 
