@@ -37,7 +37,8 @@ export const addElement = (
   newKey,
   newValue,
   inputName,
-  onClickFunction = null
+  onClickFunction = null,
+  label = true
 ) => {
   let key = document.getElementById(newKey);
   let value = document.getElementById(newValue);
@@ -55,13 +56,16 @@ export const addElement = (
   // create input value
   let formGroupColValue = createElement("div", ["col-5"]);
   let formGroupValue = createElement("div", ["from-group"]);
-  let inputLabel = createElement(
-    "label",
-    ["utrecht-form-label"],
-    { for: value.value },
-    "",
-    key.value
-  );
+  let inputLabel = null;
+  if (label) {
+    inputLabel = createElement(
+      "label",
+      ["utrecht-form-label"],
+      { for: value.value },
+      "",
+      key.value
+    );
+  }
   let inputValue = createElement(
     "input",
     ["utrecht-textbox", "utrecht-textbox--html-input", "mb-2"],
@@ -86,7 +90,9 @@ export const addElement = (
   );
 
   // adds the inputs in the div form-group
-  formGroupValue.appendChild(inputLabel);
+  if (inputLabel !== null) {
+    formGroupValue.appendChild(inputLabel);
+  }
   formGroupValue.appendChild(inputValue);
   // adds the elements in in the col
   formGroupColValue.appendChild(formGroupValue);

@@ -1,7 +1,11 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { Link, navigate } from "gatsby";
-import { multiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
+import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
+import {
+  removeEmptyObjectValues,
+  retrieveFormArrayAsObject,
+} from "../utility/inputHandler";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -25,20 +29,7 @@ export default function SourceForm({ id }) {
 
     event.preventDefault();
 
-    let headers = {};
-
-    for (let i = 0; i < event.target.length; i++) {
-      let target = event.target[i];
-
-      if (target.name.includes("headers")) {
-        headers[
-          target.name.substring(
-            target.name.indexOf("[") + 1,
-            target.name.lastIndexOf("]")
-          )
-        ] = target.value;
-      }
-    }
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
 
     let url = context.apiUrl + "/gateways";
     let method = "POST";
@@ -90,7 +81,7 @@ export default function SourceForm({ id }) {
       body["headers"] = [];
     }
 
-    body = removeEmptyValues(body);
+    body = removeEmptyObjectValues(body);
 
     fetch(url, {
       method: method,
@@ -107,18 +98,6 @@ export default function SourceForm({ id }) {
       .catch((error) => {
         console.error("Error:", error);
       });
-  };
-
-  const removeEmptyValues = (obj) => {
-    for (var propName in obj) {
-      if (
-        (obj[propName] === undefined || obj[propName] === "") &&
-        obj[propName] !== false
-      ) {
-        delete obj[propName];
-      }
-    }
-    return obj;
   };
 
   React.useEffect(() => {
@@ -562,12 +541,14 @@ export default function SourceForm({ id }) {
                           data-bs-parent="#entityAccordion"
                         >
                           <div class="accordion-body">
-                            {source !== null
-                              ? multiDimensionalArrayInput(
-                                  "headers",
-                                  source.headers
-                                )
-                              : multiDimensionalArrayInput("headers")}
+                            {source !== null ? (
+                              <MultiDimensionalArrayInput
+                                target={"headers"}
+                                data={source.headers}
+                              />
+                            ) : (
+                              <MultiDimensionalArrayInput target={"headers"} />
+                            )}
                           </div>
                         </div>
                       </div>

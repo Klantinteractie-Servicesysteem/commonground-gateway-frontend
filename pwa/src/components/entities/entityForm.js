@@ -1,7 +1,14 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { Link, navigate } from "gatsby";
-import { multiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
+import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject,
+} from "../utility/inputHandler";
+import { ArrayInput } from "../utility/ArrayInput";
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
@@ -19,57 +26,27 @@ export default function EntityForm({ id }) {
       });
   };
 
-  const checkInputs = (inputs) => {
-    let valid = true;
-    for (let i = 0; i < inputs.length; i++) {
-      if (inputs[i].length === 0) {
-        valid = false;
-      }
-    }
-    return valid;
-  };
-
-  const removeEmptyValues = (obj) => {
-    for (var propName in obj) {
-      if (
-        obj[propName] === undefined ||
-        (obj[propName] === null && obj[propName] !== false)
-      ) {
-        delete obj[propName];
-      }
-    }
-    return obj;
-  };
-
-  const retrieveArray = (array, type) => {
-    let result = {};
-
-    for (let i = 0; i < array.length; i++) {
-      let target = array[i];
-
-      if (target.name.includes(type)) {
-        result[
-          target.name.substring(
-            target.name.indexOf("[") + 1,
-            target.name.lastIndexOf("]")
-          )
-        ] = target.value;
-      }
-    }
-
-    return result;
-  };
-
   const saveEntity = (event) => {
     event.preventDefault();
-    // setShowSpinner(true);
 
     // retrieve arrays
-    let transformations = retrieveArray(event.target, "transformations");
-    let translationConfig = retrieveArray(event.target, "translationConfig");
-    let collectionConfig = retrieveArray(event.target, "collectionConfig");
+    let transformations = retrieveFormArrayAsObject(
+      event.target,
+      "transformations"
+    );
+    let translationConfig = retrieveFormArrayAsObject(
+      event.target,
+      "translationConfig"
+    );
+    let collectionConfig = retrieveFormArrayAsObject(
+      event.target,
+      "collectionConfig"
+    );
 
-    console.log(transformations);
+    let usedProperties = retrieveFormArrayAsOArray(
+      event.target,
+      "usedProperties"
+    );
 
     let body = {
       name: event.target.name.value,
@@ -99,10 +76,17 @@ export default function EntityForm({ id }) {
       body["collectionConfig"] = [];
     }
 
-    // This removes empty values from the body
-    body = removeEmptyValues(body);
+    if (usedProperties.length != 0) {
+      body["usedProperties"] = usedProperties;
+    } else {
+      body["usedProperties"] = [];
+    }
 
-    if (!checkInputs([body.name])) {
+    body.endpoint = null;
+    // This removes empty values from the body
+    body = removeEmptyObjectValues(body);
+
+    if (!checkValues([body.name])) {
       return;
     }
 
@@ -343,7 +327,6 @@ export default function EntityForm({ id }) {
                                 id="extendInput"
                                 name="extend"
                                 defaultChecked={true}
-                                defaultValue="true"
                               />
                             ) : (
                               <input
@@ -351,7 +334,6 @@ export default function EntityForm({ id }) {
                                 type="checkbox"
                                 id="extendInput"
                                 name="extend"
-                                defaultValue="true"
                               />
                             )}
                           </>
@@ -361,7 +343,6 @@ export default function EntityForm({ id }) {
                             type="checkbox"
                             id="extendInput"
                             name="extend"
-                            defaultValue="true"
                           />
                         )}
 
@@ -395,12 +376,16 @@ export default function EntityForm({ id }) {
                         data-bs-parent="#entityAccordion"
                       >
                         <div class="accordion-body">
-                          {entity !== null
-                            ? multiDimensionalArrayInput(
-                                "transformations",
-                                entity.transformations
-                              )
-                            : multiDimensionalArrayInput("transformations")}
+                          {entity !== null ? (
+                            <MultiDimensionalArrayInput
+                              target={"transformations"}
+                              data={entity.transformations}
+                            />
+                          ) : (
+                            <MultiDimensionalArrayInput
+                              target={"transformations"}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -427,12 +412,18 @@ export default function EntityForm({ id }) {
                         data-bs-parent="#entityAccordion"
                       >
                         <div class="accordion-body">
-                          {entity !== null
-                            ? multiDimensionalArrayInput(
-                                "translationConfig",
-                                entity.translationConfig
-                              )
-                            : multiDimensionalArrayInput("translationConfig")}
+                          {entity !== null ? (
+                            <MultiDimensionalArrayInput
+                              target={"translationConfig"}
+                              data={entity.translationConfig}
+                              name={"Translation Config"}
+                            />
+                          ) : (
+                            <MultiDimensionalArrayInput
+                              target={"translationConfig"}
+                              name={"Translation Config"}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -459,12 +450,18 @@ export default function EntityForm({ id }) {
                         data-bs-parent="#entityAccordion"
                       >
                         <div class="accordion-body">
-                          {entity !== null
-                            ? multiDimensionalArrayInput(
-                                "collectionConfig",
-                                entity.collectionConfig
-                              )
-                            : multiDimensionalArrayInput("collectionConfig")}
+                          {entity !== null ? (
+                            <MultiDimensionalArrayInput
+                              target={"collectionConfig"}
+                              data={entity.collectionConfig}
+                              name={"Collection Config"}
+                            />
+                          ) : (
+                            <MultiDimensionalArrayInput
+                              target={"collectionConfig"}
+                              name={"Collection Config"}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
