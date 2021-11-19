@@ -53,9 +53,6 @@ export default function SourceForm({ id }) {
     let authorizationHeaderInput = document.getElementById(
       "authorizationHeaderInput"
     );
-    let authorizationPassthroughMethodInput = document.getElementById(
-      "authorizationPassthroughMethodInput"
-    );
     // let authorizationHeaderInput = document.getElementById('authorizationHeaderInput');
 
     let body = {
@@ -72,7 +69,6 @@ export default function SourceForm({ id }) {
       apikey: apikeyInput.value,
       documentation: documentationInput.value,
       authorizationHeader: authorizationHeaderInput.value,
-      authorizationPassthroughMethod: authorizationPassthroughMethodInput.value,
     };
 
     if (Object.keys(headers).length != 0) {
@@ -453,73 +449,7 @@ export default function SourceForm({ id }) {
                         )}
                       </div>
                     </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Authorization pass through method{" "}
-                        </span>
-                        <select
-                          name="authorizationPassthroughMethod"
-                          id="authorizationPassthroughMethodInput"
-                          className="utrecht-select utrecht-select--html-select"
-                        >
-                          {source !== null &&
-                          source.authorizationPassthroughMethod !== null ? (
-                            <option
-                              selected
-                              value={source.authorizationPassthroughMethod}
-                              id="authorizationPassthroughMethodInput"
-                              name="authorizationPassthroughMethod"
-                            >
-                              {source.authorizationPassthroughMethod}
-                            </option>
-                          ) : (
-                            <option
-                              selected
-                              value=""
-                              id="authorizationPassthroughMethodInput"
-                              name="authorizationPassthroughMethod"
-                            ></option>
-                          )}
-                          {source !== null &&
-                          source.authorizationPassthroughMethod !== null &&
-                          source.authorizationPassthroughMethod === "header" ? (
-                            <option
-                              selected
-                              value="header"
-                              id="authorizationPassthroughMethodInput"
-                            >
-                              Header
-                            </option>
-                          ) : (
-                            <option
-                              value="header"
-                              id="authorizationPassthroughMethodInput"
-                            >
-                              Header
-                            </option>
-                          )}
-                          {source !== null &&
-                          source.authorizationPassthroughMethod !== null &&
-                          source.authorizationPassthroughMethod === "header" ? (
-                            <option
-                              selected
-                              value="query"
-                              id="authorizationPassthroughMethodInput"
-                            >
-                              Query
-                            </option>
-                          ) : (
-                            <option
-                              value="query"
-                              id="authorizationPassthroughMethodInput"
-                            >
-                              Query
-                            </option>
-                          )}
-                        </select>
-                      </div>
-                    </div>
+
                     <div class="accordion mt-4" id="sourceAccordion">
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="headersAccordion">
