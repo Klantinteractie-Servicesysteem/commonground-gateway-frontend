@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import Spinner from "../common/spinner";
 import CardHeader from "../cardHeader";
 import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
@@ -53,15 +54,7 @@ export default function SourcesTable() {
         <div className="row">
           <div className="col-12">
             {showSpinner === true ? (
-              <div className="text-center px-5">
-                <div
-                  className="spinner-border text-primary"
-                  style={{ width: "3rem", height: "3rem" }}
-                  role="status"
-                >
-                  <span className="sr-only">Loading...</span>
-                </div>
-              </div>
+              <Spinner />
             ) : (
               <div className="utrecht-html">
                 <table
