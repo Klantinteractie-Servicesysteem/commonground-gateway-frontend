@@ -6,6 +6,8 @@ import {
   removeEmptyObjectValues,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
+import Spinner from "../common/spinner";
+import Accordion from "../common/accordion";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -131,15 +133,7 @@ export default function SourceForm({ id }) {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <div className="text-center py-5">
-                  <div
-                    class="spinner-border text-primary"
-                    style={{ width: "3rem", height: "3rem" }}
-                    role="status"
-                  >
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Spinner />
               ) : (
                 <>
                   <div className="row">
@@ -450,39 +444,17 @@ export default function SourceForm({ id }) {
                       </div>
                     </div>
 
-                    <div class="accordion mt-4" id="sourceAccordion">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="headersAccordion">
-                          <button
-                            class="accordion-button"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#headersCollapse"
-                            aria-expanded="true"
-                            aria-controls="headersCollapse"
-                          >
-                            Headers
-                          </button>
-                        </h2>
-                        <div
-                          id="headersCollapse"
-                          class="accordion-collapse collapse show"
-                          aria-labelledby="headersAccordion"
-                          data-bs-parent="#entityAccordion"
-                        >
-                          <div class="accordion-body">
-                            {source !== null ? (
-                              <MultiDimensionalArrayInput
-                                target={"headers"}
-                                data={source.headers}
-                              />
-                            ) : (
-                              <MultiDimensionalArrayInput target={"headers"} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      <Accordion id="headersTest" title="Headers">
+                        {source !== null ? (
+                          <MultiDimensionalArrayInput
+                            target={"headers"}
+                            data={source.headers}
+                          />
+                        ) : (
+                          <MultiDimensionalArrayInput target={"headers"} />
+                        )}
+                      </Accordion>
+
                   </div>
                 </>
               )}
