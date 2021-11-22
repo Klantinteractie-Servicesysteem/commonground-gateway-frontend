@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-export const SelectInputComponent = ({options, target, data = null, name = null}) => {
+export const SelectInputComponent = ({options, target, id, data = null, name = null}) => {
   const selectOptions = options.map((option) =>
     data !== undefined &&
     data !== null &&
@@ -18,7 +18,7 @@ export const SelectInputComponent = ({options, target, data = null, name = null}
   return (
     <>
       <span className="utrecht-form-label">{_.upperFirst(name ?? target)}</span>
-      <select name="type" id="typeInput" className="utrecht-select utrecht-select--html-select">
+      <select name={name ?? target} id={id} className="utrecht-select utrecht-select--html-select">
         {
           selectOptions
         }
