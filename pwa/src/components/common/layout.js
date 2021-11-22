@@ -10,7 +10,7 @@ export default function Layout({ children, title="", subtext="" }) {
         <>
           <Helmet>
             <title>Gateway Admin Dashboard</title>
-            <link rel="stylesheet" href="https://unpkg.com/@conductionnl/conduction-design-tokens@1.0.0-alpha.10/dist/index.css"/>
+            <link rel="stylesheet" href="https://unpkg.com/@conductionnl/conduction-design-tokens@1.0.0-alpha.13/dist/index.css"/>
           </Helmet>
           <div className="utrecht-document conduction-theme">
             <div className="utrecht-page">

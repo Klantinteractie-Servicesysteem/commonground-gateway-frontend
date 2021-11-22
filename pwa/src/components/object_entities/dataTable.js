@@ -1,19 +1,21 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
 import CardHeader from "../cardHeader";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 
-export default function LogsTable({ id }) {
-  const [logs, setLogs] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(null);
+export default function DataTable({id}) {
+  const [data, setData] = React.useState(null);
   const context = useUrlContext();
 
-  const getLogs = () => {
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  const getData = () => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/request_logs/?entity.id=${id}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
+    fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
     })
       .then((response) => {
         if (response.ok) {
@@ -23,21 +25,22 @@ export default function LogsTable({ id }) {
         }
       })
       .then((data) => {
-        setLogs(data["hydra:member"]);
+        console.log(data)
+        setData(data['hydra:member']);
         setShowSpinner(false);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error('Error:', error);
       });
-  };
+  }
 
-  React.useEffect(() => {
-    getLogs();
-  }, []);
+  useEffect(() => {
+      getData();
+  },[]);
 
   return (
     <div className="utrecht-card card">
-      <CardHeader items={[{title: 'Logs', modal: '#helpModal', refresh: {getLogs}, link: null}]}/>
+      <CardHeader items={[{title: 'Object entities', modal: '#helpModal', refresh: {getData}, add: '/object_entities/new'}]}/>
       <div className="utrecht-card-body card-body">
         <div className="row">
           <div className="col-12">
@@ -51,17 +54,17 @@ export default function LogsTable({ id }) {
                 <div className="utrecht-html">
                   <table lang="nl" summary="Overview of object entities fetched from the gateway." className="table">
                     <TableHeaders headerItems={[{
-                      name: 'Action'
-                    }, {name: 'ObjectId'}, {name: 'Version'}, {name: 'Data'}, {name: 'Username'}, {name: 'Session'}, {name: ''}]}/>
+                      name: 'Uri'
+                    }, {name: 'Owner'}, {name: ''}]}/>
                     <tbody>
                     {
-                      logs !== null && logs.length > 0 ?
-                          logs.map((row) => (
-                            <TableCells
-                              cellItems={[{name: row.action}, {name: row.objectId}, {name: row.version}, {name: row.username}, {name: row.session}, {name: 'button', link: `/entities/${row.id}`}]}/>
-                          ))
+                      data !== null && data.length > 0 ?
+                        data.map((row) => (
+                          <TableCells
+                            cellItems={[{name: row.uri}, {name: row.owner}, {name: 'button', link: `/object_entities/${row.id}`}]}/>
+                        ))
                         :
-                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}, {name: ''}, {name: ''}, {name: ''}]}/>
+                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}]}/>
                     }
                     </tbody>
                   </table>
