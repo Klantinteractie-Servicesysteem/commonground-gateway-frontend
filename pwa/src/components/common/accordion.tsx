@@ -19,7 +19,7 @@ export default function Spinner({ children, id = 'id', title = "Title"}) {
       </h2>
       <div
           id={id + 'Collapse'}
-          className="accordion-collapse collapse show"
+          className="accordion-collapse collapse"
           aria-labelledby={id}
           data-bs-parent={'#' + id + "Accordion"}
       >

@@ -8,6 +8,7 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
+import Accordion from "../common/accordion";
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
@@ -349,121 +350,51 @@ export default function EntityForm({ id }) {
                         </label>
                       </div>
                     </div>
-                  </div>
-                  <div class="accordion mt-4" id="entityAccordion">
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="transformationsAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#transformationsCollapse"
-                          aria-expanded="false"
-                          aria-controls="transformationsCollapse"
-                        >
-                          Transformations
-                        </button>
-                      </h2>
-                      <div
-                        id="transformationsCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="transformationsAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"transformations"}
-                              data={entity.transformations}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"transformations"}
-                            />
-                          )}
-                        </div>
-                      </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="translationConfigAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#translationConfigCollapse"
-                          aria-expanded="false"
-                          aria-controls="translationConfigCollapse"
-                        >
-                          Translation Config
-                        </button>
-                      </h2>
-                      <div
-                        id="translationConfigCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="translationConfigAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"translationConfig"}
-                              data={entity.translationConfig}
-                              name={"Translation Config"}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"translationConfig"}
-                              name={"Translation Config"}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="collectionConfigAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collectionConfigCollapse"
-                          aria-expanded="false"
-                          aria-controls="collectionConfigCollapse"
-                        >
-                          Collection Config
-                        </button>
-                      </h2>
-                      <div
-                        id="collectionConfigCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="collectionConfigAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"collectionConfig"}
-                              data={entity.collectionConfig}
-                              name={"Collection Config"}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"collectionConfig"}
-                              name={"Collection Config"}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
+
+
+                    <Accordion id="transformationsAccordion" title="Transformations">
+                      {entity !== null ? (
+                        <MultiDimensionalArrayInput
+                          target={"transformations"}
+                          data={entity.transformations}
+                        />
+                      ) : (
+                        <MultiDimensionalArrayInput
+                          target={"transformations"}
+                        />
+                      )}
+                    </Accordion>
+                    <Accordion id="translationConfigAccordion" title="Translation Config">
+                      {entity !== null ? (
+                        <MultiDimensionalArrayInput
+                          target={"translationConfig"}
+                          data={entity.translationConfig}
+                          name={"Translation Config"}
+                        />
+                      ) : (
+                        <MultiDimensionalArrayInput
+                          target={"translationConfig"}
+                          name={"Translation Config"}
+                        />
+                      )}
+                    </Accordion>
+                    <Accordion id="collectionConfigAccordion" title="Collection Config">
+                      {entity !== null ? (
+                        <MultiDimensionalArrayInput
+                          target={"collectionConfig"}
+                          data={entity.collectionConfig}
+                          name={"Collection Config"}
+                        />
+                      ) : (
+                        <MultiDimensionalArrayInput
+                          target={"collectionConfig"}
+                          name={"Collection Config"}
+                        />
+                      )}
+                    </Accordion>
+
                 </>
               )}
             </div>
