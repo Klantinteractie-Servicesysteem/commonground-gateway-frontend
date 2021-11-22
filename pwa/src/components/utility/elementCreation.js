@@ -49,7 +49,10 @@ export const addElement = (
   }
 
   //create row
-  let formGroupRow = createElement("div", ["row", key.value]);
+  let formGroupRow = createElement("div", [
+    "row",
+    key.value.replaceAll(" ", "-"),
+  ]);
 
   //set classNames for elements
 
@@ -69,7 +72,11 @@ export const addElement = (
   let inputValue = createElement(
     "input",
     ["utrecht-textbox", "utrecht-textbox--html-input", "mb-2"],
-    { type: "text", id: value.value, name: `${inputName}[${key.value}]` },
+    {
+      type: "text",
+      id: value.value,
+      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`,
+    },
     value.value
   );
 

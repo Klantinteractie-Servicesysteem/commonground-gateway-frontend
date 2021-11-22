@@ -8,7 +8,6 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { ArrayInput } from "../utility/ArrayInput";
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
@@ -52,7 +51,7 @@ export default function EntityForm({ id }) {
       name: event.target.name.value,
       description: event.target.description.value,
       route: event.target.route.value,
-      endpoint: event.target.endpoint.value,
+      endpoint: event.target.entityEndpoint.value,
       gateway: event.target.gateway.value,
       extend: event.target.extend.checked,
     };
@@ -82,7 +81,6 @@ export default function EntityForm({ id }) {
       body["usedProperties"] = [];
     }
 
-    body.endpoint = null;
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
@@ -244,14 +242,14 @@ export default function EntityForm({ id }) {
                         {entity !== null && entity.endpoint !== null ? (
                           <input
                             className="utrecht-textbox utrecht-textbox--html-input"
-                            name="endpoint"
+                            name="entityEndpoint"
                             id="endpointInput"
                             defaultValue={entity.endpoint}
                           />
                         ) : (
                           <input
                             className="utrecht-textbox utrecht-textbox--html-input"
-                            name="endpoint"
+                            name="entityEndpoint"
                             id="endpointInput"
                           />
                         )}
