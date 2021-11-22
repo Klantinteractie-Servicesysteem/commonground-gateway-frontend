@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default function Spinner({ children, id = 'id', title = "Title"}) {
+export default function Accordion({ children, id = 'id', title = "Title"}) {
 
   return (
     <div className="accordion mt-4" id={id + "Accordion"}>

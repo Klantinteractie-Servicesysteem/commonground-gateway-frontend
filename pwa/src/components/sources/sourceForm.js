@@ -8,6 +8,7 @@ import {
 } from "../utility/inputHandler";
 import Spinner from "../common/spinner";
 import Accordion from "../common/accordion";
+import Input from "../common/input";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -137,93 +138,35 @@ export default function SourceForm({ id }) {
               ) : (
                 <>
                   <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label mb-2">Name *</span>
+                      <div className="col-6">
                         {source !== null && source.name !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            defaultValue={source.name}
-                            required
-                          />
+                          <Input label="Name" name="name" value={source.name} type="text" required={true} />
                         ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            required
-                          />
+                          <Input label="Name" name="name" type="text" required={true} />
                         )}
-                      </div>
                     </div>
                     <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Location (url) *
-                        </span>
                         {source !== null && source.location !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="location"
-                            id="locationInput"
-                            defaultValue={source.location}
-                            required
-                          />
+                          <Input label="Location (url)" name="location" value={source.location} type="text" required={true} />
                         ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="location"
-                            id="locationInput"
-                            required
-                          />
-                        )}
-                      </div>
+                          <Input label="Location (url)" name="location" type="text" required={true} />
+                          )}
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Accept (accept header used for this source)
-                        </span>
+                      <div className="col-6">
                         {source !== null && source.accept !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="accept"
-                            id="acceptInput"
-                            defaultValue={source.accept}
-                          />
+                          <Input label="Accept (accept header used for this source)" name="accept" value={source.accept} type="text" />
                         ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="accept"
-                            id="acceptInput"
-                          />
+                          <Input label="Accept (accept header used for this source)" name="accept" type="text" />
                         )}
-                      </div>
                     </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Locale</span>
+                      <div className="col-6">
                         {source !== null && source.locale !== null ? (
-                          <input
-                            maxLength="10"
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="locale"
-                            id="localeInput"
-                            defaultValue={source.locale}
-                          />
+                          <Input label="Locale" name="locale" value={source.locale} type="text" maxLength={10} />
                         ) : (
-                          <input
-                            maxLength="10"
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="locale"
-                            id="localeInput"
-                          />
+                          <Input label="Locale" name="locale" type="text" maxLength={10} />
                         )}
-                      </div>
                     </div>
                   </div>
                   <div className="form-group">
@@ -235,8 +178,8 @@ export default function SourceForm({ id }) {
                       required
                     >
                       {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "apikey" ? (
+                        source.auth !== null &&
+                        source.auth == "apikey" ? (
                         <option selected value="apikey">
                           API key
                         </option>
@@ -244,8 +187,8 @@ export default function SourceForm({ id }) {
                         <option value="apikey">API key</option>
                       )}
                       {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "jwt" ? (
+                        source.auth !== null &&
+                        source.auth == "jwt" ? (
                         <option selected value="jwt">
                           JWT
                         </option>
@@ -253,8 +196,8 @@ export default function SourceForm({ id }) {
                         <option value="jwt">JWT</option>
                       )}
                       {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "username-password" ? (
+                        source.auth !== null &&
+                        source.auth == "username-password" ? (
                         <option selected value="username-password">
                           Username password
                         </option>
@@ -427,7 +370,7 @@ export default function SourceForm({ id }) {
                           Authorization header
                         </span>
                         {source !== null &&
-                        source.authorizationHeader !== null ? (
+                          source.authorizationHeader !== null ? (
                           <input
                             className="utrecht-textbox utrecht-textbox--html-input"
                             name="authorizationHeader"
@@ -444,16 +387,16 @@ export default function SourceForm({ id }) {
                       </div>
                     </div>
 
-                      <Accordion id="headersTest" title="Headers">
-                        {source !== null ? (
-                          <MultiDimensionalArrayInput
-                            target={"headers"}
-                            data={source.headers}
-                          />
-                        ) : (
-                          <MultiDimensionalArrayInput target={"headers"} />
-                        )}
-                      </Accordion>
+                    <Accordion id="headersTest" title="Headers">
+                      {source !== null ? (
+                        <MultiDimensionalArrayInput
+                          target={"headers"}
+                          data={source.headers}
+                        />
+                      ) : (
+                        <MultiDimensionalArrayInput target={"headers"} />
+                      )}
+                    </Accordion>
 
                   </div>
                 </>
