@@ -1,15 +1,15 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import AttributeForm from "../../components/attributes/attribuutForm";
+import ObjectEntityForm from "../../components/object_entities/object_entityForm";
 
 
-const IndexPage = () => {
+const IndexPage = (props) => {
   return (
     <Layout>
       <main>
         <div className="row">
           <div className="col-12">
-            <AttributeForm/>
+            <ObjectEntityForm id={props.params.id}/>
           </div>
         </div>
       </main>

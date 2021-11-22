@@ -6,3 +6,40 @@ App\Entity\Gateway:
         location: https://conduction.demodam.nl/api/v1/uc
         documentation: https://raw.githubusercontent.com/ConductionNL/usercomponent/master/api/public/schema/openapi.yaml
 
+App\Entity\Entity:
+  # User object
+  user:
+      route: '/api/users'
+      name: users
+      description: Dit endpoint behandeld alle functionaliteit rondom users of gebruikers.
+      gateway: '@example_gateway'
+      endpoint: 'users'
+      extend: false
+      availableProperties:
+          - username
+          - roles
+          - userGroups
+          - locale
+          - person
+      usedProperties:
+          - username
+          - password
+          - organization
+          - roles
+          - userGroups
+          - emailValidated
+          - locale
+          - person
+          - currentPassword
+App\Entity\Attribute:
+
+  # User attributes
+  user_username:
+      name: username
+      description: Usualy an email address.
+      type: string
+      maxLength: 255
+      required: true
+      entity: '@user'
+      mustBeUnique: true
+      persistToGateway: true

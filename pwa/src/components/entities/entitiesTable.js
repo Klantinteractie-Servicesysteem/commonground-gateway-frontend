@@ -1,20 +1,20 @@
 import * as React from "react";
-import { useUrlContext } from "../../context/urlContext";
 import { useEffect, useState } from "react";
-import { Link } from "gatsby";
-import CardHeader from "../cardHeader";
+import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import CardHeader from "../cardHeader";
+import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
 
-export default function AttributeTable({ id }) {
-  const [attributes, setAttributes] = React.useState(null);
+export default function EntitiesTable() {
+  const [entities, setEntities] = React.useState(null);
   const context = useUrlContext();
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const getAttributes = () => {
+  const getEntities = () => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/attributes?entity.id=${id}`, {
+    fetch(context.apiUrl + "/entities", {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
@@ -23,22 +23,22 @@ export default function AttributeTable({ id }) {
           return response.json();
         } else {
           setShowSpinner(false);
-          setAttributes(null);
+          setEntities(null);
           throw new Error(response.statusText);
         }
       })
       .then((data) => {
-        setAttributes(data["hydra:member"]);
+        setEntities(data["hydra:member"]);
         setShowSpinner(false);
       })
       .catch((error) => {
         console.error("Error:", error);
         setShowSpinner(false);
-        setAttributes(null);
+        setEntities(null);
       });
   };
   useEffect(() => {
-    getAttributes();
+    getEntities();
   }, []);
 
   return (
@@ -46,11 +46,10 @@ export default function AttributeTable({ id }) {
       <CardHeader
         items={[
           {
-            title: "Attributes",
+            title: "Entities",
             modal: "#helpModal",
-            refresh: getAttributes,
-            add: `/attributes/new/${id}`,
-            entityId: id,
+            refresh: getEntities,
+            add: "/entities/new",
           },
         ]}
       />
@@ -79,17 +78,21 @@ export default function AttributeTable({ id }) {
                       {
                         name: "Name",
                       },
-                      { name: "Type" },
+                      { name: "Endpoint" },
+                      { name: "Route" },
+                      { name: "Source" },
                       { name: "" },
                     ]}
                   />
                   <tbody>
-                    {attributes !== null && attributes.length > 0 ? (
-                      attributes.map((row) => (
+                    {entities !== null && entities.length > 0 ? (
+                      entities.map((row) => (
                         <TableCells
                           cellItems={[
                             { name: row.name },
-                            { name: row.type },
+                            { name: row.endpoint },
+                            { name: row.route },
+                            { name: row.gateway.name },
                             {
                               renderItem: () => {
                                 return (
@@ -97,7 +100,7 @@ export default function AttributeTable({ id }) {
                                     <div className="d-flex">
                                       <Link
                                         className="ml-auto"
-                                        to={`/attributes/${row.id}/${id}`}
+                                        to={`/entities/${row.id}`}
                                       >
                                         <button className="utrecht-button btn-sm btn-success">
                                           <i className="fas fa-edit pr-1"></i>
@@ -129,15 +132,17 @@ export default function AttributeTable({ id }) {
                           { name: "No results found" },
                           { name: "" },
                           { name: "" },
+                          { name: "" },
+                          { name: "" },
                         ]}
                       />
                     )}
                   </tbody>
                 </table>
-                {attributes !== null &&
-                  attributes.map((item) => (
+                {entities !== null &&
+                  entities.map((item) => (
                     <>
-                      <DeleteModal data={item} useFunction={getAttributes} />
+                      <DeleteModal data={item} useFunction={getEntities} />
                     </>
                   ))}
               </div>

@@ -41,7 +41,7 @@ jobs:
         if: contains( github.ref, 'master' ) || contains( github.base_ref, 'master' )
         run: |
           echo "APP_ENV=latest">> $GITHUB_ENV
-          echo "APP_BUILD=$RELEASE">> $GITHUB_ENV
+          echo "APP_BUILD=latest">> $GITHUB_ENV
           echo "set APP_ENV to $APP_ENV"
       - name: Setting APP_ENV to stag
         if: contains( github.ref, 'staging' ) || contains( github.base_ref, 'staging' )
@@ -64,15 +64,15 @@ jobs:
       #- name: Run Postman Tests
       #  if: contains( github.ref, 'master' ) == false && contains( github.base_ref, 'master' ) == false
       #  run: newman run api/public/schema/*.postman_collection.json
-      - name: Add docker tags
-        if: github.ref == 'refs/heads/master'
-        run: |
-          images=$(docker-compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep $APP_NAME)
-          for image in $images
-          do
-            docker tag "${image}":latest "${image}":"${APP_BUILD}"
-          done
-          echo 'IMAGES=$images' >> $GITHUB_ENV
+      # - name: Add docker tags
+      #   if: github.ref == 'refs/heads/master'
+      #   run: |
+      #     images=$(docker-compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep $APP_NAME)
+      #     for image in $images
+      #     do
+      #       docker tag "${image}":latest "${image}":"${APP_BUILD}"
+      #     done
+      #     echo 'IMAGES=$images' >> $GITHUB_ENV
       - name: Show all images
         run: docker images
       - name: Login to Container Registry

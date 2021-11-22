@@ -1,44 +1,40 @@
 import * as React from "react";
-import { useUrlContext } from "../../context/urlContext";
 import { useEffect, useState } from "react";
-import { Link } from "gatsby";
-import CardHeader from "../cardHeader";
+import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import CardHeader from "../cardHeader";
+import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
 
-export default function AttributeTable({ id }) {
-  const [attributes, setAttributes] = React.useState(null);
+export default function SourcesTable() {
   const context = useUrlContext();
+  const [sources, setSources] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const getAttributes = () => {
+  const getSources = () => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/attributes?entity.id=${id}`, {
+    fetch(context.apiUrl + "/gateways", {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setAttributes(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
-        setAttributes(data["hydra:member"]);
-        setShowSpinner(false);
+        if (
+          data["hydra:member"] !== undefined &&
+          data["hydra:member"] !== null
+        ) {
+          setSources(data["hydra:member"]);
+          setShowSpinner(false);
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setShowSpinner(false);
-        setAttributes(null);
       });
   };
+
   useEffect(() => {
-    getAttributes();
+    getSources();
   }, []);
 
   return (
@@ -46,11 +42,10 @@ export default function AttributeTable({ id }) {
       <CardHeader
         items={[
           {
-            title: "Attributes",
+            title: "Sources",
             modal: "#helpModal",
-            refresh: getAttributes,
-            add: `/attributes/new/${id}`,
-            entityId: id,
+            refresh: getSources,
+            add: "/sources/new",
           },
         ]}
       />
@@ -71,7 +66,7 @@ export default function AttributeTable({ id }) {
               <div className="utrecht-html">
                 <table
                   lang="nl"
-                  summary="Overview of object entities fetched from the gateway."
+                  summary="Overview of sources fetched from the gateway."
                   className="table"
                 >
                   <TableHeaders
@@ -79,17 +74,17 @@ export default function AttributeTable({ id }) {
                       {
                         name: "Name",
                       },
-                      { name: "Type" },
+                      { name: "Location" },
                       { name: "" },
                     ]}
                   />
                   <tbody>
-                    {attributes !== null && attributes.length > 0 ? (
-                      attributes.map((row) => (
+                    {sources !== null && sources.length > 0 ? (
+                      sources.map((row) => (
                         <TableCells
                           cellItems={[
                             { name: row.name },
-                            { name: row.type },
+                            { name: row.location },
                             {
                               renderItem: () => {
                                 return (
@@ -97,7 +92,7 @@ export default function AttributeTable({ id }) {
                                     <div className="d-flex">
                                       <Link
                                         className="ml-auto"
-                                        to={`/attributes/${row.id}/${id}`}
+                                        to={`/sources/${row.id}`}
                                       >
                                         <button className="utrecht-button btn-sm btn-success">
                                           <i className="fas fa-edit pr-1"></i>
@@ -134,10 +129,10 @@ export default function AttributeTable({ id }) {
                     )}
                   </tbody>
                 </table>
-                {attributes !== null &&
-                  attributes.map((item) => (
+                {sources !== null &&
+                  sources.map((item) => (
                     <>
-                      <DeleteModal data={item} useFunction={getAttributes} />
+                      <DeleteModal data={item} useFunction={getSources} />
                     </>
                   ))}
               </div>
