@@ -4,7 +4,7 @@ import { Link } from "gatsby";
 import Layout from "../../components/common/layout";
 import { useUrlContext } from "../../context/urlContext";
 import Modal from "../../components/common/modal";
-import CardHeader from "../../components/cardHeader";
+import CardHeader from "../../components/common/cardHeader";
 import TableHeaders from "../../components/common/tableHeaders";
 import TableCells from "../../components/common/tableCells";
 import SourcesTable from "../../components/sources/sourcesTable";

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { useEffect, useState } from "react";
 import { Link } from "gatsby";
-import CardHeader from "../cardHeader";
+import CardHeader from "../common/cardHeader";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 import DeleteModal from "../modals/deleteModal";

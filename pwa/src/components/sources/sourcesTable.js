@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
-import CardHeader from "../cardHeader";
+import CardHeader from "../common/cardHeader";
 import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
 

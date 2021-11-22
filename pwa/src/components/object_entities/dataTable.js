@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
-import CardHeader from "../cardHeader";
+import CardHeader from "../common/cardHeader";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 
