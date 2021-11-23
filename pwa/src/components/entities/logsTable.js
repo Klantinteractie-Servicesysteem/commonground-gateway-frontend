@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
-import CardHeader from "../common/cardHeader";
+import Card from "../common/card";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 
@@ -36,9 +36,7 @@ export default function LogsTable({ id }) {
   }, []);
 
   return (
-    <div className="utrecht-card card">
-      <CardHeader items={[{title: 'Logs', modal: '#helpModal', refresh: {getLogs}, link: null}]}/>
-      <div className="utrecht-card-body card-body">
+    <Card title="Logs" modal="#helpModal" refresh={getLogs}>
         <div className="row">
           <div className="col-12">
             {
@@ -69,7 +67,7 @@ export default function LogsTable({ id }) {
             }
           </div>
         </div>
-      </div>
-    </div>
+
+    </Card>
   );
 }
