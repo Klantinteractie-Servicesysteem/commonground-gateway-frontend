@@ -2,7 +2,6 @@ import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { useEffect, useState } from "react";
 import { Link } from "gatsby";
-import CardHeader from "../common/cardHeader";
 import Card from "../common/card";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
