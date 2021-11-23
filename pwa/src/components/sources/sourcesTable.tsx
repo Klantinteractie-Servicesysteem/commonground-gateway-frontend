@@ -4,6 +4,7 @@ import { useUrlContext } from "../../context/urlContext";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
 import Spinner from "../common/spinner";
+import Card from "../common/card";
 import CardHeader from "../cardHeader";
 import { Link } from "gatsby";
 import DeleteModal from "../modals/deleteModal";
@@ -38,19 +39,8 @@ export default function SourcesTable() {
     getSources();
   }, []);
 
-  return (
-    <div className="utrecht-card card">
-      <CardHeader
-        items={[
-          {
-            title: "Sources",
-            modal: "#helpModal",
-            refresh: getSources,
-            add: "/sources/new",
-          },
-        ]}
-      />
-      <div className="utrecht-card-body card-body">
+  return (<>
+    <Card title="Sources" modal="#helpModal" refresh={getSources} add="/sources/new">
         <div className="row">
           <div className="col-12">
             {showSpinner === true ? (
@@ -132,7 +122,8 @@ export default function SourcesTable() {
             )}
           </div>
         </div>
-      </div>
-    </div>
+
+    </Card>
+  </>
   );
 }
