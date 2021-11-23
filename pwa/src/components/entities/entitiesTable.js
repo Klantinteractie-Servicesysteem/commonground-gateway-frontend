@@ -5,6 +5,7 @@ import TableCells from "../common/tableCells";
 import Card from "../common/card";
 import { Link } from "gatsby";
 import Table from "../common/table";
+import TableHeaders from "../common/tableHeaders";
 import DeleteModal from "../modals/deleteModal";
 import Spinner from "../common/spinner";
 
