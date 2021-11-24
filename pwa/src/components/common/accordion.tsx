@@ -1,6 +1,15 @@
 import * as React from "react";
 
-export default function Accordion({ children, id = 'id', title = "Title"}) {
+
+/**
+ * This components renders an bootstrap accordion.
+ *
+ * @param {object} children Code that will be placed as child in this component.
+ * @param {string} id HTML id for this accordion.
+ * @param {string} title Title for this accordion.
+ * @returns TSX of the generated accordion.
+ */
+export default function Accordion({ id = 'id', title = "Title"}) {
 
   return (
     <div className="accordion mt-4" id={id + "Accordion"}>

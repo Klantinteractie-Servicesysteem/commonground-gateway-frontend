@@ -1,6 +1,19 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
+
+/**
+ * This components renders a card header.
+ *
+ * @param {string} title Title of this card.
+ * @param {string|null} modal Modal the help button will open.
+ * @param {string|null} refresh Function the refresh button will execute.
+ * @param {string|null} add Link you will go to when you want to add a item.
+ * @param {string|null} back Link you will go to when you want to return to the previous page.
+ * @param {string|null} save Function the save button will execute.
+ * @param {string|null} onlySaveIf This variable must not be null (if given) if you want to be able to save.
+ * @returns TSX of the generated CardHeader.
+ */
 export default function CardHeader({ title = "Title", modal = null, refresh = null, add = null, back = null, save = null, onlySaveIf = undefined}) {
 
   return (
