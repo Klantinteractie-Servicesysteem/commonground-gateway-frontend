@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-export const CheckboxComponent = ({type, id, data = null, nameLabel, nameAttribute, required = false}) => {
+export const CheckboxComponent = ({type, id, data = null, nameLabel, nameAttribute, required = false, defaultValue = "false"}) => {
   return (
     <>
       <div className="form-check">
@@ -11,7 +11,7 @@ export const CheckboxComponent = ({type, id, data = null, nameLabel, nameAttribu
           id={id}
           name={nameAttribute}
           defaultChecked={data == null ? false : true}
-          defaultValue={data == null ? "false" : "true"}
+          defaultValue={defaultValue == "false" ? "false" : "true"}
           required={required == false ? false : true}
         />
         <label className="form-check-label" htmlFor={id}>
