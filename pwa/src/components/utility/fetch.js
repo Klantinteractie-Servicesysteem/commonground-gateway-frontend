@@ -1,3 +1,13 @@
+
+/**
+ * This getResource.
+ *
+ * @param {string} url set the name in the cell key.
+ * @param {string} query
+ * @param {array} options
+ */
+
+
 export const getResource = (url = "", query = "", options = {}) => {
   fetch(url, options)
     .then((response) => {

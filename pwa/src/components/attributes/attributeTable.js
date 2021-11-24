@@ -5,7 +5,9 @@ import { Link } from "gatsby";
 import Card from "../common/card";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import Table from "../common/table";
 import DeleteModal from "../modals/deleteModal";
+import Spinner from "../common/spinner";
 
 export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
@@ -46,89 +48,9 @@ export default function AttributeTable({ id }) {
       <div className="row">
         <div className="col-12">
           {showSpinner === true ? (
-            <div className="text-center px-5">
-              <div
-                className="spinner-border text-primary"
-                style={{ width: "3rem", height: "3rem" }}
-                role="status"
-              >
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
+            <Spinner />
           ) : (
-            <div className="utrecht-html">
-              <table
-                lang="nl"
-                summary="Overview of object entities fetched from the gateway."
-                className="table"
-              >
-                <TableHeaders
-                  headerItems={[
-                    {
-                      name: "Name",
-                    },
-                    { name: "Type" },
-                    { name: "" },
-                  ]}
-                />
-                <tbody>
-                  {attributes !== null && attributes.length > 0 ? (
-                    attributes.map((row) => (
-                      <TableCells
-                        cellItems={[
-                          { name: row.name },
-                          { name: row.type },
-                          {
-                            renderItem: () => {
-                              return (
-                                <>
-                                  <div className="d-flex">
-                                    <Link
-                                      className="ml-auto"
-                                      to={`/attributes/${row.id}/${id}`}
-                                    >
-                                      <button className="utrecht-button btn-sm btn-success">
-                                        <i className="fas fa-edit pr-1"></i>
-                                        Edit
-                                      </button>
-                                    </Link>
-                                    <button
-                                      className="utrecht-button btn-sm btn-danger ml-2"
-                                      type="button"
-                                      data-bs-toggle="modal"
-                                      data-bs-target={`#item-${row.id.replaceAll(
-                                        "-",
-                                        ""
-                                      )}`}
-                                    >
-                                      <i className="fas fa-trash" />
-                                    </button>
-                                  </div>
-                                </>
-                              );
-                            },
-                          },
-                        ]}
-                      />
-                    ))
-                  ) : (
-                    <TableCells
-                      cellItems={[
-                        { name: "No results found" },
-                        { name: "" },
-                        { name: "" },
-                      ]}
-                    />
-                  )}
-                </tbody>
-              </table>
-              {attributes !== null &&
-                attributes.map((item) => (
-                  <>
-                    <DeleteModal data={item} useFunction={getAttributes} />
-                  </>
-                ))}
-            </div>
+            <Table properties={[{ th: "Name", property: "name" }, { th: "Type", property: "type" }]} items={attributes} editLink="/attributes" parentLink={id}/>
           )}
         </div>
       </div>

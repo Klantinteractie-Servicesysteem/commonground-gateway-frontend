@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
+export default function Table({ properties=[{th: "Name", property: "name"}], items = null, editLink = null,  parentLink = null}) {
 
 /**
  * This components renders a table.
@@ -10,7 +11,6 @@ import { Link } from "gatsby";
  * @param {string} editLink Link to page where you can edit a item.
  * @returns TSX of the generated Table.
  */
-export default function Table({ properties=[{th: "Name", property: "name"}], items = null, editLink=null}) {
 
   return (
     <div className="utrecht-html">
@@ -43,7 +43,7 @@ export default function Table({ properties=[{th: "Name", property: "name"}], ite
                     }
                     {
                       editLink !== null &&
-                      <td className="text-right"><Link to={editLink + "/" + item.id}><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
+                      <td className="text-right"><Link to={ parentLink !== null ? `${editLink}/${item.id}/${parentLink}` : `${editLink}/${item.id}` }><button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"></i>Edit</button></Link></td>
                     }
                   </tr>
                 ))
