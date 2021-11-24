@@ -722,7 +722,7 @@ export default function AttributeForm({id, entity}) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.deprecated ? (
