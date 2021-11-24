@@ -149,42 +149,16 @@ export default function SourceForm({ id }) {
                   </div>
                 </div>
                 <div className="form-group">
-                  <span className="utrecht-form-label">Auth *</span>
-                  <select
-                    name="auth"
-                    id="authInput"
-                    class="utrecht-select utrecht-select--html-select"
-                    required
-                  >
-                    {source !== null && source.auth !== null &&
-                      source.auth == "apikey" ? (
-                      <option selected value="apikey">
-                        API key
-                      </option>
-                    ) : (
-                      <option value="apikey">API key</option>
+                  {source !== null && source.auth !== null ? (
+                      <SelectInputComponent
+                        options={[{name: "apikey"}, {name: "jwt"}, {name: "username-password"}]}
+                        target={"auth"} id={"authInput"} name={"Auth *"} data={source.auth}/>
+                    ) :
+                    (
+                      <SelectInputComponent
+                        options={[{name: "apikey"}, {name: "jwt"}, {name: "username-password"}]}
+                        target={"auth"} id={"authInput"} name={"Auth *"}/>
                     )}
-                    {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "jwt" ? (
-                      <option selected value="jwt">
-                        JWT
-                      </option>
-                    ) : (
-                      <option value="jwt">JWT</option>
-                    )}
-                    {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "username-password" ? (
-                      <option selected value="username-password">
-                        Username password
-                      </option>
-                    ) : (
-                      <option value="username-password">
-                        Username password
-                      </option>
-                    )}
-                  </select>
                 </div>
                 <div className="row">
                   <div className="col-4">

@@ -3,6 +3,8 @@ import { useUrlContext } from "../../context/urlContext";
 import Card from "../common/card";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import Spinner from "../common/spinner";
+import Table from "../common/table";
 
 export default function LogsTable({ id }) {
   const [logs, setLogs] = React.useState(null);
@@ -37,37 +39,15 @@ export default function LogsTable({ id }) {
 
   return (
     <Card title="Logs" modal="#helpModal" refresh={getLogs}>
-        <div className="row">
-          <div className="col-12">
-            {
-              showSpinner === true ?
-                <div className="text-center px-5">
-                  <div className="spinner-border text-primary" style={{width: "3rem", height: "3rem"}} role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div> :
-                <div className="utrecht-html">
-                  <table lang="nl" summary="Overview of object entities fetched from the gateway." className="table">
-                    <TableHeaders headerItems={[{
-                      name: 'Action'
-                    }, {name: 'ObjectId'}, {name: 'Version'}, {name: 'Data'}, {name: 'Username'}, {name: 'Session'}, {name: ''}]}/>
-                    <tbody>
-                    {
-                      logs !== null && logs.length > 0 ?
-                          logs.map((row) => (
-                            <TableCells
-                              cellItems={[{name: row.action}, {name: row.objectId}, {name: row.version}, {name: row.username}, {name: row.session}, {name: 'button', link: `/entities/${row.id}`}]}/>
-                          ))
-                        :
-                        <TableCells cellItems={[{name: 'No results found'}, {name: ''}, {name: ''}, {name: ''}, {name: ''}, {name: ''}]}/>
-                    }
-                    </tbody>
-                  </table>
-                </div>
-            }
-          </div>
+      <div className="row">
+        <div className="col-12">
+          {showSpinner === true ? (
+            <Spinner />
+          ) : (
+            <Table properties={[{ th: "Action", property: "action" }, { th: "ObjectId", property: "objectId" }, { th: "Version", property: "version" }, { th: "Username", property: "username" }, { th: "Session", property: "session" }]} items={logs} editLink={"/entities"}/>
+          )}
         </div>
-
+      </div>
     </Card>
   );
 }

@@ -5,6 +5,7 @@ import Card from "../common/card";
 import Spinner from "../common/spinner";
 import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
+import Table from "../common/table";
 
 export default function DataTable({ id }) {
   const [data, setData] = React.useState(null);
@@ -43,32 +44,13 @@ export default function DataTable({ id }) {
     <Card title="Object entities" modal="#helpModal" refresh={getData} add="/object_entities/new">
       <div className="row">
         <div className="col-12">
-          {
-            showSpinner === true ?
-              <Spinner />
-              :
-              <div className="utrecht-html">
-                <table lang="nl" summary="Overview of object entities fetched from the gateway." className="table">
-                  <TableHeaders headerItems={[{
-                    name: 'Uri'
-                  }, { name: 'Owner' }, { name: '' }]} />
-                  <tbody>
-                    {
-                      data !== null && data.length > 0 ?
-                        data.map((row) => (
-                          <TableCells
-                            cellItems={[{ name: row.uri }, { name: row.owner }, { name: 'button', link: `/object_entities/${row.id}` }]} />
-                        ))
-                        :
-                        <TableCells cellItems={[{ name: 'No results found' }, { name: '' }, { name: '' }]} />
-                    }
-                  </tbody>
-                </table>
-              </div>
-          }
+          {showSpinner === true ? (
+            <Spinner />
+          ) : (
+            <Table properties={[{ th: "Name", property: "name" }, { th: "Owner", property: "owner" }]} items={data} editLink="/object_entities" />
+          )}
         </div>
       </div>
-
     </Card>
   );
 }
