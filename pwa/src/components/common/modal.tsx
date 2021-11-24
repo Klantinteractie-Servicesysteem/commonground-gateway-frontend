@@ -22,7 +22,7 @@ export default function Modal({ id = 'firstModal', title = "ModalTitle", hideBut
           Launch demo modal
         </button>
       }
-      <div className="modal fade" id={id} tableIndex="-1" role="dialog" aria-labelledby={id + "Label"} aria-hidden="true">
+      <div className="modal fade" id={id} table-Index="-1" role="dialog" aria-labelledby={id + "Label"} aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
