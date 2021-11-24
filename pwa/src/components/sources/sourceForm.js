@@ -8,8 +8,9 @@ import {
 } from "../utility/inputHandler";
 import Spinner from "../common/spinner";
 import Accordion from "../common/accordion";
-import Input from "../common/input";
 import Card from "../common/card";
+import {GenericInputComponent} from "../utility/genericInput";
+import {SelectInputComponent} from "../utility/selectInput";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -118,32 +119,32 @@ export default function SourceForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     {source !== null && source.name !== null ? (
-                      <Input label="Name" name="name" value={source.name} type="text" required={true} />
+                      <GenericInputComponent type={"text"} target={"name"} id={"nameInput"} data={source.name} name={"Name"} required={"true"}/>
                     ) : (
-                      <Input label="Name" name="name" type="text" required={true} />
+                      <GenericInputComponent type={"text"} target={"name"} id={"nameInput"}  name={"Name"} required={"true"}/>
                     )}
                   </div>
                   <div className="col-6">
                     {source !== null && source.location !== null ? (
-                      <Input label="Location (url)" name="location" value={source.location} type="text" required={true} />
+                      <GenericInputComponent name={"Location (url)"} target={"location"} data={source.location} type={"text"} required={"true"} id={"locationInput"}/>
                     ) : (
-                      <Input label="Location (url)" name="location" type="text" required={true} />
+                      <GenericInputComponent name={"Location (url)"}  target={"location"}  type={"text"} required={"true"} id={"locationInput"}/>
                     )}
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-6">
                     {source !== null && source.accept !== null ? (
-                      <Input label="Accept (accept header used for this source)" name="accept" value={source.accept} type="text" />
+                      <GenericInputComponent name={"Accept (accept header used for this source)"} target={"accept"} data={source.accept} type={"text"} required={"true"} id={"acceptInput"}/>
                     ) : (
-                      <Input label="Accept (accept header used for this source)" name="accept" type="text" />
+                      <GenericInputComponent name={"Accept (accept header used for this source)"} target={"accept"}  type={"text"} required={"true"} id={"acceptInput"}/>
                     )}
                   </div>
                   <div className="col-6">
                     {source !== null && source.locale !== null ? (
-                      <Input label="Locale" name="locale" value={source.locale} type="text" maxLength={10} />
+                      <GenericInputComponent name={"Locale"} target={"locale"} data={source.locale} type={"text"} required={"true"} id={"localeInput"}/>
                     ) : (
-                      <Input label="Locale" name="locale" type="text" maxLength={10} />
+                      <GenericInputComponent name={"Locale"} target={"locale"}  type={"text"} required={"true"} id={"localeInput"} maxLength={"10"}/>
                     )}
                   </div>
                 </div>
@@ -155,8 +156,7 @@ export default function SourceForm({ id }) {
                     class="utrecht-select utrecht-select--html-select"
                     required
                   >
-                    {source !== null &&
-                      source.auth !== null &&
+                    {source !== null && source.auth !== null &&
                       source.auth == "apikey" ? (
                       <option selected value="apikey">
                         API key
@@ -189,64 +189,28 @@ export default function SourceForm({ id }) {
                 <div className="row">
                   <div className="col-4">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Jwt (used for auth if auth is jwt)
-                      </span>
                       {source !== null && source.jwt !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="jwt"
-                          id="jwtInput"
-                          defaultValue={source.jwt}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Jwt"} target={"jwt"} data={source.jwt} type={"text"} required={"true"} id={"jwtInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="jwt"
-                          id="jwtInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Jwt"} target={"jwt"} type={"text"} required={"true"} id={"jwtInput"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-4">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Jwt ID (used for auth if auth is jwt)
-                      </span>
-                      {source !== null && source.JwtId !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="jwtId"
-                          id="jwtIdInput"
-                          defaultValue={source.jwtId}
-                        />
+                      {source !== null && source.jwtId !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"JwtId"} target={"jwtId"} data={source.jwtId} type={"text"} required={"true"} id={"jwtIdInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="jwtId"
-                          id="jwtIdInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"JwtId"} target={"jwtId"} type={"text"} required={"true"} id={"jwtIdInput"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-4">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Secret (used for auth if auth is jwt)
-                      </span>
                       {source !== null && source.secret !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="secret"
-                          id="secretInput"
-                          defaultValue={source.secret}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Secret"} target={"secret"} data={source.secret} type={"text"} required={"true"} id={"secretInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="secret"
-                          id="secretInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Secret"} target={"secret"} type={"text"} required={"true"} id={"secretInput"}/>
                       )}
                     </div>
                   </div>
@@ -254,45 +218,19 @@ export default function SourceForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Username (used for auth if auth is username-password)
-                      </span>
                       {source !== null && source.username !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="username"
-                          id="usernameInput"
-                          defaultValue={source.username}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Username"} target={"username"} data={source.username} type={"text"} required={"true"} id={"usernameInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="username"
-                          id="usernameInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Username"} target={"username"} type={"text"} required={"true"} id={"usernameInput"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Password (used for auth if auth is username-password)
-                      </span>
                       {source !== null && source.password !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          type="text"
-                          name="password"
-                          id="passwordInput"
-                          defaultValue={source.password}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Password"} target={"password"} data={source.password} type={"text"} required={"true"} id={"passwordInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          type="text"
-                          name="password"
-                          id="passwordInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Password"} target={"password"} type={"text"} required={"true"} id={"passwordInput"}/>
                       )}
                     </div>
                   </div>
@@ -300,43 +238,19 @@ export default function SourceForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Apikey (used for auth if auth is api key)
-                      </span>
                       {source !== null && source.apikey !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="apikey"
-                          id="apikeyInput"
-                          defaultValue={source.apikey}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Apikey"} target={"apikey"} data={source.apikey} type={"text"} required={"true"} id={"apikeyInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="apikey"
-                          id="apikeyInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Apikey"} target={"apikey"} type={"text"} required={"true"} id={"apikeyInput"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Documentation (url)
-                      </span>
                       {source !== null && source.documentation !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="documentation"
-                          id="documentationInput"
-                          defaultValue={source.documentation}
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Documentation"} target={"documentation"} data={source.documentation} type={"text"} required={"true"} id={"documentationInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="documentation"
-                          id="documentationInput"
-                        />
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Documentation"} type={"text"} required={"true"} id={"documentationInput"}/>
                       )}
                     </div>
                   </div>
@@ -344,27 +258,13 @@ export default function SourceForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">
-                        Authorization header
-                      </span>
-                      {source !== null &&
-                        source.authorizationHeader !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="authorizationHeader"
-                          id="authorizationHeaderInput"
-                          defaultValue={source.authorizationHeader}
-                        />
+                      {source !== null && source.authorizationHeader !== null ? (
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"AuthorizationHeader"} target={"authorizationHeader"} data={source.authorizationHeader} type={"text"} required={"true"} id={"authorizationHeaderInput"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="authorizationHeader"
-                          id="authorizationHeaderInput"
-                        />
-                      )}
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"AuthorizationHeader"} target={"authorizationHeader"} type={"text"} required={"true"} id={"authorizationHeaderInput"}/>
+                        )}
                     </div>
                   </div>
-
                   <Accordion id="headersTest" title="Headers">
                     {source !== null ? (
                       <MultiDimensionalArrayInput
