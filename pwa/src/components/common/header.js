@@ -1,5 +1,13 @@
 import React from "react"
 
+/**
+ * This Header.
+ *
+ * @param {Variable} title Save the data variable we need.
+ * @param {Variable} subText Save the data variable we need.
+ */
+
+
 export default function Header({title, subText}) {
   return (
     <>

@@ -2,6 +2,13 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 
+/**
+ * This ActionMenu.
+ *
+ * @param {object|null} pageDescription Items object used for the map or null.
+ */
+
+
 export default function ActionMenu({pageDescription = null}) {
 
   return (

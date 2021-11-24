@@ -2,6 +2,13 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 
+/**
+ * This Breadcrumbs  forms.
+ *
+ * @param {object|null} items Items object used for the map or null.
+ */
+
+
 export default function Breadcrumbs({ items = null }) {
     const liItems = items.map((item) =>
       <li className="utrecht-breadcrumb__item">

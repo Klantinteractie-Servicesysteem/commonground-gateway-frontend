@@ -5,6 +5,15 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from "./header";
 
+/**
+ * This Layout.
+ *
+ * @param children Data coming from other pages.
+ * @param {string} subtext Save the Link we need.
+ * @param {string} title Save the Link we need.
+ */
+
+
 export default function Layout({ children, title="", subtext="" }) {
     return (
         <>
