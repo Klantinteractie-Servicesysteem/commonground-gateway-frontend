@@ -11,7 +11,7 @@ const IndexPage = () => {
       subtext={"Welcome to the gateway admin dashboard"}
     >
       <a href={`${context.apiUrl}/export/all`} target="_blank">
-        <button class="utrecht-button" type="button">
+        <button className="utrecht-button" type="button">
           Export Configuration
         </button>
       </a>
