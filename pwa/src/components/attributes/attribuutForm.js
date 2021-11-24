@@ -9,6 +9,9 @@ import {
 } from "../utility/inputHandler";
 import { ArrayInputComponent } from "../utility/arrayInput";
 import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
+import {CheckboxComponent} from "../utility/checkbox";
+import {GenericInputComponent} from "../utility/genericInput";
+import {SelectInputComponent} from "../utility/selectInput";
 export default function AttributeForm({ id, entity }) {
   const context = useUrlContext();
   const [attribute, setAttribute] = React.useState(null);
@@ -243,334 +246,76 @@ export default function AttributeForm({ id, entity }) {
                 <div className="col-12">
                   <div className="row">
                     <div className="col-6">
-                      <label htmlFor="nameInput">Name</label>
                       {attribute !== null && attribute.name !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="name"
-                          id="nameInput"
-                          defaultValue={attribute.name}
-                        />
+                          <GenericInputComponent type={"text"} target={"name"} id={"nameInput"} data={attribute.name} name={"Name"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="name"
-                          id="nameInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"name"} id={"nameInput"} name={"Name"}/>
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="descriptionInput">Description</label>
                       {attribute !== null && attribute.description !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="description"
-                          id="descriptionInput"
-                          defaultValue={attribute.description}
-                        />
+                          <GenericInputComponent type={"text"} target={"description"} id={"descriptionInput"} data={attribute.description} name={"Description"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="description"
-                          id="descriptionInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"description"} id={"descriptionInput"} name={"Description"}/>
                       )}
                     </div>
                   </div>
                   <br />
                   <div className="row">
                     <div className="col-6">
-                      <label htmlFor="endpointInput">Type</label>
-                      <select
-                        name="type"
-                        id="typeInput"
-                        className="utrecht-select utrecht-select--html-select"
-                      >
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "string" ? (
-                          <option selected value="string" id="typeInput">
-                            String
-                          </option>
-                        ) : (
-                          <option value="string" id="typeInput">
-                            String
-                          </option>
+                      {attribute !== null && attribute.type !== null ? (
+                      <SelectInputComponent options={[{name: "string"}, {name: "array"}, {name: "integer"}, {name: "boolean"},
+                        {name: "object"}, {name: "date"}, {name: "datetime"}, {name: "number"}, {name: "float"}, {name: "file"}]}
+                                            target={"type"} id={"typeInput"} name={"Type"} data={attribute.type}/>
+                        ):
+                        (
+                          <SelectInputComponent options={[{name: "string"}, {name: "array"}, {name: "integer"}, {name: "boolean"},
+                            {name: "object"}, {name: "date"}, {name: "datetime"}, {name: "number"}, {name: "float"}, {name: "file"}]}
+                                                target={"type"} id={"typeInput"} name={"Type"} />
                         )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "array" ? (
-                          <option selected value="array" id="typeInput">
-                            Array
-                          </option>
-                        ) : (
-                          <option value="array" id="typeInput">
-                            Array
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "integer" ? (
-                          <option selected value="integer" id="typeInput">
-                            Integer
-                          </option>
-                        ) : (
-                          <option value="integer" id="typeInput">
-                            Integer
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "boolean" ? (
-                          <option selected value="bool" id="typeInput">
-                            Boolean
-                          </option>
-                        ) : (
-                          <option value="bool" id="typeInput">
-                            Boolean
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "object" ? (
-                          <option selected value="object" id="typeInput">
-                            Object
-                          </option>
-                        ) : (
-                          <option value="object" id="typeInput">
-                            Object
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "date" ? (
-                          <option selected value="date" id="typeInput">
-                            Date
-                          </option>
-                        ) : (
-                          <option value="date" id="typeInput">
-                            Date
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "datetime" ? (
-                          <option selected value="datetime" id="typeInput">
-                            Datetime
-                          </option>
-                        ) : (
-                          <option value="datetime" id="typeInput">
-                            Datetime
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "number" ? (
-                          <option selected value="number" id="typeInput">
-                            Number
-                          </option>
-                        ) : (
-                          <option value="number" id="typeInput">
-                            Number
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "float" ? (
-                          <option selected value="float" id="typeInput">
-                            Float
-                          </option>
-                        ) : (
-                          <option value="float" id="typeInput">
-                            Float
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.type !== null &&
-                        attribute.type === "file" ? (
-                          <option selected value="file" id="typeInput">
-                            File
-                          </option>
-                        ) : (
-                          <option value="file" id="typeInput">
-                            File
-                          </option>
-                        )}
-                      </select>
                     </div>
                     <div className="col-6">
-                      <label htmlFor="formatInput">Format</label>
-                      <select
-                        name="format"
-                        id="formatInput"
-                        className="utrecht-select utrecht-select--html-select"
-                      >
-                        {attribute !== null && attribute.format !== null ? (
-                          <option
-                            selected
-                            value={attribute.format}
-                            id="formatInput"
-                          >
-                            {attribute.format}
-                          </option>
-                        ) : (
-                          <option selected value="" id="formatInput"></option>
+                      {attribute !== null && attribute.format !== null ? (
+                          <SelectInputComponent options={[{name: "email"}, {name: "phone"}, {name: "country code"}, {name: "bsn"},
+                            {name: "url"}, {name: "uuid"}, {name: "json"}]}
+                                                target={"format"} id={"formatInput"} name={"Format"} data={attribute.format}/>
+                        ):
+                        (
+                          <SelectInputComponent options={[{name: "email"}, {name: "phone"}, {name: "country code"}, {name: "bsn"},
+                            {name: "url"}, {name: "uuid"}, {name: "json"}]} target={"format"} id={"formatInput"} name={"Format"}/>
                         )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "email" ? (
-                          <option selected value="email" id="formatInput">
-                            Email
-                          </option>
-                        ) : (
-                          <option value="email" id="formatInput">
-                            Email
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "phone" ? (
-                          <option selected value="phone" id="formatInput">
-                            Phone
-                          </option>
-                        ) : (
-                          <option value="phone" id="formatInput">
-                            Phone
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "countryCode" ? (
-                          <option selected value="countryCode" id="formatInput">
-                            Country code
-                          </option>
-                        ) : (
-                          <option value="countryCode" id="formatInput">
-                            Country code
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "bsn" ? (
-                          <option selected value="bsn" id="formatInput">
-                            Bsn
-                          </option>
-                        ) : (
-                          <option value="bsn" id="formatInput">
-                            Bsn
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "url" ? (
-                          <option selected value="url" id="formatInput">
-                            Url
-                          </option>
-                        ) : (
-                          <option value="url" id="formatInput">
-                            Url
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "uuid" ? (
-                          <option selected value="uuid" id="formatInput">
-                            Uuid
-                          </option>
-                        ) : (
-                          <option value="uuid" id="formatInput">
-                            Uuid
-                          </option>
-                        )}
-                        {attribute !== null &&
-                        attribute.format !== null &&
-                        attribute.format === "json" ? (
-                          <option selected value="json" id="formatInput">
-                            Json
-                          </option>
-                        ) : (
-                          <option value="json" id="formatInput">
-                            Json
-                          </option>
-                        )}
-                      </select>
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="defaultInput">Default Value</label>
                       {attribute !== null && attribute.defaultValue !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="defaultValue"
-                          id="defaultInput"
-                          defaultValue={attribute.defaultValue}
-                        />
+                          <GenericInputComponent type={"text"} target={"defaultValue"} id={"defaultValueInput"} data={attribute.defaultValue} name={"Default Value"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="defaultValue"
-                          id="defaultInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"defaultValue"} id={"defaultValueInput"} name={"Default Value"}/>
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="multipleOfInput">MultipleOf</label>
                       {attribute !== null && attribute.multipleOf !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="multipleOf"
-                          id="multipleOfInput"
-                          defaultValue={attribute.multipleOf}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"multipleOf"} id={"multipleOfInput"} data={attribute.multipleOf} name={"Multiple Of"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="multipleOf"
-                          id="multipleOfInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"multipleOf"} id={"multipleOfInput"} name={"Multiple Of"}/>
                       )}
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="maximumInput">Maximum</label>
                       {attribute !== null && attribute.maximum !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maximum"
-                          id="maximumInput"
-                          defaultValue={attribute.maximum}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"maximum"} id={"maximumInput"} data={attribute.maximum} name={"Maximum"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maximum"
-                          id="maximumInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"maximum"} id={"maximumInput"} name={"Maximum"}/>
                       )}
                     </div>
                     <div className="col-6">
                       <label htmlFor="minimumInput">Minimum</label>
                       {attribute !== null && attribute.minimum !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minimum"
-                          id="minimumInput"
-                          defaultValue={attribute.minimum}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"minimum"} id={"minimumInput"} data={attribute.minimum} name={"Minimum"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minimum"
-                          id="minimumInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"minimum"} id={"minimumInput"} name={"Minimum"}/>
                       )}
                     </div>
                   </div>
@@ -580,40 +325,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.exclusiveMaximum ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="exclusiveMaximumInput"
-                                name="exclusiveMaximum"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"exclusiveMaximumInput"} nameLabel={"Exclusive Maximum"} nameAttribute={"exclusiveMaximum"} data={attribute.exclusiveMaximum}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="exclusiveMaximumInput"
-                                name="exclusiveMaximum"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"exclusiveMaximumInput"} nameLabel={"Exclusive Maximum"} nameAttribute={"exclusiveMaximum"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="exclusiveMaximumInput"
-                            name="exclusiveMaximum"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"exclusiveMaximumInput"} nameLabel={"Exclusive Maximum"} nameAttribute={"exclusiveMaximum"}/>
                         )}
-
-                        <label
-                          class="form-check-label"
-                          for="exclusiveMaximumInput"
-                        >
-                          Exclusive Maximum
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -621,198 +340,80 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.exclusiveMinimum ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="exclusiveMinimumInput"
-                                name="exclusiveMinimum"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"exclusiveMinimumInout"} nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} data={attribute.exclusiveMinimum}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="exclusiveMinimumInput"
-                                name="exclusiveMinimum"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"exclusiveMinimumInout"} nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="exclusiveMinimumInput"
-                            name="exclusiveMinimum"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"exclusiveMinimumInout"} nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                         )}
-
-                        <label
-                          class="form-check-label"
-                          for="exclusiveMinimumInput"
-                        >
-                          Exclusive Minimum
-                        </label>
                       </div>
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="minLengthInput">MinLength</label>
                       {attribute !== null && attribute.minLength !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minLength"
-                          id="minLengthInput"
-                          defaultValue={attribute.minLength}
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"minLength"} id={"minLengthInput"} data={attribute.minLength} name={"MinLength"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minLength"
-                          id="minLengthInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"minLength"} id={"minLengthInput"} name={"MinLength"} />
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="maxLengthInput">MaxLength</label>
                       {attribute !== null && attribute.maxLength !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxLength"
-                          id="maxLengthInput"
-                          defaultValue={attribute.maxLength}
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"maxLength"} id={"maxLengthInput"} data={attribute.maxLength} name={"MaxLength"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxLength"
-                          id="maxLengthInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"maxLength"} id={"maxLengthInput"} name={"MaxLength"}/>
                       )}
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="maxItemsInput">MaxItems</label>
                       {attribute !== null && attribute.maxItems !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxItems"
-                          id="maxItemsInput"
-                          defaultValue={attribute.maxItems}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"maxItems"} id={"maxItemsInput"} data={attribute.maxItems} name={"MaxItems"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxItems"
-                          id="maxItemsInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"maxItems"} id={"maxItemsInput"} name={"MaxItems"}/>
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="minItemsInput">MinItems</label>
                       {attribute !== null && attribute.minItems !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minItems"
-                          id="minItemsInput"
-                          defaultValue={attribute.minItems}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"minItems"} id={"minItemsInput"} data={attribute.minItems} name={"MinItems"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minItems"
-                          id="minItemsInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"minItems"} id={"minItemsInput"} name={"MinItems"}/>
                       )}
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="maxDateInput">MaxDate</label>
                       {attribute !== null && attribute.maxDate !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxDate"
-                          id="maxDateInput"
-                          defaultValue={attribute.maxDate}
-                        />
+                          <GenericInputComponent type={"string"} target={"maxDate"} id={"maxDateInput"} data={attribute.maxDate} name={"MaxDate"} defaultValue={attribute.maxDate}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxDate"
-                          id="maxDateInput"
-                        />
+                        <GenericInputComponent type={"string"} target={"maxDate"} id={"maxDateInput"} name={"MaxDate"}/>
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="minDateInput">MinDate</label>
                       {attribute !== null && attribute.minDate !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minDate"
-                          id="minDateInput"
-                          defaultValue={attribute.minDate}
-                        />
+                          <GenericInputComponent type={"string"} target={"minDate"} id={"minDateInput"} data={attribute.minDate} name={"MinDate"} defaultValue={attribute.minDate}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minDate"
-                          id="minDateInput"
-                        />
+                        <GenericInputComponent type={"string"} target={"minDate"} id={"minDateInput"} name={"MinDate"}/>
                       )}
                     </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-6">
-                      <label htmlFor="minPropertiesInput">Min Properties</label>
                       {attribute !== null &&
                       attribute.minProperties !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minProperties"
-                          id="minPropertiesInput"
-                          defaultValue={attribute.minProperties}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"minProperties"} id={"minPropertiesInput"} data={attribute.minProperties} name={"Min Properties"} defaultValue={attribute.minProperties}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="minProperties"
-                          id="minPropertiesInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"minProperties"} id={"minPropertiesInput"} name={"Min Properties"}/>
                       )}
                     </div>
                     <div className="col-6">
-                      <label htmlFor="maxPropertiesInput">Max Properties</label>
                       {attribute !== null &&
                       attribute.maxProperties !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxProperties"
-                          id="maxPropertiesInput"
-                          defaultValue={attribute.maxProperties}
-                          type="number"
-                        />
+                          <GenericInputComponent type={"number"} target={"maxProperties"} id={"maxPropertiesInput"} data={attribute.maxProperties} name={"Max Properties"} defaultValue={attribute.maxProperties}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxProperties"
-                          id="maxPropertiesInput"
-                          type="number"
-                        />
+                        <GenericInputComponent type={"number"} target={"maxProperties"} id={"maxPropertiesInput"} name={"Max Properties"}/>
                       )}
                     </div>
                   </div>
@@ -820,39 +421,17 @@ export default function AttributeForm({ id, entity }) {
                     <div className="col-6">
                       <label htmlFor="maxPropertiesInput">Example</label>
                       {attribute !== null && attribute.example !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="example"
-                          id="exampleInput"
-                          defaultValue={attribute.example}
-                          type="text"
-                        />
+                          <GenericInputComponent type={"text"} target={"example"} id={"exampleInput"} data={attribute.example} name={"Example"} defaultValue={attribute.example}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="example"
-                          id="exampleInput"
-                          type="text"
-                        />
+                        <GenericInputComponent type={"text"} target={"example"} id={"exampleInput"} name={"Example"}/>
                       )}
                     </div>
                     <div className="col-6">
                       <label htmlFor="maxPropertiesInput">File Type</label>
                       {attribute !== null && attribute.fileType !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="fileType"
-                          id="fileTypeInput"
-                          defaultValue={attribute.fileType}
-                          type="text"
-                        />
+                          <GenericInputComponent type={"text"} target={"fileType"} id={"fileTypeInput"} data={attribute.fileType} name={"File Type"} defaultValue={attribute.fileType}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="fileType"
-                          id="fileTypeInput"
-                          type="text"
-                        />
+                        <GenericInputComponent type={"text"} target={"fileType"} id={"fileTypeInput"} name={"File Type"} />
                       )}
                     </div>
                   </div>
@@ -860,20 +439,9 @@ export default function AttributeForm({ id, entity }) {
                     <div className="col-6">
                       <label htmlFor="maxPropertiesInput">Max File Size</label>
                       {attribute !== null && attribute.maxFileSize !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxFileSize"
-                          id="maxFileSizeInput"
-                          defaultValue={attribute.maxFileSize}
-                          type="text"
-                        />
+                          <GenericInputComponent type={"text"} target={"maxFileSize"} id={"maxFileSizeInput"} data={attribute.maxFileSize} name={"Max File Size"} defaultValue={attribute.maxFileSize}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="maxFileSize"
-                          id="maxFileSizeInput"
-                          type="text"
-                        />
+                        <GenericInputComponent type={"text"} target={"maxFileSize"} id={"maxFileSizeInput"} name={"Max File Size"}/>
                       )}
                     </div>
                     <div className="col-6">
@@ -916,40 +484,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.persistToGateway ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="persistToGatewayInput"
-                                name="persistToGateway"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"persistToGatewayInput"} nameLabel={"Persist To Gateway"} nameAttribute={"persistToGateway"} data={attribute.persistToGateway} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="persistToGatewayInput"
-                                name="persistToGateway"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"persistToGatewayInput"} nameLabel={"Persist To Gateway"} nameAttribute={"persistToGateway"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="persistToGatewayInput"
-                            name="persistToGateway"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"persistToGatewayInput"} nameLabel={"Persist To Gateway"} nameAttribute={"persistToGateway"} defaultValue={"true"}/>
                         )}
-
-                        <label
-                          class="form-check-label"
-                          for="persistToGatewayInput"
-                        >
-                          Persist To Gateway
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
@@ -957,37 +499,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.cascade ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="cascadeInput"
-                                name="cascade"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"cascadeInput"} nameLabel={"Cascade"} nameAttribute={"cascade"} data={attribute.cascade} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="cascadeInput"
-                                name="cascade"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"cascadeInput"} nameLabel={"Cascade"} nameAttribute={"cascade"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="cascadeInput"
-                            name="cascade"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"cascadeInput"} nameLabel={"Cascade"} nameAttribute={"cascade"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="cascadeInput">
-                          Cascade
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
@@ -995,37 +514,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.required ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="requiredInput"
-                                name="required"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"requiredInput"} nameLabel={"Required"} nameAttribute={"required"} data={attribute.required} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="requiredInput"
-                                name="required"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"requiredInput"} nameLabel={"Required"} nameAttribute={"required"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="requiredInput"
-                            name="required"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"requiredInput"} nameLabel={"Required"} nameAttribute={"required"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="requiredInput">
-                          Required
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
@@ -1033,37 +529,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.searchable ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="searchableInput"
-                                name="searchable"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"searchableInput"} nameLabel={"Searchable"} nameAttribute={"searchable"} data={attribute.searchable} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="searchableInput"
-                                name="searchable"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"searchableInput"} nameLabel={"Searchable"} nameAttribute={"searchable"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="searchableInput"
-                            name="searchable"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"searchableInput"} nameLabel={"Searchable"} nameAttribute={"searchable"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="searchableInput">
-                          Searchable
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1071,37 +544,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.mustBeUnique ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="mustBeUniqueInput"
-                                name="mustBeUnique"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"} nameAttribute={"mustBeUnique"} data={attribute.mustBeUnique} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="mustBeUniqueInput"
-                                name="mustBeUnique"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"} nameAttribute={"mustBeUnique"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="mustBeUniqueInput"
-                            name="mustBeUnique"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"} nameAttribute={"mustBeUnique"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="mustBeUniqueInput">
-                          Must Be Unique
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1109,37 +559,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.uniqueItems ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="uniqueItemsInput"
-                                name="uniqueItems"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"uniqueItemsInput"} nameLabel={"Unique Items"} nameAttribute={"uniqueItems"} data={attribute.uniqueItems} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="uniqueItemsInput"
-                                name="uniqueItems"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"uniqueItemsInput"} nameLabel={"Unique Items"} nameAttribute={"uniqueItems"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="uniqueItemsInput"
-                            name="uniqueItems"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"uniqueItemsInput"} nameLabel={"Unique Items"} nameAttribute={"uniqueItems"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="uniqueItemsInput">
-                          Unique Items
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1147,37 +574,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.multiple ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="multipleInput"
-                                name="multiple"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"multipleInput"} nameLabel={"Multiple"} nameAttribute={"multiple"} data={attribute.multiple} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="multipleInput"
-                                name="multiple"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"multipleInput"} nameLabel={"Multiple"} nameAttribute={"multiple"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="multipleInput"
-                            name="multiple"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"multipleInput"} nameLabel={"Multiple"} nameAttribute={"multiple"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="multipleInput">
-                          Multiple
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1185,37 +589,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.nullable ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="nullableInput"
-                                name="nullable"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"nullableInput"} nameLabel={"Nullable"} nameAttribute={"nullable"} data={attribute.nullable} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="nullableInput"
-                                name="nullable"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"nullableInput"} nameLabel={"Nullable"} nameAttribute={"nullable"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="nullableInput"
-                            name="nullable"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"nullableInput"} nameLabel={"Nullable"} nameAttribute={"nullable"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="nullableInput">
-                          Nullable
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1223,37 +604,14 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.readOnly ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="readOnlyInput"
-                                name="readOnly"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"readOnlyInput"} nameLabel={"Read Only"} nameAttribute={"readOnly"} data={attribute.readOnly} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="readOnlyInput"
-                                name="readOnly"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"readOnlyInput"} nameLabel={"Read Only"} nameAttribute={"readOnly"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="readOnlyInput"
-                            name="readOnly"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"readOnlyInput"} nameLabel={"Read Only"} nameAttribute={"readOnly"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="readOnlyInput">
-                          Read Only
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
@@ -1261,75 +619,29 @@ export default function AttributeForm({ id, entity }) {
                         {attribute !== null ? (
                           <>
                             {attribute.writeOnly ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="writeOnlyInput"
-                                name="writeOnly"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                                <CheckboxComponent type={"checkbox"} id={"writeOnlyInput"} nameLabel={"Write Only"} nameAttribute={"writeOnly"} data={attribute.writeOnly} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="writeOnlyInput"
-                                name="writeOnly"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"writeOnlyInput"} nameLabel={"Write Only"} nameAttribute={"writeOnly"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="writeOnlyInput"
-                            name="writeOnly"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"writeOnlyInput"} nameLabel={"Write Only"} nameAttribute={"writeOnly"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="writeOnlyInput">
-                          Write Only
-                        </label>
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
                       <div class="form-check">
                         {attribute !== null ? (
                           <>
-                            {attribute.writeOnly ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="deprecatedInput"
-                                name="deprecated"
-                                defaultChecked={true}
-                                defaultValue="true"
-                              />
+                            {attribute.deprecated ? (
+                                <CheckboxComponent type={"checkbox"} id={"deprecatedInput"} nameLabel={"Deprecated"} nameAttribute={"deprecated"} data={attribute.deprecated} defaultValue={"true"}/>
                             ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="deprecatedInput"
-                                name="deprecated"
-                                defaultValue="true"
-                              />
+                              <CheckboxComponent type={"checkbox"} id={"deprecatedInput"} nameLabel={"Deprecated"} nameAttribute={"deprecated"} defaultValue={"true"}/>
                             )}
                           </>
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="deprecatedInput"
-                            name="deprecated"
-                            defaultValue="true"
-                          />
+                          <CheckboxComponent type={"checkbox"} id={"deprecatedInput"} nameLabel={"Deprecated"} nameAttribute={"deprecated"} defaultValue={"true"}/>
                         )}
-
-                        <label class="form-check-label" for="deprecatedInput">
-                          Deprecated
-                        </label>
                       </div>
                     </div>
                   </div>

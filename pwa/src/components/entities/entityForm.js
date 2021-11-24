@@ -8,6 +8,9 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
+import Accordion from "../common/accordion";
+import Card from "../common/card";
+
 
 export default function EntityForm({ id }) {
   const context = useUrlContext();
@@ -144,332 +147,229 @@ export default function EntityForm({ id }) {
   }, []);
 
   return (
-    <div className="utrecht-card card">
-      <form id="dataForm" onSubmit={saveEntity}>
-        <div className="utrecht-card-header card-header">
-          <div className="utrecht-card-head-row card-head-row row">
-            <div className="col-6">
-              <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">
-                Values
-              </h4>
-            </div>
-            <div className="col-6 text-right">
-              <Link className="utrecht-link" to="/entities">
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"></i>Back
-                </button>
-              </Link>
-              {sources !== null && sources.length > 0 ? (
-                <button
-                  className="utrecht-button utrecht-button-sm btn btn-sm btn-success"
-                  type="submit"
+    <form id="dataForm" onSubmit={saveEntity}>
+      <Card title="Values" back="/entities" save={true} onlySaveIf={sources}>
+        <div className="row">
+          <div className="col-12">
+            {showSpinner === true ? (
+              <div className="text-center py-5">
+                <div
+                  class="spinner-border text-primary"
+                  style={{ width: "3rem", height: "3rem" }}
+                  role="status"
                 >
-                  <i className="fas fa-save mr-2"></i>Save
-                </button>
-              ) : (
-                <button
-                  disabled
-                  className="utrecht-button utrecht-button-sm btn btn-sm btn-success"
-                  type="submit"
-                >
-                  <i className="fas fa-save mr-2"></i>Save
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="utrecht-card-body card-body">
-          <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <div className="text-center py-5">
-                  <div
-                    class="spinner-border text-primary"
-                    style={{ width: "3rem", height: "3rem" }}
-                    role="status"
-                  >
-                    <span class="sr-only">Loading...</span>
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <span className="utrecht-form-label mb-2">Name *</span>
+                      {entity !== null && entity.name !== null ? (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="name"
+                          id="nameInput"
+                          defaultValue={entity.name}
+                          required
+                        />
+                      ) : (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="name"
+                          id="nameInput"
+                          required
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">Description</span>
+                      {entity !== null && entity.description !== null ? (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="description"
+                          id="descriptionInput"
+                          defaultValue={entity.description}
+                        />
+                      ) : (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="description"
+                          id="descriptionInput"
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label mb-2">Name *</span>
-                        {entity !== null && entity.name !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            defaultValue={entity.name}
-                            required
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            required
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Description</span>
-                        {entity !== null && entity.description !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="description"
-                            id="descriptionInput"
-                            defaultValue={entity.description}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="description"
-                            id="descriptionInput"
-                          />
-                        )}
-                      </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">Endpoint</span>
+                      {entity !== null && entity.endpoint !== null ? (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="entityEndpoint"
+                          id="endpointInput"
+                          defaultValue={entity.endpoint}
+                        />
+                      ) : (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="entityEndpoint"
+                          id="endpointInput"
+                        />
+                      )}
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Endpoint</span>
-                        {entity !== null && entity.endpoint !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="entityEndpoint"
-                            id="endpointInput"
-                            defaultValue={entity.endpoint}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="entityEndpoint"
-                            id="endpointInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Route</span>
-                        {entity !== null && entity.route !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="route"
-                            id="routeInput"
-                            defaultValue={entity.route}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="route"
-                            id="routeInput"
-                          />
-                        )}
-                      </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">Route</span>
+                      {entity !== null && entity.route !== null ? (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="route"
+                          id="routeInput"
+                          defaultValue={entity.route}
+                        />
+                      ) : (
+                        <input
+                          className="utrecht-textbox utrecht-textbox--html-input"
+                          name="route"
+                          id="routeInput"
+                        />
+                      )}
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Source</span>
-                        <select
-                          name="gateway"
-                          id="gatewayInput"
-                          class="utrecht-select utrecht-select--html-select"
-                        >
-                          {sources !== null && sources.length > 0 ? (
-                            sources.map((row) => (
-                              <>
-                                {entity !== null &&
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">Source</span>
+                      <select
+                        name="gateway"
+                        id="gatewayInput"
+                        class="utrecht-select utrecht-select--html-select"
+                      >
+                        {sources !== null && sources.length > 0 ? (
+                          sources.map((row) => (
+                            <>
+                              {entity !== null &&
                                 entity.gateway !== undefined &&
                                 entity.gateway !== null &&
                                 entity.gateway.id == row.id ? (
-                                  <option
-                                    value={"/admin/gateways/" + row.id}
-                                    selected
-                                  >
-                                    {row.name}
-                                  </option>
-                                ) : (
-                                  <option value={"/admin/gateways/" + row.id}>
-                                    {row.name}
-                                  </option>
-                                )}
-                              </>
-                            ))
-                          ) : (
-                            <option value="">
-                              Please create a Source before creating an Entity
-                            </option>
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-12">
-                      <div class="form-check">
-                        {entity !== null ? (
-                          <>
-                            {entity.extend ? (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="extendInput"
-                                name="extend"
-                                defaultChecked={true}
-                              />
-                            ) : (
-                              <input
-                                class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                                type="checkbox"
-                                id="extendInput"
-                                name="extend"
-                              />
-                            )}
-                          </>
+                                <option
+                                  value={"/admin/gateways/" + row.id}
+                                  selected
+                                >
+                                  {row.name}
+                                </option>
+                              ) : (
+                                <option value={"/admin/gateways/" + row.id}>
+                                  {row.name}
+                                </option>
+                              )}
+                            </>
+                          ))
                         ) : (
-                          <input
-                            class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                            type="checkbox"
-                            id="extendInput"
-                            name="extend"
-                          />
+                          <option value="">
+                            Please create a Source before creating an Entity
+                          </option>
                         )}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    <div class="form-check">
+                      {entity !== null ? (
+                        <>
+                          {entity.extend ? (
+                            <input
+                              class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
+                              type="checkbox"
+                              id="extendInput"
+                              name="extend"
+                              defaultChecked={true}
+                            />
+                          ) : (
+                            <input
+                              class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
+                              type="checkbox"
+                              id="extendInput"
+                              name="extend"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <input
+                          class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
+                          type="checkbox"
+                          id="extendInput"
+                          name="extend"
+                        />
+                      )}
 
-                        <label class="form-check-label" for="extendInput">
-                          Extend
-                        </label>
-                      </div>
+                      <label class="form-check-label" for="extendInput">
+                        Extend
+                      </label>
                     </div>
                   </div>
-                  <div class="accordion mt-4" id="entityAccordion">
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="transformationsAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#transformationsCollapse"
-                          aria-expanded="false"
-                          aria-controls="transformationsCollapse"
-                        >
-                          Transformations
-                        </button>
-                      </h2>
-                      <div
-                        id="transformationsCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="transformationsAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"transformations"}
-                              data={entity.transformations}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"transformations"}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="translationConfigAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#translationConfigCollapse"
-                          aria-expanded="false"
-                          aria-controls="translationConfigCollapse"
-                        >
-                          Translation Config
-                        </button>
-                      </h2>
-                      <div
-                        id="translationConfigCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="translationConfigAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"translationConfig"}
-                              data={entity.translationConfig}
-                              name={"Translation Config"}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"translationConfig"}
-                              name={"Translation Config"}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2
-                        class="accordion-header"
-                        id="collectionConfigAccordion"
-                      >
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collectionConfigCollapse"
-                          aria-expanded="false"
-                          aria-controls="collectionConfigCollapse"
-                        >
-                          Collection Config
-                        </button>
-                      </h2>
-                      <div
-                        id="collectionConfigCollapse"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="collectionConfigAccordion"
-                        data-bs-parent="#entityAccordion"
-                      >
-                        <div class="accordion-body">
-                          {entity !== null ? (
-                            <MultiDimensionalArrayInput
-                              target={"collectionConfig"}
-                              data={entity.collectionConfig}
-                              name={"Collection Config"}
-                            />
-                          ) : (
-                            <MultiDimensionalArrayInput
-                              target={"collectionConfig"}
-                              name={"Collection Config"}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+                </div>
+
+
+
+                <Accordion id="transformationsAccordion" title="Transformations">
+                  {entity !== null ? (
+                    <MultiDimensionalArrayInput
+                      target={"transformations"}
+                      data={entity.transformations}
+                    />
+                  ) : (
+                    <MultiDimensionalArrayInput
+                      target={"transformations"}
+                    />
+                  )}
+                </Accordion>
+                <Accordion id="translationConfigAccordion" title="Translation Config">
+                  {entity !== null ? (
+                    <MultiDimensionalArrayInput
+                      target={"translationConfig"}
+                      data={entity.translationConfig}
+                      name={"Translation Config"}
+                    />
+                  ) : (
+                    <MultiDimensionalArrayInput
+                      target={"translationConfig"}
+                      name={"Translation Config"}
+                    />
+                  )}
+                </Accordion>
+                <Accordion id="collectionConfigAccordion" title="Collection Config">
+                  {entity !== null ? (
+                    <MultiDimensionalArrayInput
+                      target={"collectionConfig"}
+                      data={entity.collectionConfig}
+                      name={"Collection Config"}
+                    />
+                  ) : (
+                    <MultiDimensionalArrayInput
+                      target={"collectionConfig"}
+                      name={"Collection Config"}
+                    />
+                  )}
+                </Accordion>
+
+              </>
+            )}
           </div>
         </div>
-      </form>
-    </div>
+
+      </Card>
+    </form>
   );
 }
