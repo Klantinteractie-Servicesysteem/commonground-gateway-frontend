@@ -1,6 +1,15 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
+
+/**
+ * This components renders a table.
+ *
+ * @param {array} properties This array hold objects with a th which is a thead item and a property which is used to render data in rows with the given items.
+ * @param {array} items This array hold data that is used to render rows.
+ * @param {string} editLink Link to page where you can edit a item.
+ * @returns TSX of the generated Table.
+ */
 export default function Table({ properties=[{th: "Name", property: "name"}], items = null, editLink=null}) {
 
   return (
