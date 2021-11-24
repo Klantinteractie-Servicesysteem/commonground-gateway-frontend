@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
 import { useEffect, useState } from "react";
-import { Link } from "gatsby"
+import Card from "../common/card";
+import Spinner from "../common/spinner";
 
 export default function ObjectEntityForm({ id }) {
   const context = useUrlContext();
@@ -22,7 +23,7 @@ export default function ObjectEntityForm({ id }) {
   const checkInputs = (inputs) => {
     let valid = true;
     for (let i = 0; i < inputs.length; i++) {
-      if (inputs[i].length === 0) {
+      if (inputs[i] === undefined || inputs[i].length === 0) {
         valid = false;
       }
     }
@@ -55,6 +56,7 @@ export default function ObjectEntityForm({ id }) {
     body = removeEmptyValues(body);
 
     if (!checkInputs([body.name])) {
+      setShowSpinner(false);
       return;
     }
 
@@ -92,32 +94,14 @@ export default function ObjectEntityForm({ id }) {
   }, []);
 
   return (
-    <div className="utrecht-card card">
-      <form id="dataForm" onSubmit={saveObjectEntity} >
-
-        <div className="utrecht-card-header card-header">
-          <div className="utrecht-card-head-row card-head-row row">
-            <div className="col-6">
-              <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Values</h4>
-            </div>
-            <div className="col-6 text-right">
-              <Link className="utrecht-link" to="/entities">
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2"><i className="fas fa-long-arrow-alt-left mr-2"></i>Back</button>
-              </Link>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit"><i className="fas fa-save mr-2"></i>Save</button>
-            </div>
-          </div>
-        </div>
-        <div className="utrecht-card-body card-body">
+    <form id="dataForm" onSubmit={saveObjectEntity} >
+      <Card title="Values" back="/entities" save={true} >
           <div className="row">
             <div className="col-12">
               {
-                showSpinner === true ?
-                  <div className="text-center py-5">
-                    <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
-                      <span class="sr-only">Loading...</span>
-                    </div>
-                  </div> :
+              showSpinner === true ?
+                <Spinner />
+                :
                   <>
                     <div className="row">
                       <div className="col-6">
@@ -180,10 +164,7 @@ export default function ObjectEntityForm({ id }) {
               }
             </div>
           </div>
-        </div>
-      </form>
-
-
-    </div>
+      </Card>
+    </form>
   );
 }

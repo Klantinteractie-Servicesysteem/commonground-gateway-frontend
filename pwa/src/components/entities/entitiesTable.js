@@ -1,11 +1,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useUrlContext } from "../../context/urlContext";
-import TableHeaders from "../common/tableHeaders";
 import TableCells from "../common/tableCells";
-import CardHeader from "../cardHeader";
+import Card from "../common/card";
 import { Link } from "gatsby";
+import Table from "../common/table";
+import TableHeaders from "../common/tableHeaders";
 import DeleteModal from "../modals/deleteModal";
+import Spinner from "../common/spinner";
 
 export default function EntitiesTable() {
   const [entities, setEntities] = React.useState(null);
@@ -42,30 +44,11 @@ export default function EntitiesTable() {
   }, []);
 
   return (
-    <div className="utrecht-card card">
-      <CardHeader
-        items={[
-          {
-            title: "Entities",
-            modal: "#helpModal",
-            refresh: getEntities,
-            add: "/entities/new",
-          },
-        ]}
-      />
-      <div className="utrecht-card-body card-body">
+    <Card title="Entities" modal="#helpModal" refresh={getEntities} add="/entities/new" >
         <div className="row">
           <div className="col-12">
             {showSpinner === true ? (
-              <div className="text-center px-5">
-                <div
-                  className="spinner-border text-primary"
-                  style={{ width: "3rem", height: "3rem" }}
-                  role="status"
-                >
-                  <span className="sr-only">Loading...</span>
-                </div>
-              </div>
+              <Spinner />
             ) : (
               <div className="utrecht-html">
                 <table
@@ -149,7 +132,6 @@ export default function EntitiesTable() {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </Card>
   );
 }

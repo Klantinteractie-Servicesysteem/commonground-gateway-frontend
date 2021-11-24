@@ -5,7 +5,8 @@ import { useUrlContext } from "../../context/urlContext";
 const IndexPage = () => {
   const context = useUrlContext;
   return (
-    <Layout title={"Entities"} subtext={"An overview of your Entity objects"}>
+    <Layout title={"Entities"} subtext={"An overview of your entity objects"}>
+      <title>Gateway - Entities</title>
       <main>
         <div className="row">
           <div className="col-12">
