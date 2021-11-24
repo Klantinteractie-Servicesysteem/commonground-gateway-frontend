@@ -9,7 +9,7 @@ import * as React from "react";
  * @param {string} title Title for this accordion.
  * @returns TSX of the generated accordion.
  */
-export default function Accordion({ id = 'id', title = "Title"}) {
+export default function Accordion({ children, id = 'id', title = "Title"}) {
 
   return (
     <div className="accordion mt-4" id={id + "Accordion"}>
