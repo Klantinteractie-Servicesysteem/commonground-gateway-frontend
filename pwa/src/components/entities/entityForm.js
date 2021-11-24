@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useUrlContext } from "../../context/urlContext";
-import { Link, navigate } from "gatsby";
+import { navigate } from "gatsby";
 import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
 import {
   checkValues,
@@ -10,6 +10,8 @@ import {
 } from "../utility/inputHandler";
 import Accordion from "../common/accordion";
 import Card from "../common/card";
+import {GenericInputComponent} from "../utility/genericInput";
+import {CheckboxComponent} from "../utility/checkbox";
 
 
 export default function EntityForm({ id }) {
@@ -166,41 +168,22 @@ export default function EntityForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label mb-2">Name *</span>
                       {entity !== null && entity.name !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="name"
-                          id="nameInput"
-                          defaultValue={entity.name}
-                          required
-                        />
+                        <GenericInputComponent type={"text"} target={"name"} id={"nameInput"} data={entity.name}
+                                               name={"Name"} required={"true"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="name"
-                          id="nameInput"
-                          required
-                        />
+                        <GenericInputComponent type={"text"} target={"name"} id={"nameInput"}
+                                               name={"Name *"} required={"true"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">Description</span>
                       {entity !== null && entity.description !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="description"
-                          id="descriptionInput"
-                          defaultValue={entity.description}
-                        />
+                        <GenericInputComponent type={"text"} target={"description"} id={"descriptionInput"}
+                                               data={entity.description} name={"Description"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="description"
-                          id="descriptionInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"description"} id={"descriptionInput"} name={"Description"}/>
                       )}
                     </div>
                   </div>
@@ -208,39 +191,23 @@ export default function EntityForm({ id }) {
                 <div className="row">
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">Endpoint</span>
                       {entity !== null && entity.endpoint !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="entityEndpoint"
-                          id="endpointInput"
-                          defaultValue={entity.endpoint}
-                        />
+                          <GenericInputComponent type={"text"} target={"endpoint"} id={"endpointInput"}
+                                                 data={entity.endpoint} name={"Endpoint"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="entityEndpoint"
-                          id="endpointInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"endpoint"} id={"endpointInput"}
+                                               name={"Endpoint"}/>
                       )}
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="form-group">
-                      <span className="utrecht-form-label">Route</span>
                       {entity !== null && entity.route !== null ? (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="route"
-                          id="routeInput"
-                          defaultValue={entity.route}
-                        />
+                          <GenericInputComponent type={"text"} target={"route"} id={"routeInput"}
+                                                 data={entity.route} name={"Route"}/>
                       ) : (
-                        <input
-                          className="utrecht-textbox utrecht-textbox--html-input"
-                          name="route"
-                          id="routeInput"
-                        />
+                        <GenericInputComponent type={"text"} target={"route"} id={"routeInput"}
+                                               name={"Route"}/>
                       )}
                     </div>
                   </div>
@@ -289,40 +256,21 @@ export default function EntityForm({ id }) {
                       {entity !== null ? (
                         <>
                           {entity.extend ? (
-                            <input
-                              class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                              type="checkbox"
-                              id="extendInput"
-                              name="extend"
-                              defaultChecked={true}
-                            />
+                              <CheckboxComponent type={"checkbox"} id={"extendInput"}
+                                                 nameLabel={"Extend"} nameAttribute={"extend"}
+                                                 data={entity.extend}/>
                           ) : (
-                            <input
-                              class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                              type="checkbox"
-                              id="extendInput"
-                              name="extend"
-                            />
+                            <CheckboxComponent type={"checkbox"} id={"extendInput"}
+                                               nameLabel={"Extend"} nameAttribute={"extend"}/>
                           )}
                         </>
                       ) : (
-                        <input
-                          class="form-check-input utrecht-checkbox utrecht-checkbox--html-input"
-                          type="checkbox"
-                          id="extendInput"
-                          name="extend"
-                        />
+                        <CheckboxComponent type={"checkbox"} id={"extendInput"}
+                                           nameLabel={"Extend"} nameAttribute={"extend"}/>
                       )}
-
-                      <label class="form-check-label" for="extendInput">
-                        Extend
-                      </label>
                     </div>
                   </div>
                 </div>
-
-
-
                 <Accordion id="transformationsAccordion" title="Transformations">
                   {entity !== null ? (
                     <MultiDimensionalArrayInput
