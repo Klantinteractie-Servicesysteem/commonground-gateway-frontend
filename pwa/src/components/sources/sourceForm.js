@@ -157,7 +157,7 @@ export default function SourceForm({ id }) {
                     (
                       <SelectInputComponent
                         options={[{name: "apikey"}, {name: "jwt"}, {name: "username-password"}]}
-                        target={"auth"} id={"authInput"} name={"Auth *"} data={source.auth}/>
+                        target={"auth"} id={"authInput"} name={"Auth *"}/>
                     )}
                 </div>
                 <div className="row">
