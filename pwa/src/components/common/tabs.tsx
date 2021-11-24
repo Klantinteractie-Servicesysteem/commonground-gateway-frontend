@@ -1,5 +1,13 @@
 import * as React from "react";
 
+
+/**
+ * This Tabs  forms.
+ *
+ * @param {object|null} items Items object used for the map or null.
+ */
+
+
 export default function Tabs({ items = null }) {
     const navItems = items.map((item) =>
         <li className="nav-item" role="presentation" key={item.name}>
