@@ -13,7 +13,7 @@ const IndexPage = (props) => {
   const context = useUrlContext();
 
   const handleTitle = () => {
-    if (props.params.id == "new") {
+    if (props.params.id === "new") {
       setTitle("New entity");
     } else {
       fetch(`${context.apiUrl}/entities/${props.params.id}`, {
@@ -54,39 +54,19 @@ const IndexPage = (props) => {
               )}
             </div>
             <div className="tab-content">
-              <div
-                className="tab-pane active"
-                id="main"
-                role="tabpanel"
-                aria-labelledby="main-tab"
-              >
+              <div className="tab-pane active" id="main" role="tabpanel" aria-labelledby="main-tab">
                 <br />
                 <EntityForm id={props.params.id} />
               </div>
-              <div
-                className="tab-pane"
-                id="attributes"
-                role="tabpanel"
-                aria-labelledby="attributes-tab"
-              >
+              <div className="tab-pane" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
                 <br />
                 <AttributeTable id={props.params.id} />
               </div>
-              <div
-                className="tab-pane"
-                id="data"
-                role="tabpanel"
-                aria-labelledby="data-tab"
-              >
+              <div className="tab-pane" id="data" role="tabpanel" aria-labelledby="data-tab">
                 <br />
                 <DataTable id={props.params.id} />
               </div>
-              <div
-                className="tab-pane"
-                id="logs"
-                role="tabpanel"
-                aria-labelledby="data-tab"
-              >
+              <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="data-tab">
                 <br />
                 <LogsTable id={props.params.id} />
               </div>
