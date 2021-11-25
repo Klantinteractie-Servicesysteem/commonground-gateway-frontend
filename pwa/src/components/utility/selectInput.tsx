@@ -9,9 +9,10 @@ import * as React from "react";
  * @param {string|null} name Name used for the labels.
  * @param {string|null} id Id used for the select and options.
  * @param {object|null} data data for the check.
+ * @param {string|null} valueOption value for the option.
  * @returns Jsx of the generated form.
  */
-export const SelectInputComponent = ({options, target, id, data = null, name = null}) => {
+export const SelectInputComponent = ({options, target, id, data = null, name = null, valueOption = null}) => {
   return (
     <>
       <span className="utrecht-form-label">{_.upperFirst(name ?? target)}</span>
@@ -19,7 +20,7 @@ export const SelectInputComponent = ({options, target, id, data = null, name = n
         {options.map((option) => (
           <option
             selected={data == null ? false : data == option.name ? true : false}
-            value={option.value}
+            value={ valueOption !== null ? `${valueOption}${option.id}` : option.value}
             id={target}
           >
             {_.upperFirst(option.name)}
