@@ -6,10 +6,7 @@ const IndexPage = () => {
   const context = useUrlContext();
 
   return (
-    <Layout
-      title={"Dashboard"}
-      subtext={"Welcome to the gateway admin dashboard"}
-    >
+    <Layout title={"Dashboard"} subtext={"Welcome to the gateway admin dashboard"}>
       <a href={`${context.apiUrl}/export/all`} target="_blank">
         <button className="utrecht-button" type="button">
           Export Configuration

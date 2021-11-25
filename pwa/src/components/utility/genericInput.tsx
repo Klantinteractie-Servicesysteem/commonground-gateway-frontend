@@ -14,7 +14,16 @@ import * as React from "react";
  * @param {string|null} maxLength the maxLength of the input.
  * @returns Jsx of the generated form.
  */
-export const GenericInputComponent = ({type, target, id, data = null, name = null, required = false, minLength = null, maxLength = null }) => {
+export const GenericInputComponent = ({
+  type,
+  target,
+  id,
+  data = null,
+  name = null,
+  required = false,
+  minLength = null,
+  maxLength = null,
+}) => {
   return (
     <>
       <span className="utrecht-form-label">{_.upperFirst(name ?? target)}</span>

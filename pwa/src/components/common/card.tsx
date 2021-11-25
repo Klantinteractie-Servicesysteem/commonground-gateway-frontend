@@ -14,14 +14,28 @@ import CardHeader from "./cardHeader";
  * @param {string|null} onlySaveIf This variable must not be null (if given) if you want to be able to save inside CardHeader.
  * @returns TSX of the generated Card.
  */
-export default function Card({ children, title = 'Title', modal = null, refresh = null, add = null, back = null, save = null, onlySaveIf = undefined}) {
-
+export default function Card({
+  children,
+  title = "Title",
+  modal = null,
+  refresh = null,
+  add = null,
+  back = null,
+  save = null,
+  onlySaveIf = undefined,
+}) {
   return (
     <div className="utrecht-card card">
-      <CardHeader title={title} modal={modal} refresh={refresh} add={add} back={back} save={save} onlySaveIf={onlySaveIf} />
-      <div className="utrecht-card-body card-body">
-        {children}
-      </div>
+      <CardHeader
+        title={title}
+        modal={modal}
+        refresh={refresh}
+        add={add}
+        back={back}
+        save={save}
+        onlySaveIf={onlySaveIf}
+      />
+      <div className="utrecht-card-body card-body">{children}</div>
     </div>
   );
 }

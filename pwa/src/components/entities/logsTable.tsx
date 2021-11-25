@@ -17,18 +17,18 @@ export default function LogsTable({ id }) {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((response) => {
+      .then(response => {
         if (response.ok) {
           return response.json();
         } else {
           throw new Error(response.statusText);
         }
       })
-      .then((data) => {
+      .then(data => {
         setLogs(data["hydra:member"]);
         setShowSpinner(false);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error("Error:", error);
       });
   };
@@ -44,7 +44,17 @@ export default function LogsTable({ id }) {
           {showSpinner === true ? (
             <Spinner />
           ) : (
-            <Table properties={[{ th: "Action", property: "action" }, { th: "ObjectId", property: "objectId" }, { th: "Version", property: "version" }, { th: "Username", property: "username" }, { th: "Session", property: "session" }]} items={logs} editLink={"/entities"}/>
+            <Table
+              properties={[
+                { th: "Action", property: "action" },
+                { th: "ObjectId", property: "objectId" },
+                { th: "Version", property: "version" },
+                { th: "Username", property: "username" },
+                { th: "Session", property: "session" },
+              ]}
+              items={logs}
+              editLink={"/entities"}
+            />
           )}
         </div>
       </div>

@@ -1,54 +1,65 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
-
 /**
  * This components renders a horizontal menu.
  *
  * @param {object} pageDescription Description that shows itself beneath the menu.
  * @returns TSX of the generated ActionMenu.
  */
-export default function ActionMenu({pageDescription = null}) {
-
+export default function ActionMenu({ pageDescription = null }) {
   return (
     <nav className="utrecht-sidenav">
       <ul className="utrecht-sidenav__list">
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/">Home</Link>
+          <Link className="utrecht-sidenav__link" to="/">
+            Home
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/sources">Sources</Link>
+          <Link className="utrecht-sidenav__link" to="/sources">
+            Sources
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/entities">Entities</Link>
+          <Link className="utrecht-sidenav__link" to="/entities">
+            Entities
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/endpoints">Endpoints</Link>
+          <Link className="utrecht-sidenav__link" to="/endpoints">
+            Endpoints
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/applications">Applications</Link>
+          <Link className="utrecht-sidenav__link" to="/applications">
+            Applications
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/users">Users</Link>
+          <Link className="utrecht-sidenav__link" to="/users">
+            Users
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/configuration">Configuration</Link>
+          <Link className="utrecht-sidenav__link" to="/configuration">
+            Configuration
+          </Link>
         </li>
         <li className="utrecht-sidenav__item">
-          <Link className="utrecht-sidenav__link" to="/logs">logs</Link>
+          <Link className="utrecht-sidenav__link" to="/logs">
+            logs
+          </Link>
         </li>
       </ul>
 
-      {
-        pageDescription !== null &&
+      {pageDescription !== null && (
         <>
-          <br /><br />
-          <p className="utrecht-paragraph">
-            {pageDescription}
-          </p>
-
+          <br />
+          <br />
+          <p className="utrecht-paragraph">{pageDescription}</p>
         </>
-      }
+      )}
     </nav>
   );
 }

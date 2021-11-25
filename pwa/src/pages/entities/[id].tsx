@@ -7,7 +7,7 @@ import EntityForm from "../../components/entities/entityForm";
 import Tabs from "../../components/common/tabs";
 import { useUrlContext } from "../../context/urlContext";
 
-const IndexPage = (props) => {
+const IndexPage = props => {
   const [title, setTitle] = React.useState("Loading..");
 
   const context = useUrlContext();
@@ -20,8 +20,8 @@ const IndexPage = (props) => {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setTitle(`Entity: ${data.name}`);
         });
     }

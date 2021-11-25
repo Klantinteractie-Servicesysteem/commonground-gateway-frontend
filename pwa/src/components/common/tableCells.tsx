@@ -1,17 +1,15 @@
 import * as React from "react";
 import { Link } from "../../../.cache/gatsby-browser-entry";
 
-
 /**
  * This TableCells.
  *
  * @param {object|null} cellItems set the name in the cells.
  */
 
-
 export default function TableCells({ cellItems }) {
   console.log(cellItems);
-  const tableCells = cellItems.map((item) => (
+  const tableCells = cellItems.map(item => (
     <td>
       {item.renderItem !== undefined ? (
         item.renderItem()

@@ -29,35 +29,16 @@ export default function DeleteModal({ data, useFunction }) {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Delete {data.name}</h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div className="modal-body">
-            <p>
-              Are you sure you want to delete the object with the following
-              name: {data.name}
-            </p>
+            <p>Are you sure you want to delete the object with the following name: {data.name}</p>
           </div>
-          <div
-            className="modal-footer"
-            id={`modalFooter${data.id.replaceAll("-", "")}`}
-          >
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
+          <div className="modal-footer" id={`modalFooter${data.id.replaceAll("-", "")}`}>
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
               No
             </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="btn btn-danger"
-            >
+            <button type="button" onClick={handleDelete} className="btn btn-danger">
               Yes
             </button>
           </div>

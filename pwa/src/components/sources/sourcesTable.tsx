@@ -20,17 +20,14 @@ export default function SourcesTable() {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
+      .then(response => response.json())
+      .then(data => {
+        if (data["hydra:member"] !== undefined && data["hydra:member"] !== null) {
           setSources(data["hydra:member"]);
           setShowSpinner(false);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error("Error:", error);
       });
   };
@@ -39,19 +36,26 @@ export default function SourcesTable() {
     getSources();
   }, []);
 
-  return (<>
-    <Card title="Sources" modal="#helpModal" refresh={getSources} add="/sources/new">
+  return (
+    <>
+      <Card title="Sources" modal="#helpModal" refresh={getSources} add="/sources/new">
         <div className="row">
           <div className="col-12">
             {showSpinner === true ? (
               <Spinner />
-          ) : (
-              <Table properties={[{ th: "Name", property: "name" }, { th: "Location", property: "location" }]} items={sources} editLink="/sources" />
+            ) : (
+              <Table
+                properties={[
+                  { th: "Name", property: "name" },
+                  { th: "Location", property: "location" },
+                ]}
+                items={sources}
+                editLink="/sources"
+              />
             )}
           </div>
         </div>
-
-    </Card>
-  </>
+      </Card>
+    </>
   );
 }

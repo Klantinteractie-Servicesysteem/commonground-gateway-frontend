@@ -1,4 +1,3 @@
-
 /**
  * This getResource.
  *
@@ -7,21 +6,20 @@
  * @param {array} options
  */
 
-
 export const getResource = (url = "", query = "", options = {}) => {
   fetch(url, options)
-    .then((response) => {
+    .then(response => {
       if (response.ok) {
         return response.json();
       } else {
-        throw new Error('something went wrong');
+        throw new Error("something went wrong");
       }
     })
-    .then((data) => {
+    .then(data => {
       return data;
     })
-    .catch((error) => {
-      console.error('Error:', error);
+    .catch(error => {
+      console.error("Error:", error);
       return null;
     });
-}
+};

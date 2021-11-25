@@ -14,11 +14,7 @@ const IndexPage = () => {
     <Layout title={"Sources"} subtext={"An overview of your Source objects"}>
       <title>Gateway - Sources</title>
       <main>
-        <a
-          href={`${context.apiUrl}/export/gateways`}
-          target="_blank"
-          className=""
-        >
+        <a href={`${context.apiUrl}/export/gateways`} target="_blank" className="">
           <button className="utrecht-button mt-0 mb-4" type="button">
             Export Sources
           </button>

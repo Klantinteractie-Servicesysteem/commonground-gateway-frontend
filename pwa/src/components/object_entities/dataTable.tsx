@@ -16,25 +16,25 @@ export default function DataTable({ id }) {
   const getData = () => {
     setShowSpinner(true);
     fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     })
-      .then((response) => {
+      .then(response => {
         if (response.ok) {
           return response.json();
         } else {
           throw new Error(response.statusText);
         }
       })
-      .then((data) => {
-        console.log(data)
-        setData(data['hydra:member']);
+      .then(data => {
+        console.log(data);
+        setData(data["hydra:member"]);
         setShowSpinner(false);
       })
-      .catch((error) => {
-        console.error('Error:', error);
+      .catch(error => {
+        console.error("Error:", error);
       });
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -47,7 +47,14 @@ export default function DataTable({ id }) {
           {showSpinner === true ? (
             <Spinner />
           ) : (
-            <Table properties={[{ th: "Name", property: "name" }, { th: "Owner", property: "owner" }]} items={data} editLink="/object_entities" />
+            <Table
+              properties={[
+                { th: "Name", property: "name" },
+                { th: "Owner", property: "owner" },
+              ]}
+              items={data}
+              editLink="/object_entities"
+            />
           )}
         </div>
       </div>

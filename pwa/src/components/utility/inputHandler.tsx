@@ -6,7 +6,7 @@ import * as _ from "lodash";
  * @param {array} array
  * @returns True or false depending on if there are empty values
  */
-export const checkValues = (array: any[]) => {
+export const checkValues = (array: Array<any>) => {
   let valid = true;
   for (let i = 0; i < array.length; i++) {
     if (array[i].length === 0 || _.isEmpty(array[i])) {
@@ -22,11 +22,8 @@ export const checkValues = (array: any[]) => {
  * @returns Object without empty values
  */
 export const removeEmptyObjectValues = (obj: {}) => {
-  for (var propName in obj) {
-    if (
-      obj[propName] === undefined ||
-      (obj[propName] === null && obj[propName] !== false)
-    ) {
+  for (const propName in obj) {
+    if (obj[propName] === undefined || (obj[propName] === null && obj[propName] !== false)) {
       delete obj[propName];
     }
   }
@@ -39,19 +36,14 @@ export const removeEmptyObjectValues = (obj: {}) => {
  * @param type what needs to be searched in the array
  * @returns object of found array values.
  */
-export const retrieveFormArrayAsObject = (array: any[], type: string) => {
-  let result = {};
+export const retrieveFormArrayAsObject = (array: Array<any>, type: string) => {
+  const result = {};
 
   for (let i = 0; i < array.length; i++) {
-    let target = array[i];
+    const target = array[i];
 
     if (target.name.includes(type)) {
-      result[
-        target.name.substring(
-          target.name.indexOf("[") + 1,
-          target.name.lastIndexOf("]")
-        )
-      ] = target.value;
+      result[target.name.substring(target.name.indexOf("[") + 1, target.name.lastIndexOf("]"))] = target.value;
     }
   }
 
@@ -64,11 +56,11 @@ export const retrieveFormArrayAsObject = (array: any[], type: string) => {
  * @param type what needs to be searched in the array
  * @returns array of found array values.
  */
-export const retrieveFormArrayAsOArray = (array: any[], type: string) => {
-  let result = [];
+export const retrieveFormArrayAsOArray = (array: Array<any>, type: string) => {
+  const result = [];
 
   for (let i = 0; i < array.length; i++) {
-    let target = array[i];
+    const target = array[i];
 
     if (target.name.includes(type)) {
       result.push(target.value);

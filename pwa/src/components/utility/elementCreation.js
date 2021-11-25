@@ -7,7 +7,7 @@ export const createElement = (
   onclick = null
 ) => {
   // create element
-  let element = document.createElement(tagName);
+  const element = document.createElement(tagName);
 
   // set element value
   element.value = value;
@@ -40,25 +40,25 @@ export const addElement = (
   onClickFunction = null,
   label = true
 ) => {
-  let key = document.getElementById(newKey);
-  let value = document.getElementById(newValue);
-  let form = document.getElementById(container);
+  const key = document.getElementById(newKey);
+  const value = document.getElementById(newValue);
+  const form = document.getElementById(container);
 
   if (key.value.length == 0 || value.value.length == 0) {
     return;
   }
 
   //create row
-  let formGroupRow = createElement("div", [
+  const formGroupRow = createElement("div", [
     "row",
-    key.value.replaceAll(" ", "-"),
+    key.value.replaceAll(" ", "-")
   ]);
 
   //set classNames for elements
 
   // create input value
-  let formGroupColValue = createElement("div", ["col-5"]);
-  let formGroupValue = createElement("div", ["from-group"]);
+  const formGroupColValue = createElement("div", ["col-5"]);
+  const formGroupValue = createElement("div", ["from-group"]);
   let inputLabel = null;
   if (label) {
     inputLabel = createElement(
@@ -69,25 +69,25 @@ export const addElement = (
       key.value
     );
   }
-  let inputValue = createElement(
+  const inputValue = createElement(
     "input",
     ["utrecht-textbox", "utrecht-textbox--html-input", "mb-2"],
     {
       type: "text",
       id: value.value,
-      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`,
+      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`
     },
     value.value
   );
 
   //create delete button
-  let formGroupButton = createElement("div", [
+  const formGroupButton = createElement("div", [
     "col-2",
     "d-flex",
     "mt-auto",
-    "mb-3",
+    "mb-3"
   ]);
-  let deleteButton = createElement(
+  const deleteButton = createElement(
     "button",
     ["utrecht-button", "utrecht-button-sm", "btn-sm", "btn-danger"],
     { type: "button" },
@@ -114,17 +114,17 @@ export const addElement = (
   value.value = "";
 };
 
-export const deleteElementFunction = (event) => {
-  let elements = document.getElementsByClassName(event.target.value);
+export const deleteElementFunction = event => {
+  const elements = document.getElementsByClassName(event.target.value);
 
   for (let i = 0; i < elements.length; i++) {
     elements[i].remove();
   }
 };
 
-export const closeModal = (id) => {
-  let element = document.createElement("button");
-  let modal = document.getElementById("modalFooter" + id);
+export const closeModal = id => {
+  const element = document.createElement("button");
+  const modal = document.getElementById("modalFooter" + id);
 
   element.setAttribute("data-bs-dismiss", "modal");
   element.style.display = "none";

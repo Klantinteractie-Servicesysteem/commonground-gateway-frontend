@@ -1,6 +1,5 @@
 import * as React from "react";
 
-
 /**
  * This components renders an bootstrap accordion.
  *
@@ -9,8 +8,7 @@ import * as React from "react";
  * @param {string} title Title for this accordion.
  * @returns TSX of the generated accordion.
  */
-export default function Accordion({ children, id = 'id', title = "Title"}) {
-
+export default function Accordion({ children, id = "id", title = "Title" }) {
   return (
     <div className="accordion mt-4" id={id + "Accordion"}>
       <div className="accordion-item">
@@ -19,24 +17,22 @@ export default function Accordion({ children, id = 'id', title = "Title"}) {
             className="accordion-button"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target={'#' + id + 'Collapse'}
+            data-bs-target={"#" + id + "Collapse"}
             aria-expanded="true"
-            aria-controls={ id + 'Collapse'}
-        >
+            aria-controls={id + "Collapse"}
+          >
             {title}
-        </button>
-      </h2>
-      <div
-          id={id + 'Collapse'}
+          </button>
+        </h2>
+        <div
+          id={id + "Collapse"}
           className="accordion-collapse collapse"
           aria-labelledby={id}
-          data-bs-parent={'#' + id + "Accordion"}
-      >
-          <div className="accordion-body">
-            {children}
+          data-bs-parent={"#" + id + "Accordion"}
+        >
+          <div className="accordion-body">{children}</div>
         </div>
       </div>
     </div>
-  </div>
   );
 }
