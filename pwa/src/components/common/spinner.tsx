@@ -1,5 +1,10 @@
 import * as React from "react";
 
+/**
+ * This components renders a bootstrap spinner.
+ *
+ * @returns TSX of the generated Spinner.
+ */
 export default function Spinner() {
 
   return (

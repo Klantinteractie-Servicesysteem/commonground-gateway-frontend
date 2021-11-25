@@ -3,12 +3,11 @@ import { Link } from "gatsby";
 
 
 /**
- * This Breadcrumbs  forms.
+ * This components renders bootstrap breadcrumbs.
  *
- * @param {object|null} items Items object used for the map or null.
+ * @param {object} items Each item is a breadcrumb.
+ * @returns TSX of the generated breadcrumbs.
  */
-
-
 export default function Breadcrumbs({ items = null }) {
     const liItems = items.map((item) =>
       <li className="utrecht-breadcrumb__item">

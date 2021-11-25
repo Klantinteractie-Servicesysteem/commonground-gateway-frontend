@@ -1,19 +1,19 @@
-import React from "react"
+import * as React from "react";
 import Footer from "./footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from "./header";
 
+
 /**
- * This Layout.
+ * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
  *
- * @param children Data coming from other pages.
- * @param {string} subtext Save the Link we need.
- * @param {string} title Save the Link we need.
+ * @param {object} children Content that is rendered as body.
+ * @param {string|null} title Title for the page.
+ * @param {string|null} subText Subtext for the site.
+ * @returns TSX of the generated Layout.
  */
-
-
 export default function Layout({ children, title="", subtext="" }) {
     return (
         <>

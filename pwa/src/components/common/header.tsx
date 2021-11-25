@@ -1,13 +1,11 @@
-import React from "react"
+import * as React from "react";
+
 
 /**
- * This Header.
+ * This components renders a header.
  *
- * @param {Variable} title Save the data variable we need.
- * @param {Variable} subText Save the data variable we need.
+ * @returns TSX of the generated Header.
  */
-
-
 export default function Header({title, subText}) {
   return (
     <>
