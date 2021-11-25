@@ -2,7 +2,11 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 
-
+/**
+ * This components renders a footer.
+ *
+ * @returns TSX of the generated Footer.
+ */
 export default function Footer() {
   return (
     <footer className="utrecht-page-footer">

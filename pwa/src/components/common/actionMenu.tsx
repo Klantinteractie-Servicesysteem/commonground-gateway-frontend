@@ -3,12 +3,11 @@ import { Link } from "gatsby";
 
 
 /**
- * This ActionMenu.
+ * This components renders a horizontal menu.
  *
- * @param {object|null} pageDescription Items object used for the map or null.
+ * @param {object} pageDescription Description that shows itself beneath the menu.
+ * @returns TSX of the generated ActionMenu.
  */
-
-
 export default function ActionMenu({pageDescription = null}) {
 
   return (

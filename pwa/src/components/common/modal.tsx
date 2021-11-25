@@ -2,17 +2,10 @@ import * as React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
 /**
- * This Modal.
+ * This components renders a bootstrap modal.
  *
- * @param {string} id set the name in the cell key.
- * @param {string} title set the name in the cell.
- * @param {boolean} hideButton control right or wrong for id and title.
- * @param {string} buttonText Save the text we need.
- * @param {string} content Save the text we need.
- * @param {boolean} save control right or wrong  for save the data.
+ * @returns TSX of the generated Modal.
  */
-
-
 export default function Modal({ id = 'firstModal', title = "ModalTitle", hideButton = false, buttonText = 'Open modal', content = "Give your content to the react component", save = false }) {
   return (
     <>
@@ -22,7 +15,7 @@ export default function Modal({ id = 'firstModal', title = "ModalTitle", hideBut
           Launch demo modal
         </button>
       }
-      <div className="modal fade" id={id} table-Index="-1" role="dialog" aria-labelledby={id + "Label"} aria-hidden="true">
+      <div className="modal fade" id={id} tabIndex={-1} role="dialog" aria-labelledby={id + "Label"} aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
