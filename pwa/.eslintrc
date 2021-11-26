@@ -119,7 +119,7 @@
       "no-void": "error",
       "no-with": "error",
       "prefer-regex-literals": "error",
-      "radix": "error",
+      "radix": "off",
       "require-yield": "error",
       "use-isnan": "error",
       "valid-typeof": "error",

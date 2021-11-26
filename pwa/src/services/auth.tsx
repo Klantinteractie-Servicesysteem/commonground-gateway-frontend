@@ -5,9 +5,9 @@ export const getUser = () =>
     ? JSON.parse(window.sessionStorage.getItem("user") as string)
     : {};
 
-export const setUser = (user: {}) => window.sessionStorage.setItem("user", JSON.stringify(user));
+export const setUser = (user: Record<string, unknown>) => window.sessionStorage.setItem("user", JSON.stringify(user));
 
-export const handleLogin = (data: any) => {
+export const handleLogin = (data: Record<string, unknown>) => {
   return setUser(data);
 };
 

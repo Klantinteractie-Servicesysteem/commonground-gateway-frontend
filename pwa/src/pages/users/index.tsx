@@ -90,7 +90,7 @@ const IndexPage = () => {
                           {users !== null && (
                             <tbody>
                               {users.map((row) => (
-                                <tr>
+                                <tr key={row.id}>
                                   <td>{row.name}</td>
                                   <td>{row.location}</td>
                                   <td className="text-right">
