@@ -2,6 +2,12 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 
+/**
+ * This components renders a horizontal menu.
+ *
+ * @param {object} pageDescription Description that shows itself beneath the menu.
+ * @returns TSX of the generated ActionMenu.
+ */
 export default function ActionMenu({pageDescription = null}) {
 
   return (

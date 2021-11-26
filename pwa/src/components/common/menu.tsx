@@ -1,6 +1,12 @@
 import * as React from "react";
 import {Link} from "gatsby";
 
+
+/**
+ * This components renders the main menu.
+ *
+ * @returns TSX of the generated MainMenu.
+ */
 export default function MainMenu() {
 
   return (

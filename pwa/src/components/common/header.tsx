@@ -1,5 +1,12 @@
-import React from "react"
+import * as React from "react";
 
+
+
+/**
+ * This components renders a header.
+ *
+ * @returns TSX of the generated Header.
+ */
 export default function Header({title, subText}) {
   return (
     <>

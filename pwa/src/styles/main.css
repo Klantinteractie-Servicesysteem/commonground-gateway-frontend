@@ -3,14 +3,16 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    background-color: #FAFAFA;
 }
 
 .utrecht-page__content {
-    height: 100vh;
+    height: auto;
 }
 
 .utrecht-page-footer {
     margin-top: auto;
+
 }
 
 .utrecht-button {
@@ -49,7 +51,7 @@
 
 .utrecht-card-title {
     margin: 0 !important;
-    color: #2A2F5B !important; 
+    color: #2A2F5B !important;
     font-size: 20px !important;
     font-weight: 400 !important;
     line-height: 1.6 !important;
