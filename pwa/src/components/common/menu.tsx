@@ -15,7 +15,7 @@ export default function MainMenu() {
             <ul className="utrecht-topnav__list">
               <li>
                 <div className="d-flex align-items-center h-100 justify-content-center">
-                  <a href="https://conduction.nl" target="_blank">
+                  <a href="https://conduction.nl" target="_blank" rel="noreferrer">
                     <img
                       className="logo"
                       alt=""

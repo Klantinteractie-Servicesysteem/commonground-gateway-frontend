@@ -16,14 +16,14 @@ const IndexPage = () => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data["hydra:member"] !== undefined && data["hydra:member"] !== null) {
           setUsers(data["hydra:member"]);
           setShowSpinner(false);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Error:", error);
       });
   };
@@ -47,16 +47,17 @@ const IndexPage = () => {
                   </div>
                   <div className="col-6 text-right">
                     <a className="utrecht-link">
-                      <i className="fas fa-question mr-1"></i>
+                      <i className="fas fa-question mr-1" />
                       <span className="mr-2">Help</span>
                     </a>
                     <a className="utrecht-link" onClick={getUsers}>
-                      <i className="fas fa-sync-alt mr-1"></i>
+                      <i className="fas fa-sync-alt mr-1" />
                       <span className="mr-2">Refresh</span>
                     </a>
                     <Link to="/users/new">
                       <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                        <i className="fas fa-plus mr-2"></i>Add
+                        <i className="fas fa-plus mr-2" />
+                        Add
                       </button>
                     </Link>
                   </div>
@@ -65,7 +66,7 @@ const IndexPage = () => {
               <div className="utrecht-card-body card-body">
                 <div className="row">
                   <div className="col-12">
-                    {showSpinner === true ? (
+                    {showSpinner ? (
                       <div className="text-center pt-5">
                         <div
                           className="spinner-border text-primary"
@@ -83,19 +84,20 @@ const IndexPage = () => {
                             <tr>
                               <th scope="col">Name</th>
                               <th scope="col">Location</th>
-                              <th scope="col"></th>
+                              <th scope="col" />
                             </tr>
                           </thead>
                           {users !== null && (
                             <tbody>
-                              {users.map(row => (
+                              {users.map((row) => (
                                 <tr>
                                   <td>{row.name}</td>
                                   <td>{row.location}</td>
                                   <td className="text-right">
                                     <Link to={"/users/" + row.id}>
                                       <button className="utrecht-button btn-sm btn-success">
-                                        <i className="fas fa-edit pr-1"></i>Edit
+                                        <i className="fas fa-edit pr-1" />
+                                        Edit
                                       </button>
                                     </Link>
                                   </td>

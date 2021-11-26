@@ -20,14 +20,14 @@ export default function SourcesTable() {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data["hydra:member"] !== undefined && data["hydra:member"] !== null) {
           setSources(data["hydra:member"]);
           setShowSpinner(false);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };

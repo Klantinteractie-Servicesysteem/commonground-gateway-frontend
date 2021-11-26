@@ -10,7 +10,12 @@ export default function Footer() {
   return (
     <footer className="utrecht-page-footer">
       <div className="container">
-        <a href={"https://conduction.nl"} target="_blank" className="utrecht-link utrecht-link--hover mr-5">
+        <a
+          href={"https://conduction.nl"}
+          target="_blank"
+          className="utrecht-link utrecht-link--hover mr-5"
+          rel="noreferrer"
+        >
           Conduction
         </a>
         <Link to={"/"} target="_blank" className="utrecht-link utrecht-link--hover mr-5">

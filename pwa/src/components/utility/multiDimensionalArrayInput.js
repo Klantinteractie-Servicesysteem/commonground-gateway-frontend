@@ -13,7 +13,7 @@ import { deleteElementFunction, addElement } from "./elementCreation";
 export const MultiDimensionalArrayInput = ({
   target,
   data = null,
-  name = null
+  name = null,
 }) => {
   const deleteElement = deleteElementFunction;
 

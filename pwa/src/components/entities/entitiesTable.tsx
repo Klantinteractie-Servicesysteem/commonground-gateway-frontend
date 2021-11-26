@@ -16,7 +16,7 @@ export default function EntitiesTable() {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         } else {
@@ -25,11 +25,11 @@ export default function EntitiesTable() {
           throw new Error(response.statusText);
         }
       })
-      .then(data => {
+      .then((data) => {
         setEntities(data["hydra:member"]);
         setShowSpinner(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
         setShowSpinner(false);
         setEntities(null);

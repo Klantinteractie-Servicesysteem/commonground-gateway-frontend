@@ -13,15 +13,15 @@ export default function ObjectEntityForm({ id }) {
   const getObjectEntity = () => {
     fetch(context.apiUrl + "/object_entities/" + id, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setObjectEntity(data);
       });
   };
 
-  const checkInputs = inputs => {
+  const checkInputs = (inputs) => {
     let valid = true;
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i] === undefined || inputs[i].length === 0) {
@@ -32,7 +32,7 @@ export default function ObjectEntityForm({ id }) {
     return valid;
   };
 
-  const removeEmptyValues = obj => {
+  const removeEmptyValues = (obj) => {
     for (const propName in obj) {
       if (
         (obj[propName] === undefined || obj[propName] === "") &&
@@ -44,7 +44,7 @@ export default function ObjectEntityForm({ id }) {
     return obj;
   };
 
-  const saveObjectEntity = event => {
+  const saveObjectEntity = (event) => {
     event.preventDefault();
     setShowSpinner(true);
 
@@ -59,7 +59,7 @@ export default function ObjectEntityForm({ id }) {
       owner: event.target.owner.value ? event.target.owner.value : null,
       objectValues: event.target.objectValues.value
         ? event.target.objectValues.value
-        : null
+        : null,
     };
 
     // This removes empty values from the body
@@ -83,15 +83,15 @@ export default function ObjectEntityForm({ id }) {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Saved entity:", data);
         setObjectEntity(data);
         setShowSpinner(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };

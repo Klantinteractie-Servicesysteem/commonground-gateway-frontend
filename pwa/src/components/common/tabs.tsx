@@ -7,7 +7,7 @@ import * as React from "react";
  * @returns TSX of the generated tabs.
  */
 export default function Tabs({ items = null }) {
-  const navItems = items.map(item => (
+  const navItems = items.map((item) => (
     <li className="nav-item" role="presentation" key={item.name}>
       <a
         className={item.active !== undefined && item.active ? "nav-link active" : "nav-link"}

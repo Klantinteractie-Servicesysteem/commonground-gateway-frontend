@@ -9,7 +9,7 @@ import { Link } from "../../../.cache/gatsby-browser-entry";
 
 export default function TableCells({ cellItems }) {
   console.log(cellItems);
-  const tableCells = cellItems.map(item => (
+  const tableCells = cellItems.map((item) => (
     <td>
       {item.renderItem !== undefined ? (
         item.renderItem()

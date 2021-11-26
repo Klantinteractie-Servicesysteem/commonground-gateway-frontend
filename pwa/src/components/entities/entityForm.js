@@ -6,7 +6,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import Accordion from "../common/accordion";
 import Card from "../common/card";
@@ -22,15 +22,15 @@ export default function EntityForm({ id }) {
   const getEntity = () => {
     fetch(`${context.apiUrl}/entities/${id}`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setEntity(data);
       });
   };
 
-  const saveEntity = event => {
+  const saveEntity = (event) => {
     event.preventDefault();
 
     // retrieve arrays
@@ -58,7 +58,7 @@ export default function EntityForm({ id }) {
       route: event.target.route.value,
       endpoint: event.target.entityEndpoint.value,
       gateway: event.target.gateway.value,
-      extend: event.target.extend.checked
+      extend: event.target.extend.checked,
     };
 
     // check arrays
@@ -108,15 +108,15 @@ export default function EntityForm({ id }) {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setEntity(data);
         setShowSpinner(false);
         navigate(`/entities`);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -125,10 +125,10 @@ export default function EntityForm({ id }) {
   const getSources = () => {
     fetch(context.apiUrl + "/gateways", {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (
           data["hydra:member"] !== undefined &&
           data["hydra:member"] !== null
@@ -136,7 +136,7 @@ export default function EntityForm({ id }) {
           setSources(data["hydra:member"]);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -156,11 +156,11 @@ export default function EntityForm({ id }) {
             {showSpinner === true ? (
               <div className="text-center py-5">
                 <div
-                  class="spinner-border text-primary"
+                  className="spinner-border text-primary"
                   style={{ width: "3rem", height: "3rem" }}
                   role="status"
                 >
-                  <span class="sr-only">Loading...</span>
+                  <span className="sr-only">Loading...</span>
                 </div>
               </div>
             ) : (
@@ -281,9 +281,8 @@ export default function EntityForm({ id }) {
                         <SelectInputComponent
                           options={[
                             {
-                              name:
-                                "Please create a Source before creating an Entity"
-                            }
+                              name: "Please create a Source before creating an Entity",
+                            },
                           ]}
                           target={"source"}
                           id={"sourceInput"}
@@ -327,7 +326,7 @@ export default function EntityForm({ id }) {
                 </div>
                 <div className="row">
                   <div className="col-12">
-                    <div class="form-check">
+                    <div className="form-check">
                       {entity !== null ? (
                         <>
                           {entity.extend ? (

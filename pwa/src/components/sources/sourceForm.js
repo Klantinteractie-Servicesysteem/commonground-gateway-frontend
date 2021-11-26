@@ -4,7 +4,7 @@ import { Link, navigate } from "gatsby";
 import { MultiDimensionalArrayInput } from "../utility/multiDimensionalArrayInput";
 import {
   removeEmptyObjectValues,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import Spinner from "../common/spinner";
 import Accordion from "../common/accordion";
@@ -20,16 +20,16 @@ export default function SourceForm({ id }) {
   const getSource = () => {
     fetch(context.apiUrl + "/gateways/" + id, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setSource(data);
         console.log(data);
       });
   };
 
-  const saveSource = event => {
+  const saveSource = (event) => {
     setShowSpinner(true);
 
     event.preventDefault();
@@ -73,7 +73,7 @@ export default function SourceForm({ id }) {
       password: passwordInput.value,
       apikey: apikeyInput.value,
       documentation: documentationInput.value,
-      authorizationHeader: authorizationHeaderInput.value
+      authorizationHeader: authorizationHeaderInput.value,
     };
 
     if (Object.keys(headers).length != 0) {
@@ -88,15 +88,15 @@ export default function SourceForm({ id }) {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setSource(data);
         setShowSpinner(false);
         navigate("/sources");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -207,7 +207,7 @@ export default function SourceForm({ id }) {
                       options={[
                         { name: "apikey" },
                         { name: "jwt" },
-                        { name: "username-password" }
+                        { name: "username-password" },
                       ]}
                       target={"auth"}
                       id={"authInput"}
@@ -219,7 +219,7 @@ export default function SourceForm({ id }) {
                       options={[
                         { name: "apikey" },
                         { name: "jwt" },
-                        { name: "username-password" }
+                        { name: "username-password" },
                       ]}
                       target={"auth"}
                       id={"authInput"}

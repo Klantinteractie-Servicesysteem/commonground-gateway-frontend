@@ -22,7 +22,7 @@ export default function Table({
         {/*<caption></caption>*/}
         <thead>
           <tr>
-            {properties.map(row => (
+            {properties.map((row) => (
               <th scope="col">{row.th}</th>
             ))}
             {editLink !== null && <th></th>}
@@ -30,9 +30,9 @@ export default function Table({
         </thead>
         {items !== null && items.length > 0 ? (
           <tbody>
-            {items.map(item => (
+            {items.map((item) => (
               <tr>
-                {properties.map(row => (
+                {properties.map((row) => (
                   <td>{item[row.property]}</td>
                 ))}
                 {editLink !== null && (

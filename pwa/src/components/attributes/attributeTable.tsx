@@ -20,7 +20,7 @@ export default function AttributeTable({ id }) {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         } else {
@@ -29,11 +29,11 @@ export default function AttributeTable({ id }) {
           throw new Error(response.statusText);
         }
       })
-      .then(data => {
+      .then((data) => {
         setAttributes(data["hydra:member"]);
         setShowSpinner(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
         setShowSpinner(false);
         setAttributes(null);

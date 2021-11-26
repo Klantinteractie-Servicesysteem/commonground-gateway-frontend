@@ -51,7 +51,7 @@ export const addElement = (
   //create row
   const formGroupRow = createElement("div", [
     "row",
-    key.value.replaceAll(" ", "-")
+    key.value.replaceAll(" ", "-"),
   ]);
 
   //set classNames for elements
@@ -75,7 +75,7 @@ export const addElement = (
     {
       type: "text",
       id: value.value,
-      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`
+      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`,
     },
     value.value
   );
@@ -85,7 +85,7 @@ export const addElement = (
     "col-2",
     "d-flex",
     "mt-auto",
-    "mb-3"
+    "mb-3",
   ]);
   const deleteButton = createElement(
     "button",
@@ -114,7 +114,7 @@ export const addElement = (
   value.value = "";
 };
 
-export const deleteElementFunction = event => {
+export const deleteElementFunction = (event) => {
   const elements = document.getElementsByClassName(event.target.value);
 
   for (let i = 0; i < elements.length; i++) {
@@ -122,7 +122,7 @@ export const deleteElementFunction = event => {
   }
 };
 
-export const closeModal = id => {
+export const closeModal = (id) => {
   const element = document.createElement("button");
   const modal = document.getElementById("modalFooter" + id);
 

@@ -4,7 +4,7 @@ import Layout from "../../components/common/layout";
 import { Link } from "gatsby";
 import { useUrlContext } from "../../context/urlContext";
 
-const IndexPage = props => {
+const IndexPage = (props) => {
   const context = useUrlContext();
   const id = props.params.id;
 
@@ -15,10 +15,10 @@ const IndexPage = props => {
   const getApplication = () => {
     fetch(context.apiUrl + "/applications/" + id, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setApplication(data);
       });
   };
@@ -38,23 +38,23 @@ const IndexPage = props => {
 
     const body = {
       name: nameInput.value,
-      description: descriptionInput.value
+      description: descriptionInput.value,
     };
 
     fetch(url, {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Saved applications:", data);
         setApplication(data);
         setShowSpinner(false);
         setTitle(data.name);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -98,11 +98,11 @@ const IndexPage = props => {
                     {showSpinner == true ? (
                       <div className="text-center py-5">
                         <div
-                          class="spinner-border text-primary"
+                          className="spinner-border text-primary"
                           style={{ width: "3rem", height: "3rem" }}
                           role="status"
                         >
-                          <span class="sr-only">Loading...</span>
+                          <span className="sr-only">Loading...</span>
                         </div>
                       </div>
                     ) : (

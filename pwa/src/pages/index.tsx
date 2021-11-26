@@ -7,7 +7,7 @@ const IndexPage = () => {
 
   return (
     <Layout title={"Dashboard"} subtext={"Welcome to the gateway admin dashboard"}>
-      <a href={`${context.apiUrl}/export/all`} target="_blank">
+      <a href={`${context.apiUrl}/export/all`} target="_blank" rel="noreferrer">
         <button className="utrecht-button" type="button">
           Export Configuration
         </button>

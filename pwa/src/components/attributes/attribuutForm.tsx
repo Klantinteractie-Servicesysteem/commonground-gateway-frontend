@@ -25,11 +25,11 @@ export default function AttributeForm({ id, entity }) {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setAttributes(data["hydra:member"]);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -39,13 +39,13 @@ export default function AttributeForm({ id, entity }) {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setAttribute(data);
       });
   };
 
-  const saveAttribute = event => {
+  const saveAttribute = (event) => {
     event.preventDefault();
 
     const attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
@@ -160,13 +160,13 @@ export default function AttributeForm({ id, entity }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("yes!");
         setShowSpinner(false);
         navigate(`/entities/${entity}`);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -200,8 +200,8 @@ export default function AttributeForm({ id, entity }) {
         </div>
         {showSpinner === true ? (
           <div className="text-center py-5">
-            <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
-              <span class="sr-only">Loading...</span>
+            <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+              <span className="sr-only">Loading...</span>
             </div>
           </div>
         ) : (
@@ -398,7 +398,7 @@ export default function AttributeForm({ id, entity }) {
                   </div>
                   <div className="row mt-3">
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.exclusiveMaximum ? (
@@ -429,7 +429,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.exclusiveMinimum ? (
@@ -680,12 +680,12 @@ export default function AttributeForm({ id, entity }) {
                         <select
                           name="inversedBy"
                           id="inversedByInput"
-                          class="utrecht-select utrecht-select--html-select"
+                          className="utrecht-select utrecht-select--html-select"
                         >
                           <option value=""></option>
                           {attributes !== null &&
                             attributes.length > 0 &&
-                            attributes.map(row => (
+                            attributes.map((row) => (
                               <>
                                 {attribute !== null &&
                                 attribute.inversedBy !== undefined &&
@@ -705,7 +705,7 @@ export default function AttributeForm({ id, entity }) {
                   </div>
                   <div className="row mt-3">
                     <div className="col-12 col-sm-6 ">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.persistToGateway ? (
@@ -739,7 +739,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.cascade ? (
@@ -773,7 +773,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.required ? (
@@ -807,7 +807,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6 ">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.searchable ? (
@@ -841,7 +841,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.mustBeUnique ? (
@@ -875,7 +875,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.uniqueItems ? (
@@ -909,7 +909,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.multiple ? (
@@ -943,7 +943,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.nullable ? (
@@ -977,7 +977,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.readOnly ? (
@@ -1011,7 +1011,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="col-12 col-sm-6">
-                      <div class="form-check">
+                      <div className="form-check">
                         {attribute !== null ? (
                           <>
                             {attribute.writeOnly ? (

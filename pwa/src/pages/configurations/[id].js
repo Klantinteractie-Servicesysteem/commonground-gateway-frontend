@@ -4,7 +4,7 @@ import Layout from "../../components/common/layout";
 import { Link } from "gatsby";
 import { useUrlContext } from "../../context/urlContext";
 
-const IndexPage = props => {
+const IndexPage = (props) => {
   const context = useUrlContext();
   const id = props.params.id;
 
@@ -15,10 +15,10 @@ const IndexPage = props => {
   const getConfiguration = () => {
     fetch(context.apiUrl + "//" + id, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setConfiguration(data);
       });
   };
@@ -38,23 +38,23 @@ const IndexPage = props => {
 
     const body = {
       name: nameInput.value,
-      location: locationInput.value
+      location: locationInput.value,
     };
 
     fetch(url, {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Saved source:", data);
         setConfiguration(data);
         setShowSpinner(false);
         setTitle(configuration.name);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };

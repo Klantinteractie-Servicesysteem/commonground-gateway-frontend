@@ -17,7 +17,7 @@ export const SelectInputComponent = ({ options, target, id, data = null, name = 
     <>
       <span className="utrecht-form-label">{_.upperFirst(name ?? target)}</span>
       <select name={target} id={id} className="utrecht-select utrecht-select--html-select">
-        {options.map(option => (
+        {options.map((option) => (
           <option
             selected={data == null ? false : data == option.name ? true : false}
             value={valueOption !== null ? `${valueOption}${option.id}` : option.value}

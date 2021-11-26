@@ -16,13 +16,13 @@ const IndexPage = () => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setApplications(data["hydra:member"]);
         setShowSpinner(false);
         console.log(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   };
@@ -91,7 +91,7 @@ const IndexPage = () => {
                           </thead>
                           {applications !== null && applications.length > 0 ? (
                             <tbody>
-                              {applications.map(row => (
+                              {applications.map((row) => (
                                 <tr>
                                   <td>{row.name}</td>
                                   <td>{row.description}</td>
