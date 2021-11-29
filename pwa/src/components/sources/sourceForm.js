@@ -6,6 +6,11 @@ import {
   removeEmptyObjectValues,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
+import Spinner from "../common/spinner";
+import Accordion from "../common/accordion";
+import Card from "../common/card";
+import {GenericInputComponent} from "../utility/genericInput";
+import {SelectInputComponent} from "../utility/selectInput";
 
 export default function SourceForm({ id }) {
   const context = useUrlContext();
@@ -103,393 +108,155 @@ export default function SourceForm({ id }) {
   }, []);
 
   return (
-    <div className="utrecht-card card">
-      <form id="dataForm" onSubmit={saveSource}>
-        <div className="utrecht-card-header card-header">
-          <div className="utrecht-card-head-row card-head-row row">
-            <div className="col-6">
-              <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">
-                Values
-              </h4>
-            </div>
-            <div className="col-6 text-right">
-              <Link className="utrecht-link" to="/sources">
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"></i>Back
-                </button>
-              </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-              >
-                <i className="fas fa-save mr-2"></i>Save
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="utrecht-card-body card-body">
-          <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <div className="text-center py-5">
-                  <div
-                    class="spinner-border text-primary"
-                    style={{ width: "3rem", height: "3rem" }}
-                    role="status"
-                  >
-                    <span class="sr-only">Loading...</span>
+    <form id="dataForm" onSubmit={saveSource}>
+      <Card title="Values" back="/sources" save={true} >
+        <div className="row">
+          <div className="col-12">
+            {showSpinner === true ? (
+              <Spinner />
+            ) : (
+              <>
+                <div className="row">
+                  <div className="col-6">
+                    {source !== null && source.name !== null ? (
+                      <GenericInputComponent type={"text"} target={"name"} id={"nameInput"} data={source.name} name={"Name"} required={"true"}/>
+                    ) : (
+                      <GenericInputComponent type={"text"} target={"name"} id={"nameInput"}  name={"Name"} required={"true"}/>
+                    )}
+                  </div>
+                  <div className="col-6">
+                    {source !== null && source.location !== null ? (
+                      <GenericInputComponent name={"Location (url)"} target={"location"} data={source.location} type={"text"} required={"true"} id={"locationInput"}/>
+                    ) : (
+                      <GenericInputComponent name={"Location (url)"}  target={"location"}  type={"text"} required={"true"} id={"locationInput"}/>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label mb-2">Name *</span>
-                        {source !== null && source.name !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            defaultValue={source.name}
-                            required
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="name"
-                            id="nameInput"
-                            required
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Location (url) *
-                        </span>
-                        {source !== null && source.location !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="location"
-                            id="locationInput"
-                            defaultValue={source.location}
-                            required
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="location"
-                            id="locationInput"
-                            required
-                          />
-                        )}
-                      </div>
-                    </div>
+                <div className="row">
+                  <div className="col-6">
+                    {source !== null && source.accept !== null ? (
+                      <GenericInputComponent name={"Accept (accept header used for this source)"} target={"accept"} data={source.accept} type={"text"} required={"true"} id={"acceptInput"}/>
+                    ) : (
+                      <GenericInputComponent name={"Accept (accept header used for this source)"} target={"accept"}  type={"text"} required={"true"} id={"acceptInput"}/>
+                    )}
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Accept (accept header used for this source)
-                        </span>
-                        {source !== null && source.accept !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="accept"
-                            id="acceptInput"
-                            defaultValue={source.accept}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="accept"
-                            id="acceptInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">Locale</span>
-                        {source !== null && source.locale !== null ? (
-                          <input
-                            maxLength="10"
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="locale"
-                            id="localeInput"
-                            defaultValue={source.locale}
-                          />
-                        ) : (
-                          <input
-                            maxLength="10"
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="locale"
-                            id="localeInput"
-                          />
-                        )}
-                      </div>
-                    </div>
+                  <div className="col-6">
+                    {source !== null && source.locale !== null ? (
+                      <GenericInputComponent name={"Locale"} target={"locale"} data={source.locale} type={"text"} required={"true"} id={"localeInput"}/>
+                    ) : (
+                      <GenericInputComponent name={"Locale"} target={"locale"}  type={"text"} required={"true"} id={"localeInput"} maxLength={"10"}/>
+                    )}
                   </div>
-                  <div className="form-group">
-                    <span className="utrecht-form-label">Auth *</span>
-                    <select
-                      name="auth"
-                      id="authInput"
-                      class="utrecht-select utrecht-select--html-select"
-                      required
-                    >
-                      {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "apikey" ? (
-                        <option selected value="apikey">
-                          API key
-                        </option>
+                </div>
+                <div className="form-group">
+                  {source !== null && source.auth !== null ? (
+                      <SelectInputComponent
+                        options={[{name: "apikey"}, {name: "jwt"}, {name: "username-password"}]}
+                        target={"auth"} id={"authInput"} name={"Auth *"} data={source.auth}/>
+                    ) :
+                    (
+                      <SelectInputComponent
+                        options={[{name: "apikey"}, {name: "jwt"}, {name: "username-password"}]}
+                        target={"auth"} id={"authInput"} name={"Auth *"}/>
+                    )}
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <div className="form-group">
+                      {source !== null && source.jwt !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Jwt"} target={"jwt"} data={source.jwt} type={"text"} required={"true"} id={"jwtInput"}/>
                       ) : (
-                        <option value="apikey">API key</option>
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Jwt"} target={"jwt"} type={"text"} required={"true"} id={"jwtInput"}/>
                       )}
-                      {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "jwt" ? (
-                        <option selected value="jwt">
-                          JWT
-                        </option>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="form-group">
+                      {source !== null && source.jwtId !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"JwtId"} target={"jwtId"} data={source.jwtId} type={"text"} required={"true"} id={"jwtIdInput"}/>
                       ) : (
-                        <option value="jwt">JWT</option>
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"JwtId"} target={"jwtId"} type={"text"} required={"true"} id={"jwtIdInput"}/>
                       )}
-                      {source !== null &&
-                      source.auth !== null &&
-                      source.auth == "username-password" ? (
-                        <option selected value="username-password">
-                          Username password
-                        </option>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="form-group">
+                      {source !== null && source.secret !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Secret"} target={"secret"} data={source.secret} type={"text"} required={"true"} id={"secretInput"}/>
                       ) : (
-                        <option value="username-password">
-                          Username password
-                        </option>
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Secret"} target={"secret"} type={"text"} required={"true"} id={"secretInput"}/>
                       )}
-                    </select>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Jwt (used for auth if auth is jwt)
-                        </span>
-                        {source !== null && source.jwt !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="jwt"
-                            id="jwtInput"
-                            defaultValue={source.jwt}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="jwt"
-                            id="jwtInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-4">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Jwt ID (used for auth if auth is jwt)
-                        </span>
-                        {source !== null && source.JwtId !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="jwtId"
-                            id="jwtIdInput"
-                            defaultValue={source.jwtId}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="jwtId"
-                            id="jwtIdInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-4">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Secret (used for auth if auth is jwt)
-                        </span>
-                        {source !== null && source.secret !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="secret"
-                            id="secretInput"
-                            defaultValue={source.secret}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="secret"
-                            id="secretInput"
-                          />
-                        )}
-                      </div>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Username (used for auth if auth is username-password)
-                        </span>
-                        {source !== null && source.username !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="username"
-                            id="usernameInput"
-                            defaultValue={source.username}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="username"
-                            id="usernameInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Password (used for auth if auth is username-password)
-                        </span>
-                        {source !== null && source.password !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            type="text"
-                            name="password"
-                            id="passwordInput"
-                            defaultValue={source.password}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            type="text"
-                            name="password"
-                            id="passwordInput"
-                          />
-                        )}
-                      </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      {source !== null && source.username !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Username"} target={"username"} data={source.username} type={"text"} required={"true"} id={"usernameInput"}/>
+                      ) : (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Username"} target={"username"} type={"text"} required={"true"} id={"usernameInput"}/>
+                      )}
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Apikey (used for auth if auth is api key)
-                        </span>
-                        {source !== null && source.apikey !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="apikey"
-                            id="apikeyInput"
-                            defaultValue={source.apikey}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="apikey"
-                            id="apikeyInput"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Documentation (url)
-                        </span>
-                        {source !== null && source.documentation !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="documentation"
-                            id="documentationInput"
-                            defaultValue={source.documentation}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="documentation"
-                            id="documentationInput"
-                          />
-                        )}
-                      </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      {source !== null && source.password !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Password"} target={"password"} data={source.password} type={"text"} required={"true"} id={"passwordInput"}/>
+                      ) : (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Password"} target={"password"} type={"text"} required={"true"} id={"passwordInput"}/>
+                      )}
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">
-                          Authorization header
-                        </span>
-                        {source !== null &&
-                        source.authorizationHeader !== null ? (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="authorizationHeader"
-                            id="authorizationHeaderInput"
-                            defaultValue={source.authorizationHeader}
-                          />
-                        ) : (
-                          <input
-                            className="utrecht-textbox utrecht-textbox--html-input"
-                            name="authorizationHeader"
-                            id="authorizationHeaderInput"
-                          />
-                        )}
-                      </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      {source !== null && source.apikey !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Apikey"} target={"apikey"} data={source.apikey} type={"text"} required={"true"} id={"apikeyInput"}/>
+                      ) : (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Apikey"} target={"apikey"} type={"text"} required={"true"} id={"apikeyInput"}/>
+                      )}
                     </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      {source !== null && source.documentation !== null ? (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Documentation"} target={"documentation"} data={source.documentation} type={"text"} required={"true"} id={"documentationInput"}/>
+                      ) : (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"Documentation"} type={"text"} required={"true"} id={"documentationInput"}/>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      {source !== null && source.authorizationHeader !== null ? (
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"AuthorizationHeader"} target={"authorizationHeader"} data={source.authorizationHeader} type={"text"} required={"true"} id={"authorizationHeaderInput"}/>
+                      ) : (
+                        <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" name={"AuthorizationHeader"} target={"authorizationHeader"} type={"text"} required={"true"} id={"authorizationHeaderInput"}/>
+                        )}
+                    </div>
+                  </div>
+                  <Accordion id="headersTest" title="Headers">
+                    {source !== null ? (
+                      <MultiDimensionalArrayInput
+                        target={"headers"}
+                        data={source.headers}
+                      />
+                    ) : (
+                      <MultiDimensionalArrayInput target={"headers"} />
+                    )}
+                  </Accordion>
 
-                    <div class="accordion mt-4" id="sourceAccordion">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="headersAccordion">
-                          <button
-                            class="accordion-button"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#headersCollapse"
-                            aria-expanded="true"
-                            aria-controls="headersCollapse"
-                          >
-                            Headers
-                          </button>
-                        </h2>
-                        <div
-                          id="headersCollapse"
-                          class="accordion-collapse collapse show"
-                          aria-labelledby="headersAccordion"
-                          data-bs-parent="#entityAccordion"
-                        >
-                          <div class="accordion-body">
-                            {source !== null ? (
-                              <MultiDimensionalArrayInput
-                                target={"headers"}
-                                data={source.headers}
-                              />
-                            ) : (
-                              <MultiDimensionalArrayInput target={"headers"} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </form>
-    </div>
+
+      </Card>
+    </form>
   );
 }
