@@ -100,8 +100,8 @@ const IndexPage = (props) => {
                     {
                       showSpinner == true ?
                         <div className="text-center py-5">
-                          <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
-                            <span class="sr-only">Loading...</span>
+                          <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                            <span className="sr-only">Loading...</span>
                           </div>
                         </div> :
                         <form id="dataForm" onSubmit={saveConfiguration} >

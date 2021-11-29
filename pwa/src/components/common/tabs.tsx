@@ -2,12 +2,11 @@ import * as React from "react";
 
 
 /**
- * This Tabs  forms.
+ * This components renders tabs.
  *
- * @param {object|null} items Items object used for the map or null.
+ * @param {array} items Each item has a id (used for switching/opening tabs), name and active (if tab is active it is shown) property
+ * @returns TSX of the generated tabs.
  */
-
-
 export default function Tabs({ items = null }) {
     const navItems = items.map((item) =>
         <li className="nav-item" role="presentation" key={item.name}>
