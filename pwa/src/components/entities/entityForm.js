@@ -225,20 +225,20 @@ export default function EntityForm({ id }) {
                             <SelectInputComponent
                               options={sources}
                               data={entity.gateway}
-                              target={"source"} id={"sourceInput"} name={"Source"}
+                              name={"source"} id={"sourceInput"} nameOverride={"Source"}
                               value={"/admin/gateways/"}/>
                             )
                             : (
                               <SelectInputComponent
                                 options={sources}
-                                target={"source"} id={"sourceInput"} name={"Source"}
+                                name={"source"} id={"sourceInput"} nameOverride={"Source"}
                                 value={"/admin/gateways/"}/>
                               )}
                           </>
                         ):(
                             <SelectInputComponent
                               options={[{name: "Please create a Source before creating an Entity"}]}
-                              target={"source"} id={"sourceInput"} name={"Source"}/>
+                              name={"source"} id={"sourceInput"} nameOverride={"Source"}/>
                           )}
                       {/*<span className="utrecht-form-label">Source</span>*/}
                       {/*<select*/}

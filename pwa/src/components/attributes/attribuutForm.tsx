@@ -272,13 +272,13 @@ export default function AttributeForm({id, entity}) {
                           <SelectInputComponent
                             options={[{name: "string"}, {name: "array"}, {name: "integer"}, {name: "boolean"},
                               {name: "object"}, {name: "date"}, {name: "datetime"}, {name: "number"}, {name: "float"}, {name: "file"}]}
-                            target={"type"} id={"typeInput"} name={"Type"} data={attribute.type}/>
+                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute.type}/>
                         ) :
                         (
                           <SelectInputComponent
                             options={[{name: "string"}, {name: "array"}, {name: "integer"}, {name: "boolean"},
                               {name: "object"}, {name: "date"}, {name: "datetime"}, {name: "number"}, {name: "float"}, {name: "file"}]}
-                            target={"type"} id={"typeInput"} name={"Type"}/>
+                            name={"type"} id={"typeInput"} nameOverride={"Type"}/>
                         )}
                     </div>
                     <div className="col-6">
@@ -286,13 +286,13 @@ export default function AttributeForm({id, entity}) {
                           <SelectInputComponent
                             options={[{name: "email"}, {name: "phone"}, {name: "country code"}, {name: "bsn"},
                               {name: "url"}, {name: "uuid"}, {name: "json"}]}
-                            target={"format"} id={"formatInput"} name={"Format"} data={attribute.format}/>
+                            name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format}/>
                         ) :
                         (
                           <SelectInputComponent
                             options={[{name: "email"}, {name: "phone"}, {name: "country code"}, {name: "bsn"},
-                              {name: "url"}, {name: "uuid"}, {name: "json"}]} target={"format"} id={"formatInput"}
-                            name={"Format"}/>
+                              {name: "url"}, {name: "uuid"}, {name: "json"}]} name={"format"} id={"formatInput"}
+                            nameOverride={"Format"}/>
                         )}
                     </div>
                   </div>
