@@ -61,7 +61,7 @@ const IndexPage = () => {
     >
       {
         isLoggedIn() && context !== null ? (
-          <a href={`${context.apiUrl}/export/all`} target="_blank">
+          <a href={`${context.adminUrl}/export/all`} target="_blank">
             <button className="utrecht-button" type="button">
               Export Configuration
             </button>

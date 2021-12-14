@@ -15,7 +15,7 @@ const IndexPage = () => {
       <title>Gateway - Sources</title>
       <main>
         <a
-          href={`${context.apiUrl}/export/gateways`}
+          href={`${context.adminUrl}/export/gateways`}
           target="_blank"
           className=""
         >

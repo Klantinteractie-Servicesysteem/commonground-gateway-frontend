@@ -13,7 +13,7 @@ const IndexPage = (props) => {
   const [title, setTitle] = useState("Configuration");
 
   const getConfiguration = () => {
-    fetch(context.apiUrl + "//" + id, {
+    fetch(context.adminUrl + "//" + id, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -26,7 +26,7 @@ const IndexPage = (props) => {
   const saveConfiguration = () => {
     setShowSpinner(true);
 
-    let url = context.apiUrl + '/';
+    let url = context.adminUrl + '/';
     let method = 'POST';
     if (id != 'new') {
       url = url + '/' + id;

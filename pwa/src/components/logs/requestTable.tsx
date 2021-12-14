@@ -14,7 +14,7 @@ export default function RequestTable() {
       });
     } else {
       if (isLoggedIn()) {
-        fetch(`${context.apiUrl}/request_logs`, {
+        fetch(`${context.adminUrl}/request_logs`, {
           credentials: 'include',
           headers: {'Content-Type': 'application/json'},
         })

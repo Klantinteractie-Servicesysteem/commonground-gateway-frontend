@@ -18,7 +18,7 @@ export default function AttributeTable({ id }) {
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.apiUrl}/attributes?entity.id=${id}`, {
+        fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
         })

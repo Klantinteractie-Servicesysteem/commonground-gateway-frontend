@@ -13,7 +13,7 @@ const IndexPage = (props) => {
   const [title, setTitle] = useState("Application");
 
   const getApplication = () => {
-    fetch(context.apiUrl + "/applications/" + id, {
+    fetch(context.adminUrl + "/applications/" + id, {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
     })
@@ -26,7 +26,7 @@ const IndexPage = (props) => {
   const saveApplication = () => {
     setShowSpinner(true);
 
-    let url = context.apiUrl + '/applications';
+    let url = context.adminUrl + '/applications';
     let method = 'POST';
     if (id != 'new') {
       url = url + '/' + id;

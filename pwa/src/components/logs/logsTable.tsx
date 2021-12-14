@@ -16,7 +16,7 @@ export default function LogsTable({ id }) {
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.apiUrl}/request_logs/?entity.id=${id}`, {
+        fetch(`${context.adminUrl}/request_logs/?entity.id=${id}`, {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
         })

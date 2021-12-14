@@ -11,7 +11,7 @@ export default function ObjectEntityForm({ id }) {
   const [showSpinner, setShowSpinner] = useState(false);
 
   const getObjectEntity = () => {
-    fetch(context.apiUrl + "/object_entities/" + id, {
+    fetch(context.adminUrl + "/object_entities/" + id, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -61,7 +61,7 @@ export default function ObjectEntityForm({ id }) {
       return;
     }
 
-    let url = context.apiUrl + '/entities';
+    let url = context.adminUrl + '/entities';
     let method = null;
     if (id === 'new') {
       method = 'POST';

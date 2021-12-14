@@ -16,7 +16,7 @@ export default function SourcesTable() {
 
   const getSources = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/gateways", {
+    fetch(context.adminUrl + "/gateways", {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })

@@ -13,7 +13,7 @@ const IndexPage = () => {
 
   const getConfigurations = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/", {
+    fetch(context.adminUrl + "/", {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
