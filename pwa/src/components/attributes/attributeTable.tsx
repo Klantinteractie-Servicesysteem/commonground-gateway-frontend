@@ -1,12 +1,11 @@
 import * as React from "react";
-// import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import Spinner from "../common/spinner";
-import { isLoggedIn } from "../../services/auth";
-import Table from "../common/table";
+import {isLoggedIn} from "../../services/auth";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
 
-export default function AttributeTable({ id }) {
+export default function AttributeTable({id}) {
   const [attributes, setAttributes] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -21,7 +20,7 @@ export default function AttributeTable({ id }) {
         setShowSpinner(true);
         fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
         })
           .then((response) => {
             if (response.ok) {
@@ -59,7 +58,7 @@ export default function AttributeTable({ id }) {
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
-                <Link to={"/attributes/new/" + id}>
+                <Link to={`/attributes/new/${id}`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
                     className="fas fa-plus mr-2"/>Add
                   </button>
@@ -72,22 +71,43 @@ export default function AttributeTable({ id }) {
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner />
+                    <Spinner/>
                   ) : (
-                    // <Table columns={[{
-                    //   headerName: "Name",
-                    //   field: "name"
-                    // }, {
-                    //   headerName: "Type",
-                    //   field: "type"
-                    // }]} rows={attributes}/>
-
-                    <Table properties={[{ th: "Name", property: "name" }, { th: "Type", property: "type" }]} items={attributes} editLink="/attributes" parentLink={id}/>
+                    attributes ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Type",
+                        field: "type"
+                      },
+                        {
+                          field: "edit",
+                          headerName: "Edit ",
+                          renderCell: () => {
+                            return (
+                              ""
+                              // <Link to={`/attributes/${sources.id}`}>
+                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              // </Link>
+                            );
+                          },
+                        },]} rows={attributes}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Type",
+                        field: "type"
+                      }]} rows={[]}/>
+                    )
                   )}
                 </div>
               </div>
             )
           }}
     />
-  );
+  )
+    ;
 }

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-// import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import Table from "../../components/common/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
 import {useState} from "react";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
@@ -66,9 +65,37 @@ export default function ConfigurationsTable() {
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner />
+                    <Spinner/>
                   ) : (
-                    <Table properties={[{ th: "Name", property: "name" }, { th: "Description", property: "description" }]} items={configurations} editLink="/configurations" />
+                    configurations ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Description",
+                        field: "description"
+                      },
+                        {
+                          field: "edit",
+                          headerName: "Edit ",
+                          renderCell: () => {
+                            return (
+                              ""
+                              // <Link to={`/sources/${sources.id}`}>
+                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              // </Link>
+                            );
+                          },
+                        },]} rows={configurations}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Description",
+                        field: "description"
+                      }]} rows={[]}/>
+                    )
                   )}
                 </div>
               </div>

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-// import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import Table from "../../components/common/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
@@ -63,53 +62,57 @@ export default function EntitiesTable() {
                   {showSpinner === true ? (
                     <Spinner />
                   ) : (
-                    // entities ? (
-                    //   <Table columns={[{
-                    //     headerName: "Name",
-                    //     field: "name"
-                    //   }, {
-                    //     headerName: "Endpoint",
-                    //     field: "endpoint"
-                    //   }, {
-                    //     headerName: "Route",
-                    //     field: "route"
-                    //   },
-                    //   // }, {
-                    //   //   headerName: "Source",
-                    //   //   field: "gateway.name"
-                    //   // }, {
-                    //     {
-                    //     field: "edit",
-                    //     headerName: "Edit ",
-                    //     renderCell: () => {
-                    //       return (
-                    //         "hiiii"
-                    //           // <button
-                    //           //   className="utrecht-button"
-                    //           //   type="button"
-                    //           // >
-                    //           //  Edit
-                    //           // </button>
-                    //       );
-                    //     },
-                    //   },]} rows={entities}/>
-                    // ) : (
-                    //   <Table columns={[{
-                    //     headerName: "Name",
-                    //     field: "name"
-                    //   }, {
-                    //     headerName: "Endpoint",
-                    //     field: "endpoint"
-                    //   }, {
-                    //     headerName: "Route",
-                    //     field: "route"
-                    //   }, {
-                    //     headerName: "Source",
-                    //     field: "gateway.name"
-                    //   }]} rows={[]}/>
-                    // )
-                    <Table properties={[{ th: "Name", property: "name" }, { th: "Endpoint", property: "endpoint" }, { th: "Route", property: "route" }, { th: "Source", property: "gateway.name" }]} items={entities} editLink="/entities" />
-                  )}
+                    <div className="row">
+                      <div className="col-12">
+                        {showSpinner === true ? (
+                          <Spinner/>
+                        ) : (
+                          entities ? (
+                            <Table columns={[{
+                              headerName: "Name",
+                              field: "name"
+                            }, {
+                              headerName: "Endpoint",
+                              field: "endpoint"
+                            }, {
+                              headerName: "Route",
+                              field: "route"
+                            }, {
+                                headerName: "Source",
+                                field: "gateway.name"
+                              },
+                              {
+                                field: "edit",
+                                headerName: "Edit ",
+                                renderCell: () => {
+                                  return (
+                                    ""
+                                    // <Link to={`/entities/${entities.id}`}>
+                                    //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                                    // </Link>
+                                  );
+                                },
+                              },]} rows={entities}/>
+                          ) : (
+                            <Table columns={[{
+                              headerName: "Name",
+                              field: "name"
+                            }, {
+                              headerName: "Endpoint",
+                              field: "endpoint"
+                            }, {
+                              headerName: "Route",
+                              field: "route"
+                            }, {
+                                headerName: "Source",
+                                field: "gateway.name"
+                              }
+                              ]} rows={[]}/>
+                          )
+                        )}
+                      </div>
+                    </div>
+                    )}
                 </div>
               </div>
             )

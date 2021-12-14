@@ -1,8 +1,7 @@
 import * as React from "react";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import Spinner from "../common/spinner";
-// import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import Table from "../../components/common/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
 import {Link} from "gatsby";
 
@@ -65,8 +64,35 @@ export default function UsersTable() {
                   {showSpinner === true ? (
                     <Spinner/>
                   ) : (
-                    <Table properties={[{th: "Name", property: "name"}, {th: "Description", property: "description"}]}
-                           items={users} editLink="/users"/>
+                    users ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Description",
+                        field: "description"
+                      },
+                        {
+                          field: "edit",
+                          headerName: "Edit ",
+                          renderCell: () => {
+                            return (
+                              ""
+                              // <Link to={`/users/${users.id}`}>
+                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              // </Link>
+                            );
+                          },
+                        },]} rows={users}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Description",
+                        field: "description"
+                      }]} rows={[]}/>
+                    )
                   )}
                 </div>
               </div>

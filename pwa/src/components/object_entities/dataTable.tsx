@@ -1,6 +1,6 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import Table from "../common/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
@@ -68,9 +68,37 @@ export default function DataTable({ id }) {
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner />
+                    <Spinner/>
                   ) : (
-                    <Table properties={[{ th: "Name", property: "name" }, { th: "Owner", property: "owner" }]} items={data} editLink="/object_entities" />
+                    data ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Owner",
+                        field: "owner"
+                      },
+                        {
+                          field: "edit",
+                          headerName: "Edit ",
+                          renderCell: () => {
+                            return (
+                              ""
+                              // <Link to={`/data/${data.id}`}>
+                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              // </Link>
+                            );
+                          },
+                        },]} rows={data}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Owner",
+                        field: "owner"
+                      }]} rows={[]}/>
+                    )
                   )}
                 </div>
               </div>
