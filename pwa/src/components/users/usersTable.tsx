@@ -1,34 +1,32 @@
 import * as React from "react";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import Spinner from "../common/spinner";
 // import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import Table from "../../components/common/table";
 import {isLoggedIn} from "../../services/auth";
-import {useState} from "react";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
 
-export default function ConfigurationsTable() {
+export default function UsersTable() {
   const [context, setContext] = React.useState(null);
-  const [configurations, setConfigurations] = useState(null);
+  const [users, setUsers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(context.apiUrl + "/", {
+        fetch(`${context.apiUrl}/`, {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         })
           .then(response => response.json())
           .then((data) => {
             if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-              setConfigurations(data['hydra:member']);
+              setUsers(data['hydra:member']);
               setShowSpinner(false);
             }
           })
@@ -40,7 +38,7 @@ export default function ConfigurationsTable() {
   }, [context]);
 
   return (
-    <Card title={"Configurations"}
+    <Card title={"Users"}
           cardHeader={function () {
             return (
               <>
@@ -48,12 +46,11 @@ export default function ConfigurationsTable() {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getEntities}>*/}
                 <a className="utrecht-link">
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
-                <Link to="/configurations/new">
+                <Link to="/applications/new">
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
                     className="fas fa-plus mr-2"/>Add
                   </button>
@@ -66,9 +63,10 @@ export default function ConfigurationsTable() {
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner />
+                    <Spinner/>
                   ) : (
-                    <Table properties={[{ th: "Name", property: "name" }, { th: "Description", property: "description" }]} items={configurations} editLink="/configurations" />
+                    <Table properties={[{th: "Name", property: "name"}, {th: "Description", property: "description"}]}
+                           items={users} editLink="/users"/>
                   )}
                 </div>
               </div>

@@ -7,11 +7,11 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import {MultiDimensionalArrayInput} from "../utility/multiDimensionalArrayInput";
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
 import Accordion from "../common/accordion";
+import MultiDimensionalArrayInput from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 
 export default function AttributeForm({id, entity}) {
   const context = useUrlContext();
@@ -931,14 +931,14 @@ export default function AttributeForm({id, entity}) {
                                    return (<>
                                      {attribute !== null && attribute.oneOf !== null ? (
                                        <MultiDimensionalArrayInput
-                                         name={"One Of"}
-                                         target={"oneOf"}
-                                         data={attribute.oneOf}
+                                         label={"One Of"}
+                                         id={"oneOf"}
+                                         data={[{key: 'oneOf', value: attribute.oneOf}]}
                                        />
                                      ) : (
                                        <MultiDimensionalArrayInput
-                                         name={"One Of"}
-                                         target={"oneOf"}
+                                         label={"One Of"}
+                                         id={"oneOf"}
                                          data={null}/>
                                      )}
                                    </>)

@@ -48,7 +48,7 @@ export default function EntitiesTable() {
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
-                <Link to="/applications/new">
+                <Link to="/entities/new">
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
                     className="fas fa-plus mr-2"/>Add
                   </button>

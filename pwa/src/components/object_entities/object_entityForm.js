@@ -18,7 +18,7 @@ export default function ObjectEntityForm({ id }) {
       });
     } else {
       if (isLoggedIn()) {
-        fetch(context.apiUrl + "/object_entities/" + id, {
+        fetch(`${context.apiUrl}/object_entities/${id}`, {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         })

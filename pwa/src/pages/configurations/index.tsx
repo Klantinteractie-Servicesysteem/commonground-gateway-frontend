@@ -4,8 +4,7 @@ import ConfigurationsTable from "../../components/configurations/configurationsT
 
 const IndexPage = () => {
   return (
-    <Layout title={"Applications"} subtext={"An overview of your applications objects"}>
-      <title>Gateway - Entities</title>
+    <Layout title={"Configurations"} subtext={"An overview of your configurations"}>
       <main>
         <div className="row">
           <div className="col-12">
