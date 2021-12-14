@@ -11,7 +11,7 @@ import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericI
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
 import Accordion from "../common/accordion";
-import MultiDimensionalArrayInput from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
+import {MultiDimensionalArrayInput} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import Spinner from "../common/spinner";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 
@@ -787,148 +787,151 @@ export default function AttributeForm({id, entity}) {
                     {/*  )}*/}
                     {/*</Accordion>*/}
 
-                    {/*<Accordion id="attributeAccordion"*/}
-                    {/*           items={[{*/}
-                    {/*             title: "Object Config",*/}
-                    {/*             id: "objectConfigAccordion",*/}
-                    {/*             render: function () {*/}
-                    {/*               return (<>*/}
-                    {/*                 { attribute !== null && attribute.objectConfig !== null ? (*/}
-                    {/*                   <MultiDimensionalArrayInput*/}
-                    {/*                     target={"objectConfig"}*/}
-                    {/*                     data={attribute.objectConfig}*/}
-                    {/*                   />*/}
-                    {/*                 ) : (*/}
-                    {/*                   <MultiDimensionalArrayInput*/}
-                    {/*                     target={"objectConfig"}*/}
-                    {/*                     data={null}*/}
-                    {/*                   />*/}
-                    {/*                 )}*/}
-                    {/*               </>)*/}
-                    {/*             }*/}
-                    {/*           },*/}
-                    {/*             {*/}
-                    {/*               title: "Enum",*/}
-                    {/*               id: "enumAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.enum !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"enum"}*/}
-                    {/*                       name={"Enum"}*/}
-                    {/*                       data={attribute.enum}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"enum"}*/}
-                    {/*                       name={"Enum"}*/}
-                    {/*                       data={null}*/}
-                    {/*                     />*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             },*/}
-                    {/*             {*/}
-                    {/*               title: "Required If",*/}
-                    {/*               id: "requiredIfAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.requiredIf !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"requiredIf"}*/}
-                    {/*                       name={"Required If"}*/}
-                    {/*                       data={attribute.requiredIf}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"requiredIf"}*/}
-                    {/*                       name={"Required If"}*/}
-                    {/*                       data={null}/>*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             },*/}
-                    {/*             {*/}
-                    {/*               title: "Forbidden If",*/}
-                    {/*               id: "forbiddenIfAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.forbiddenIf !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"forbiddenIf"}*/}
-                    {/*                       name={"Forbidden If"}*/}
-                    {/*                       data={attribute.forbiddenIf}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       target={"forbiddenIf"}*/}
-                    {/*                       name={"Forbidden If"}*/}
-                    {/*                       data={null}/>*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             },*/}
-                    {/*             {*/}
-                    {/*               title: "All Of",*/}
-                    {/*               id: "allOfAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.allOf !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       name={"All Of"}*/}
-                    {/*                       target={"allOf"}*/}
-                    {/*                       data={attribute.allOf}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       name={"All Of"}*/}
-                    {/*                       target={"allOf"}*/}
-                    {/*                       data={null}/>*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             },*/}
-                    {/*             {*/}
-                    {/*               title: "Any Of",*/}
-                    {/*               id: "anyOfAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.anyOf !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       name={"Any Of"}*/}
-                    {/*                       target={"anyOf"}*/}
-                    {/*                       data={attribute.anyOf}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       name={"Any Of"}*/}
-                    {/*                       target={"anyOf"}*/}
-                    {/*                       data={null}/>*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             },*/}
-                    {/*             {*/}
-                    {/*               title: "One Of",*/}
-                    {/*               id: "oneOfAccordion",*/}
-                    {/*               render: function () {*/}
-                    {/*                 return (<>*/}
-                    {/*                   {attribute !== null && attribute.oneOf !== null ? (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       label={"One Of"}*/}
-                    {/*                       id={"oneOf"}*/}
-                    {/*                       data={[{key: 'oneOf', value: attribute.oneOf}]}*/}
-                    {/*                     />*/}
-                    {/*                   ) : (*/}
-                    {/*                     <MultiDimensionalArrayInput*/}
-                    {/*                       label={"One Of"}*/}
-                    {/*                       id={"oneOf"}*/}
-                    {/*                       data={null}/>*/}
-                    {/*                   )}*/}
-                    {/*                 </>)*/}
-                    {/*               }*/}
-                    {/*             }*/}
-                    {/*           ]}/>*/}
+                    <Accordion id="attributeAccordion"
+                               items={[{
+                                 title: "Object Config",
+                                 id: "objectConfigAccordion",
+                                 render: function () {
+                                   return (<>
+                                     { attribute !== null && attribute.objectConfig !== null ? (
+                                       <MultiDimensionalArrayInput
+                                         id={"objectConfig"}
+                                         label={"Object Config"}
+                                         data={[{key: 'objectConfig', value: attribute.objectConfig}]}
+                                       />
+                                     ) : (
+                                       <MultiDimensionalArrayInput
+                                         id={"objectConfig"}
+                                         label={"Object Config"}
+                                         data={null}
+                                       />
+                                     )}
+                                   </>)
+                                 }
+                               },
+                                 {
+                                   title: "Enum",
+                                   id: "enumAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.enum !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           id={"enum"}
+                                           label={"Enum"}
+                                           data={[{key: 'enum', value: attribute.enum}]}
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           id={"enum"}
+                                           label={"Enum"}
+                                           data={null}
+                                         />
+                                       )}
+                                     </>)
+                                   }
+                                 },
+                                 {
+                                   title: "Required If",
+                                   id: "requiredIfAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.requiredIf !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           id={"requiredIf"}
+                                           label={"Required If"}
+                                           data={[{key: 'requiredIf', value: attribute.requiredIf}]}
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           id={"requiredIf"}
+                                           label={"Required If"}
+                                           data={null}/>
+                                       )}
+                                     </>)
+                                   }
+                                 },
+                                 {
+                                   title: "Forbidden If",
+                                   id: "forbiddenIfAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.forbiddenIf !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           id={"forbiddenIf"}
+                                           label={"Forbidden If"}
+                                           data={[{key: 'forbiddenIf', value: attribute.forbiddenIf}]}
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           id={"forbiddenIf"}
+                                           label={"Forbidden If"}
+                                           data={null}/>
+                                       )}
+                                     </>)
+                                   }
+                                 },
+                                 {
+                                   title: "All Of",
+                                   id: "allOfAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.allOf !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           label={"All Of"}
+                                           id={"allOf"}
+                                           data={[{key: 'allOf', value: attribute.allOf}]}
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           label={"All Of"}
+                                           id={"allOf"}
+                                           data={null}/>
+                                       )}
+                                     </>)
+                                   }
+                                 },
+                                 {
+                                   title: "Any Of",
+                                   id: "anyOfAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.anyOf !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           label={"Any Of"}
+                                           id={"anyOf"}
+                                           data={[{key: 'anyOf', value: attribute.anyOf}]}
+
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           label={"Any Of"}
+                                           id={"anyOf"}
+                                           data={null}/>
+                                       )}
+                                     </>)
+                                   }
+                                 },
+                                 {
+                                   title: "One Of",
+                                   id: "oneOfAccordion",
+                                   render: function () {
+                                     return (<>
+                                       {attribute !== null && attribute.oneOf !== null ? (
+                                         <MultiDimensionalArrayInput
+                                           label={"One Of"}
+                                           id={"oneOf"}
+                                           data={[{key: 'oneOf', value: attribute.oneOf}]}
+                                         />
+                                       ) : (
+                                         <MultiDimensionalArrayInput
+                                           label={"One Of"}
+                                           id={"oneOf"}
+                                           data={null}/>
+                                       )}
+                                     </>)
+                                   }
+                                 }
+                               ]}/>
                   </>
                 )}
               </div>

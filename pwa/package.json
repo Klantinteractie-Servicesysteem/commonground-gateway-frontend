@@ -15,7 +15,7 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@conductionnl/nl-design-system": "^1.0.84",
+    "@conductionnl/nl-design-system": "^1.0.85",
     "@nl-design-system-unstable/theme-switcher": "1.0.0-alpha.6",
     "@utrecht/design-tokens": "1.0.0-alpha.51",
     "@utrecht/web-component-library-react": "1.0.0-alpha.57",

@@ -9,7 +9,7 @@ import Spinner from "../common/spinner";
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
 import {Accordion} from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import MultiDimensionalArrayInput from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
+import {MultiDimensionalArrayInput} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 
 export default function SourceForm({ id }) {
@@ -253,24 +253,28 @@ export default function SourceForm({ id }) {
                               )}
                             </div>
                           </div>
-                          {/*<Accordion id="sourceAccordion"*/}
-                          {/*           items={[{*/}
-                          {/*             title: "Headers",*/}
-                          {/*             id: "headers",*/}
-                          {/*             render: function () {*/}
-                          {/*               return (<>*/}
-                          {/*                 {source !== null ? (*/}
-                          {/*                   <MultiDimensionalArrayInput*/}
-                          {/*                     target={"headers"}*/}
-                          {/*                     data={source.headers}*/}
-                          {/*                   />*/}
-                          {/*                 ) : (*/}
-                          {/*                   <MultiDimensionalArrayInput target={"headers"} />*/}
-                          {/*                 )}*/}
-                          {/*               </>)*/}
-                          {/*             }*/}
-                          {/*           }]}*/}
-                          {/*           />*/}
+                          <Accordion id="sourceAccordion"
+                                     items={[{
+                                       title: "Headers",
+                                       id: "headers",
+                                       render: function () {
+                                         return (<>
+                                           {source !== null ? (
+                                             <MultiDimensionalArrayInput
+                                               id={"headers"}
+                                               label={"Headers"}
+                                               data={[{key: 'headers', value: source.headers}]}                                             />
+                                           ) : (
+                                             <MultiDimensionalArrayInput
+                                               id={"headers"}
+                                               label={"Headers"}
+                                               data={null}
+                                             />
+                                           )}
+                                         </>)
+                                       }
+                                     }]}
+                                     />
                         </div>
                       </>
                     )}
