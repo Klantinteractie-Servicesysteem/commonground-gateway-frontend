@@ -1,47 +1,46 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useUrlContext } from "../../context/urlContext";
-import Card from "../common/card";
 import Spinner from "../common/spinner";
-import TableHeaders from "../common/tableHeaders";
-import TableCells from "../common/tableCells";
 import Table from "../common/table";
+import {isLoggedIn} from "../../services/auth";
 
 export default function DataTable({ id }) {
   const [data, setData] = React.useState(null);
-  const context = useUrlContext();
+  const [context, setContext] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(false);
 
-  const [showSpinner, setShowSpinner] = useState(false);
-
-  const getData = () => {
-    setShowSpinner(true);
-    fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error(response.statusText);
-        }
-      })
-      .then((data) => {
-        console.log(data)
-        setData(data['hydra:member']);
-        setShowSpinner(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        apiUrl: window.GATSBY_API_URL,
       });
-  }
-
-  useEffect(() => {
-    getData();
-  }, []);
+    } else {
+      if (isLoggedIn()) {
+        setShowSpinner(true);
+        fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error(response.statusText);
+            }
+          })
+          .then((data) => {
+            console.log(data)
+            setData(data['hydra:member']);
+            setShowSpinner(false);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+    }
+  }, [context]);
 
   return (
-    <Card title="Object entities" modal="#helpModal" refresh={getData} add="/object_entities/new">
+    // <Card title="Object entities" modal="#helpModal" refresh={getData} add="/object_entities/new">
       <div className="row">
         <div className="col-12">
           {showSpinner === true ? (
@@ -51,6 +50,6 @@ export default function DataTable({ id }) {
           )}
         </div>
       </div>
-    </Card>
+    // </Card>
   );
 }
