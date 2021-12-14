@@ -1,6 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import Layout from "../../components/common/layout";
-import {Link} from "gatsby"
+import {Link} from "gatsby";
+import { isLoggedIn } from "../../services/auth";
+
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
