@@ -1,10 +1,11 @@
 import * as React from "react";
-// import Card from "../common/card";
 import Spinner from "../common/spinner";
 // import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import Table from "../../components/common/table";
 import {isLoggedIn} from "../../services/auth";
 import {useState} from "react";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Link} from "gatsby";
 
 export default function ConfigurationsTable() {
   const [context, setContext] = React.useState(null);
@@ -39,16 +40,40 @@ export default function ConfigurationsTable() {
   }, [context]);
 
   return (
-    // <Card title="Entities" modal="#helpModal" refresh={getEntities} add="/entities/new">
-      <div className="row">
-        <div className="col-12">
-          {showSpinner === true ? (
-            <Spinner />
-          ) : (
-            <Table properties={[{ th: "Name", property: "name" }, { th: "Description", property: "description" }]} items={applications} editLink="/applications" />
-          )}
-        </div>
-      </div>
-    // </Card>
+    <Card title={"Configurations"}
+          cardHeader={function () {
+            return (
+              <>
+                <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
+                {/*<a className="utrecht-link" onClick={getEntities}>*/}
+                <a className="utrecht-link">
+                  <i className="fas fa-sync-alt mr-1"/>
+                  <span className="mr-2">Refresh</span>
+                </a>
+                <Link to="/entities/new">
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
+                    className="fas fa-plus mr-2"/>Add
+                  </button>
+                </Link>
+              </>
+            )
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner />
+                  ) : (
+                    <Table properties={[{ th: "Name", property: "name" }, { th: "Description", property: "description" }]} items={applications} editLink="/applications" />
+                  )}
+                </div>
+              </div>
+            )
+          }}
+    />
   );
 }
