@@ -3,8 +3,19 @@ import Layout from "../components/common/layout";
 import {Tabs}from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
+import {setUser, getUser} from "../services/auth";
 
 const IndexPage = () => {
+  const [context, setContext] = React.useState(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      console.log(getUser().username);
+      setContext({
+        apiUrl: window.GATSBY_API_URL,
+      });
+    }
+  }, [context]);
 
   const login = (event) => {
     event.preventDefault();
@@ -17,7 +28,7 @@ const IndexPage = () => {
       password: passwordInput.value ? passwordInput.value : null,
     }
 
-    fetch(context.apiUrl + "/users/login", {
+    fetch(`${context.apiUrl}/users/login`, {
       method: 'POST',
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
@@ -26,6 +37,16 @@ const IndexPage = () => {
       .then(response => response.json())
       .then((data) => {
         console.log('User:', data);
+        if (typeof window !== "undefined") {
+
+          let result = {
+            username: data.username,
+          }
+          setUser(result);
+          sessionStorage.setItem('jwt', data.jwtToken)
+          sessionStorage.setItem('user', JSON.stringify(result));
+          console.log(getUser().username);
+        }
       })
     }
   

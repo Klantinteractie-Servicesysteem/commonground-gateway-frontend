@@ -2,6 +2,8 @@ import * as React from "react";
 import { Link } from "gatsby";
 // import Modal from "./modal";
 import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
+import { isLoggedIn, logout } from "../../services/auth";
+import { navigate } from "gatsby-link";
 
 
 /**
@@ -10,6 +12,14 @@ import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
  * @returns TSX of the generated MainMenu.
  */
 export default function MainMenu() {
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  React.useEffect(() => {
+    console.log(isLoggedIn());
+  }, []);
 
   return (
     <div className="utrecht-navhtml">
@@ -48,14 +58,25 @@ export default function MainMenu() {
               <li className="utrecht-topnav__item" >
                 <Link to={'/logs'} className="utrecht-topnav__link"  >Logs</Link>
               </li>
-              <li className="utrecht-topnav__item">
-                <a data-toggle="modal" data-target={"#loginModal"} className="utrecht-topnav__link" >
-                  <span style={{ height: "50%", width: "auto", display: "block", borderLeft: "1px solid white"}}>
-                    Login
+              {isLoggedIn() ? (
+                <li className="utrecht-topnav__item">
+                <a className="utrecht-topnav__link" >
+                  <span onClick={handleLogout} style={{ height: "50%", width: "auto", display: "block", borderLeft: "1px solid white" }}>
+                    <i className="fas fa-sign-out-alt mr-2"></i>
+                    Uitloggen
                   </span>
-                </a>
-                <Modal id="loginModal" title="login" body={function () {return <>Test</>} } />
-              </li>
+                  </a>
+                </li>
+              ) : (
+                <li className="utrecht-topnav__item">
+                  <a data-toggle="modal" data-target={"#loginModal"} className="utrecht-topnav__link" >
+                    <span style={{ height: "50%", width: "auto", display: "block", borderLeft: "1px solid white" }}>
+                      Login
+                    </span>
+                  </a>
+                  <Modal id="loginModal" title="login" body={function () { return <>Test</> }} />
+                </li>
+              )}
             </ul>
           </div>
         </div>
