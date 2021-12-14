@@ -548,7 +548,7 @@ export default function AttributeForm({id, entity}) {
                             )}
                           </>
                         ) : (
-                          <Checkbox ype={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"}
+                          <Checkbox type={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"}
                                     nameAttribute={"mustBeUnique"} defaultValue={"true"}/>
                         )}
                       </div>
