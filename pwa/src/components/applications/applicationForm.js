@@ -6,8 +6,6 @@ import {isLoggedIn} from "../../services/auth";
 
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
-  let id = props.params.id;
-
   const [application, setApplication] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [title, setTitle] = React.useState("Application");
@@ -47,11 +45,9 @@ export default function ApplicationForm({ id }) {
     let nameInput = document.getElementById('nameInput');
     let descriptionInput = document.getElementById('descriptionInput');
 
-
     let body = {
       name: nameInput.value,
       description: descriptionInput.value,
-
     }
 
     fetch(url, {

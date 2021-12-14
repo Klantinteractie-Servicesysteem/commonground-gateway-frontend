@@ -7,8 +7,6 @@ import {useState} from "react";
 
 export default function ConfigurationForm({ id }) {
   const [context, setContext] = React.useState(null);
-  let id = props.params.id;
-
   const [configuration, setConfiguration] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [title, setTitle] = React.useState("Application");
@@ -40,7 +38,7 @@ export default function ConfigurationForm({ id }) {
 
     let url = context.apiUrl + '/';
     let method = 'POST';
-    if (id != 'new') {
+    if (id !== 'new') {
       url = url + '/' + id;
       method = 'PUT';
     }
@@ -48,12 +46,9 @@ export default function ConfigurationForm({ id }) {
     let nameInput = document.getElementById('nameInput');
     let locationInput = document.getElementById('locationInput');
 
-
-
     let body = {
       name: nameInput.value,
       location: locationInput.value,
-
     }
 
     fetch(url, {
@@ -75,7 +70,7 @@ export default function ConfigurationForm({ id }) {
   }
 
   return (
-    <form id="dataForm" onSubmit={saveApplication}>
+    <form id="dataForm" onSubmit={saveConfiguration}>
       <Card title="Values" back="/sources" save={true} >
         <div className="row">
           <div className="col-12">
@@ -85,17 +80,17 @@ export default function ConfigurationForm({ id }) {
               <>
                 <div className="row">
                   <div className="col-6">
-                    {application !== null && application.name !== null ? (
-                      <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application.name} nameOverride={"Name"} required={"true"}/>
+                    {configuration !== null && configuration.name !== null ? (
+                      <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={configuration.name} nameOverride={"Name"} required={"true"}/>
                     ) : (
                       <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}  nameOverride={"Name"} required={"true"}/>
                     )}
                   </div>
                   <div className="col-6">
-                    {application !== null && application.description !== null ? (
-                      <GenericInputComponent nameOverride={"Description"} name={"description"} data={application.description} type={"text"} required={"true"} id={"descriptionInput"}/>
+                    {configuration !== null && configuration.location !== null ? (
+                      <GenericInputComponent nameOverride={"Location"} name={"location"} data={configuration.location} type={"text"} required={"true"} id={"locationInput"}/>
                     ) : (
-                      <GenericInputComponent nameOverride={"Description"} name={"description"} type={"text"} required={"true"} id={"descriptionInput"}/>
+                      <GenericInputComponent nameOverride={"Location"} name={"location"} type={"text"} required={"true"} id={"locationInput"}/>
                     )}
                   </div>
                 </div>
