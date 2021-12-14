@@ -14,12 +14,12 @@ export default function EntitiesTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.apiUrl}/entities`, {
+        fetch(`${context.adminUrl}/entities`, {
           credentials: "include",
           headers: {"Content-Type": "application/json"},
         })

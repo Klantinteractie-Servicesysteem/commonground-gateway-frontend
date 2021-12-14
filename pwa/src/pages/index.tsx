@@ -1,9 +1,10 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import {Tabs}from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
-import {setUser, getUser} from "../services/auth";
+import { setUser, getUser, isLoggedIn } from "../services/auth";
+import { navigate } from "gatsby-link";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -11,6 +12,7 @@ const IndexPage = () => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       console.log(getUser().username);
+      console.log(context);
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
@@ -31,7 +33,7 @@ const IndexPage = () => {
     fetch(`${context.apiUrl}/users/login`, {
       method: 'POST',
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
       .then(response => response.json())
@@ -46,21 +48,25 @@ const IndexPage = () => {
           sessionStorage.setItem('jwt', data.jwtToken)
           sessionStorage.setItem('user', JSON.stringify(result));
           console.log(getUser().username);
+          navigate("/");
         }
       })
-    }
-  
+  }
+
 
   return (
     <Layout
       title={"Dashboard"}
-      subtext={"Welcome to the gateway admin dashboard"}
+      subtext={isLoggedIn() ? `Welcome ${getUser().username}, to the gateway admin dashboard` : `Welcome to the gateway admin dashboard`}
     >
-      {/* <a href={`${context.apiUrl}/export/all`} target="_blank">
-        <button className="utrecht-button" type="button">
-          Export Configuration
-        </button>
-      </a> */}
+      {
+        isLoggedIn() && context !== null ? (
+          <a href={`${context.apiUrl}/export/all`} target="_blank">
+            <button className="utrecht-button" type="button">
+              Export Configuration
+            </button>
+          </a>
+      ) : (
       <form id="dataForm" onSubmit={login}>
         <div className="row">
           <div className="col-4">
@@ -87,6 +93,7 @@ const IndexPage = () => {
           </div>
         </div>
       </form>
+        )}
     </Layout>
   );
 };
