@@ -1,34 +1,43 @@
 import * as React from "react"
-import {useEffect, useState} from "react";
 import Layout from "../../components/common/layout";
 import {Link} from "gatsby"
-import {useUrlContext} from "../../context/urlContext";
 
 const IndexPage = (props) => {
-  const context = useUrlContext();
+  const [context, setContext] = React.useState(null);
   let id = props.params.id;
 
-  const [application, setApplication] = useState(null);
-  const [showSpinner, setShowSpinner] = useState(false);
-  const [title, setTitle] = useState("Application");
+  const [application, setApplication] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+  const [title, setTitle] = React.useState("Application");
 
-  const getApplication = () => {
-    fetch(context.apiUrl + "/applications/" + id, {
-      credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
-    })
-      .then(response => response.json())
-      .then((data) => {
-        setApplication(data);
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        apiUrl: window.GATSBY_API_URL,
+        frontendUrl: window.GATSBY_FRONTEND_URL,
       });
-  }
+    } else {
+      if (isLoggedIn()) {
+        if (id !== "new") {
+          fetch(context.apiUrl + "/applications/" + id, {
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+          })
+            .then(response => response.json())
+            .then((data) => {
+              setApplication(data);
+            });
+        }
+      }
+    }
+  }, [context]);
 
   const saveApplication = () => {
     setShowSpinner(true);
 
     let url = context.apiUrl + '/applications';
     let method = 'POST';
-    if (id != 'new') {
+    if (id !== 'new') {
       url = url + '/' + id;
       method = 'PUT';
     }
@@ -61,17 +70,9 @@ const IndexPage = (props) => {
       });
   }
 
-  useEffect(() => {
-    if (id != "new") {
-      getApplication();
-    }
-  }, []);
-
   return (
     <Layout title={title} subtext={"Edit your application here"}>
       <main>
-
-
         <div className="row">
           <div className="col-12">
             <div className="utrecht-card card">

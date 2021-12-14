@@ -2,7 +2,6 @@ import * as React from "react"
 import Layout from "../../components/common/layout";
 import ObjectEntityForm from "../../components/object_entities/object_entityForm";
 
-
 const IndexPage = (props) => {
   return (
     <Layout>
