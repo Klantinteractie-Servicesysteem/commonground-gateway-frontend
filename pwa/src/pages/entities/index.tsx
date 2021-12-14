@@ -1,9 +1,8 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import EntitiesTable from "../../components/entities/entitiesTable";
-import { useUrlContext } from "../../context/urlContext";
+
 const IndexPage = () => {
-  const context = useUrlContext;
   return (
     <Layout title={"Entities"} subtext={"An overview of your entity objects"}>
       <title>Gateway - Entities</title>

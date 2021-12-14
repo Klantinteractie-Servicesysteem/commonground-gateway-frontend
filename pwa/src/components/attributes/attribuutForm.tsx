@@ -7,7 +7,6 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import {ArrayInputComponent} from "../utility/arrayInput";
 import {MultiDimensionalArrayInput} from "../utility/multiDimensionalArrayInput";
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";

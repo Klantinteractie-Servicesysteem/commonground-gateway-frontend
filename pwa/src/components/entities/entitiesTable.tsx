@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
 // import Card from "../common/card";
 import Spinner from "../common/spinner";
 // import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
@@ -9,7 +8,7 @@ import {isLoggedIn} from "../../services/auth";
 export default function EntitiesTable() {
   const [entities, setEntities] = React.useState(null);
   const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {

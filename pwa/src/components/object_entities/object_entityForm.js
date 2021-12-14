@@ -98,7 +98,7 @@ export default function ObjectEntityForm({ id }) {
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity} >
-      <Card title="Values" back="/entities" save={true} >
+      {/*<Card title="Values" back="/entities" save={true} >*/}
           <div className="row">
             <div className="col-12">
               {
@@ -177,7 +177,7 @@ export default function ObjectEntityForm({ id }) {
               }
             </div>
           </div>
-      </Card>
+      {/*</Card>*/}
     </form>
   );
 }

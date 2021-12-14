@@ -296,9 +296,7 @@ export default function EntityForm({id}) {
           </div>
         </div>
       </form>
-
       {/*</Card>*/}
-
     </>
   );
 }
