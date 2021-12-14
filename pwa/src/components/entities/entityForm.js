@@ -25,7 +25,7 @@ export default function EntityForm({id}) {
     } else {
       if (isLoggedIn()) {
         if (id !== "new") {
-          fetch(`${context.apiUrl}/entities/${id}`, {
+          fetch(`${context.adminUrl}/entities/${id}`, {
             credentials: "include",
             headers: {"Content-Type": "application/json"},
           })
@@ -35,7 +35,7 @@ export default function EntityForm({id}) {
             });
         }
 
-        fetch(context.apiUrl + "/gateways", {
+        fetch(context.adminUrl + "/gateways", {
           credentials: "include",
           headers: {"Content-Type": "application/json"},
         })
@@ -58,7 +58,7 @@ export default function EntityForm({id}) {
   const saveEntity = (event) => {
     setShowSpinner(true);
 
-    let url = context.apiUrl + "/entities";
+    let url = context.adminUrl + "/entities";
     let method = null;
     if (id === "new") {
       method = "POST";

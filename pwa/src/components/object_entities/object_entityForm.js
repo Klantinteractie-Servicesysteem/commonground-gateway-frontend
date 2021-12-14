@@ -70,7 +70,7 @@ export default function ObjectEntityForm({ id }) {
       return;
     }
 
-    let url = context.apiUrl + '/entities';
+    let url = context.adminUrl + '/entities';
     let method = null;
     if (id === 'new') {
       method = 'POST';

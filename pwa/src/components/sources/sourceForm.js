@@ -18,7 +18,7 @@ export default function SourceForm({ id }) {
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   const getSource = () => {
-    fetch(context.apiUrl + "/gateways/" + id, {
+    fetch(context.adminUrl + "/gateways/" + id, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
@@ -34,7 +34,7 @@ export default function SourceForm({ id }) {
     event.preventDefault();
     let headers = retrieveFormArrayAsObject(event.target, "headers");
 
-    let url = context.apiUrl + "/gateways";
+    let url = context.adminUrl + "/gateways";
     let method = "POST";
     if (id !== "new") {
       url = url + "/" + id;

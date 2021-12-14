@@ -18,7 +18,7 @@ export default function DataTable({ id }) {
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.apiUrl}/object_entities/?entity.id=${id}`, {
+        fetch(`${context.adminUrl}/object_entities/?entity.id=${id}`, {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         })

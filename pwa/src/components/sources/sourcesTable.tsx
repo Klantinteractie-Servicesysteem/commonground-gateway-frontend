@@ -1,20 +1,28 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useUrlContext } from "../../context/urlContext";
 import Table from "../common/table";
 import Spinner from "../common/spinner";
-import { Link } from "gatsby";
-import DeleteModal from "../modals/deleteModal";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";;
+import { isLoggedIn } from "../../services/auth";
+import { getSupportedCodeFixes } from "typescript";
 
 export default function SourcesTable() {
-  const context = useUrlContext();
-  const [sources, setSources] = useState(null);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [context, setContext] = React.useState(null);
+  const [sources, setSources] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        adminUrl: window.GATSBY_ADMIN_URL,
+      });
+    } else if (isLoggedIn()) {
+        getSources();
+    }
+  }, [context]);
 
   const getSources = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/gateways", {
+    fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
@@ -31,47 +39,26 @@ export default function SourcesTable() {
       .catch((error) => {
         console.error("Error:", error);
       });
+
   };
 
-  useEffect(() => {
-    getSources();
-  }, []);
+  const cardBody = () => {
+    return (
+      <div className="row">
+        <div className="col-12">
+          {showSpinner === true ? (
+            <Spinner />
+          ) : (
+            <Table properties={[{ th: "Name", property: "name" }, { th: "Location", property: "location" }]} items={sources} editLink="/sources" />
+          )}
+        </div>
+      </div>
+
+    )
+  }
 
   return (<>
-      <Card title={"Sources"}
-            cardHeader={function () {
-              return (
-                <>
-                  <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
-                    <i className="fas fa-question mr-1"/>
-                    <span className="mr-2">Help</span>
-                  </button>
-                  <a className="utrecht-link">
-                    <i className="fas fa-sync-alt mr-1"/>
-                    <span className="mr-2">Refresh</span>
-                  </a>
-                  <Link to="/sources/new">
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-                      className="fas fa-plus mr-2"/>Add
-                    </button>
-                  </Link>
-                </>
-              )
-            }}
-            cardBody={function () {
-              return (
-                <div className="row">
-                  <div className="col-12">
-                    {showSpinner === true ? (
-                      <Spinner />
-                    ) : (
-                      <Table properties={[{ th: "Name", property: "name" }, { th: "Location", property: "location" }]} items={sources} editLink="/sources" />
-                    )}
-                  </div>
-                </div>
-              )
-            }}
-      />
+    <Card title="Sources" cardBody={cardBody} />
   </>
   );
 }

@@ -22,7 +22,7 @@ export default function AttributeForm({id, entity}) {
   const [attributes, setAttributes] = React.useState(null);
 
   const getAttributes = () => {
-    fetch(context.apiUrl + "/attributes", {
+    fetch(context.adminUrl + "/attributes", {
       credentials: "include",
       headers: {"Content-Type": "application/json"},
     })
@@ -36,7 +36,7 @@ export default function AttributeForm({id, entity}) {
   };
 
   const getAttribute = () => {
-    fetch(`${context.apiUrl}/attributes/${id}`, {
+    fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
       headers: {"Content-Type": "application/json"},
     })
@@ -174,7 +174,7 @@ export default function AttributeForm({id, entity}) {
 
     // setShowSpinner(true);
 
-    let url = context.apiUrl + "/attributes";
+    let url = context.adminUrl + "/attributes";
     let method = null;
     if (id === "new") {
       method = "POST";

@@ -15,7 +15,7 @@ export default function ResponseTable() {
       console.log(context)
     } else {
       if (isLoggedIn()) {
-        fetch(`${context.apiUrl}/response_logs`, {
+        fetch(`${context.adminUrl}/response_logs`, {
           credentials: 'include',
           headers: {'Content-Type': 'application/json'},
         })

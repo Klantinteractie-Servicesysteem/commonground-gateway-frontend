@@ -21,7 +21,7 @@ const IndexPage = (props) => {
         if (props.params.id == "new") {
           setTitle("New entity");
         } else {
-          fetch(`${context.apiUrl}/entities/${props.params.id}`, {
+          fetch(`${context.adminUrl}/entities/${props.params.id}`, {
             credentials: "include",
             headers: { "Content-Type": "application/json" },
           })
