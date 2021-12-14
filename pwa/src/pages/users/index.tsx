@@ -49,11 +49,11 @@ const IndexPage = () => {
                     <h4 className="utrecht-heading-4 utrecht-heading-4--distanced utrecht-card-title">Users</h4>
                   </div>
                   <div className="col-6 text-right">
-                    <a class="utrecht-link">
+                    <a className="utrecht-link">
                       <i className="fas fa-question mr-1"></i>
                       <span className="mr-2">Help</span>
                     </a>
-                    <a class="utrecht-link" onClick={getUsers}>
+                    <a className="utrecht-link" onClick={getUsers}>
                       <i className="fas fa-sync-alt mr-1"></i>
                       <span className="mr-2">Refresh</span>
                     </a>
@@ -69,8 +69,8 @@ const IndexPage = () => {
                     {
                       showSpinner == true ?
                         <div className="text-center pt-5">
-                          <div class="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
-                            <span class="sr-only">Loading...</span>
+                          <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                            <span className="sr-only">Loading...</span>
                           </div>
                         </div> :
                         <div className="utrecht-html">

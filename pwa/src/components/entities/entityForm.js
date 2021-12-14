@@ -12,6 +12,7 @@ import Accordion from "../common/accordion";
 import Card from "../common/card";
 import {GenericInputComponent} from "../utility/genericInput";
 import {CheckboxComponent} from "../utility/checkbox";
+import {SelectInputComponent} from "../utility/selectInput";
 
 
 export default function EntityForm({ id }) {
@@ -215,38 +216,62 @@ export default function EntityForm({ id }) {
                 <div className="row">
                   <div className="col-12">
                     <div className="form-group">
-                      <span className="utrecht-form-label">Source</span>
-                      <select
-                        name="gateway"
-                        id="gatewayInput"
-                        class="utrecht-select utrecht-select--html-select"
-                      >
-                        {sources !== null && sources.length > 0 ? (
-                          sources.map((row) => (
-                            <>
-                              {entity !== null &&
-                                entity.gateway !== undefined &&
-                                entity.gateway !== null &&
-                                entity.gateway.id == row.id ? (
-                                <option
-                                  value={"/admin/gateways/" + row.id}
-                                  selected
-                                >
-                                  {row.name}
-                                </option>
-                              ) : (
-                                <option value={"/admin/gateways/" + row.id}>
-                                  {row.name}
-                                </option>
+                      {
+                        sources !== null && sources.length > 0 ? (
+                          <>
+                            {entity !== null &&
+                            entity.gateway !== undefined &&
+                            entity.gateway !== null ? (
+                            <SelectInputComponent
+                              options={sources}
+                              data={entity.gateway}
+                              target={"source"} id={"sourceInput"} name={"Source"}
+                              value={"/admin/gateways/"}/>
+                            )
+                            : (
+                              <SelectInputComponent
+                                options={sources}
+                                target={"source"} id={"sourceInput"} name={"Source"}
+                                value={"/admin/gateways/"}/>
                               )}
-                            </>
-                          ))
-                        ) : (
-                          <option value="">
-                            Please create a Source before creating an Entity
-                          </option>
-                        )}
-                      </select>
+                          </>
+                        ):(
+                            <SelectInputComponent
+                              options={[{name: "Please create a Source before creating an Entity"}]}
+                              target={"source"} id={"sourceInput"} name={"Source"}/>
+                          )}
+                      {/*<span className="utrecht-form-label">Source</span>*/}
+                      {/*<select*/}
+                      {/*  name="gateway"*/}
+                      {/*  id="gatewayInput"*/}
+                      {/*  class="utrecht-select utrecht-select--html-select"*/}
+                      {/*>*/}
+                      {/*  {sources !== null && sources.length > 0 ? (*/}
+                      {/*    sources.map((row) => (*/}
+                      {/*      <>*/}
+                      {/*        {entity !== null &&*/}
+                      {/*          entity.gateway !== undefined &&*/}
+                      {/*          entity.gateway !== null &&*/}
+                      {/*          entity.gateway.id == row.id ? (*/}
+                      {/*          <option*/}
+                      {/*            value={"/admin/gateways/" + row.id}*/}
+                      {/*            selected*/}
+                      {/*          >*/}
+                      {/*            {row.name}*/}
+                      {/*          </option>*/}
+                      {/*        ) : (*/}
+                      {/*          <option value={"/admin/gateways/" + row.id}>*/}
+                      {/*            {row.name}*/}
+                      {/*          </option>*/}
+                      {/*        )}*/}
+                      {/*      </>*/}
+                      {/*    ))*/}
+                      {/*  ) : (*/}
+                      {/*    <option value="">*/}
+                      {/*      Please create a Source before creating an Entity*/}
+                      {/*    </option>*/}
+                      {/*  )}*/}
+                      {/*</select>*/}
                     </div>
                   </div>
                 </div>

@@ -9,7 +9,7 @@ export const setUser = user =>
   window.sessionStorage.setItem("user", JSON.stringify(user))
 
 export const handleLogin = (data) => {
-    return setUser(data)
+  return setUser(data)
 }
 
 export const isLoggedIn = () => {

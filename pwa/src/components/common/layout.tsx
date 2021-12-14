@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from "./header";
 
-
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
  *

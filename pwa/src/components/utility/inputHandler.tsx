@@ -18,10 +18,10 @@ export const checkValues = (array: any[]) => {
 
 /**
  * Removed empty values from object.
- * @param obj 
+ * @param obj
  * @returns Object without empty values
  */
-export const removeEmptyObjectValues = (obj: { [x: string]: any; }) => {
+export const removeEmptyObjectValues = (obj: {}) => {
   for (var propName in obj) {
     if (
       obj[propName] === undefined ||
@@ -64,7 +64,7 @@ export const retrieveFormArrayAsObject = (array: any[], type: string) => {
  * @param type what needs to be searched in the array
  * @returns array of found array values.
  */
- export const retrieveFormArrayAsOArray = (array: any[], type: string) => {
+export const retrieveFormArrayAsOArray = (array: any[], type: string) => {
   let result = [];
 
   for (let i = 0; i < array.length; i++) {
