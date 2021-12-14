@@ -1,8 +1,9 @@
 import * as React from "react";
-import Card from "../common/card";
 import Spinner from "../common/spinner";
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {isLoggedIn} from "../../services/auth";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Link} from "gatsby";
 
 export default function ObjectEntityForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -98,86 +99,101 @@ export default function ObjectEntityForm({ id }) {
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity} >
-      {/*<Card title="Values" back="/entities" save={true} >*/}
-          <div className="row">
-            <div className="col-12">
-              {
-              showSpinner === true ?
-                <Spinner />
-                :
-                  <>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectEntity !== null && objectEntity.uri !== null ?
-                              <GenericInputComponent type={"text"} name={"uri"} id={"uriInput"} data={objectEntity.uri}
-                                                     nameOverride={"Uri *"} required={"true"}/>
-                              :
-                              <GenericInputComponent type={"text"} name={"uri"} id={"uriInput"}
-                                                     nameOverride={"Uri"} required={"true"}/>
-                          }
+      <Card title="Values"
+      cardHeader={function (){return(<>
+          <Link className="utrecht-link" to={"/sources"}>
+            <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+              <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+            </button>
+          </Link>
+          <button
+            className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+            type="submit"
+          >
+            <i className="fas fa-save mr-2"/>Save
+          </button>
+        </>)}}
+            cardBody={function (){return(
+              <div className="row">
+                <div className="col-12">
+                  {
+                    showSpinner === true ?
+                      <Spinner />
+                      :
+                      <>
+                        <div className="row">
+                          <div className="col-6">
+                            <div className="form-group">
+                              {
+                                objectEntity !== null && objectEntity.uri !== null ?
+                                  <GenericInputComponent type={"text"} name={"uri"} id={"uriInput"} data={objectEntity.uri}
+                                                         nameOverride={"Uri *"} required={"true"}/>
+                                  :
+                                  <GenericInputComponent type={"text"} name={"uri"} id={"uriInput"}
+                                                         nameOverride={"Uri"} required={"true"}/>
+                              }
+                            </div>
+                          </div>
+                          <div className="col-6">
+                            <div className="form-group">
+                              {
+                                objectEntity !== null && objectEntity.application !== null ?
+                                  <GenericInputComponent type={"text"} name={"application"} id={"applicationInput"} data={objectEntity.application}
+                                                         nameOverride={"Application"}/>
+                                  :
+                                  <GenericInputComponent type={"text"} name={"application"} id={"applicationInput"}
+                                                         nameOverride={"Application"}/>
+                              }
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectEntity !== null && objectEntity.application !== null ?
-                              <GenericInputComponent type={"text"} name={"application"} id={"applicationInput"} data={objectEntity.application}
-                                                     nameOverride={"Application"}/>
-                              :
-                              <GenericInputComponent type={"text"} name={"application"} id={"applicationInput"}
-                                                     nameOverride={"Application"}/>
-                          }
+                        <div className="row">
+                          <div className="col-6">
+                            <div className="form-group">
+                              {
+                                objectEntity !== null && objectEntity.organization !== null ?
+                                  <GenericInputComponent type={"text"} name={"organization"} id={"organizationInput"} data={objectEntity.organization}
+                                                         nameOverride={"Organization"}/>
+                                  :
+                                  <GenericInputComponent type={"text"} name={"organization"} id={"organizationInput"}
+                                                         nameOverride={"Organization"}/>
+                              }
+                            </div>
+                          </div>
+                          <div className="col-6">
+                            <div className="form-group">
+                              {
+                                objectEntity !== null && objectEntity.owner !== null ?
+                                  <GenericInputComponent type={"text"} name={"owner"} id={"ownerInput"} data={objectEntity.owner}
+                                                         nameOverride={"Owner"}/>
+                                  :
+                                  <GenericInputComponent type={"text"} name={"owner"} id={"ownerInput"}
+                                                         nameOverride={"Owner"}/>
+                              }
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectEntity !== null && objectEntity.organization !== null ?
-                              <GenericInputComponent type={"text"} name={"organization"} id={"organizationInput"} data={objectEntity.organization}
-                                                     nameOverride={"Organization"}/>
-                              :
-                              <GenericInputComponent type={"text"} name={"organization"} id={"organizationInput"}
-                                                     nameOverride={"Organization"}/>
-                          }
+                        <div className="row">
+                          <div className="col-6">
+                            <div className="form-group">
+                              <span className="utrecht-form-label">Object values</span>
+                              {
+                                objectEntity !== null && objectEntity.objectValues !== null ?
+                                  <GenericInputComponent type={"text"} name={"objectValues"} id={"objectValuesInput"} data={objectEntity.objectValues}
+                                                         nameOverride={"Object Values"}/>
+                                  :
+                                  <GenericInputComponent type={"text"} name={"objectValues"} id={"objectValuesInput"}
+                                                         nameOverride={"Object Values"}/>
+                              }
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectEntity !== null && objectEntity.owner !== null ?
-                              <GenericInputComponent type={"text"} name={"owner"} id={"ownerInput"} data={objectEntity.owner}
-                                                     nameOverride={"Owner"}/>
-                              :
-                              <GenericInputComponent type={"text"} name={"owner"} id={"ownerInput"}
-                                                     nameOverride={"Owner"}/>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <span className="utrecht-form-label">Object values</span>
-                          {
-                            objectEntity !== null && objectEntity.objectValues !== null ?
-                              <GenericInputComponent type={"text"} name={"objectValues"} id={"objectValuesInput"} data={objectEntity.objectValues}
-                                                     nameOverride={"Object Values"}/>
-                              :
-                              <GenericInputComponent type={"text"} name={"objectValues"} id={"objectValuesInput"}
-                                                     nameOverride={"Object Values"}/>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                  </>
-              }
-            </div>
-          </div>
-      {/*</Card>*/}
+                      </>
+                  }
+                </div>
+              </div>
+            )}}
+      />
     </form>
   );
 }

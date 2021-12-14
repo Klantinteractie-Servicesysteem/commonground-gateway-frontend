@@ -1,8 +1,9 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import Card from "../common/card";
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {isLoggedIn} from "../../services/auth";
+import {Link} from "gatsby";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -70,35 +71,48 @@ export default function ApplicationForm({ id }) {
 
   return (
     <form id="dataForm" onSubmit={saveApplication}>
-      <Card title="Values" back="/sources" save={true} >
-        <div className="row">
-          <div className="col-12">
-            {showSpinner === true ? (
-              <Spinner />
-            ) : (
-              <>
-                <div className="row">
-                  <div className="col-6">
-                    {application !== null && application.name !== null ? (
-                      <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application.name} nameOverride={"Name"} required={"true"}/>
-                    ) : (
-                      <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}  nameOverride={"Name"} required={"true"}/>
-                    )}
-                  </div>
-                  <div className="col-6">
-                    {application !== null && application.description !== null ? (
-                      <GenericInputComponent nameOverride={"Description"} name={"description"} data={application.description} type={"text"} required={"true"} id={"descriptionInput"}/>
-                    ) : (
-                      <GenericInputComponent nameOverride={"Description"} name={"description"} type={"text"} required={"true"} id={"descriptionInput"}/>
-                    )}
-                  </div>
+      <Card title="Values" back="/applications" save={true}
+            cardHeader={function (){return(<>
+              <Link className="utrecht-link" to={"/configurations"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                </button>
+              </Link>
+              <button
+                className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                type="submit"
+              >
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </>)}}
+            cardBody={function (){return(
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner />
+                  ) : (
+                    <>
+                      <div className="row">
+                        <div className="col-6">
+                          {application !== null && application.name !== null ? (
+                            <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application.name} nameOverride={"Name"} required={"true"}/>
+                          ) : (
+                            <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}  nameOverride={"Name"} required={"true"}/>
+                          )}
+                        </div>
+                        <div className="col-6">
+                          {application !== null && application.description !== null ? (
+                            <GenericInputComponent nameOverride={"Description"} name={"description"} data={application.description} type={"text"} required={"true"} id={"descriptionInput"}/>
+                          ) : (
+                            <GenericInputComponent nameOverride={"Description"} name={"description"} type={"text"} required={"true"} id={"descriptionInput"}/>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-
-      </Card>
+              </div>
+            )}} />
     </form>
   );
 }
