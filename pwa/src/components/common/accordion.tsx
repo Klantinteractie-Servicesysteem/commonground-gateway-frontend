@@ -1,42 +1,44 @@
 import * as React from "react";
 
+interface AccordionProps {
+  items: Array<Record<"id"|"title"|"render", any>>;
+  id: string;
+}
 
 /**
  * This components renders an bootstrap accordion.
- *
- * @param {object} children Code that will be placed as child in this component.
- * @param {string} id HTML id for this accordion.
- * @param {string} title Title for this accordion.
  * @returns TSX of the generated accordion.
  */
-export default function Accordion({ children, id = 'id', title = "Title"}) {
-
+export default function Accordion(props: AccordionProps) {
   return (
-    <div className="accordion mt-4" id={id + "Accordion"}>
-      <div className="accordion-item">
-        <h2 className="accordion-header" id={id}>
-          <button
-            className="accordion-button"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target={'#' + id + 'Collapse'}
-            aria-expanded="true"
-            aria-controls={ id + 'Collapse'}
-        >
-            {title}
-        </button>
-      </h2>
-      <div
-          id={id + 'Collapse'}
-          className="accordion-collapse collapse"
-          aria-labelledby={id}
-          data-bs-parent={'#' + id + "Accordion"}
-      >
-          <div className="accordion-body">
-            {children}
+    <div className="accordion mt-4" id={props.id + "Accordion"}>
+      {props.items.map((item) => (<>
+        <div className="accordion-item">
+          <h2 className="accordion-header" id={item.id}>
+            <button
+              className="accordion-button collapsed"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target={'#' + item.id + 'Collapse'}
+              aria-expanded="false"
+              aria-controls={ item.id + 'Collapse'}
+            >
+              {item.title}
+            </button>
+          </h2>
+          <div
+            id={item.id + 'Collapse'}
+            className="accordion-collapse collapse"
+            aria-labelledby={item.id}
+            data-bs-parent={'#' + item.id + "Accordion"}
+          >
+            <div className="accordion-body">
+              {item.render()}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </>))
+      }
   </div>
   );
 }

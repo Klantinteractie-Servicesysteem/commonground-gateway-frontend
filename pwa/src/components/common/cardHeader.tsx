@@ -49,7 +49,7 @@ export default function CardHeader({ title = "Title", modal = null, refresh = nu
           )}
           {save !== null && onlySaveIf == undefined && (
             <button
-              className="utrecht-button utrecht-button-sm btn-sm btn-success"
+              className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
               type="submit"
             >
               <i className="fas fa-save mr-2"></i>Save

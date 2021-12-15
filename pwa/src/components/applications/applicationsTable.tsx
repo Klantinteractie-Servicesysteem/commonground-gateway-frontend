@@ -1,13 +1,13 @@
 import * as React from "react";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import Spinner from "../common/spinner";
-import {isLoggedIn} from "../../services/auth";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import Spinner from "../common/spinner";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {isLoggedIn} from "../../services/auth";
 import {Link} from "gatsby";
 
-export default function AttributeTable({id}) {
-  const [attributes, setAttributes] = React.useState(null);
+export default function ApplicationsTable() {
   const [context, setContext] = React.useState(null);
+  const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
@@ -18,34 +18,25 @@ export default function AttributeTable({id}) {
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json"},
+        fetch(`${context.apiUrl}/applications/`, {
+          credentials: 'include',
+          headers: {'Content-Type': 'application/json'},
         })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              setShowSpinner(false);
-              setAttributes(null);
-              throw new Error(response.statusText);
-            }
-          })
+          .then(response => response.json())
           .then((data) => {
-            setAttributes(data["hydra:member"]);
+            setApplications(data['hydra:member']);
             setShowSpinner(false);
+            console.log(data);
           })
           .catch((error) => {
-            console.error("Error:", error);
-            setShowSpinner(false);
-            setAttributes(null);
+            console.error('Error:', error);
           });
       }
     }
   }, [context]);
 
   return (
-    <Card title={"Attributes"}
+    <Card title={"Applications"}
           cardHeader={function () {
             return (
               <>
@@ -53,12 +44,11 @@ export default function AttributeTable({id}) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getAttributes}>*/}
                 <a className="utrecht-link">
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
-                <Link to={`/attributes/new/${id}`}>
+                <Link to="/applications/new">
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
                     className="fas fa-plus mr-2"/>Add
                   </button>
@@ -73,13 +63,13 @@ export default function AttributeTable({id}) {
                   {showSpinner === true ? (
                     <Spinner/>
                   ) : (
-                    attributes ? (
+                    applications ? (
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
                       }, {
-                        headerName: "Type",
-                        field: "type"
+                        headerName: "Description",
+                        field: "description"
                       },
                         {
                           field: "edit",
@@ -87,19 +77,19 @@ export default function AttributeTable({id}) {
                           renderCell: () => {
                             return (
                               ""
-                              // <Link to={`/attributes/${sources.id}`}>
+                              // <Link to={`/applications/${row.id}`}>
                               //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
                               // </Link>
                             );
                           },
-                        },]} rows={attributes}/>
+                        },]} rows={applications}/>
                     ) : (
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
-                      }, {
-                        headerName: "Type",
-                        field: "type"
+                      },  {
+                        headerName: "Description",
+                        field: "description"
                       }]} rows={[]}/>
                     )
                   )}
@@ -108,6 +98,5 @@ export default function AttributeTable({id}) {
             )
           }}
     />
-  )
-    ;
+  );
 }
