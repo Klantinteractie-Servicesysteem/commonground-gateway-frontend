@@ -10,6 +10,7 @@ import { isLoggedIn } from "../../services/auth";
 const IndexPage = (props) => {
   const [title, setTitle] = React.useState("Loading..");
   const [context, setContext] = React.useState(null);
+  const [entity, setEntities] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -30,6 +31,7 @@ const IndexPage = (props) => {
               console.log("data")
               console.log(data)
               setTitle(`Entity: ${data.name}`);
+              setEntities(data)
             });
         }
       }

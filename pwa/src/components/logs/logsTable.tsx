@@ -58,7 +58,8 @@ export default function LogsTable({id}) {
                     {showSpinner === true ? (
                       <Spinner/>
                     ) : (
-                      logs !== null ? (
+                      logs !== null &&
+                        logs.length > 0 ? (
                         <Table columns={[{
                           headerName: "Status",
                           field: "status"
