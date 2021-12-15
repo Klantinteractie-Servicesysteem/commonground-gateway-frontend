@@ -1,5 +1,5 @@
 apiVersion: v2
-name: proto-pwa
+name: commonground-gateway-frontend
 description: A Helm chart for the Verhuizen PWA of 's-Hertogenbosch
 
 # A chart can be either an 'application' or a 'library' chart.
