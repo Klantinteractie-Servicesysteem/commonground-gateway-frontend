@@ -30,6 +30,7 @@ export default function EntityForm({id}) {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log(data)
             setEntity(data);
           });
 
@@ -40,24 +41,12 @@ export default function EntityForm({id}) {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log(data["hydra:member"])
             setSources(data["hydra:member"]);
           });
       }
     }
   }, [context]);
-
-  // const getSources = () => {
-  //   fetch(`${context.adminUrl}/gateways`, {
-  //     credentials: "include",
-  //     headers: {"Content-Type": "application/json"},
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log('gateway')
-  //       console.log(data)
-  //       setSources(data);
-  //     });
-  // }
 
   const saveEntity = (event) => {
     setShowSpinner(true);
@@ -74,7 +63,7 @@ export default function EntityForm({id}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {

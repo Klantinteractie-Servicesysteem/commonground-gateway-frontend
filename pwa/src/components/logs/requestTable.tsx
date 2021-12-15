@@ -20,7 +20,7 @@ export default function RequestTable() {
   const getRequests = () => {
     fetch(`${context.adminUrl}/request_logs`, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then(response => response.json())
       .then((data) => {

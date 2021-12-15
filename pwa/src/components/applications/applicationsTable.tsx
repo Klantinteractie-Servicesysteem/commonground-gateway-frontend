@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
-import { isLoggedIn } from "../../services/auth";
-import { Link } from "gatsby";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {isLoggedIn} from "../../services/auth";
+import {Link} from "gatsby";
 
 export default function ApplicationsTable() {
   const [context, setContext] = React.useState(null);
@@ -16,15 +16,15 @@ export default function ApplicationsTable() {
         adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      getApplications();
+      getApplications(context);
     }
   }, [context]);
 
-  const getApplications = () => {
+  const getApplications = (context) => {
     setShowSpinner(true);
     fetch(`${context.apiUrl}/applications/`, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then(response => response.json())
       .then((data) => {
@@ -76,10 +76,11 @@ export default function ApplicationsTable() {
                         {
                           field: "id",
                           headerName: " ",
-                          renderCell: (item: {id: string}) => {
+                          renderCell: (item: { id: string }) => {
                             return (
                               <Link to={`/applications/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit
+                                </button>
                               </Link>
                             );
                           },
@@ -88,7 +89,7 @@ export default function ApplicationsTable() {
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
-                      },  {
+                      }, {
                         headerName: "Description",
                         field: "description"
                       }]} rows={[]}/>
