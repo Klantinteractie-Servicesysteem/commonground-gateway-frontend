@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
-import { isLoggedIn } from "../../services/auth";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {isLoggedIn} from "../../services/auth";
 import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
 
 export default function RequestTable() {
   const [context, setContext] = React.useState(null);
-  const [request, setRequest] = React.useState(null);
+  const [requests, setRequest] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -24,58 +24,84 @@ export default function RequestTable() {
     })
       .then(response => response.json())
       .then((data) => {
-        // console.log(data)
-        setRequest(data);
+        console.log(data["hydra:member"])
+        setRequest(data["hydra:member"]);
       });
   }
 
   return (
     <>
-      { request !== null &&
-        request > 0 ? (
+      {requests !== null &&
+      requests.length > 0 ? (
         <Table columns={[{
-          headerName: "User",
-          field: "user"
+          headerName: "Status",
+          field: "status"
         }, {
-          headerName: "Type",
-          field: "type"
+          headerName: "Status Code",
+          field: "statusCode"
         }, {
-          headerName: "Date Created",
-          field: "dateCreated"
+          headerName: "Method",
+          field: "method"
         }, {
           field: "id",
           headerName: " ",
-          renderCell: () => {
+          renderCell: (item) => {
             return (
               <div className="float-right mr-4">
-                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
+                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#requestLogs${item.id.replaceAll('-', '')}`}>
                   Request logs
                 </button>
               </div>
             );
           },
-        }]} rows={request}/>
-      ):(
+        }]} rows={requests}/>
+      ) : (
         <Table columns={[{
-          headerName: "User",
-          field: "user"
+          headerName: "Status",
+          field: "status"
         }, {
-          headerName: "Type",
-          field: "type"
+          headerName: "Status Code",
+          field: "statusCode"
         }, {
-          headerName: "Date Created",
-          field: "dateCreated"
+          headerName: "Method",
+          field: "method"
         }]} rows={[]}/>
-          )}
+      )}
 
 
-      <Modal title={"Request Logs"}
-        id={"requestLogs"}
-        body={function () {
-          return (
-            "request logs"
-          )
-        }} />
+      { requests !== null &&
+        requests.map((request) => (
+        <Modal title={"Request Logs"}
+               id={`requestLogs${request.id}`}
+               body={function () {
+                 return (
+                   <div>
+                     {
+                       request.responseBody.path !== null && (
+                         <>
+                           <p><b>Path: </b>{request.responseBody.path}</p>
+                         </>
+                       )
+                     }
+                     {
+                       request.responseBody.type !== null && (
+                         <>
+                           <p><b>Type: </b>{request.responseBody.type}</p>
+                         </>
+                       )
+                     }
+                     {
+                       request.responseBody.message !== null && (
+                         <>
+                           <b>Message</b>
+                           <p>{request.responseBody.message}</p>
+                         </>
+                       )
+                     }
+                   </div>
+                 )
+               }}/>
+      ))}
     </>
   );
 }

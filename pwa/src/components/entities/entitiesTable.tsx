@@ -24,7 +24,7 @@ export default function EntitiesTable() {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/entities`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: {"Content-Type": "application/json"},
     })
       .then(response => response.json())
       .then((data) => {

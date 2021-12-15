@@ -10,6 +10,7 @@ import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {addElement, deleteElementFunction} from "../utility/elementCreation";
 
 export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
@@ -37,7 +38,7 @@ export default function EntityForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         setEntity(data);
       });
   }
@@ -45,11 +46,11 @@ export default function EntityForm({id}) {
   const getSources = () => {
     fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: {"Content-Type": "application/json"},
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data["hydra:member"])
+        // console.log(data["hydra:member"])
         setSources(data["hydra:member"]);
       });
   }
@@ -69,7 +70,7 @@ export default function EntityForm({id}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: {"Content-Type": "application/json"},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -219,12 +220,16 @@ export default function EntityForm({id}) {
                                              id={"transformations"}
                                              label={"Transformations"}
                                              data={[{key: 'transformations', value: entity.transformations}]}
+                                             deleteFunction={deleteElementFunction}
+                                             addFunction={addElement}
                                            />
                                          ) : (
                                            <MultiDimensionalArrayInput
                                              id={"transformations"}
                                              label={"Transformations"}
                                              data={null}
+                                             deleteFunction={deleteElementFunction}
+                                             addFunction={addElement}
                                            />
                                          )}
                                        </>)
@@ -240,12 +245,16 @@ export default function EntityForm({id}) {
                                                id={"translationConfig"}
                                                label={"Translation Config"}
                                                data={[{key: 'translationConfig', value: entity.translationConfig}]}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"translationConfig"}
                                                label={"Translation Config"}
                                                data={null}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            )}
                                          </>)
@@ -261,11 +270,15 @@ export default function EntityForm({id}) {
                                                id={"collectionConfig"}
                                                data={[{key: 'collectionConfig', value: entity.collectionConfig}]}
                                                label={"Collection Config"}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"collectionConfig"}
                                                label={"Collection Config"}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                                data={null}/>
                                            )}
                                          </>)

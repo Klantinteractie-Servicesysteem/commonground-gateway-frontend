@@ -1,10 +1,11 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
-import { isLoggedIn } from "../../services/auth";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {isLoggedIn} from "../../services/auth";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
 
-export default function LogsTable({ id }) {
+export default function LogsTable({id}) {
   const [logs, setLogs] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [context, setContext] = React.useState(null);
@@ -17,7 +18,6 @@ export default function LogsTable({ id }) {
     } else if (isLoggedIn()) {
       getLogs();
     }
-
   }, [context]);
 
   const getLogs = () => {
@@ -26,104 +26,132 @@ export default function LogsTable({ id }) {
       credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error(response.statusText);
-        }
-      })
+      .then(response => response.json())
       .then((data) => {
+        console.log(data["hydra:member"])
         setLogs(data["hydra:member"]);
-        setShowSpinner(false);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
       });
   }
 
   return (
-    <Card title={"Logs"}
-          cardHeader={function () {
-            return (
-              <>
-                <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
-                  <i className="fas fa-question mr-1"/>
-                  <span className="mr-2">Help</span>
-                </button>
-                <a className="utrecht-link" onClick={getLogs}>
-                  <i className="fas fa-sync-alt mr-1"/>
-                  <span className="mr-2">Refresh</span>
-                </a>
-              </>
-            )
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    logs ? (
-                      <Table columns={[{
-                        headerName: "Action",
-                        field: "action"
-                      }, {
-                        headerName: "Object Id",
-                        field: "objectId"
-                      },
-                        {
-                          headerName: "Version",
-                          field: "version"
-                        },
-                        {
-                          headerName: "Username",
-                          field: "username"
-                        },
-                        {
-                          headerName: "Session",
-                          field: "session"
-                        },
-                        {
-                          field: "id",
-                          headerName: " ",
-                          renderCell: () => {
-                            return (
-                              <div className="float-right mr-4">
-                                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
-                                  Request logs
-                                </button>
-                              </div>
-                            );
-                          },
-                        },]} rows={logs}/>
+    <>
+      <Card title={"Logs"}
+            cardHeader={function () {
+              return (
+                <>
+                  <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+                    <i className="fas fa-question mr-1"/>
+                    <span className="mr-2">Help</span>
+                  </button>
+                  <a className="utrecht-link" onClick={getLogs}>
+                    <i className="fas fa-sync-alt mr-1"/>
+                    <span className="mr-2">Refresh</span>
+                  </a>
+                </>
+              )
+            }}
+            cardBody={function () {
+              return (
+                <div className="row">
+                  <div className="col-12">
+                    {showSpinner === true ? (
+                      <Spinner/>
                     ) : (
-                      <Table columns={[{
-                        headerName: "Action",
-                        field: "action"
-                      }, {
-                        headerName: "Object Id",
-                        field: "objectId"
-                      },
-                        {
-                          headerName: "Version",
-                          field: "version"
+                      logs !== null ? (
+                        <Table columns={[{
+                          headerName: "Action",
+                          field: "action"
+                        }, {
+                          headerName: "Object Id",
+                          field: "objectId"
                         },
-                        {
-                          headerName: "Username",
-                          field: "username"
+                          {
+                            headerName: "Version",
+                            field: "version"
+                          },
+                          {
+                            headerName: "Username",
+                            field: "username"
+                          },
+                          {
+                            headerName: "Session",
+                            field: "session"
+                          },
+                          {
+                            field: "id",
+                            headerName: " ",
+                            renderCell: (item) => {
+                              return (
+                                <div className="float-right mr-4">
+                                  <button type="button" className="btn btn-primary" data-bs-toggle="modal"
+                                          data-bs-target={`#requestLogs${item.id}`}>
+                                    Request logs
+                                  </button>
+                                </div>
+                              );
+                            },
+                          },]} rows={logs}/>
+                      ) : (
+                        <Table columns={[{
+                          headerName: "Action",
+                          field: "action"
+                        }, {
+                          headerName: "Object Id",
+                          field: "objectId"
                         },
-                        {
-                          headerName: "Session",
-                          field: "session"
-                        }]} rows={[]}/>
-                    )
-                  )}
+                          {
+                            headerName: "Version",
+                            field: "version"
+                          },
+                          {
+                            headerName: "Username",
+                            field: "username"
+                          },
+                          {
+                            headerName: "Session",
+                            field: "session"
+                          }]} rows={[]}/>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            )
-          }}
-    />
+              )
+            }}
+      />
+
+      {logs !== null &&
+      logs.map((log) => (
+        <Modal title={"Request Logs"}
+               id={`requestLogs${log.id}`}
+               body={function () {
+                 return (
+                   <div>
+                     {
+                       log.responseBody.path !== null && (
+                         <>
+                           <p><b>Path: </b>{log.responseBody.path}</p>
+                         </>
+                       )
+                     }
+                     {
+                       log.responseBody.type !== null && (
+                         <>
+                           <p><b>Type: </b>{log.responseBody.type}</p>
+                         </>
+                       )
+                     }
+                     {
+                       log.responseBody.message !== null && (
+                         <>
+                           <b>Message</b>
+                           <p>{log.responseBody.message}</p>
+                         </>
+                       )
+                     }
+                   </div>
+                 )
+               }}/>
+      ))}
+    </>
   );
 }
