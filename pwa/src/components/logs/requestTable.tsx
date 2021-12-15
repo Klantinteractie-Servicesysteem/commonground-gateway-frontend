@@ -28,29 +28,43 @@ export default function RequestTable() {
 
   return (
     <>
-    <Table columns={[{
-      headerName: "ID",
-      field: "id"
-    }, {
-      headerName: "Description",
-      field: "description"
-    }, {
-      headerName: "Start date",
-      field: "startDate"
-    }, {
-      field: "document",
-      headerName: " ",
-      renderCell: () => {
-        return (
-          <div className="float-right mr-4">
-            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
-              Request logs
-            </button>
-          </div>
-        );
-      },
-    }
-    ]} rows={[]}/>
+      { request !== null &&
+        request > 0 ? (
+        <Table columns={[{
+          headerName: "User",
+          field: "user"
+        }, {
+          headerName: "Type",
+          field: "type"
+        }, {
+          headerName: "Date Created",
+          field: "dateCreated"
+        }, {
+          field: "edit",
+          headerName: " ",
+          renderCell: () => {
+            return (
+              <div className="float-right mr-4">
+                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
+                  Request logs
+                </button>
+              </div>
+            );
+          },
+        }]} rows={request}/>
+      ):(
+        <Table columns={[{
+          headerName: "User",
+          field: "user"
+        }, {
+          headerName: "Type",
+          field: "type"
+        }, {
+          headerName: "Date Created",
+          field: "dateCreated"
+        }]} rows={[]}/>
+          )}
+
 
       <Modal title={"Request Logs"}
              id={"requestLogs"}
