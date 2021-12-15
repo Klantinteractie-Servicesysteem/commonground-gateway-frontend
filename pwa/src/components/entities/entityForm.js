@@ -46,7 +46,7 @@ export default function EntityForm({id}) {
   const getSources = () => {
     fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -70,7 +70,7 @@ export default function EntityForm({id}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {

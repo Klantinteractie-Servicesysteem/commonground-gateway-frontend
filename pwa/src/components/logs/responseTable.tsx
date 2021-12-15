@@ -24,6 +24,7 @@ export default function ResponseTable() {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data["hydra:member"])
         setResponse(data["hydra:member"]);
       });
   }

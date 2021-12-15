@@ -22,7 +22,7 @@ export default function AttributeForm({id, entity}) {
   const [attributes, setAttributes] = React.useState(null);
 
   const getAttributes = () => {
-    fetch(context.adminUrl + "/attributes", {
+    fetch(`${context.adminUrl}/attributes`, {
       credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })

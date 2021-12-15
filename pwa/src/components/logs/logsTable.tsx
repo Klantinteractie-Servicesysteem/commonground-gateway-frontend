@@ -30,6 +30,7 @@ export default function LogsTable({id}) {
       .then((data) => {
         console.log(data["hydra:member"])
         setLogs(data["hydra:member"]);
+        setShowSpinner(false);
       });
   }
 
