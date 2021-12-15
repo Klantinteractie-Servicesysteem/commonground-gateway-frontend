@@ -1,9 +1,9 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
-import {isLoggedIn} from "../../services/auth";
-import {Link} from "gatsby";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { isLoggedIn } from "../../services/auth";
+import { Link } from "gatsby";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 
 
 export default function SourcesTable() {
@@ -16,31 +16,31 @@ export default function SourcesTable() {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.adminUrl}/gateways`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (
-              data["hydra:member"] !== undefined &&
-              data["hydra:member"] !== null
-            ) {
-              setSources(data["hydra:member"]);
-              setShowSpinner(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getSources();
     }
   }, [context]);
 
-
+  const getSources = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/gateways`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json"},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (
+          data["hydra:member"] !== undefined &&
+          data["hydra:member"] !== null
+        ) {
+          setSources(data["hydra:member"]);
+          setShowSpinner(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   return (
     <Card title={"Sources"}

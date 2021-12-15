@@ -1,8 +1,8 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import {isLoggedIn} from "../../services/auth";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { isLoggedIn } from "../../services/auth";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 
 export default function LogsTable({ id }) {
   const [logs, setLogs] = React.useState(null);
@@ -14,30 +14,33 @@ export default function LogsTable({ id }) {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.adminUrl}/request_logs/?entity.id=${id}`, {
-          credentials: "include",
-          headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error(response.statusText);
-            }
-          })
-          .then((data) => {
-            setLogs(data["hydra:member"]);
-            setShowSpinner(false);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getLogs();
     }
+
   }, [context]);
+
+  const getLogs = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/request_logs/?entity.id=${id}`, {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
+        }
+      })
+      .then((data) => {
+        setLogs(data["hydra:member"]);
+        setShowSpinner(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   return (
     <Card title={"Logs"}
@@ -48,8 +51,7 @@ export default function LogsTable({ id }) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getLogs}>*/}
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getLogs}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>

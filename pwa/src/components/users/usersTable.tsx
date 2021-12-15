@@ -1,9 +1,9 @@
 import * as React from "react";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import Spinner from "../common/spinner";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import {isLoggedIn} from "../../services/auth";
-import {Link} from "gatsby";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { getUser, isLoggedIn } from "../../services/auth";
+import { Link } from "gatsby";
 
 export default function UsersTable() {
   const [context, setContext] = React.useState(null);
@@ -15,26 +15,28 @@ export default function UsersTable() {
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.apiUrl}/`, {
-          credentials: 'include',
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then(response => response.json())
-          .then((data) => {
-            if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-              setUsers(data['hydra:member']);
-              setShowSpinner(false);
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getUsers();
     }
   }, [context]);
+
+  const getUsers = () => {
+    setShowSpinner(true);
+    fetch(`${context.apiUrl}/`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
+          setUsers(data['hydra:member']);
+          setShowSpinner(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <Card title={"Users"}
@@ -45,7 +47,7 @@ export default function UsersTable() {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getUsers}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>

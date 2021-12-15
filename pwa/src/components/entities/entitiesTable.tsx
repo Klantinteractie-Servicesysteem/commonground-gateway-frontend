@@ -15,21 +15,24 @@ export default function EntitiesTable() {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.adminUrl}/entities`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setShowSpinner(false);
-            setEntities(data["hydra:member"]);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getEntities();
     }
+
   }, [context]);
+
+  const getEntities = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/entities`, {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        setEntities(data["hydra:member"])
+      });
+  }
 
   return (
     <Card
@@ -45,8 +48,7 @@ export default function EntitiesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            {/*<a className="utrecht-link" onClick={getEntities}>*/}
-            <a className="utrecht-link">
+            <a className="utrecht-link" onClick={getEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>

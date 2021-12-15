@@ -12,24 +12,26 @@ export default function ResponseTable() {
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        fetch(`${context.apiUrl}/response_logs`, {
-          credentials: 'include',
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then(response => response.json())
-          .then((data) => {
-            setResponse(data);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getResponses();
     }
   }, [context]);
 
+  const getResponses = () => {
+    fetch(`${context.adminUrl}/response_logs`, {
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+    })
+      .then(response => response.json())
+      .then((data) => {
+        setResponse(data);
+      });
+  }
+
   return (
     <>
-      { response !== null &&
-        response > 0 ? (
+      {response !== null &&
+      response > 0 ? (
         <Table columns={[{
           headerName: "User",
           field: "user"
@@ -52,7 +54,7 @@ export default function ResponseTable() {
             );
           },
         }]} rows={response}/>
-      ):(
+      ) : (
         <Table columns={[{
           headerName: "User",
           field: "user"

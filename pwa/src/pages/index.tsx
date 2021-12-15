@@ -45,7 +45,6 @@ const IndexPage = () => {
           setUser(result);
           sessionStorage.setItem('jwt', data.jwtToken)
           sessionStorage.setItem('user', JSON.stringify(result));
-          console.log(getUser().username);
           navigate("/");
         }
       })

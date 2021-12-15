@@ -1,10 +1,10 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import {isLoggedIn} from "../../services/auth";
-import {useState} from "react";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
-import {Link} from "gatsby";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { isLoggedIn } from "../../services/auth";
+import { useState } from "react";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Link } from "gatsby";
 
 export default function ConfigurationsTable() {
   const [context, setContext] = React.useState(null);
@@ -16,26 +16,28 @@ export default function ConfigurationsTable() {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(context.adminUrl + "/", {
-          credentials: 'include',
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then(response => response.json())
-          .then((data) => {
-            if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
-              setConfigurations(data['hydra:member']);
-              setShowSpinner(false);
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getConfigs();
     }
   }, [context]);
+
+  const getConfigs = () => {
+    setShowSpinner(true);
+    fetch(context.apiUrl + "/", {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
+          setConfigurations(data['hydra:member']);
+          setShowSpinner(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <Card title={"Configurations"}
@@ -46,8 +48,7 @@ export default function ConfigurationsTable() {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getEntities}>*/}
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getConfigs}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>

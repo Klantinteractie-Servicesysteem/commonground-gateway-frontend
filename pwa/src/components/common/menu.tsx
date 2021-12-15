@@ -17,10 +17,6 @@ export default function MainMenu() {
     navigate("/");
   };
 
-  React.useEffect(() => {
-    console.log(isLoggedIn());
-  }, []);
-
   return (
     <div className="utrecht-navhtml">
       <nav className="topnav utrecht-topnav__list">

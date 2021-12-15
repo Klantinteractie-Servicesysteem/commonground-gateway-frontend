@@ -1,9 +1,9 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
-import {isLoggedIn} from "../../services/auth";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
-import {Link} from "gatsby";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { isLoggedIn } from "../../services/auth";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Link } from "gatsby";
 
 export default function DataTable({ id }) {
   const [data, setData] = React.useState(null);
@@ -15,31 +15,32 @@ export default function DataTable({ id }) {
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.adminUrl}/object_entities/?entity.id=${id}`, {
-          credentials: 'include',
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error(response.statusText);
-            }
-          })
-          .then((data) => {
-            console.log(data)
-            setData(data['hydra:member']);
-            setShowSpinner(false);
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getData();
     }
   }, [context]);
+
+  const getData = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/object_entities/?entity.id=${id}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
+        }
+      })
+      .then((data) => {
+        setData(data['hydra:member']);
+        setShowSpinner(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <Card title={"Object entities"}
@@ -50,8 +51,7 @@ export default function DataTable({ id }) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getData}>*/}
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getData}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
