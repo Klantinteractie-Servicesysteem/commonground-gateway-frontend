@@ -24,29 +24,35 @@ export default function EntityForm({id}) {
       });
     } else {
       if (isLoggedIn()) {
-        fetch(`${context.adminUrl}/entities/${id}`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data)
-            setEntity(data);
-          });
-
-
-        fetch(`${context.adminUrl}/gateways`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data["hydra:member"])
-            setSources(data["hydra:member"]);
-          });
+        getEntity();
+        getSources();
       }
     }
   }, [context]);
+
+  const getEntity = () => {
+    fetch(`${context.adminUrl}/entities/${id}`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setEntity(data);
+      });
+  }
+
+  const getSources = () => {
+    fetch(`${context.adminUrl}/gateways`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data["hydra:member"])
+        setSources(data["hydra:member"]);
+      });
+  }
 
   const saveEntity = (event) => {
     setShowSpinner(true);

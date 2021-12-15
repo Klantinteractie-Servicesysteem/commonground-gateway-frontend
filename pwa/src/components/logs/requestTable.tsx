@@ -24,6 +24,7 @@ export default function RequestTable() {
     })
       .then(response => response.json())
       .then((data) => {
+        // console.log(data)
         setRequest(data);
       });
   }

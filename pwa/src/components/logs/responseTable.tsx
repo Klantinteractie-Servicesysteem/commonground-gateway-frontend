@@ -18,12 +18,13 @@ export default function ResponseTable() {
   }, [context]);
 
   const getResponses = () => {
-    fetch(`${context.adminUrl}/response_logs`, {
+    fetch(`${context.apiUrl}/response_logs`, {
       credentials: 'include',
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then(response => response.json())
       .then((data) => {
+        // console.log(data)
         setResponse(data);
       });
   }

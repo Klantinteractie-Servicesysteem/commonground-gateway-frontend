@@ -18,7 +18,6 @@ export default function EntitiesTable() {
     } else if (isLoggedIn()) {
       getEntities();
     }
-
   }, [context]);
 
   const getEntities = () => {
