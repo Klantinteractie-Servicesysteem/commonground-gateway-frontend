@@ -1,6 +1,6 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import ObjectEntityForm from "../../components/object_entities/object_entityForm";
+import SourceForm from "../../components/sources/sourceForm";
 
 
 const IndexPage = (props) => {
@@ -9,7 +9,7 @@ const IndexPage = (props) => {
       <main>
         <div className="row">
           <div className="col-12">
-            <ObjectEntityForm id={props.params.id}/>
+            <SourceForm id={props.params.id}/>
           </div>
         </div>
       </main>

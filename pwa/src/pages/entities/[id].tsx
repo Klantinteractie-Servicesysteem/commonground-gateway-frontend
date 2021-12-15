@@ -1,35 +1,40 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import LogsTable from "../../components/entities/logsTable";
+import LogsTable from "../../components/logs/logsTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
-import Tabs from "../../components/common/tabs";
-import { useUrlContext } from "../../context/urlContext";
+import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import { isLoggedIn } from "../../services/auth";
 
 const IndexPage = (props) => {
   const [title, setTitle] = React.useState("Loading..");
-
-  const context = useUrlContext();
-
-  const handleTitle = () => {
-    if (props.params.id == "new") {
-      setTitle("New entity");
-    } else {
-      fetch(`${context.apiUrl}/entities/${props.params.id}`, {
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setTitle(`Entity: ${data.name}`);
-        });
-    }
-  };
+  const [context, setContext] = React.useState(null);
 
   React.useEffect(() => {
-    handleTitle();
-  }, []);
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        apiUrl: window.GATSBY_API_URL,
+      });
+    } else {
+      if (isLoggedIn()) {
+        if (props.params.id == "new") {
+          setTitle("New entity");
+        } else {
+          fetch(`${context.adminUrl}/entities/${props.params.id}`, {
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("data")
+              console.log(data)
+              setTitle(`Entity: ${data.name}`);
+            });
+        }
+      }
+    }
+  }, [context]);
 
   return (
     <Layout title={title} subtext={"Add or modify your entity"}>
@@ -38,17 +43,14 @@ const IndexPage = (props) => {
           <div className="col-12">
             <div className="page-top-item">
               {props.params.id !== "new" ? (
-                <Tabs
-                  items={[
-                    { name: "Main", id: "main", active: true },
+                  <Tabs items={[{ name: "Main", id: "main", active: true },
                     {
                       name: "Attributes",
                       id: "attributes",
                     },
                     { name: "Data", id: "data" },
                     { name: "Logs", id: "logs" },
-                  ]}
-                />
+                  ]}/>
               ) : (
                 <Tabs items={[{ name: "Main", id: "main", active: true }]} />
               )}
