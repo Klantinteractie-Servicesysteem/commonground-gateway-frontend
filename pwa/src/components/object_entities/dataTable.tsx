@@ -1,7 +1,9 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import Table from "../common/table";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Link} from "gatsby";
 
 export default function DataTable({ id }) {
   const [data, setData] = React.useState(null);
@@ -40,16 +42,68 @@ export default function DataTable({ id }) {
   }, [context]);
 
   return (
-    // <Card title="Object entities" modal="#helpModal" refresh={getData} add="/object_entities/new">
-      <div className="row">
-        <div className="col-12">
-          {showSpinner === true ? (
-            <Spinner />
-          ) : (
-            <Table properties={[{ th: "Name", property: "name" }, { th: "Owner", property: "owner" }]} items={data} editLink="/object_entities" />
-          )}
-        </div>
-      </div>
-    // </Card>
+    <Card title={"Object entities"}
+          cardHeader={function () {
+            return (
+              <>
+                <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
+                {/*<a className="utrecht-link" onClick={getData}>*/}
+                <a className="utrecht-link">
+                  <i className="fas fa-sync-alt mr-1"/>
+                  <span className="mr-2">Refresh</span>
+                </a>
+                <Link to="/object_entities/new">
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
+                    className="fas fa-plus mr-2"/>Add
+                  </button>
+                </Link>
+              </>
+            )
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner/>
+                  ) : (
+                    data ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Owner",
+                        field: "owner"
+                      },
+                        {
+                          field: "edit",
+                          headerName: "Edit ",
+                          renderCell: () => {
+                            return (
+                              ""
+                              // <Link to={`/data/${data.id}`}>
+                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              // </Link>
+                            );
+                          },
+                        },]} rows={data}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Owner",
+                        field: "owner"
+                      }]} rows={[]}/>
+                    )
+                  )}
+                </div>
+              </div>
+            )
+          }}
+    />
   );
 }

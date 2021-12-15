@@ -2,45 +2,44 @@ import * as React from "react";
 import Spinner from "../common/spinner";
 import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
+import {useState} from "react";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Link} from "gatsby";
 
-export default function LogsTable({ id }) {
-  const [logs, setLogs] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(null);
+export default function ConfigurationsTable() {
   const [context, setContext] = React.useState(null);
+  const [configurations, setConfigurations] = useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         apiUrl: window.GATSBY_API_URL,
+        frontendUrl: window.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.adminUrl}/request_logs/?entity.id=${id}`, {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
+        fetch(context.apiUrl + "/", {
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
         })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error(response.statusText);
+          .then(response => response.json())
+          .then((data) => {
+            if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
+              setConfigurations(data['hydra:member']);
+              setShowSpinner(false);
             }
           })
-          .then((data) => {
-            setLogs(data["hydra:member"]);
-            setShowSpinner(false);
-          })
           .catch((error) => {
-            console.error("Error:", error);
+            console.error('Error:', error);
           });
       }
     }
   }, [context]);
 
   return (
-    <Card title={"Logs"}
+    <Card title={"Configurations"}
           cardHeader={function () {
             return (
               <>
@@ -48,11 +47,16 @@ export default function LogsTable({ id }) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getLogs}>*/}
+                {/*<a className="utrecht-link" onClick={getEntities}>*/}
                 <a className="utrecht-link">
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
+                <Link to="/configurations/new">
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
+                    className="fas fa-plus mr-2"/>Add
+                  </button>
+                </Link>
               </>
             )
           }}
@@ -63,58 +67,34 @@ export default function LogsTable({ id }) {
                   {showSpinner === true ? (
                     <Spinner/>
                   ) : (
-                    logs ? (
+                    configurations ? (
                       <Table columns={[{
-                        headerName: "Action",
-                        field: "action"
+                        headerName: "Name",
+                        field: "name"
                       }, {
-                        headerName: "Object Id",
-                        field: "objectId"
+                        headerName: "Description",
+                        field: "description"
                       },
-                        {
-                          headerName: "Version",
-                          field: "version"
-                        },
-                        {
-                          headerName: "Username",
-                          field: "username"
-                        },
-                        {
-                          headerName: "Session",
-                          field: "session"
-                        },
                         {
                           field: "edit",
                           headerName: "Edit ",
                           renderCell: () => {
                             return (
                               ""
-                              // <Link to={`/logs/${logs.id}`}>
+                              // <Link to={`/sources/${sources.id}`}>
                               //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
                               // </Link>
                             );
                           },
-                        },]} rows={logs}/>
+                        },]} rows={configurations}/>
                     ) : (
                       <Table columns={[{
-                        headerName: "Action",
-                        field: "action"
+                        headerName: "Name",
+                        field: "name"
                       }, {
-                        headerName: "Object Id",
-                        field: "objectId"
-                      },
-                        {
-                          headerName: "Version",
-                          field: "version"
-                        },
-                        {
-                          headerName: "Username",
-                          field: "username"
-                        },
-                        {
-                          headerName: "Session",
-                          field: "session"
-                        }]} rows={[]}/>
+                        headerName: "Description",
+                        field: "description"
+                      }]} rows={[]}/>
                     )
                   )}
                 </div>
