@@ -10,6 +10,7 @@ import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInp
 import {Accordion} from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import {MultiDimensionalArrayInput} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {addElement, deleteElementFunction} from "../utility/elementCreation";
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -270,12 +271,16 @@ export default function SourceForm({ id }) {
                                              <MultiDimensionalArrayInput
                                                id={"headers"}
                                                label={"Headers"}
-                                               data={[{key: 'headers', value: source.headers}]}                                             />
+                                               data={[{key: 'headers', value: source.headers}]}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}/>
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"headers"}
                                                label={"Headers"}
                                                data={null}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            )}
                                          </>)
