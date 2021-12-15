@@ -1,10 +1,10 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
-import { setUser, getUser, isLoggedIn } from "../services/auth";
-import { navigate } from "gatsby-link";
+import {setUser, getUser, isLoggedIn} from "../services/auth";
+import {navigate} from "gatsby-link";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -33,7 +33,7 @@ const IndexPage = () => {
     fetch(`${context.apiUrl}/users/login`, {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body)
     })
       .then(response => response.json())
@@ -61,38 +61,71 @@ const IndexPage = () => {
     >
       {
         isLoggedIn() && context !== null ? (
-          <a href={`${context.adminUrl}/export/all`} target="_blank">
-            <button className="utrecht-button" type="button">
-              Export Configuration
-            </button>
-          </a>
-      ) : (
-      <form id="dataForm" onSubmit={login}>
-        <div className="row">
-          <div className="col-4">
-            <div className="form-group">
-              <span className="utrecht-form-label mb-2">Username</span>
-              <input className="utrecht-textbox utrecht-textbox--html-input" name="username"
-                id="usernameInput" required />
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-4">
-            <div className="form-group">
-              <span className="utrecht-form-label">Password</span>
-              <input className="utrecht-textbox utrecht-textbox--html-input" type="password" name="password"
-                id="passwordInput" />
-            </div>
-
-            <a className="utrecht-link" onClick={login}>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-primary"><i
-                className="fas fa-sign-in-alt mr-2"></i>Login
+          <>
+            <a href={`${context.adminUrl}/export/all`} target="_blank">
+              <button className="utrecht-button" type="button">
+                Export Configuration
               </button>
             </a>
-          </div>
-        </div>
-      </form>
+
+            <Tabs items={[{
+              name: 'Response logs',
+              id: 'response',
+              active: true
+            }, {
+              name: 'Request logs',
+              id: 'request'
+            }
+            ]}/>
+
+            <div className="tab-content">
+              <div
+                className="tab-pane active"
+                id="response"
+                role="tabpanel"
+                aria-labelledby="main-tab"
+              >
+                <br/>
+                <ResponseTable/>
+              </div>
+              <div
+                className="tab-pane"
+                id="request"
+                role="tabpanel"
+                aria-labelledby="attributes-tab"
+              >
+                <br/>
+                <RequestTable/>
+              </div>
+            </div>
+          </>
+        ) : (
+          <form id="dataForm" onSubmit={login}>
+            <div className="row">
+              <div className="col-4">
+                <div className="form-group">
+                  <span className="utrecht-form-label mb-2">Username</span>
+                  <input className="utrecht-textbox utrecht-textbox--html-input" name="username"
+                         id="usernameInput" required/>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-4">
+                <div className="form-group">
+                  <span className="utrecht-form-label">Password</span>
+                  <input className="utrecht-textbox utrecht-textbox--html-input" type="password" name="password"
+                         id="passwordInput"/>
+                </div>
+
+                <a className="utrecht-link" onClick={login}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-primary"><i
+                    className="fas fa-sign-in-alt mr-2"></i>Login
+                  </button>
+                </a>
+              </div>
+            </div>
+          </form>
         )}
     </Layout>
   );

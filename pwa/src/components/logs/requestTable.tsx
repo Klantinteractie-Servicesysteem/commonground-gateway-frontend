@@ -10,7 +10,7 @@ export default function RequestTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
