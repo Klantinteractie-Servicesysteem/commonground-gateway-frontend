@@ -19,48 +19,63 @@ export default function RequestTable() {
 
   const getRequests = () => {
     fetch(`${context.adminUrl}/request_logs`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setRequest(data);
       });
-  }
+  };
 
   return (
     <>
-      <Table columns={[{
-        headerName: "ID",
-        field: "id"
-      }, {
-        headerName: "Description",
-        field: "description"
-      }, {
-        headerName: "Start date",
-        field: "startDate"
-      }, {
-        field: "document",
-        headerName: " ",
-        renderCell: () => {
-          return (
-            <div className="float-right mr-4">
-              <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
-                Request logs
-              </button>
-            </div>
-          );
-        },
-      }
-      ]} rows={[]} />
+      <Table
+        columns={[
+          {
+            headerName: "ID",
+            field: "id",
+          },
+          {
+            headerName: "Description",
+            field: "description",
+          },
+          {
+            headerName: "Start date",
+            field: "startDate",
+          },
+          {
+            field: "document",
+            headerName: " ",
+            renderCell: () => {
+              return (
+                <div className="float-right mr-4">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#requestLogs"
+                  >
+                    Request logs
+                  </button>
+                </div>
+              );
+            },
+          },
+        ]}
+        rows={[]}
+      />
 
-      <Modal title={"Request Logs"}
+      <Modal
+        title={"Request Logs"}
         id={"requestLogs"}
         body={function () {
-          return (
-            "request logs"
-          )
-        }} />
+          return "request logs";
+        }}
+      />
     </>
   );
 }
