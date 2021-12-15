@@ -35,7 +35,7 @@ export default function EntityForm({id}) {
             });
         }
 
-        fetch(context.adminUrl + "/gateways", {
+        fetch(`${context.adminUrl}/gateways`, {
           credentials: "include",
           headers: {"Content-Type": "application/json"},
         })
@@ -55,10 +55,12 @@ export default function EntityForm({id}) {
     }
   }, [context]);
 
+  
+
   const saveEntity = (event) => {
     setShowSpinner(true);
 
-    let url = context.adminUrl + "/entities";
+    let url = `${context.adminUrl}/entities`;
     let method = null;
     if (id === "new") {
       method = "POST";
