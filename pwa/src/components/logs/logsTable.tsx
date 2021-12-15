@@ -84,14 +84,15 @@ export default function LogsTable({ id }) {
                           field: "session"
                         },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
+                          field: "id",
+                          headerName: " ",
                           renderCell: () => {
                             return (
-                              ""
-                              // <Link to={`/logs/${logs.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <div className="float-right mr-4">
+                                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestLogs">
+                                  Request logs
+                                </button>
+                              </div>
                             );
                           },
                         },]} rows={logs}/>

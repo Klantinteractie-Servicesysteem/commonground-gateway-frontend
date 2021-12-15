@@ -72,14 +72,13 @@ export default function ApplicationsTable() {
                         field: "description"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
                             return (
-                              ""
-                              // <Link to={`/applications/${row.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/applications/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
                             );
                           },
                         },]} rows={applications}/>

@@ -73,14 +73,13 @@ export default function UsersTable() {
                         field: "description"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
                             return (
-                              ""
-                              // <Link to={`/users/${users.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/users/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
                             );
                           },
                         },]} rows={users}/>

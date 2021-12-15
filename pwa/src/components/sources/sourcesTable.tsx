@@ -40,6 +40,8 @@ export default function SourcesTable() {
     }
   }, [context]);
 
+
+
   return (
     <Card title={"Sources"}
           cardHeader={function () {
@@ -86,16 +88,15 @@ export default function SourcesTable() {
                         field: "location"
                       },
                         {
-                        field: "edit",
-                        headerName: "Edit ",
-                        renderCell: () => {
-                          return (
-                            ""
-                            // <Link to={`/sources/${sources.id}`}>
-                            //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                            // </Link>
-                          );
-                        },
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
+                            return (
+                              <Link to={`/sources/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
+                            );
+                          },
                       },]} rows={sources}/>
                     ) : (
                       <Table columns={[{

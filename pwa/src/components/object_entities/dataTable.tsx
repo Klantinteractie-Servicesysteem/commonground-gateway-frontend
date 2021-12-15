@@ -79,14 +79,13 @@ export default function DataTable({ id }) {
                         field: "owner"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
                             return (
-                              ""
-                              // <Link to={`/data/${data.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/object_entities/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
                             );
                           },
                         },]} rows={data}/>

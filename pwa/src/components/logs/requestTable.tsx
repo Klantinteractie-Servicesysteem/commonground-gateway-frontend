@@ -40,7 +40,7 @@ export default function RequestTable() {
           headerName: "Date Created",
           field: "dateCreated"
         }, {
-          field: "edit",
+          field: "id",
           headerName: " ",
           renderCell: () => {
             return (

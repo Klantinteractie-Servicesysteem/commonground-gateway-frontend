@@ -40,7 +40,7 @@ export default function ResponseTable() {
           headerName: "Date Created",
           field: "dateCreated"
         }, {
-          field: "edit",
+          field: "id",
           headerName: " ",
           renderCell: () => {
             return (

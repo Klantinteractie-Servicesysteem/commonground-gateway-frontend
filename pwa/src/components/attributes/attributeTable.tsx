@@ -82,14 +82,13 @@ export default function AttributeTable({id}) {
                         field: "type"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
                             return (
-                              ""
-                              // <Link to={`/attributes/${sources.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/attributes/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
                             );
                           },
                         },]} rows={attributes}/>
