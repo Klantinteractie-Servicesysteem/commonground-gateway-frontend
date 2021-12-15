@@ -1,51 +1,45 @@
 import * as React from "react";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import Spinner from "../common/spinner";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
 import {isLoggedIn} from "../../services/auth";
+import {useState} from "react";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
 
-export default function AttributeTable({id}) {
-  const [attributes, setAttributes] = React.useState(null);
+export default function ConfigurationsTable() {
   const [context, setContext] = React.useState(null);
+  const [configurations, setConfigurations] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         apiUrl: window.GATSBY_API_URL,
+        frontendUrl: window.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json"},
+        fetch(context.apiUrl + "/", {
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
         })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
+          .then(response => response.json())
+          .then((data) => {
+            if (data['hydra:member'] !== undefined && data['hydra:member'] !== null) {
+              setConfigurations(data['hydra:member']);
               setShowSpinner(false);
-              setAttributes(null);
-              throw new Error(response.statusText);
             }
           })
-          .then((data) => {
-            setAttributes(data["hydra:member"]);
-            setShowSpinner(false);
-          })
           .catch((error) => {
-            console.error("Error:", error);
-            setShowSpinner(false);
-            setAttributes(null);
+            console.error('Error:', error);
           });
       }
     }
   }, [context]);
 
   return (
-    <Card title={"Attributes"}
+    <Card title={"Configurations"}
           cardHeader={function () {
             return (
               <>
@@ -53,12 +47,12 @@ export default function AttributeTable({id}) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getAttributes}>*/}
+                {/*<a className="utrecht-link" onClick={getEntities}>*/}
                 <a className="utrecht-link">
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
-                <Link to={`/attributes/new/${id}`}>
+                <Link to="/configurations/new">
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
                     className="fas fa-plus mr-2"/>Add
                   </button>
@@ -73,13 +67,13 @@ export default function AttributeTable({id}) {
                   {showSpinner === true ? (
                     <Spinner/>
                   ) : (
-                    attributes ? (
+                    configurations ? (
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
                       }, {
-                        headerName: "Type",
-                        field: "type"
+                        headerName: "Description",
+                        field: "description"
                       },
                         {
                           field: "edit",
@@ -87,19 +81,19 @@ export default function AttributeTable({id}) {
                           renderCell: () => {
                             return (
                               ""
-                              // <Link to={`/attributes/${sources.id}`}>
+                              // <Link to={`/sources/${sources.id}`}>
                               //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
                               // </Link>
                             );
                           },
-                        },]} rows={attributes}/>
+                        },]} rows={configurations}/>
                     ) : (
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
                       }, {
-                        headerName: "Type",
-                        field: "type"
+                        headerName: "Description",
+                        field: "description"
                       }]} rows={[]}/>
                     )
                   )}
@@ -108,6 +102,5 @@ export default function AttributeTable({id}) {
             )
           }}
     />
-  )
-    ;
+  );
 }
