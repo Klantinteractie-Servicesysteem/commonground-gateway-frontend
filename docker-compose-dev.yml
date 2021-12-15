@@ -3,7 +3,7 @@ version: "3.4"
 services:
   php:
     &php
-    image: ghcr.io/conductionnl/commonground-gateway-php:admin
+    image: ghcr.io/conductionnl/commonground-gateway-php:dev
     depends_on:
       - db
     volumes:
