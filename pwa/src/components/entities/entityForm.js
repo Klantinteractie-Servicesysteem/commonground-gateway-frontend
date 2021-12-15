@@ -26,7 +26,7 @@ export default function EntityForm({id}) {
       if (isLoggedIn()) {
         fetch(`${context.adminUrl}/entities/${id}`, {
           credentials: "include",
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then((response) => response.json())
           .then((data) => {
@@ -36,7 +36,7 @@ export default function EntityForm({id}) {
 
         fetch(`${context.adminUrl}/gateways`, {
           credentials: "include",
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then((response) => response.json())
           .then((data) => {

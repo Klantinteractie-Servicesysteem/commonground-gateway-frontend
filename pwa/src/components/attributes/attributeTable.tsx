@@ -20,7 +20,7 @@ export default function AttributeTable({id}) {
         setShowSpinner(true);
         fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
           credentials: "include",
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then((response) => {
             if (response.ok) {

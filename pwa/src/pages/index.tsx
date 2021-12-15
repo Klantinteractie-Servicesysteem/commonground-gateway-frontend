@@ -11,8 +11,6 @@ const IndexPage = () => {
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
-      console.log(getUser().username);
-      console.log(context);
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
@@ -120,7 +118,7 @@ const IndexPage = () => {
 
                 <a className="utrecht-link" onClick={login}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn-primary"><i
-                    className="fas fa-sign-in-alt mr-2"></i>Login
+                    className="fas fa-sign-in-alt mr-2"/>Login
                   </button>
                 </a>
               </div>

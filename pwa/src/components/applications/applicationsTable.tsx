@@ -20,7 +20,7 @@ export default function ApplicationsTable() {
         setShowSpinner(true);
         fetch(`${context.adminUrl}/applications/`, {
           credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then(response => response.json())
           .then((data) => {

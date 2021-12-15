@@ -16,7 +16,7 @@ export default function ResponseTable() {
       if (isLoggedIn()) {
         fetch(`${context.apiUrl}/response_logs`, {
           credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then(response => response.json())
           .then((data) => {

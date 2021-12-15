@@ -16,7 +16,7 @@ export default function RequestTable() {
       if (isLoggedIn()) {
         fetch(`${context.adminUrl}/request_logs`, {
           credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
         })
           .then(response => response.json())
           .then((data) => {

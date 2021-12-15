@@ -20,7 +20,7 @@ export default function SourceForm({ id }) {
   const getSource = () => {
     fetch(context.adminUrl + "/gateways/" + id, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {

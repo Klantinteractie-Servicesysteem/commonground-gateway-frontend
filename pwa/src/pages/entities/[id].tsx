@@ -23,7 +23,7 @@ const IndexPage = (props) => {
         } else {
           fetch(`${context.adminUrl}/entities/${props.params.id}`, {
             credentials: "include",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
           })
             .then((response) => response.json())
             .then((data) => {

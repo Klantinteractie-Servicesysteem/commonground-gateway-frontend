@@ -10,7 +10,7 @@ import {
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import Accordion from "../common/accordion";
+import {Accordion} from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import {MultiDimensionalArrayInput} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import Spinner from "../common/spinner";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
@@ -24,7 +24,7 @@ export default function AttributeForm({id, entity}) {
   const getAttributes = () => {
     fetch(context.adminUrl + "/attributes", {
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -38,7 +38,7 @@ export default function AttributeForm({id, entity}) {
   const getAttribute = () => {
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -186,7 +186,7 @@ export default function AttributeForm({id, entity}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
