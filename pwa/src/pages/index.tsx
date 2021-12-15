@@ -11,8 +11,6 @@ const IndexPage = () => {
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
-      console.log(getUser().username);
-      console.log(context);
       setContext({
         apiUrl: window.GATSBY_API_URL,
       });
@@ -47,7 +45,6 @@ const IndexPage = () => {
           setUser(result);
           sessionStorage.setItem('jwt', data.jwtToken)
           sessionStorage.setItem('user', JSON.stringify(result));
-          console.log(getUser().username);
           navigate("/");
         }
       })
