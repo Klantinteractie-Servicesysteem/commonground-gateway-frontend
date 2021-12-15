@@ -14,13 +14,12 @@ export default function ConfigurationsTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(context.apiUrl + "/", {
+        fetch(context.adminUrl + "/", {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         })

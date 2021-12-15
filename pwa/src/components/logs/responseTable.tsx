@@ -10,11 +10,11 @@ export default function ResponseTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        apiUrl: window.GATSBY_API_URL,
       });
     } else {
       if (isLoggedIn()) {
-        fetch(`${context.adminUrl}/response_logs`, {
+        fetch(`${context.apiUrl}/response_logs`, {
           credentials: 'include',
           headers: {'Content-Type': 'application/json'},
         })

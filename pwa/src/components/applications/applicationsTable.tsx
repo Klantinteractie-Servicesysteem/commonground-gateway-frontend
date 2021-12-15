@@ -13,12 +13,12 @@ export default function ApplicationsTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.apiUrl}/applications/`, {
+        fetch(`${context.adminUrl}/applications/`, {
           credentials: 'include',
           headers: {'Content-Type': 'application/json'},
         })
