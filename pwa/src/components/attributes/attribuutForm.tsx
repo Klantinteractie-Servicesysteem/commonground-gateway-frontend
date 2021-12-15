@@ -10,10 +10,11 @@ import {
 import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import Accordion from "../common/accordion";
+import {Accordion} from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import {MultiDimensionalArrayInput} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import Spinner from "../common/spinner";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {addElement, deleteElementFunction} from "../utility/elementCreation";
 
 export default function AttributeForm({id, entity}) {
   const context = useUrlContext();
@@ -22,9 +23,9 @@ export default function AttributeForm({id, entity}) {
   const [attributes, setAttributes] = React.useState(null);
 
   const getAttributes = () => {
-    fetch(context.adminUrl + "/attributes", {
+    fetch(`${context.adminUrl}/attributes`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -38,7 +39,7 @@ export default function AttributeForm({id, entity}) {
   const getAttribute = () => {
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -186,7 +187,7 @@ export default function AttributeForm({id, entity}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
@@ -798,12 +799,16 @@ export default function AttributeForm({id, entity}) {
                                          id={"objectConfig"}
                                          label={"Object Config"}
                                          data={[{key: 'objectConfig', value: attribute.objectConfig}]}
+                                         deleteFunction={deleteElementFunction}
+                                         addFunction={addElement}
                                        />
                                      ) : (
                                        <MultiDimensionalArrayInput
                                          id={"objectConfig"}
                                          label={"Object Config"}
                                          data={null}
+                                         deleteFunction={deleteElementFunction}
+                                         addFunction={addElement}
                                        />
                                      )}
                                    </>)
@@ -819,12 +824,16 @@ export default function AttributeForm({id, entity}) {
                                            id={"enum"}
                                            label={"Enum"}
                                            data={[{key: 'enum', value: attribute.enum}]}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            id={"enum"}
                                            label={"Enum"}
                                            data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        )}
                                      </>)
@@ -840,12 +849,17 @@ export default function AttributeForm({id, entity}) {
                                            id={"requiredIf"}
                                            label={"Required If"}
                                            data={[{key: 'requiredIf', value: attribute.requiredIf}]}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            id={"requiredIf"}
                                            label={"Required If"}
-                                           data={null}/>
+                                           data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
+                                         />
                                        )}
                                      </>)
                                    }
@@ -860,12 +874,17 @@ export default function AttributeForm({id, entity}) {
                                            id={"forbiddenIf"}
                                            label={"Forbidden If"}
                                            data={[{key: 'forbiddenIf', value: attribute.forbiddenIf}]}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            id={"forbiddenIf"}
                                            label={"Forbidden If"}
-                                           data={null}/>
+                                           data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
+                                         />
                                        )}
                                      </>)
                                    }
@@ -880,12 +899,17 @@ export default function AttributeForm({id, entity}) {
                                            label={"All Of"}
                                            id={"allOf"}
                                            data={[{key: 'allOf', value: attribute.allOf}]}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            label={"All Of"}
                                            id={"allOf"}
-                                           data={null}/>
+                                           data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
+                                         />
                                        )}
                                      </>)
                                    }
@@ -900,13 +924,17 @@ export default function AttributeForm({id, entity}) {
                                            label={"Any Of"}
                                            id={"anyOf"}
                                            data={[{key: 'anyOf', value: attribute.anyOf}]}
-
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            label={"Any Of"}
                                            id={"anyOf"}
-                                           data={null}/>
+                                           data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
+                                         />
                                        )}
                                      </>)
                                    }
@@ -921,12 +949,17 @@ export default function AttributeForm({id, entity}) {
                                            label={"One Of"}
                                            id={"oneOf"}
                                            data={[{key: 'oneOf', value: attribute.oneOf}]}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
                                          />
                                        ) : (
                                          <MultiDimensionalArrayInput
                                            label={"One Of"}
                                            id={"oneOf"}
-                                           data={null}/>
+                                           data={null}
+                                           deleteFunction={deleteElementFunction}
+                                           addFunction={addElement}
+                                         />
                                        )}
                                      </>)
                                    }

@@ -10,6 +10,7 @@ import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {addElement, deleteElementFunction} from "../utility/elementCreation";
 
 export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
@@ -20,42 +21,39 @@ export default function EntityForm({id}) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
-        if (id !== "new") {
-          fetch(`${context.adminUrl}/entities/${id}`, {
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              setEntity(data);
-            });
-        }
-
-        fetch(`${context.adminUrl}/gateways`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json"},
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (
-              data["hydra:member"] !== undefined &&
-              data["hydra:member"] !== null
-            ) {
-              setSources(data["hydra:member"]);
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+        getEntity();
+        getSources();
       }
     }
   }, [context]);
 
-  
+  const getEntity = () => {
+    fetch(`${context.adminUrl}/entities/${id}`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data)
+        setEntity(data);
+      });
+  }
+
+  const getSources = () => {
+    fetch(`${context.adminUrl}/gateways`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data["hydra:member"])
+        setSources(data["hydra:member"]);
+      });
+  }
 
   const saveEntity = (event) => {
     setShowSpinner(true);
@@ -72,7 +70,7 @@ export default function EntityForm({id}) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -116,10 +114,10 @@ export default function EntityForm({id}) {
                             <div className="form-group">
                               {entity !== null && entity.name !== null ? (
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
-                                                       nameOverride={"Name *"} required={"true"}/>
+                                                       nameOverride={"Name"} required={"true"}/>
                               ) : (
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name *"} required={"true"}/>
+                                                       nameOverride={"Name"} required={"true"}/>
                               )}
                             </div>
                           </div>
@@ -222,12 +220,16 @@ export default function EntityForm({id}) {
                                              id={"transformations"}
                                              label={"Transformations"}
                                              data={[{key: 'transformations', value: entity.transformations}]}
+                                             deleteFunction={deleteElementFunction}
+                                             addFunction={addElement}
                                            />
                                          ) : (
                                            <MultiDimensionalArrayInput
                                              id={"transformations"}
                                              label={"Transformations"}
                                              data={null}
+                                             deleteFunction={deleteElementFunction}
+                                             addFunction={addElement}
                                            />
                                          )}
                                        </>)
@@ -243,12 +245,16 @@ export default function EntityForm({id}) {
                                                id={"translationConfig"}
                                                label={"Translation Config"}
                                                data={[{key: 'translationConfig', value: entity.translationConfig}]}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"translationConfig"}
                                                label={"Translation Config"}
                                                data={null}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            )}
                                          </>)
@@ -264,11 +270,15 @@ export default function EntityForm({id}) {
                                                id={"collectionConfig"}
                                                data={[{key: 'collectionConfig', value: entity.collectionConfig}]}
                                                label={"Collection Config"}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                              />
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"collectionConfig"}
                                                label={"Collection Config"}
+                                               deleteFunction={deleteElementFunction}
+                                               addFunction={addElement}
                                                data={null}/>
                                            )}
                                          </>)

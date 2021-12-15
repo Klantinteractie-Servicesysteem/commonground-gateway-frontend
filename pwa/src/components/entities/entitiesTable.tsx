@@ -18,14 +18,13 @@ export default function EntitiesTable() {
     } else if (isLoggedIn()) {
       getEntities();
     }
-
   }, [context]);
 
   const getEntities = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/entities`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
     })
       .then(response => response.json())
       .then((data) => {
@@ -35,11 +34,16 @@ export default function EntitiesTable() {
   }
 
   return (
-    <Card title={"Entities"}
+    <Card
+      title={"Entities"}
       cardHeader={function () {
         return (
           <>
-            <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+            <button
+              className="utrecht-link button-no-style"
+              data-toggle="modal"
+              data-target="helpModal"
+            >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -48,73 +52,87 @@ export default function EntitiesTable() {
               <span className="mr-2">Refresh</span>
             </a>
             <Link to="/entities/new">
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-                className="fas fa-plus mr-2" />Add
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                <i className="fas fa-plus mr-2" />
+                Add
               </button>
             </Link>
           </>
-        )
+        );
       }}
       cardBody={function () {
         return (
           <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <Spinner />
-              ) : (
-                <div className="row">
-                  <div className="col-12">
-                    {showSpinner === true ? (
-                      <Spinner />
-                    ) : (
-                      entities ? (
-                        <Table columns={[{
-                          headerName: "Name",
-                          field: "name"
-                        }, {
-                          headerName: "Endpoint",
-                          field: "endpoint"
-                        }, {
-                          headerName: "Route",
-                          field: "route"
-                        }, {
-                          headerName: "Source",
-                          field: "gateway.name"
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner />
+                ) : entities !== null ? (
+                  <Table
+                    columns={[
+                      {
+                        headerName: "Name",
+                        field: "name",
+                      },
+                      {
+                        headerName: "Endpoint",
+                        field: "endpoint",
+                      },
+                      {
+                        headerName: "Route",
+                        field: "route",
+                      },
+                      {
+                        headerName: "Source",
+                        field: "gateway",
+                        valueFormatter: (value) => {
+                          return value.name;
                         },
-                        {
-                          field: "id",
-                          headerName: "Edit ",
-                          renderCell: (item) => {
-                            return (
-                              <Link to={`/entities/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1" />Edit</button>
-                              </Link>
-                            );
-                          },
-                        },]} rows={entities} />
-                      ) : (
-                        <Table columns={[{
-                          headerName: "Name",
-                          field: "name"
-                        }, {
-                          headerName: "Endpoint",
-                          field: "endpoint"
-                        }, {
-                          headerName: "Route",
-                          field: "route"
-                        }, {
-                          headerName: "Source",
-                          field: "gateway.name"
-                        }
-                        ]} rows={[]} />
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
+                      },
+                      {
+                        field: "id",
+                        headerName: " ",
+                        renderCell: (item: { id: string }) => {
+                          return (
+                            <Link to={`/entities/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <i className="fas fa-edit pr-1" />
+                                Edit
+                              </button>
+                            </Link>
+                          );
+                        },
+                      },
+                    ]}
+                    rows={entities}
+                  />
+                ) : (
+                  <Table
+                    columns={[
+                      {
+                        headerName: "Name",
+                        field: "name",
+                      },
+                      {
+                        headerName: "Endpoint",
+                        field: "endpoint",
+                      },
+                      {
+                        headerName: "Route",
+                        field: "route",
+                      },
+                      {
+                        headerName: "Source",
+                        field: "gateway.name",
+                      },
+                    ]}
+                    rows={[]}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        )
+        );
       }}
     />
   );
