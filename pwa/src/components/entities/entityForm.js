@@ -20,20 +20,19 @@ export default function EntityForm({id}) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
-        if (id !== "new") {
-          fetch(`${context.adminUrl}/entities/${id}`, {
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              setEntity(data);
-            });
-        }
+        fetch(`${context.adminUrl}/entities/${id}`, {
+          credentials: "include",
+          headers: {"Content-Type": "application/json"},
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setEntity(data);
+          });
+
 
         fetch(`${context.adminUrl}/gateways`, {
           credentials: "include",
@@ -41,21 +40,24 @@ export default function EntityForm({id}) {
         })
           .then((response) => response.json())
           .then((data) => {
-            if (
-              data["hydra:member"] !== undefined &&
-              data["hydra:member"] !== null
-            ) {
-              setSources(data["hydra:member"]);
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
+            setSources(data["hydra:member"]);
           });
       }
     }
   }, [context]);
 
-  
+  // const getSources = () => {
+  //   fetch(`${context.adminUrl}/gateways`, {
+  //     credentials: "include",
+  //     headers: {"Content-Type": "application/json"},
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log('gateway')
+  //       console.log(data)
+  //       setSources(data);
+  //     });
+  // }
 
   const saveEntity = (event) => {
     setShowSpinner(true);
