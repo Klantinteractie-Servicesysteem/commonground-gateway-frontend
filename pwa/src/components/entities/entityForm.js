@@ -114,10 +114,10 @@ export default function EntityForm({id}) {
                             <div className="form-group">
                               {entity !== null && entity.name !== null ? (
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
-                                                       nameOverride={"Name *"} required={"true"}/>
+                                                       nameOverride={"Name"} required={"true"}/>
                               ) : (
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name *"} required={"true"}/>
+                                                       nameOverride={"Name"} required={"true"}/>
                               )}
                             </div>
                           </div>
