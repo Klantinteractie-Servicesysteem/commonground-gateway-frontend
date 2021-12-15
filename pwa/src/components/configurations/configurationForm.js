@@ -23,7 +23,7 @@ export default function ConfigurationForm({ id }) {
         if (id !== "new") {
           fetch(context.apiUrl + "//" + id, {
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
           })
             .then(response => response.json())
             .then((data) => {
@@ -55,7 +55,7 @@ export default function ConfigurationForm({ id }) {
     fetch(url, {
       method: method,
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body)
     })
       .then(response => response.json())

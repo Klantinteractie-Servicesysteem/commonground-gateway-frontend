@@ -12,6 +12,7 @@ import { MultiDimensionalArrayInput } from "@conductionnl/nl-design-system/lib/M
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Checkbox } from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import { isLoggedIn } from "../../services/auth";
+import {addElement, deleteElementFunction} from "../utility/elementCreation";
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
