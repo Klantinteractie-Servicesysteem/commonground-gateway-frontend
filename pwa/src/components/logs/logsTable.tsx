@@ -59,24 +59,15 @@ export default function LogsTable({id}) {
                     ) : (
                       logs !== null ? (
                         <Table columns={[{
-                          headerName: "Action",
-                          field: "action"
+                          headerName: "Status",
+                          field: "status"
                         }, {
-                          headerName: "Object Id",
-                          field: "objectId"
+                          headerName: "Status Code",
+                          field: "statusCode"
+                        }, {
+                          headerName: "Method",
+                          field: "method"
                         },
-                          {
-                            headerName: "Version",
-                            field: "version"
-                          },
-                          {
-                            headerName: "Username",
-                            field: "username"
-                          },
-                          {
-                            headerName: "Session",
-                            field: "session"
-                          },
                           {
                             field: "id",
                             headerName: " ",
@@ -93,24 +84,15 @@ export default function LogsTable({id}) {
                           },]} rows={logs}/>
                       ) : (
                         <Table columns={[{
-                          headerName: "Action",
-                          field: "action"
+                          headerName: "Status",
+                          field: "status"
                         }, {
-                          headerName: "Object Id",
-                          field: "objectId"
-                        },
-                          {
-                            headerName: "Version",
-                            field: "version"
-                          },
-                          {
-                            headerName: "Username",
-                            field: "username"
-                          },
-                          {
-                            headerName: "Session",
-                            field: "session"
-                          }]} rows={[]}/>
+                          headerName: "Status Code",
+                          field: "statusCode"
+                        }, {
+                          headerName: "Method",
+                          field: "method"
+                        }]} rows={[]}/>
                       )
                     )}
                   </div>
