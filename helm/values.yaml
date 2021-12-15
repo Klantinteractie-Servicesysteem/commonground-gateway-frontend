@@ -3,16 +3,17 @@
 # Declare variables to be passed into your templates.
 pwa:
     image:
-        image: "ghcr.io/conductionnl/proto-pwa"
+        image: "ghcr.io/conductionnl/commonground-gateway-frontend"
         pullPolicy: Always
-        # Overrides the image tag whose default is the chart appVersion.
-        tag: "dev"
-        apiUrl: ""
-        meUrl: ""
-        baseUrl: ""
-        frontendUrl: ""
-        organization: ""
-        redirectUrl: "vault"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "dev"
+    apiUrl: ""
+    meUrl: ""
+    baseUrl: ""
+    frontendUrl: ""
+    organization: ""
+    redirectUrl: "vault"
+    adminUrl: ""
 
 gateway:
     enabled: true

@@ -25,6 +25,6 @@ appVersion: 0.1.0
 dependencies:
   - name: commonground-gateway
     alias: gateway
-    version: 0.1.2
+    version: 0.1.5
     repository: https://raw.githubusercontent.com/ConductionNL/commonground-gateway/master/api/helm/
     condition: gateway.enabled
