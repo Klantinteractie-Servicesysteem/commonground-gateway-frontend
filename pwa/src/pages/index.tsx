@@ -133,11 +133,12 @@ const IndexPage = () => {
                 />
               </div>
 
-              <a className="utrecht-link" onClick={login}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-primary">
-                  <i className="fas fa-sign-in-alt mr-2"></i>Login
-                </button>
-              </a>
+                <a className="utrecht-link" onClick={login}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-primary"><i
+                    className="fas fa-sign-in-alt mr-2"/>Login
+                  </button>
+                </a>
+              </div>
             </div>
           </div>
         </form>

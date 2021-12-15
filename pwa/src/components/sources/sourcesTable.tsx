@@ -21,30 +21,11 @@ export default function SourcesTable() {
     }
   }, [context]);
 
-  // const createEditLink = (link = "/sources/$id[0]/entities/$id[1]", pathsToIds = ["id", "entity.id"], object = {id: "1",entity: {id: "2"}}) => {
-
-  //   pathsToIds.forEach(path => {
-  //     let editLinkFields = path.split(".");
-  //     let idOrArray;
-  //     editLinkFields.forEach((field, index) => {
-  //       if (idOrArray) {
-  //         idOrArray = idOrArray[field];
-  //       } else if (object[field]) {
-  //         idOrArray = object[field];
-  //       }
-  //       link = link.replace(`$id[${index}]`, idOrArray);
-  //     });
-  //   })
-
-  //   console.log(link);
-  //   return link;
-  // }
-
   const getSources = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -59,69 +40,78 @@ export default function SourcesTable() {
       .catch((error) => {
         console.error("Error:", error);
       });
-
-  };
-
-  const cardHead = () => {
-    return (
-      <>
-        <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
-          <i className="fas fa-question mr-1" />
-          <span className="mr-2">Help</span>
-        </button>
-        <a className="utrecht-link" onClick={getSources}>
-          <i className="fas fa-sync-alt mr-1" />
-          <span className="mr-2">Refresh</span>
-        </a>
-        <Link to="/sources/new">
-          <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-            className="fas fa-plus mr-2" />Add
-          </button>
-        </Link>
-      </>
-    )
   }
 
-  const cardBody = () => {
-    return (<div className="row">
-      <div className="col-12">
-        {showSpinner === true ? (
-          <Spinner />
-        ) : (
-          <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <Spinner />
-              ) : (
-                <Table columns={[{
-                  headerName: "Name",
-                  field: "name"
-                }, {
-                  headerName: "Location",
-                  field: "location"
-                }, {
-                  field: "id",
-                  headerName: "Edit ",
-                  renderCell: (item) => {
-                    return (
-                      <Link to={`/sources/${item.id}`}>
-                        <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1" />Edit</button>
-                      </Link>
-                    );
-                  },
-                },]} rows={sources ? sources : []} />
-              )
-              }
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-    )
-  }
-
-  return (<>
-    <Card title="Sources" cardBody={cardBody} cardHeader={cardHead} />
-  </>
+  return (
+    <Card title={"Sources"}
+          cardHeader={function () {
+            return (
+              <>
+                <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
+                <a className="utrecht-link">
+                  <i className="fas fa-sync-alt mr-1"/>
+                  <span className="mr-2">Refresh</span>
+                </a>
+                <a
+                  // href={`${context.adminUrl}/export/gateways`}
+                  target="_blank"
+                  className=""
+                >
+                  <button className="utrecht-link button-no-style">
+                    <span className="mr-2">Export Sources</span>
+                  </button>
+                </a>
+                <Link to="/sources/new">
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
+                    className="fas fa-plus mr-2"/>Add
+                  </button>
+                </Link>
+              </>
+            )
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner/>
+                  ) : (
+                    sources ? (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Location",
+                        field: "location"
+                      },
+                        {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
+                            return (
+                              <Link to={`/sources/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
+                            );
+                          },
+                      },]} rows={sources}/>
+                    ) : (
+                      <Table columns={[{
+                        headerName: "Name",
+                        field: "name"
+                      }, {
+                        headerName: "Location",
+                        field: "location"
+                      }]} rows={[]}/>
+                    )
+                  )}
+                </div>
+              </div>
+            )
+          }}
+    />
   );
 }
