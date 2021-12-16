@@ -24,7 +24,6 @@ export default function AttributeForm({id, entity}) {
 
   const getAttributes = () => {
     fetch(`${context.adminUrl}/attributes`, {
-      credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
@@ -38,7 +37,6 @@ export default function AttributeForm({id, entity}) {
 
   const getAttribute = () => {
     fetch(`${context.adminUrl}/attributes/${id}`, {
-      credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
@@ -186,7 +184,6 @@ export default function AttributeForm({id, entity}) {
 
     fetch(url, {
       method: method,
-      credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })

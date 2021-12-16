@@ -90,7 +90,10 @@ export default function EntitiesTable() {
                           },
                           {
                             headerName: "Source",
-                            field: "gateway.name",
+                            field: "gateway",
+                            valueFormatter: (item) => {
+                              return item ? item.name : "";
+                            },
                           },
                           {
                             field: "id",

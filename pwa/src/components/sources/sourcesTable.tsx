@@ -5,7 +5,6 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 
-
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [context, setContext] = React.useState(null);
@@ -37,7 +36,7 @@ export default function SourcesTable() {
           setShowSpinner(false);
         }
       });
-  }
+  };
 
   return (
     <Card title={"Sources"}

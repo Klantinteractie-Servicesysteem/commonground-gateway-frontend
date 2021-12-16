@@ -4,11 +4,14 @@ import SoapForm from "../../components/soap/soapForm";
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title={"Soap"} subtext={"Edit or create a soap object"}>
+      <title>Gateway - Soaps</title>
       <main>
         <div className="row">
           <div className="col-12">
-            <SoapForm id={props.params.id} />
+            <div className="page-top-item">
+              <SoapForm id={props.params.id} />
+            </div>
           </div>
         </div>
       </main>

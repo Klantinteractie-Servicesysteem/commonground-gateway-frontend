@@ -45,7 +45,7 @@ export default function EntityForm({ id }) {
       .then((data) => {
         setEntity(data);
       });
-  }
+  };
 
   const getSources = () => {
     fetch(`${context.adminUrl}/gateways`, {
@@ -56,7 +56,7 @@ export default function EntityForm({ id }) {
       .then((data) => {
         setSources(data["hydra:member"]);
       });
-  }
+  };
 
   const getSoaps = () => {
     fetch(`${context.adminUrl}/soaps`, {
