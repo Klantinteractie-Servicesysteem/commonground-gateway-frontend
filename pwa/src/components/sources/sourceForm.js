@@ -94,7 +94,7 @@ export default function SourceForm({ id }) {
       apikey: apikeyInput.value ? apikeyInput.value : null,
       documentation: documentationInput.value ? documentationInput.value : null,
       authorizationHeader: authorizationHeaderInput.value ? authorizationHeaderInput.value : null,
-      
+
       // logging: logging,
 
       // headers: headers ? headers : null,
@@ -139,6 +139,7 @@ export default function SourceForm({ id }) {
         setShowSpinner(false);
         if (data.id !== undefined) {
           setSource(data);
+          navigate(`/sources`);
         }
       })
       .catch((error) => {
