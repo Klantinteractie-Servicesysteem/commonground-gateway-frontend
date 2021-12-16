@@ -22,7 +22,7 @@ export default function ResponseTable() {
 
   const getResponses = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/response_logs`, {
+    fetch(`${context.adminUrl}/response_logs?order[dateCreated]=desc`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export default function ResponseTable() {
         responses.map((response) => (
           <Modal
             title={"Request Logs"}
-            id={`requestLogs${response.id}?order[dateCreated]=desc`}
+            id={`requestLogs${response.id}`}
             body={function () {
               return (
                 <div>
