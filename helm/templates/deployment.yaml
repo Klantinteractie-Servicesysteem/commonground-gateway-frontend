@@ -29,15 +29,26 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+          - name: env
+            configMap:
+                name: {{ include "api-platform.fullname" . }}
+                items:
+                    - key: "properties"
+                      path: "env.js"
       containers:
         - name: {{ .Chart.Name }}-pwa
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.pwa.image.image }}:{{ .Values.pwa.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.pwa.image.pullPolicy }}
+          volumeMounts:
+              -   name: env
+                  mountPath: "/usr/share/nginx/html/env.js"
+                  subPath: "env.js"
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
