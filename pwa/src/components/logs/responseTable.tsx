@@ -124,7 +124,7 @@ export default function ResponseTable() {
         responses.map((response) => (
           <Modal
             title={"Request Logs"}
-            id={`requestLogs${response.id}`}
+            id={`requestLogs${response.id}?order[dateCreated]=desc`}
             body={function () {
               return (
                 <div>
