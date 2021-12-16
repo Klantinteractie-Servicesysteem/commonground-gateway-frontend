@@ -24,15 +24,15 @@ export default function RequestTable() {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(data["hydra:member"])
-        setRequest(data["hydra:member"]);
+        if (data['hydra:member'] !== undefined) {
+          setRequest(data["hydra:member"]);
+        }
       });
   }
 
   return (
     <>
-      {requests !== null &&
-      requests.length > 0 ? (
+      {requests !== undefined && requests !== null && requests.length > 0 ? (
         <Table columns={[{
           headerName: "Status",
           field: "status"
