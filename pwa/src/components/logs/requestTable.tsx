@@ -22,13 +22,13 @@ export default function RequestTable() {
       credentials: 'include',
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
         if (data['hydra:member'] !== undefined) {
           setRequest(data["hydra:member"]);
         }
       });
-  }
+  };
 
   return (
     <>
