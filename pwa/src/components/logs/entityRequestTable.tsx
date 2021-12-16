@@ -5,7 +5,7 @@ import {isLoggedIn} from "../../services/auth";
 import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
 
-export default function LogsTable({id}) {
+export default function EntityRequestTable({id}) {
   const [logs, setLogs] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [context, setContext] = React.useState(null);
