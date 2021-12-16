@@ -22,13 +22,15 @@ export default function EntityRequestTable({ id }) {
 
   const getLogs = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/request_logs/?entity.id=${id}&order[dateCreated]=desc`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
+    fetch(
+      `${context.adminUrl}/request_logs/?entity.id=${id}&order[dateCreated]=desc`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log(data["hydra:member"]);

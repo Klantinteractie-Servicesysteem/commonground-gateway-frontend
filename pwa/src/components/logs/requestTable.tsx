@@ -23,7 +23,6 @@ export default function RequestTable() {
   const getRequests = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/request_logs?order[dateCreated]=desc`, {
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),

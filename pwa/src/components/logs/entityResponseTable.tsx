@@ -25,7 +25,6 @@ export default function EntityResponseTable({ id }) {
     fetch(
       `${context.adminUrl}/response_logs/?entity.id=${id}&order[dateCreated]=desc`,
       {
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + sessionStorage.getItem("jwt"),
