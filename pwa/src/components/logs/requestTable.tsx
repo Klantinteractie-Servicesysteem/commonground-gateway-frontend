@@ -128,28 +128,47 @@ export default function RequestTable() {
             body={function () {
               return (
                 <div>
-                  {request.responseBody.path !== null && (
-                    <>
-                      <p>
-                        <b>Path: </b>
-                        {request.responseBody.path}
-                      </p>
-                    </>
-                  )}
-                  {request.responseBody.type !== null && (
-                    <>
-                      <p>
-                        <b>Type: </b>
-                        {request.responseBody.type}
-                      </p>
-                    </>
-                  )}
-                  {request.responseBody.message !== null && (
-                    <>
-                      <b>Message</b>
-                      <p>{request.responseBody.message}</p>
-                    </>
-                  )}
+                  {request.responseBody.path !== undefined &&
+                    request.responseBody.path !== null && (
+                      <>
+                        <p>
+                          <b>Path: </b>
+                          {request.responseBody.path}
+                        </p>
+                      </>
+                    )}
+                  {request.responseBody.type !== undefined &&
+                    request.responseBody.type !== null && (
+                      <>
+                        <p>
+                          <b>Type: </b>
+                          {request.responseBody.type}
+                        </p>
+                      </>
+                    )}
+                  {request.responseBody.message !== undefined &&
+                    request.responseBody.message !== null && (
+                      <>
+                        <b>Message</b>
+                        <p>{request.responseBody.message}</p>
+                      </>
+                    )}
+                  {request.responseBody.data !== undefined &&
+                    request.responseBody.data !== null && (
+                      <>
+                        <h5>data</h5>
+                        {Object.entries(request.responseBody.data).map(
+                          ([key, value]) => (
+                            <>
+                              <p>
+                                <b>{typeof key === "string" && key}: </b>
+                                {typeof value === "string" && value}
+                              </p>
+                            </>
+                          )
+                        )}
+                      </>
+                    )}
                 </div>
               );
             }}

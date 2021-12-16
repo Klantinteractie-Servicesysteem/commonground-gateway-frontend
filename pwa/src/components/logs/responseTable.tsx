@@ -123,33 +123,52 @@ export default function ResponseTable() {
       {responses !== null &&
         responses.map((response) => (
           <Modal
-            title={"Response Logs"}
-            id={`responseLogs${response.id}`}
+            title={"Request Logs"}
+            id={`requestLogs${response.id}`}
             body={function () {
               return (
                 <div>
-                  {response.responseBody.path !== null && (
-                    <>
-                      <p>
-                        <b>Path: </b>
-                        {response.responseBody.path}
-                      </p>
-                    </>
-                  )}
-                  {response.responseBody.type !== null && (
-                    <>
-                      <p>
-                        <b>Type: </b>
-                        {response.responseBody.type}
-                      </p>
-                    </>
-                  )}
-                  {response.responseBody.message !== null && (
-                    <>
-                      <b>Message</b>
-                      <p>{response.responseBody.message}</p>
-                    </>
-                  )}
+                  {response.responseBody.path !== undefined &&
+                    response.responseBody.path !== null && (
+                      <>
+                        <p>
+                          <b>Path: </b>
+                          {response.responseBody.path}
+                        </p>
+                      </>
+                    )}
+                  {response.responseBody.type !== undefined &&
+                    response.responseBody.type !== null && (
+                      <>
+                        <p>
+                          <b>Type: </b>
+                          {response.responseBody.type}
+                        </p>
+                      </>
+                    )}
+                  {response.responseBody.message !== undefined &&
+                    response.responseBody.message !== null && (
+                      <>
+                        <b>Message</b>
+                        <p>{response.responseBody.message}</p>
+                      </>
+                    )}
+                  {response.responseBody.data !== undefined &&
+                    response.responseBody.data !== null && (
+                      <>
+                        <h5>data</h5>
+                        {Object.entries(response.responseBody.data).map(
+                          ([key, value]) => (
+                            <>
+                              <p>
+                                <b>{typeof key === "string" && key}: </b>
+                                {typeof value === "string" && value}
+                              </p>
+                            </>
+                          )
+                        )}
+                      </>
+                    )}
                 </div>
               );
             }}
