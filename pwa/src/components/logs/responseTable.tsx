@@ -22,7 +22,7 @@ export default function ResponseTable() {
 
   const getResponses = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/response_logs`, {
+    fetch(`${context.adminUrl}/response_logs?order[dateCreated]=desc`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
