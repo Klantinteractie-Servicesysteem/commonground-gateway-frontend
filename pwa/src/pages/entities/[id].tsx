@@ -1,10 +1,13 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import LogsTable from "../../components/logs/logsTable";
+import EntityRequestTable from "../../components/logs/entityRequestTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import ResponseTable from "../../components/logs/responseTable";
+import RequestTable from "../../components/logs/requestTable";
+import EntityResponseTable from "../../components/logs/entityResponseTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -30,7 +33,8 @@ const IndexPage = (props) => {
                     id: "attributes",
                   },
                   {name: "Data", id: "data"},
-                  {name: "Logs", id: "logs"},
+                  {name: "Request logs", id: "request"},
+                  {name: "Response logs", id: "response"},
                 ]}/>
               ) : (
                 <Tabs items={[{name: "Main", id: "main", active: true}]}/>
@@ -65,13 +69,22 @@ const IndexPage = (props) => {
                 <DataTable id={props.params.id}/>
               </div>
               <div
-                className="tab-pane"
-                id="logs"
+                className="tab-pane active"
+                id="response"
                 role="tabpanel"
-                aria-labelledby="data-tab"
+                aria-labelledby="main-tab"
               >
                 <br/>
-                <LogsTable id={props.params.id}/>
+                <EntityResponseTable id={props.params.id}/>
+              </div>
+              <div
+                className="tab-pane"
+                id="request"
+                role="tabpanel"
+                aria-labelledby="attributes-tab"
+              >
+                <br/>
+                <EntityRequestTable id={props.params.id}/>
               </div>
             </div>
           </div>

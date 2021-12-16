@@ -22,12 +22,12 @@ export default function ResponseTable() {
       credentials: 'include',
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
         console.log(data["hydra:member"])
         setResponse(data["hydra:member"]);
       });
-  }
+  };
 
   return (
     <>
