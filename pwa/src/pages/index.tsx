@@ -5,6 +5,7 @@ import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
+import { Card } from "@conductionnl/nl-design-system";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -65,29 +66,42 @@ const IndexPage = () => {
     >
       {isLoggedIn() && context !== null ? (
         <>
-          <a href={`${context.adminUrl}/export/all`} target="_blank">
-            <button className="utrecht-button" type="button">
-              Export Configuration
-            </button>
-          </a>
-
-          <Tabs
-            items={[
-              {
-                name: "Response logs",
-                id: "response",
-                active: true,
-              },
-              {
-                name: "Request logs",
-                id: "request",
-              },
-            ]}
-          />
+          <div className="page-top-item">
+            <Tabs
+              items={[
+                {
+                  name: "Overview",
+                  id: "overview",
+                  active: true,
+                },
+                {
+                  name: "Response logs",
+                  id: "response",
+                },
+                {
+                  name: "Request logs",
+                  id: "request",
+                },
+              ]}
+            />
+          </div>
 
           <div className="tab-content">
             <div
               className="tab-pane active"
+              id="overview"
+              role="tabpanel"
+              aria-labelledby="main-tab"
+            >
+              <br />
+              <a href={`${context.adminUrl}/export/all`} target="_blank">
+                <button className="utrecht-button" type="button">
+                  Export Configuration
+                </button>
+              </a>
+            </div>
+            <div
+              className="tab-pane "
               id="response"
               role="tabpanel"
               aria-labelledby="main-tab"

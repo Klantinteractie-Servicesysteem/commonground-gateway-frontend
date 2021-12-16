@@ -4,7 +4,7 @@ import AttributeTable from "../../components/attributes/attributeTable";
 import EntityRequestTable from "../../components/logs/entityRequestTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
-import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
 import EntityResponseTable from "../../components/logs/entityResponseTable";
@@ -21,34 +21,39 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={'Entity'} subtext={"Add or modify your entity"}>
+    <Layout title={"Entity"} subtext={"Add or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
               {props.params.id !== "new" ? (
-                <Tabs items={[{name: "Main", id: "main", active: true},
-                  {
-                    name: "Attributes",
-                    id: "attributes",
-                  },
-                  {name: "Data", id: "data"},
-                  {name: "Request logs", id: "request"},
-                  {name: "Response logs", id: "response"},
-                ]}/>
+                <Tabs
+                  items={[
+                    { name: "Overview", id: "overview", active: true },
+                    {
+                      name: "Attributes",
+                      id: "attributes",
+                    },
+                    { name: "Data", id: "data" },
+                    { name: "Request logs", id: "request" },
+                    { name: "Response logs", id: "response" },
+                  ]}
+                />
               ) : (
-                <Tabs items={[{name: "Main", id: "main", active: true}]}/>
+                <Tabs
+                  items={[{ name: "Overview", id: "overview", active: true }]}
+                />
               )}
             </div>
             <div className="tab-content">
               <div
                 className="tab-pane active"
-                id="main"
+                id="overview"
                 role="tabpanel"
-                aria-labelledby="main-tab"
+                aria-labelledby="overview-tab"
               >
-                <br/>
-                <EntityForm id={props.params.id}/>
+                <br />
+                <EntityForm id={props.params.id} />
               </div>
               <div
                 className="tab-pane"
@@ -56,8 +61,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="attributes-tab"
               >
-                <br/>
-                <AttributeTable id={props.params.id}/>
+                <br />
+                <AttributeTable id={props.params.id} />
               </div>
               <div
                 className="tab-pane"
@@ -65,26 +70,26 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="data-tab"
               >
-                <br/>
-                <DataTable id={props.params.id}/>
+                <br />
+                <DataTable id={props.params.id} />
               </div>
               <div
-                className="tab-pane active"
+                className="tab-pane"
                 id="response"
                 role="tabpanel"
-                aria-labelledby="main-tab"
+                aria-labelledby="response-tab"
               >
-                <br/>
-                <EntityResponseTable id={props.params.id}/>
+                <br />
+                <EntityResponseTable id={props.params.id} />
               </div>
               <div
                 className="tab-pane"
                 id="request"
                 role="tabpanel"
-                aria-labelledby="attributes-tab"
+                aria-labelledby="request-tab"
               >
-                <br/>
-                <EntityRequestTable id={props.params.id}/>
+                <br />
+                <EntityRequestTable id={props.params.id} />
               </div>
             </div>
           </div>
