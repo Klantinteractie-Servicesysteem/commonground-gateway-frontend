@@ -93,9 +93,7 @@ export default function EntityForm({id}) {
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                   </button>
                 </Link>
-                <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                  type="submit"
+                <button className="utrecht-button utrec`ht-button-sm btn-sm btn-success" type="submit"
                 >
                   <i className="fas fa-save mr-2"/>Save
                 </button>
