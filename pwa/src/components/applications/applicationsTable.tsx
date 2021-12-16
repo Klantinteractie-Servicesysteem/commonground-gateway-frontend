@@ -13,27 +13,29 @@ export default function ApplicationsTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        setShowSpinner(true);
-        fetch(`${context.apiUrl}/applications/`, {
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-        })
-          .then(response => response.json())
-          .then((data) => {
-            setApplications(data['hydra:member']);
-            setShowSpinner(false);
-            console.log(data);
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
+    } else if (isLoggedIn()) {
+      getApplications(context);
     }
   }, [context]);
+
+  const getApplications = (context) => {
+    setShowSpinner(true);
+    fetch(`${context.apiUrl}/applications/`, {
+      credentials: 'include',
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then(response => response.json())
+      .then((data) => {
+        setApplications(data['hydra:member']);
+        setShowSpinner(false);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <Card title={"Applications"}
@@ -44,7 +46,7 @@ export default function ApplicationsTable() {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getApplications}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
@@ -72,14 +74,14 @@ export default function ApplicationsTable() {
                         field: "description"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: { id: string }) => {
                             return (
-                              ""
-                              // <Link to={`/applications/${row.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/applications/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit
+                                </button>
+                              </Link>
                             );
                           },
                         },]} rows={applications}/>
@@ -87,7 +89,7 @@ export default function ApplicationsTable() {
                       <Table columns={[{
                         headerName: "Name",
                         field: "name"
-                      },  {
+                      }, {
                         headerName: "Description",
                         field: "description"
                       }]} rows={[]}/>

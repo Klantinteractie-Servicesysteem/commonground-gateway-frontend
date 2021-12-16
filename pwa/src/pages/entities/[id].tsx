@@ -1,66 +1,56 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import LogsTable from "../../components/logs/logsTable";
+import EntityRequestTable from "../../components/logs/entityRequestTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
-import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import { isLoggedIn } from "../../services/auth";
+import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import ResponseTable from "../../components/logs/responseTable";
+import RequestTable from "../../components/logs/requestTable";
+import EntityResponseTable from "../../components/logs/entityResponseTable";
 
 const IndexPage = (props) => {
-  const [title, setTitle] = React.useState("Loading..");
   const [context, setContext] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        if (props.params.id == "new") {
-          setTitle("New entity");
-        } else {
-          fetch(`${context.adminUrl}/entities/${props.params.id}`, {
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("data")
-              console.log(data)
-              setTitle(`Entity: ${data.name}`);
-            });
-        }
-      }
     }
   }, [context]);
 
   return (
-    <Layout title={title} subtext={"Add or modify your entity"}>
+    <Layout title={"Entity"} subtext={"Add or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
               {props.params.id !== "new" ? (
-                  <Tabs items={[{ name: "Main", id: "main", active: true },
+                <Tabs
+                  items={[
+                    { name: "Overview", id: "overview", active: true },
                     {
                       name: "Attributes",
                       id: "attributes",
                     },
                     { name: "Data", id: "data" },
-                    { name: "Logs", id: "logs" },
-                  ]}/>
+                    { name: "Request logs", id: "request" },
+                    { name: "Response logs", id: "response" },
+                  ]}
+                />
               ) : (
-                <Tabs items={[{ name: "Main", id: "main", active: true }]} />
+                <Tabs
+                  items={[{ name: "Overview", id: "overview", active: true }]}
+                />
               )}
             </div>
             <div className="tab-content">
               <div
                 className="tab-pane active"
-                id="main"
+                id="overview"
                 role="tabpanel"
-                aria-labelledby="main-tab"
+                aria-labelledby="overview-tab"
               >
                 <br />
                 <EntityForm id={props.params.id} />
@@ -85,12 +75,21 @@ const IndexPage = (props) => {
               </div>
               <div
                 className="tab-pane"
-                id="logs"
+                id="response"
                 role="tabpanel"
-                aria-labelledby="data-tab"
+                aria-labelledby="response-tab"
               >
                 <br />
-                <LogsTable id={props.params.id} />
+                <EntityResponseTable id={props.params.id} />
+              </div>
+              <div
+                className="tab-pane"
+                id="request"
+                role="tabpanel"
+                aria-labelledby="request-tab"
+              >
+                <br />
+                <EntityRequestTable id={props.params.id} />
               </div>
             </div>
           </div>

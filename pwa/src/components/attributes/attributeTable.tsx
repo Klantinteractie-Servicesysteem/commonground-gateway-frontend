@@ -18,31 +18,35 @@ export default function AttributeTable({id}) {
     } else {
       if (isLoggedIn()) {
         setShowSpinner(true);
-        fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
-          credentials: "include",
-          headers: {"Content-Type": "application/json"},
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              setShowSpinner(false);
-              setAttributes(null);
-              throw new Error(response.statusText);
-            }
-          })
-          .then((data) => {
-            setAttributes(data["hydra:member"]);
-            setShowSpinner(false);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            setShowSpinner(false);
-            setAttributes(null);
-          });
+        getAttributes();
       }
     }
   }, [context]);
+
+  const getAttributes = () => {
+    fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          setShowSpinner(false);
+          setAttributes(null);
+          throw new Error(response.statusText);
+        }
+      })
+      .then((data) => {
+        setAttributes(data["hydra:member"]);
+        setShowSpinner(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setShowSpinner(false);
+        setAttributes(null);
+      });
+  }
 
   return (
     <Card title={"Attributes"}
@@ -53,8 +57,7 @@ export default function AttributeTable({id}) {
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>
-                {/*<a className="utrecht-link" onClick={getAttributes}>*/}
-                <a className="utrecht-link">
+                <a className="utrecht-link" onClick={getAttributes}>
                   <i className="fas fa-sync-alt mr-1"/>
                   <span className="mr-2">Refresh</span>
                 </a>
@@ -82,14 +85,13 @@ export default function AttributeTable({id}) {
                         field: "type"
                       },
                         {
-                          field: "edit",
-                          headerName: "Edit ",
-                          renderCell: () => {
+                          field: "id",
+                          headerName: " ",
+                          renderCell: (item: {id: string}) => {
                             return (
-                              ""
-                              // <Link to={`/attributes/${sources.id}`}>
-                              //   <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              // </Link>
+                              <Link to={`/attributes/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
+                              </Link>
                             );
                           },
                         },]} rows={attributes}/>
