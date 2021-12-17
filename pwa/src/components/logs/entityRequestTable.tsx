@@ -23,7 +23,7 @@ export default function EntityRequestTable({ id }) {
   const getLogs = () => {
     setShowSpinner(true);
     fetch(
-      `${context.adminUrl}/request_logs/?entity.id=${id}&order[dateCreated]=desc`,
+      `${context.adminUrl}/request_logs?entity.id=${id}&order[dateCreated]=desc`,
       {
         headers: {
           "Content-Type": "application/json",
