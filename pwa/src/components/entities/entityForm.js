@@ -1,18 +1,14 @@
 import * as React from "react";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import { Checkbox } from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import { MultiDimensionalArrayInput }
-  from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
+import { GenericInputComponent,Checkbox,SelectInputComponent,Accordion,MultiDimensionalArrayInput,Card }
+ from "@conductionnl/nl-design-system/lib";
 // import { ArrayInput }
 //   from "@conductionnl/nl-design-system/lib/ArrayInput/src/ArrayInput";
 import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import { retrieveFormArrayAsObject,retrieveFormArrayAsOArray,removeEmptyObjectValues,checkValues } from "../utility/inputHandler";
 
 export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
