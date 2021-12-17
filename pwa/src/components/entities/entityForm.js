@@ -40,6 +40,7 @@ export default function EntityForm({ id }) {
       .then((response) => response.json())
       .then((data) => {
         // console.log(data)
+        console.log(data);
         setEntity(data);
       });
   };
@@ -294,12 +295,7 @@ export default function EntityForm({ id }) {
                                   <MultiDimensionalArrayInput
                                     id={"transformations"}
                                     label={"Transformations"}
-                                    data={[
-                                      {
-                                        key: "transformations",
-                                        value: entity.transformations,
-                                      },
-                                    ]}
+                                    data={entity.transformations}
                                     deleteFunction={deleteElementFunction}
                                     addFunction={addElement}
                                   />
@@ -326,12 +322,7 @@ export default function EntityForm({ id }) {
                                   <MultiDimensionalArrayInput
                                     id={"translationConfig"}
                                     label={"Translation Config"}
-                                    data={[
-                                      {
-                                        key: "translationConfig",
-                                        value: entity.translationConfig,
-                                      },
-                                    ]}
+                                    data={entity.translationConfig}
                                     deleteFunction={deleteElementFunction}
                                     addFunction={addElement}
                                   />
@@ -357,12 +348,7 @@ export default function EntityForm({ id }) {
                                 {entity !== null ? (
                                   <MultiDimensionalArrayInput
                                     id={"collectionConfig"}
-                                    data={[
-                                      {
-                                        key: "collectionConfig",
-                                        value: entity.collectionConfig,
-                                      },
-                                    ]}
+                                    data={entity.collectionConfig}
                                     label={"Collection Config"}
                                     deleteFunction={deleteElementFunction}
                                     addFunction={addElement}
