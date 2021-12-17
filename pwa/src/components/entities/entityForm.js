@@ -5,8 +5,8 @@ import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectI
 import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import { MultiDimensionalArrayInput }
   from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
-import { ArrayInput }
-  from "@conductionnl/nl-design-system/lib/ArrayInput/src/ArrayInput";
+// import { ArrayInput }
+//   from "@conductionnl/nl-design-system/lib/ArrayInput/src/ArrayInput";
 import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
