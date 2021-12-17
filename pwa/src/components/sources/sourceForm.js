@@ -27,7 +27,6 @@ export default function SourceForm({ id }) {
 
   const getSource = () => {
     fetch(`${context.adminUrl}/gateways${id}`, {
-      credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
@@ -92,7 +91,6 @@ export default function SourceForm({ id }) {
 
     fetch(url, {
       method: method,
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
