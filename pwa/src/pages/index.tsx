@@ -145,7 +145,7 @@ const IndexPage = () => {
       ) : (
         <form id="dataForm" onSubmit={login}>
           <div className="row">
-            <div className="col-4">
+            <div className="col-12 col-md-6 col-lg-4">
               <div className="form-group">
                 <span className="utrecht-form-label mb-2">Username</span>
                 <input
@@ -158,7 +158,7 @@ const IndexPage = () => {
             </div>
           </div>
           <div className="row">
-            <div className="col-4">
+            <div className="col-12 col-md-6 col-lg-4">
               <div className="form-group">
                 <span className="utrecht-form-label">Password</span>
                 <input
