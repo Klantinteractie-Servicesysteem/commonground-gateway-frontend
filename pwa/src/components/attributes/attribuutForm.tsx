@@ -1,47 +1,47 @@
 import * as React from "react";
-import {useUrlContext} from "../../context/urlContext";
-import {Link, navigate} from "gatsby";
+import { Link, navigate } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import {GenericInputComponent} from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
+import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
-import {SelectInputComponent} from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import {Accordion} from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
+import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
+import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import {
   MultiDimensionalArrayInput
 } from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import Spinner from "../common/spinner";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
-import {addElement, deleteElementFunction} from "../utility/elementCreation";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import { isLoggedIn } from "../../services/auth";
 
-export default function AttributeForm({id, entity}) {
-  const context = useUrlContext();
+export default function AttributeForm({ id, entity }) {
+  const [context, setContext] = React.useState(null);
   const [attribute, setAttribute] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [attributes, setAttributes] = React.useState(null);
 
-  const getAttributes = () => {
-    fetch(`${context.adminUrl}/attributes`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAttributes(data["hydra:member"]);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+  React.useEffect(() => {
+    if (id !== "new") {
+      getAttribute();
+    }
+  }, []);
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
-  };
+    } else if (isLoggedIn() && id !== 'new') {
+      getAttribute();
+    }
+  }, [context]);
 
   const getAttribute = () => {
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
