@@ -334,82 +334,92 @@ export default function EntityForm({ id }) {
                         </div>
                       </div>
                     </div>
-                    {/* <Accordion id="entityAccordion"
-                      items={[{
-                        title: "Transformations",
-                        id: "transformationsAccordion",
-                        render: function () {
-                          return (<>
-                            {entity !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"transformations"}
-                                label={"Transformations"}
-                                data={[{ key: 'transformations', value: entity.transformations }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
-                            ) : (
-                              <MultiDimensionalArrayInput
-                                id={"transformations"}
-                                label={"Transformations"}
-                                data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
-                            )}
-                          </>)
-                        }
-                      },
-                      {
-                        title: "Translation Config",
-                        id: "translationConfigAccordion",
-                        render: function () {
-                          return (<>
-                            {entity !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"translationConfig"}
-                                label={"Translation Config"}
-                                data={[{ key: 'translationConfig', value: entity.translationConfig }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
-                            ) : (
-                              <MultiDimensionalArrayInput
-                                id={"translationConfig"}
-                                label={"Translation Config"}
-                                data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
-                            )}
-                          </>)
-                        }
-                      },
-                      {
-                        title: "Collection Config",
-                        id: "collectionConfigAccordion",
-                        render: function () {
-                          return (<>
-                            {entity !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"collectionConfig"}
-                                data={[{ key: 'collectionConfig', value: entity.collectionConfig }]}
-                                label={"Collection Config"}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
-                            ) : (
-                              <MultiDimensionalArrayInput
-                                id={"collectionConfig"}
-                                label={"Collection Config"}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                                data={null} />
-                            )}
-                          </>)
-                        }
-                      }
-                      ]} /> */}
+                    <Accordion
+                      id="entityAccordion"
+                      items={[
+                        {
+                          title: "Transformations",
+                          id: "transformationsAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                {entity !== null ? (
+                                  <MultiDimensionalArrayInput
+                                    id={"transformations"}
+                                    label={"Transformations"}
+                                    data={entity.transformations}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                  />
+                                ) : (
+                                  <MultiDimensionalArrayInput
+                                    id={"transformations"}
+                                    label={"Transformations"}
+                                    data={null}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                  />
+                                )}
+                              </>
+                            );
+                          },
+                        },
+                        {
+                          title: "Translation Config",
+                          id: "translationConfigAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                {entity !== null ? (
+                                  <MultiDimensionalArrayInput
+                                    id={"translationConfig"}
+                                    label={"Translation Config"}
+                                    data={entity.translationConfig}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                  />
+                                ) : (
+                                  <MultiDimensionalArrayInput
+                                    id={"translationConfig"}
+                                    label={"Translation Config"}
+                                    data={null}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                  />
+                                )}
+                              </>
+                            );
+                          },
+                        },
+                        {
+                          title: "Collection Config",
+                          id: "collectionConfigAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                {entity !== null ? (
+                                  <MultiDimensionalArrayInput
+                                    id={"collectionConfig"}
+                                    data={entity.collectionConfig}
+                                    label={"Collection Config"}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                  />
+                                ) : (
+                                  <MultiDimensionalArrayInput
+                                    id={"collectionConfig"}
+                                    label={"Collection Config"}
+                                    deleteFunction={deleteElementFunction}
+                                    addFunction={addElement}
+                                    data={null}
+                                  />
+                                )}
+                              </>
+                            );
+                          },
+                        },
+                      ]}
+                    />
                   </>
                 )}
               </div>

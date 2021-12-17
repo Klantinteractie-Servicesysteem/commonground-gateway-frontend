@@ -5,7 +5,10 @@ import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
-import { Card } from "@conductionnl/nl-design-system";
+import {
+  documentDownload,
+  download,
+} from "../components/utility/DocumentDownload";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -45,7 +48,6 @@ const IndexPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("User:", data);
         if (typeof window !== "undefined") {
           let result = {
             username: data.username,
@@ -56,6 +58,19 @@ const IndexPage = () => {
           navigate("/");
         }
       });
+  };
+
+  const handleExport = () => {
+    fetch(`${context.adminUrl}/export/all`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    }).then((response) => {
+      response.text().then(function (text) {
+        download("export.yaml", text, "text/yaml");
+      });
+    });
   };
 
   return (
@@ -97,11 +112,15 @@ const IndexPage = () => {
               aria-labelledby="main-tab"
             >
               <br />
-              <a href={`${context.adminUrl}/export/all`} target="_blank">
-                <button className="utrecht-button" type="button">
-                  Export Configuration
-                </button>
-              </a>
+              {/* <a href={`${context.adminUrl}/export/all`} target="_blank"> */}
+              <button
+                className="utrecht-button"
+                type="button"
+                onClick={handleExport}
+              >
+                Export Configuration
+              </button>
+              {/* </a> */}
             </div>
             <div
               className="tab-pane "
