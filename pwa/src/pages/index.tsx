@@ -9,6 +9,7 @@ import {
   documentDownload,
   download,
 } from "../components/utility/DocumentDownload";
+import { postCall } from "../components/utility/fetch";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -38,16 +39,13 @@ const IndexPage = () => {
       password: passwordInput.value ? passwordInput.value : null,
     };
 
-    fetch(`${context.apiUrl}/users/login`, {
-      method: "POST",
+    postCall({
+      url: `${context.apiUrl}/users/login`,
       headers: {
         "Content-Type": "application/json",
         host: context.frontendUrl,
       },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      handler: (data) => {
         if (typeof window !== "undefined") {
           let result = {
             username: data.username,
@@ -57,7 +55,9 @@ const IndexPage = () => {
           sessionStorage.setItem("user", JSON.stringify(result));
           navigate("/");
         }
-      });
+      },
+      body: body,
+    });
   };
 
   const handleExport = () => {

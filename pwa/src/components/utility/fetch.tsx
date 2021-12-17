@@ -119,7 +119,6 @@ export const deleteCall = (config: deleteCallConfig) => {
 };
 
 //default values for the functions
-
 function handleDefaults(config) {
   if (config.headers === undefined) {
     config.headers = {
