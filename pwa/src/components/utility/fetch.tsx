@@ -3,26 +3,33 @@
 interface getCallConfig {
   url: string;
   headers?: Record<any, string>;
-  dataOffset?: string | null;
+  handler: any;
 }
 
 interface postCallConfig {
   url: string;
   headers?: Record<any, string>;
-  dataOffset?: string | null;
   body: Record<any, any>;
+  handler: any;
 }
 
 interface putCallConfig {
   url: string;
   headers?: Record<any, string>;
-  dataOffset?: string | null;
   body: Record<any, any>;
+  handler: any;
+}
+
+interface deleteCallConfig {
+  url: string;
+  headers?: Record<any, string>;
+  handler: any;
 }
 
 //fetch functions
 
 export const getCall = (config: getCallConfig) => {
+  config = handleDefaults(config);
   fetch(config.url, {
     method: "GET",
     headers: config.headers,
@@ -35,11 +42,7 @@ export const getCall = (config: getCallConfig) => {
       }
     })
     .then((data) => {
-      if (config.dataOffset) {
-        return data[config.dataOffset];
-      } else {
-        return data;
-      }
+      config.handler(data);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -48,6 +51,7 @@ export const getCall = (config: getCallConfig) => {
 };
 
 export const postCall = (config: postCallConfig) => {
+  config = handleDefaults(config);
   fetch(config.url, {
     method: "POST",
     headers: config.headers,
@@ -61,11 +65,7 @@ export const postCall = (config: postCallConfig) => {
       }
     })
     .then((data) => {
-      if (config.dataOffset) {
-        return data[config.dataOffset];
-      } else {
-        return data;
-      }
+      config.handler(data);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -73,7 +73,8 @@ export const postCall = (config: postCallConfig) => {
     });
 };
 
-export const putCall = (config: postCallConfig) => {
+export const putCall = (config: putCallConfig) => {
+  config = handleDefaults(config);
   fetch(config.url, {
     method: "PUT",
     headers: config.headers,
@@ -87,11 +88,29 @@ export const putCall = (config: postCallConfig) => {
       }
     })
     .then((data) => {
-      if (config.dataOffset) {
-        return data[config.dataOffset];
+      config.handler(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      return null;
+    });
+};
+
+export const deleteCall = (config: deleteCallConfig) => {
+  config = handleDefaults(config);
+  fetch(config.url, {
+    method: "DELETE",
+    headers: config.headers,
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
       } else {
-        return data;
+        throw new Error("something went wrong");
       }
+    })
+    .then((data) => {
+      config.handler(data);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -101,26 +120,13 @@ export const putCall = (config: postCallConfig) => {
 
 //default values for the functions
 
-getCall.defaultProps = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-  },
-  dataOffset: null,
-};
+function handleDefaults(config) {
+  if (config.headers === undefined) {
+    config.headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+    };
+  }
 
-postCall.defaultProps = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-  },
-  dataOffset: null,
-};
-
-putCall.defaultProps = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-  },
-  dataOffset: null,
-};
+  return config;
+}

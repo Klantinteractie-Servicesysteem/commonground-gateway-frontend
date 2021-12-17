@@ -4,6 +4,7 @@ import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { getCall } from "../utility/fetch";
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
@@ -22,25 +23,14 @@ export default function SourcesTable() {
 
   const getSources = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+
+    getCall({
+      url: `${context.adminUrl}/gateways`,
+      handler: (data) => {
+        setShowSpinner(false);
+        setSources(data["hydra:member"]);
       },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
-          setSources(data["hydra:member"]);
-          setShowSpinner(false);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    });
   };
 
   return (
@@ -57,7 +47,7 @@ export default function SourcesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link">
+            <a className="utrecht-link" onClick={getSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
