@@ -15,6 +15,7 @@ const IndexPage = () => {
       setContext({
         apiUrl: window.GATSBY_API_URL,
         adminUrl: window.GATSBY_ADMIN_URL,
+        frontendUrl: window.GATSBY_FRONTEND_URL,
       });
     }
   }, [context]);
@@ -36,8 +37,10 @@ const IndexPage = () => {
 
     fetch(`${context.apiUrl}/users/login`, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        host: context.frontendUrl,
+      },
       body: JSON.stringify(body),
     })
       .then((response) => response.json())

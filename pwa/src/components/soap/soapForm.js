@@ -96,7 +96,6 @@ export default function SoapForm({ id }) {
 
     fetch(url, {
       method: method,
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })

@@ -19,7 +19,8 @@ module.exports = {
           "img-src": "'self' https://demodam.nl/ data:",
           "font-src":
             "'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/",
-          "connect-src": "'self' https://backend-bisc-dev.commonground.nu/",
+          "connect-src":
+            "'self' https://backend-bisc-dev.commonground.nu/ http://backend-bisc-dev.commonground.nu/",
         },
       },
     },
