@@ -30,8 +30,10 @@ export default function RequestTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setRequest(data["hydra:member"]);
+        if (data['hydra:member'] !== undefined) {
+          setRequest(data["hydra:member"]);
         setShowSpinner(false);
+        }
       });
   };
 
