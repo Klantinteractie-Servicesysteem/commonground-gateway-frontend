@@ -22,7 +22,7 @@ export default function ApplicationsTable() {
 
   const getApplications = (context) => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/applications/`, {
+    fetch(`${context.adminUrl}/applications/`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
