@@ -34,16 +34,11 @@ export default function SourcesTable() {
   };
 
   return (
-    <Card
-      title={"Sources"}
+    <Card title={"Sources"}
       cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
-            >
+            <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -61,13 +56,12 @@ export default function SourcesTable() {
               </button>
             </a>
             <Link to="/sources/new">
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
-                Add
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
+                className="fas fa-plus mr-2" />Add
               </button>
             </Link>
           </>
-        );
+        )
       }}
       cardBody={function () {
         return (
@@ -75,52 +69,39 @@ export default function SourcesTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : sources ? (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Location",
-                      field: "location",
-                    },
-                    {
-                      field: "id",
-                      headerName: " ",
-                      renderCell: (item: { id: string }) => {
-                        return (
-                          <Link to={`/sources/${item.id}`}>
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
-                            </button>
-                          </Link>
-                        );
-                      },
-                    },
-                  ]}
-                  rows={sources}
-                />
               ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
+                sources ? (
+                  <Table columns={[{
+                    headerName: "Name",
+                    field: "name"
+                  }, {
+                    headerName: "Location",
+                    field: "location"
+                  },
+                  {
+                    field: "id",
+                    headerName: " ",
+                    renderCell: (item: { id: string }) => {
+                      return (
+                        <Link to={`/sources/${item.id}`}>
+                          <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1" />Edit</button>
+                        </Link>
+                      );
                     },
-                    {
-                      headerName: "Location",
-                      field: "location",
-                    },
-                  ]}
-                  rows={[]}
-                />
+                  },]} rows={sources} />
+                ) : (
+                  <Table columns={[{
+                    headerName: "Name",
+                    field: "name"
+                  }, {
+                    headerName: "Location",
+                    field: "location"
+                  }]} rows={[]} />
+                )
               )}
             </div>
           </div>
-        );
+        )
       }}
     />
   );
