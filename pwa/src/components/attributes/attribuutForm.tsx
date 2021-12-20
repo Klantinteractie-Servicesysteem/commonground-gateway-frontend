@@ -33,7 +33,7 @@ export default function AttributeForm({ id, entity }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: window['GATSBY_ADMIN_URL']
       });
     } else if (isLoggedIn() && id !== 'new') {
       getAttribute();
@@ -186,7 +186,8 @@ export default function AttributeForm({ id, entity }) {
     // }
 
     // This removes empty values from the body
-    body = removeEmptyObjectValues(body);
+    // body = removeEmptyObjectValues(body);
+    body = {...body, ...removeEmptyObjectValues(body)};
     if (body['type'] === "") {
       delete body['type'];
     }
@@ -361,13 +362,11 @@ export default function AttributeForm({ id, entity }) {
                                 <SelectInputComponent
                                   options={attributes}
                                   data={attribute.inversedBy}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}/>
                               ) : (
                                 <SelectInputComponent
                                   options={attributes}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}/>
                               )}
                             </>
                           ) : (
