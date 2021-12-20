@@ -13,7 +13,7 @@ export default function SourcesTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: window['GATSBY_ADMIN_URL']
       });
     } else if (isLoggedIn()) {
       getSources();

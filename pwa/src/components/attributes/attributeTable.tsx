@@ -13,7 +13,7 @@ export default function AttributeTable({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        apiUrl: window['GATSBY_API_URL'],
       });
     } else {
       if (isLoggedIn()) {
