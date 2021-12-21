@@ -5,7 +5,7 @@ import { isLoggedIn } from "../../services/auth";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
 
-export default function EntitiesTable() {
+export default function SoapTable() {
   const [entities, setEntities] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -16,13 +16,13 @@ export default function EntitiesTable() {
         adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      getEntities();
+      getSoap();
     }
   }, [context]);
 
-  const getEntities = () => {
+  const getSoap = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/entities`, {
+    fetch(`${context.adminUrl}/soaps`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -31,13 +31,14 @@ export default function EntitiesTable() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
+        console.log(data);
         setEntities(data["hydra:member"]);
       });
   };
 
   return (
     <Card
-      title={"Entities"}
+      title={"Soap"}
       cardHeader={function () {
         return (
           <>
@@ -49,11 +50,11 @@ export default function EntitiesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getEntities}>
+            <a className="utrecht-link" onClick={getSoap}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/entities/new">
+            <Link to="/soap/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -81,26 +82,11 @@ export default function EntitiesTable() {
                             field: "name",
                           },
                           {
-                            headerName: "Endpoint",
-                            field: "endpoint",
-                          },
-                          {
-                            headerName: "Route",
-                            field: "route",
-                          },
-                          {
-                            headerName: "Source",
-                            field: "gateway",
-                            valueFormatter: (item) => {
-                              return item ? item.name : "";
-                            },
-                          },
-                          {
                             field: "id",
-                            headerName: "Edit ",
+                            headerName: "Edit",
                             renderCell: (item) => {
                               return (
-                                <Link to={`/entities/${item.id}`}>
+                                <Link to={`/soap/${item.id}`}>
                                   <button className="utrecht-button btn-sm btn-success">
                                     <i className="fas fa-edit pr-1" />
                                     Edit
@@ -118,18 +104,6 @@ export default function EntitiesTable() {
                           {
                             headerName: "Name",
                             field: "name",
-                          },
-                          {
-                            headerName: "Endpoint",
-                            field: "endpoint",
-                          },
-                          {
-                            headerName: "Route",
-                            field: "route",
-                          },
-                          {
-                            headerName: "Source",
-                            field: "gateway.name",
                           },
                         ]}
                         rows={[]}

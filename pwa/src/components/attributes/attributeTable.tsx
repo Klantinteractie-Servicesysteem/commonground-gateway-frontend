@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 import Spinner from "../common/spinner";
-import {isLoggedIn} from "../../services/auth";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
-import {Link} from "gatsby";
+import { isLoggedIn } from "../../services/auth";
+import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { Link } from "gatsby";
 
-export default function AttributeTable({id}) {
+export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -25,8 +25,10 @@ export default function AttributeTable({id}) {
 
   const getAttributes = () => {
     fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => {
         if (response.ok) {
@@ -46,70 +48,88 @@ export default function AttributeTable({id}) {
         setShowSpinner(false);
         setAttributes(null);
       });
-  }
+  };
 
   return (
-    <Card title={"Attributes"}
-          cardHeader={function () {
-            return (
-              <>
-                <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
-                  <i className="fas fa-question mr-1"/>
-                  <span className="mr-2">Help</span>
-                </button>
-                <a className="utrecht-link" onClick={getAttributes}>
-                  <i className="fas fa-sync-alt mr-1"/>
-                  <span className="mr-2">Refresh</span>
-                </a>
-                <Link to={`/attributes/new/${id}`}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-                    className="fas fa-plus mr-2"/>Add
-                  </button>
-                </Link>
-              </>
-            )
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    attributes ? (
-                      <Table columns={[{
-                        headerName: "Name",
-                        field: "name"
-                      }, {
-                        headerName: "Type",
-                        field: "type"
+    <Card
+      title={"Attributes"}
+      cardHeader={function () {
+        return (
+          <>
+            <button
+              className="utrecht-link button-no-style"
+              data-toggle="modal"
+              data-target="helpModal"
+            >
+              <i className="fas fa-question mr-1" />
+              <span className="mr-2">Help</span>
+            </button>
+            <a className="utrecht-link" onClick={getAttributes}>
+              <i className="fas fa-sync-alt mr-1" />
+              <span className="mr-2">Refresh</span>
+            </a>
+            <Link to={`/attributes/new/${id}`}>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                <i className="fas fa-plus mr-2" />
+                Add
+              </button>
+            </Link>
+          </>
+        );
+      }}
+      cardBody={function () {
+        return (
+          <div className="row">
+            <div className="col-12">
+              {showSpinner === true ? (
+                <Spinner />
+              ) : attributes ? (
+                <Table
+                  columns={[
+                    {
+                      headerName: "Name",
+                      field: "name",
+                    },
+                    {
+                      headerName: "Type",
+                      field: "type",
+                    },
+                    {
+                      field: "id",
+                      headerName: " ",
+                      renderCell: (item: { id: string }) => {
+                        return (
+                          <Link to={`/attributes/${item.id}`}>
+                            <button className="utrecht-button btn-sm btn-success">
+                              <i className="fas fa-edit pr-1" />
+                              Edit
+                            </button>
+                          </Link>
+                        );
                       },
-                        {
-                          field: "id",
-                          headerName: " ",
-                          renderCell: (item: {id: string}) => {
-                            return (
-                              <Link to={`/attributes/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1"/>Edit</button>
-                              </Link>
-                            );
-                          },
-                        },]} rows={attributes}/>
-                    ) : (
-                      <Table columns={[{
-                        headerName: "Name",
-                        field: "name"
-                      }, {
-                        headerName: "Type",
-                        field: "type"
-                      }]} rows={[]}/>
-                    )
-                  )}
-                </div>
-              </div>
-            )
-          }}
+                    },
+                  ]}
+                  rows={attributes}
+                />
+              ) : (
+                <Table
+                  columns={[
+                    {
+                      headerName: "Name",
+                      field: "name",
+                    },
+                    {
+                      headerName: "Type",
+                      field: "type",
+                    },
+                  ]}
+                  rows={[]}
+                />
+              )}
+            </div>
+          </div>
+        );
+      }}
     />
-  )
-    ;
+  );
 }
