@@ -1,6 +1,5 @@
 import * as React from "react";
-import Spinner from "../common/spinner";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
@@ -14,7 +13,6 @@ export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [application, setApplication] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [title, setTitle] = React.useState("Application");
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -70,8 +68,6 @@ export default function ApplicationForm({ id }) {
       return;
     }
 
-
-    console.log(body); return;
     fetch(url, {
       method: method,
       headers: {
