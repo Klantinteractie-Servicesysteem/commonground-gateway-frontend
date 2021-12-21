@@ -5,6 +5,10 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { navigate } from "gatsby-link";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+} from "../utility/inputHandler";
 
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -61,6 +65,13 @@ export default function ApplicationForm({ id }) {
       resource: resourceInput.value,
     };
 
+    body = removeEmptyObjectValues(body);
+    if (!checkValues([body.name])) {
+      return;
+    }
+
+
+    console.log(body); return;
     fetch(url, {
       method: method,
       headers: {
@@ -132,7 +143,6 @@ export default function ApplicationForm({ id }) {
                             name={"description"}
                             data={application && application.description && application.description}
                             type={"text"}
-                            required={true}
                             id={"descriptionInput"}
                           />
                         </div>

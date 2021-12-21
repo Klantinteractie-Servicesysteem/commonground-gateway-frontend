@@ -25,7 +25,7 @@ export const removeEmptyObjectValues = (obj: {}) => {
   for (var propName in obj) {
     if (
       obj[propName] === undefined ||
-      (obj[propName] === null && obj[propName] !== false)
+      (obj[propName] === null && obj[propName] !== false) || obj[propName] === ''
     ) {
       delete obj[propName];
     }
