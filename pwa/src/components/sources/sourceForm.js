@@ -1,19 +1,14 @@
 import * as React from "react";
 import { Link, navigate } from "gatsby";
-import {
-  removeEmptyObjectValues,
-  retrieveFormArrayAsObject,
-} from "../utility/inputHandler";
 import Spinner from "../common/spinner";
 import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
 import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
 import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
 import { MultiDimensionalArrayInput } from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
-// import { MultiDimensionalArrayInput } from "./multiDimensionalArrayInput";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
-import { Checkbox } from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
 import { isLoggedIn } from "../../services/auth";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import {retrieveFormArrayAsOArray, retrieveFormArrayAsObject} from "../utility/inputHandler";
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -37,7 +32,7 @@ export default function SourceForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('getSource:', data);
+        // console.log('getSource:', data);
         setSource(data);
       });
   };
@@ -45,15 +40,16 @@ export default function SourceForm({ id }) {
   const saveSource = (event) => {
     event.preventDefault();
     setShowSpinner(true);
-    // let headers = retrieveFormArrayAsObject(event.target, "headers");
-    // let oas = retrieveFormArrayAsObject(event.target, "oas");
-    // let paths = retrieveFormArrayAsObject(event.target, "paths");
-    // let translationConfigs = retrieveFormArrayAsObject(event.target, "translationConfigs");
 
-    let url = context.adminUrl + "/gateways";
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
+    let oas = retrieveFormArrayAsObject(event.target, "oas");
+    let paths = retrieveFormArrayAsObject(event.target, "paths");
+    let translationConfigs = retrieveFormArrayAsObject(event.target, "translationConfigs");
+
+    let url = `${context.adminUrl}/gateways`;
     let method = "POST";
     if (id !== "new") {
-      url = url + "/" + id;
+      url = `${url}/${id}`;
       method = "PUT";
     }
 
@@ -73,11 +69,8 @@ export default function SourceForm({ id }) {
     let authorizationHeaderInput = document.getElementById(
       "authorizationHeaderInput"
     );
-
     // let loggingInput = document.getElementById("loggingInput");
     // let logging = loggingInput.checked ? true : false;
-
-
 
     let body = {
       name: nameInput.value ? nameInput.value : null,
@@ -93,38 +86,35 @@ export default function SourceForm({ id }) {
       password: passwordInput.value ? passwordInput.value : null,
       apikey: apikeyInput.value ? apikeyInput.value : null,
       documentation: documentationInput.value ? documentationInput.value : null,
-      authorizationHeader: authorizationHeaderInput.value ? authorizationHeaderInput.value : null,
+      authorizationHeader: authorizationHeaderInput.value ? authorizationHeaderInput.value : ' ',
 
       // logging: logging,
-
-      // headers: headers ? headers : null,
-      // oas: oas ? oas : null,
-      // paths: paths ? paths : null,
-      // translationConfigs: translationConfigs ? translationConfigs : null
+      headers: headers ? headers : null,
+      oas: oas ? oas : null,
+      paths: paths ? paths : null,
+      translationConfigs: translationConfigs ? translationConfigs : null
     };
 
-    // if (Object.keys(headers).length !== 0 && headers !== "") {
-    //   body["headers"] = headers;
-    // } else {
-    //   body["headers"] = [];
-    // }
-    // if (Object.keys(oas).length !== 0 && oas !== "") {
-    //   body["oas"] = oas;
-    // } else {
-    //   body["oas"] = [];
-    // }
-    // if (Object.keys(paths).length !== 0 && paths !== "") {
-    //   body["paths"] = paths;
-    // } else {
-    //   body["paths"] = [];
-    // }
-    // if (Object.keys(translationConfigs).length !== 0 && translationConfigs !== "") {
-    //   body["translationConfigs"] = translationConfigs;
-    // } else {
-    //   body["translationConfigs"] = [];
-    // }
-
-    console.log(JSON.stringify(body));
+    if (Object.keys(headers).length !== 0 && headers !== "") {
+      body["headers"] = headers;
+    } else {
+      body["headers"] = [];
+    }
+    if (Object.keys(oas).length !== 0 && oas !== "") {
+      body["oas"] = oas;
+    } else {
+      body["oas"] = [];
+    }
+    if (Object.keys(paths).length !== 0 && paths !== "") {
+      body["paths"] = paths;
+    } else {
+      body["paths"] = [];
+    }
+    if (Object.keys(translationConfigs).length !== 0 && translationConfigs !== "") {
+      body["translationConfigs"] = translationConfigs;
+    } else {
+      body["translationConfigs"] = [];
+    }
 
     // setShowSpinner(false); return;
 
@@ -136,6 +126,7 @@ export default function SourceForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);return;
         setShowSpinner(false);
         if (data.id !== undefined) {
           setSource(data);
@@ -193,10 +184,20 @@ export default function SourceForm({ id }) {
                     <div className="row">
                       <div className="col-6 form-group">
                         {source !== null && source.type !== null ? (
-                          <GenericInputComponent type={"text"} name={"type"} id={"typeInput"} data={source.type} required={"true"} />
-                        ) : (
-                          <GenericInputComponent type={"text"} name={"type"} id={"typeInput"} required={"true"} />
-                        )}
+                            <SelectInputComponent
+                              options={[{ name: "json", value: "json" }, { name: "xml", value: "xml" }, { name: "soap", value: "soap" }, { name: "ftp", value: "ftp" }, { name: "sftp", value: "sftp" }]}
+                              name={"type"} id={"typeInput"} nameOverride={"Type"} data={source.type} required={true} />
+                          ) :
+                          (
+                            <SelectInputComponent
+                              options={[{ name: "json", value: "json" }, { name: "xml", value: "xml" }, { name: "soap", value: "soap" }, { name: "ftp", value: "ftp" }, { name: "sftp", value: "sftp" }]}
+                              name={"type"} id={"typeInput"} nameOverride={"Type"} required={true} />
+                          )}
+                        {/*{source !== null && source.type !== null ? (*/}
+                        {/*  <GenericInputComponent type={"text"} name={"type"} id={"typeInput"} data={source.type} required={"true"} />*/}
+                        {/*) : (*/}
+                        {/*  <GenericInputComponent type={"text"} name={"type"} id={"typeInput"} required={"true"} />*/}
+                        {/*)}*/}
                       </div>
                     </div>
                     <div className="row">
@@ -224,7 +225,7 @@ export default function SourceForm({ id }) {
                         ) :
                           (
                             <SelectInputComponent
-                              options={[{ name: "apikey" }, { name: "jwt" }, { name: "username-password" }]}
+                              options={[{ name: "apikey", value: "apikey" }, { name: "jwt", value: "jwt" }, { name: "username-password", value: "username-password" }]}
                               name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true} />
                           )}
                       </div>
@@ -323,7 +324,7 @@ export default function SourceForm({ id }) {
                       </div>
                     </div> */}
 
-                    {/* <Accordion id="sourceAccordion"
+                    <Accordion id="sourceAccordion"
                       items={[{
                         title: "Headers",
                         id: "headers",
@@ -333,8 +334,7 @@ export default function SourceForm({ id }) {
                               <MultiDimensionalArrayInput
                                 id={"headers"}
                                 label={"Headers"}
-                                // data={source.headers}
-                                data={[{ key: "headers", value: source.headers }]}
+                                data={source.headers}
                                 deleteFunction={deleteElementFunction}
                                 addFunction={addElement} />
                             ) : (
@@ -354,11 +354,12 @@ export default function SourceForm({ id }) {
                         id: "oas",
                         render: function () {
                           return (<>
-                            {source !== null ? (
+                            {source !== null &&
+                            source.oas ? (
                               <MultiDimensionalArrayInput
                                 id={"oas"}
                                 label={"OAS"}
-                                data={[{ key: 'oas', value: source.oas }]}
+                                data={source.oas}
                                 deleteFunction={deleteElementFunction}
                                 addFunction={addElement} />
                             ) : (
@@ -378,11 +379,12 @@ export default function SourceForm({ id }) {
                         id: "paths",
                         render: function () {
                           return (<>
-                            {source !== null ? (
+                            {source !== null &&
+                              source.paths ? (
                               <MultiDimensionalArrayInput
                                 id={"paths"}
                                 label={"paths"}
-                                data={[{ key: 'paths', value: source.paths }]}
+                                data={source.paths}
                                 deleteFunction={deleteElementFunction}
                                 addFunction={addElement} />
                             ) : (
@@ -402,11 +404,12 @@ export default function SourceForm({ id }) {
                         id: "translationConfig",
                         render: function () {
                           return (<>
-                            {source !== null ? (
+                            {source !== null &&
+                              source.translationConfigs ? (
                               <MultiDimensionalArrayInput
                                 id={"translationConfig"}
                                 label={"translationConfig"}
-                                data={[{ key: 'translationConfig', value: source.translationConfig }]}
+                                data={source.translationConfig}
                                 deleteFunction={deleteElementFunction}
                                 addFunction={addElement} />
                             ) : (
@@ -421,7 +424,7 @@ export default function SourceForm({ id }) {
                           </>)
                         }
                       }]}
-                    /> */}
+                    />
                   </>
                 )}
               </div>
