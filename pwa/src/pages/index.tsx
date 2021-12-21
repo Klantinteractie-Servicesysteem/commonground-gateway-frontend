@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import { Tabs, Spinner } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
@@ -12,6 +12,7 @@ import {
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -25,6 +26,7 @@ const IndexPage = () => {
 
   const login = (event) => {
     event.preventDefault();
+    setShowSpinner(true);
 
     let usernameInput = document.getElementById(
       "usernameInput"
@@ -48,6 +50,7 @@ const IndexPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
         if (typeof window !== "undefined") {
           let result = {
             username: data.username,
@@ -57,6 +60,9 @@ const IndexPage = () => {
           sessionStorage.setItem("user", JSON.stringify(result));
           navigate("/");
         }
+      }).catch((error) => {
+        setShowSpinner(false);
+        console.log(error);
       });
   };
 
@@ -144,39 +150,45 @@ const IndexPage = () => {
         </>
       ) : (
         <form id="dataForm" onSubmit={login}>
-          <div className="row">
-            <div className="col-4">
-              <div className="form-group">
-                <span className="utrecht-form-label mb-2">Username</span>
-                <input
-                  className="utrecht-textbox utrecht-textbox--html-input"
-                  name="username"
-                  id="usernameInput"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-4">
-              <div className="form-group">
-                <span className="utrecht-form-label">Password</span>
-                <input
-                  className="utrecht-textbox utrecht-textbox--html-input"
-                  type="password"
-                  name="password"
-                  id="passwordInput"
-                />
-              </div>
+          {
+            showSpinner === true ?
+              <Spinner /> :
+              <>
+                <div className="row">
+                  <div className="col-4">
+                    <div className="form-group">
+                      <span className="utrecht-form-label mb-2">Username</span>
+                      <input
+                        className="utrecht-textbox utrecht-textbox--html-input"
+                        name="username"
+                        id="usernameInput"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">Password</span>
+                      <input
+                        className="utrecht-textbox utrecht-textbox--html-input"
+                        type="password"
+                        name="password"
+                        id="passwordInput"
+                      />
+                    </div>
 
-              <a className="utrecht-link" onClick={login}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-primary">
-                  <i className="fas fa-sign-in-alt mr-2" />
-                  Login
-                </button>
-              </a>
-            </div>
-          </div>
+                    <a className="utrecht-link" onClick={login}>
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn-primary">
+                        <i className="fas fa-sign-in-alt mr-2" />
+                        Login
+                      </button>
+                    </a>
+                  </div>
+                </div>
+              </>
+          }
         </form>
       )}
     </Layout>
