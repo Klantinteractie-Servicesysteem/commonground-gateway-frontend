@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Tabs, GenericInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
@@ -24,7 +24,7 @@ const IndexPage = () => {
     }
   }, [context]);
 
-  const login = (event) => {
+  const login = (event: any) => {
     event.preventDefault();
     setShowSpinner(true);
 
@@ -51,15 +51,13 @@ const IndexPage = () => {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (typeof window !== "undefined") {
-          let result = {
-            username: data.username,
-          };
-          setUser(result);
-          sessionStorage.setItem("jwt", data.jwtToken);
-          sessionStorage.setItem("user", JSON.stringify(result));
-          navigate("/");
-        }
+        let result = {
+          username: data.username,
+        };
+        setUser(result);
+        sessionStorage.setItem("jwt", data.jwtToken);
+        sessionStorage.setItem("user", JSON.stringify(result));
+        navigate('/')
       }).catch((error) => {
         setShowSpinner(false);
         console.log(error);
@@ -76,6 +74,9 @@ const IndexPage = () => {
       response.text().then(function (text) {
         download("export.yaml", text, "text/yaml");
       });
+    }).catch((error) => {
+      console.log('Error:', error)
+
     });
   };
 
@@ -118,7 +119,6 @@ const IndexPage = () => {
               aria-labelledby="main-tab"
             >
               <br />
-              {/* <a href={`${context.adminUrl}/export/all`} target="_blank"> */}
               <button
                 className="utrecht-button"
                 type="button"
@@ -126,7 +126,6 @@ const IndexPage = () => {
               >
                 Export Configuration
               </button>
-              {/* </a> */}
             </div>
             <div
               className="tab-pane "
@@ -157,41 +156,39 @@ const IndexPage = () => {
                 <div className="row">
                   <div className="col-4">
                     <div className="form-group">
-                      <span className="utrecht-form-label mb-2">Username</span>
-                      <input
-                        className="utrecht-textbox utrecht-textbox--html-input"
-                        name="username"
-                        id="usernameInput"
-                        required
-                      />
+                      <GenericInputComponent
+                        type={"text"}
+                        name={"username"}
+                        id={"usernameInput"}
+                        nameOverride={"Username"}
+                        required={true} />
                     </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-4">
                     <div className="form-group">
-                      <span className="utrecht-form-label">Password</span>
-                      <input
-                        className="utrecht-textbox utrecht-textbox--html-input"
-                        type="password"
-                        name="password"
-                        id="passwordInput"
-                      />
-                    </div>
-
-                    <a className="utrecht-link" onClick={login}>
-                      <button className="utrecht-button utrecht-button-sm btn-sm btn-primary">
+                      <GenericInputComponent
+                        type={"password"}
+                        name={"password"}
+                        id={"passwordInput"}
+                        nameOverride={"Password"}
+                        required={true}
+                        togglePassword={true}
+                        eyeLeft="92%"
+                        eyeTop="-27px" />
+                      <button type="submit" className="utrecht-link utrecht-button utrecht-button-sm btn-sm btn-primary">
                         <i className="fas fa-sign-in-alt mr-2" />
                         Login
                       </button>
-                    </a>
+                    </div>
                   </div>
                 </div>
               </>
           }
-        </form>
+        </form >
       )}
-    </Layout>
+    </Layout >
   );
 };
 
