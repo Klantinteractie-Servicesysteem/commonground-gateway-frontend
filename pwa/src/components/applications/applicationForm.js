@@ -1,9 +1,10 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
+import { GenericInputComponent } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { navigate } from "gatsby-link";
 
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -14,13 +15,13 @@ export default function ApplicationForm({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
         frontendUrl: window.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
         if (id !== "new") {
-          fetch(context.apiUrl + "/applications/" + id, {
+          fetch(context.adminUrl + "/applications/" + id, {
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -35,10 +36,11 @@ export default function ApplicationForm({ id }) {
     }
   }, [context]);
 
-  const saveApplication = () => {
+  const saveApplication = (event) => {
+    event.preventDefault();
     setShowSpinner(true);
 
-    let url = context.apiUrl + "/applications";
+    let url = context.adminUrl + "/applications";
     let method = "POST";
     if (id !== "new") {
       url = url + "/" + id;
@@ -47,10 +49,16 @@ export default function ApplicationForm({ id }) {
 
     let nameInput = document.getElementById("nameInput");
     let descriptionInput = document.getElementById("descriptionInput");
+    let publicInput = document.getElementById("publicInput");
+    let secretInput = document.getElementById("secretInput");
+    let resourceInput = document.getElementById("resourceInput");
 
     let body = {
       name: nameInput.value,
       description: descriptionInput.value,
+      public: publicInput.value,
+      secret: secretInput.value,
+      resource: resourceInput.value,
     };
 
     fetch(url, {
@@ -63,10 +71,8 @@ export default function ApplicationForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Saved applications:", data);
-        setApplication(data);
         setShowSpinner(false);
-        setTitle(data.name);
+        navigate('/applications');
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -108,45 +114,67 @@ export default function ApplicationForm({ id }) {
                   <>
                     <div className="row">
                       <div className="col-6">
-                        {application !== null && application.name !== null ? (
+                        <div className="form-group">
                           <GenericInputComponent
                             type={"text"}
                             name={"name"}
                             id={"nameInput"}
-                            data={application.name}
+                            data={application && application.name && application.name}
                             nameOverride={"Name"}
-                            required={"true"}
+                            required={true}
                           />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            nameOverride={"Name"}
-                            required={"true"}
-                          />
-                        )}
+                        </div>
                       </div>
                       <div className="col-6">
-                        {application !== null &&
-                        application.description !== null ? (
+                        <div className="form-group">
                           <GenericInputComponent
                             nameOverride={"Description"}
                             name={"description"}
-                            data={application.description}
+                            data={application && application.description && application.description}
                             type={"text"}
-                            required={"true"}
+                            required={true}
                             id={"descriptionInput"}
                           />
-                        ) : (
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
                           <GenericInputComponent
-                            nameOverride={"Description"}
-                            name={"description"}
                             type={"text"}
-                            required={"true"}
-                            id={"descriptionInput"}
+                            name={"public"}
+                            id={"publicInput"}
+                            data={application && application.public && application.public}
+                            nameOverride={"Public (uuid)"}
+                            disabled={true}
                           />
-                        )}
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <GenericInputComponent
+                            nameOverride={"Secret (uuid)"}
+                            name={"secret"}
+                            data={application && application.secret && application.secret}
+                            type={"password"}
+                            id={"secretInput"}
+                            disabled={true}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"resource"}
+                            id={"resourceInput"}
+                            data={application && application.resource !== null ? application.resource : null}
+                            nameOverride={"Resource (uri resource object)"}
+                          />
+                        </div>
                       </div>
                     </div>
                   </>
@@ -156,6 +184,6 @@ export default function ApplicationForm({ id }) {
           );
         }}
       />
-    </form>
+    </form >
   );
 }
