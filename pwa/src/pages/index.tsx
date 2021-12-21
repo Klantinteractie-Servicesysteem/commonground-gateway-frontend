@@ -9,6 +9,7 @@ import {
   documentDownload,
   download,
 } from "../components/utility/DocumentDownload";
+import { postCall } from "../components/utility/fetch";
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -40,8 +41,8 @@ const IndexPage = () => {
       password: passwordInput.value ? passwordInput.value : null,
     };
 
-    fetch(`${context.apiUrl}/users/login`, {
-      method: "POST",
+    postCall({
+      url: `${context.apiUrl}/users/login`,
       headers: {
         "Content-Type": "application/json",
         host: context.frontendUrl,

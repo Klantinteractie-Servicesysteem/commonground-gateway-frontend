@@ -2,6 +2,7 @@ import * as React from "react";
 import Spinner from "../common/spinner";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import { getCall } from "../utility/fetch";
 import { Table, Card } from "@conductionnl/nl-design-system/lib";
 
 export default function SourcesTable() {
@@ -21,20 +22,14 @@ export default function SourcesTable() {
 
   const getSources = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
-          setSources(data["hydra:member"]);
-          setShowSpinner(false);
-        }
-      });
+
+    getCall({
+      url: `${context.adminUrl}/gateways`,
+      handler: (data) => {
+        setShowSpinner(false);
+        setSources(data["hydra:member"]);
+      },
+    });
   };
 
   return (
@@ -46,7 +41,7 @@ export default function SourcesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link">
+            <a className="utrecht-link" onClick={getSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
