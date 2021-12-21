@@ -1,8 +1,6 @@
 import * as React from "react";
-import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
 
 export default function EntitiesTable() {
@@ -31,7 +29,12 @@ export default function EntitiesTable() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setEntities(data["hydra:member"]);
+        if (data['hydra:member'] !== undefined) {
+          setEntities(data["hydra:member"]);
+        }
+      })
+      .catch((error) => {
+        console.log('Error', error);
       });
   };
 
@@ -132,7 +135,7 @@ export default function EntitiesTable() {
                             field: "gateway.name",
                           },
                         ]}
-                        rows={[]}
+                        rows={[{name: 'No results found'}]}
                       />
                     )}
                   </div>
