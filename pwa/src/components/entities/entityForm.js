@@ -1,18 +1,21 @@
 import * as React from "react";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import { Checkbox } from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import { MultiDimensionalArrayInput }
-  from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
+import {
+  GenericInputComponent,
+  Checkbox,
+  SelectInputComponent,
+  Accordion,
+  MultiDimensionalArrayInput,
+  Card
+}
+  from "@conductionnl/nl-design-system/lib";
 // import { ArrayInput }
 //   from "@conductionnl/nl-design-system/lib/ArrayInput/src/ArrayInput";
 import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
 
 export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -44,6 +47,8 @@ export default function EntityForm({ id }) {
       .then((response) => response.json())
       .then((data) => {
         setEntity(data);
+      }).catch((error) => {
+        console.log('Error', error)
       });
   };
 
@@ -55,7 +60,9 @@ export default function EntityForm({ id }) {
       .then((response) => response.json())
       .then((data) => {
         setSources(data["hydra:member"]);
-      });
+      }).catch((error) => {
+        console.log('Error', error)
+      });;
   };
 
   const getSoaps = () => {
@@ -68,6 +75,8 @@ export default function EntityForm({ id }) {
         if (data["hydra:member"] !== undefined) {
           setSoaps(data["hydra:member"]);
         }
+      }).catch((error) => {
+        console.log('Error', error)
       });
   }
 
@@ -145,7 +154,6 @@ export default function EntityForm({ id }) {
       method = "PUT";
     }
 
-
     fetch(url, {
       method: method,
       credentials: "include",
@@ -192,24 +200,23 @@ export default function EntityForm({ id }) {
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {entity !== null && entity.name !== null ? (
-                            <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
-                              nameOverride={"Name"} required={"true"} />
-                          ) : (
-                            <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                              nameOverride={"Name"} required={"true"} />
-                          )}
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            data={entity && entity.name && entity.name}
+                            nameOverride={"Name"}
+                            required={"true"} />
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          {entity !== null && entity.description !== null ? (
-                            <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                              data={entity.description} nameOverride={"Description"} />
-                          ) : (
-                            <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                              nameOverride={"Description"} />
-                          )}
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"description"}
+                            id={"descriptionInput"}
+                            data={entity && entity.description && entity.description}
+                            nameOverride={"Description"} />
                         </div>
                       </div>
                     </div>
@@ -230,24 +237,22 @@ export default function EntityForm({ id }) {
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {entity !== null && entity.endpoint !== null ? (
-                            <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                              data={entity.endpoint} nameOverride={"Endpoint"} />
-                          ) : (
-                            <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                              nameOverride={"Endpoint"} />
-                          )}
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"endpoint"}
+                            id={"endpointInput"}
+                            data={entity && entity.endpoint && entity.endpoint}
+                            nameOverride={"Endpoint"} />
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          {entity !== null && entity.route !== null ? (
-                            <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                              data={entity.route} nameOverride={"Route"} />
-                          ) : (
-                            <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                              nameOverride={"Route"} />
-                          )}
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"route"}
+                            id={"routeInput"}
+                            data={entity && entity.route && entity.route}
+                            nameOverride={"Route"} />
                         </div>
                       </div>
                     </div>
@@ -292,15 +297,18 @@ export default function EntityForm({ id }) {
                               <SelectInputComponent
                                 options={soaps}
                                 data={entity.gateway}
-                                name={"toSoap"} id={"toSoapInput"} nameOverride={"toSoap"}
+                                name={"toSoap"}
+                                id={"toSoapInput"}
+                                nameOverride={"toSoap"}
                                 value={"/admin/soaps/"} />
-                            )
-                              : (
-                                <SelectInputComponent
-                                  options={soaps}
-                                  name={"toSoap"} id={"toSoapInput"} nameOverride={"toSoap"}
-                                  value={"/admin/soaps/"} />
-                              )}
+                            ) : (
+                              <SelectInputComponent
+                                options={soaps}
+                                name={"toSoap"}
+                                id={"toSoapInput"}
+                                nameOverride={"toSoap"}
+                                value={"/admin/soaps/"} />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -316,21 +324,12 @@ export default function EntityForm({ id }) {
                     <div className="row">
                       <div className="col-12">
                         <div className="form-check">
-                          {entity !== null ? (
-                            <>
-                              {entity.extend ? (
-                                <Checkbox type={"checkbox"} id={"extendInput"}
-                                  nameLabel={"Extend"} nameAttribute={"extend"}
-                                  data={entity.extend} />
-                              ) : (
-                                <Checkbox type={"checkbox"} id={"extendInput"}
-                                  nameLabel={"Extend"} nameAttribute={"extend"} />
-                              )}
-                            </>
-                          ) : (
-                            <Checkbox type={"checkbox"} id={"extendInput"}
-                              nameLabel={"Extend"} nameAttribute={"extend"} />
-                          )}
+                          <Checkbox
+                            type={"checkbox"}
+                            id={"extendInput"}
+                            nameLabel={"Extend"}
+                            nameAttribute={"extend"}
+                            data={entity && entity.extend && entity.extend} />
                         </div>
                       </div>
                     </div>

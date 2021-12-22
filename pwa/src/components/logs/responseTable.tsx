@@ -32,6 +32,9 @@ export default function ResponseTable() {
       .then((data) => {
         setResponse(data["hydra:member"]);
         setShowSpinner(false);
+      }).catch((error) => {
+        setShowSpinner(false);
+        console.log('Error', error)
       });
   };
 

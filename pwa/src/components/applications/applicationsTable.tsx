@@ -22,7 +22,7 @@ export default function ApplicationsTable() {
 
   const getApplications = (context) => {
     setShowSpinner(true);
-    fetch(`${context.apiUrl}/applications/`, {
+    fetch(`${context.adminUrl}/applications`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -35,6 +35,7 @@ export default function ApplicationsTable() {
         console.log(data);
       })
       .catch((error) => {
+        setShowSpinner(false);
         console.error("Error:", error);
       });
   };
@@ -112,7 +113,7 @@ export default function ApplicationsTable() {
                       field: "description",
                     },
                   ]}
-                  rows={[]}
+                  rows={[{name: "No results found", description: " "}]}
                 />
               )}
             </div>

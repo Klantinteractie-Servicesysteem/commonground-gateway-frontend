@@ -1,10 +1,9 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 import { getCall } from "../utility/fetch";
+import { Table, Card } from "@conductionnl/nl-design-system/lib";
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
