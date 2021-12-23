@@ -1,13 +1,16 @@
 import * as React from "react";
 import { Link, navigate } from "gatsby";
 import {
+  checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent, Accordion, SelectInputComponent, MultiDimensionalArrayInput, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Accordion, MultiDimensionalArrayInput, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import FlashMessage from 'react-flash-message';
+
+import { SelectInputComponent } from "./selectInput";
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -119,9 +122,12 @@ export default function SourceForm({ id }) {
     //   body["translationConfigs"] = [];
     // }
     body = removeEmptyObjectValues(body);
-
-    setShowSpinner(false);
-    console.log(body);return;
+    if (!checkValues([body.name, body.location, body.type, body.auth])) {
+      setAlert(null);
+      setAlert({ type: 'danger', message: 'Required fields are empty' });
+      setShowSpinner(false);
+      return;
+    }
 
     fetch(url, {
       method: method,
@@ -131,15 +137,13 @@ export default function SourceForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         if (data.id !== undefined) {
-          setSource(data);
           navigate(`/sources`);
         } else {
+          setShowSpinner(false);
           setAlert(null);
           setAlert({ type: 'danger', message: data['hydra:description'] });
         }
-        console.log(data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -224,16 +228,9 @@ export default function SourceForm({ id }) {
                     </div>
                     <div className="row">
                       <div className="col-12 form-group">
-                        {source !== null && source.auth !== null ? (
                           <SelectInputComponent
                             options={[{ name: "apikey", value: "apikey" }, { name: "jwt", value: "jwt" }, { name: "username-password", value: "username-password" }]}
-                            name={"auth"} id={"authInput"} nameOverride={"Auth"} data={source.auth} required={true} />
-                        ) :
-                          (
-                            <SelectInputComponent
-                              options={[{ name: "apikey" }, { name: "jwt" }, { name: "username-password" }]}
-                              name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true} />
-                          )}
+                            name={"auth"} id={"authInput"} nameOverride={"Auth"} data={source && source.auth && source.auth} required={true} />
                       </div>
                     </div>
                     <div className="row">
