@@ -4,7 +4,7 @@ import ObjectEntityForm from "../../components/object_entities/object_entityForm
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title='Object entity' subtext="Edit your object entity here">
       <main>
         <div className="row">
           <div className="col-12">
