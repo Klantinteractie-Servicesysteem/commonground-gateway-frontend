@@ -1,12 +1,14 @@
 import * as React from "react";
-import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import FlashMessage from 'react-flash-message';
 
 export default function EntitiesTable() {
   const [entities, setEntities] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -29,16 +31,25 @@ export default function EntitiesTable() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined) {
+        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
           setEntities(data["hydra:member"]);
         }
       })
       .catch((error) => {
-        console.log('Error', error);
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <Card
       title={"Entities"}
       cardHeader={function () {
@@ -145,6 +156,6 @@ export default function EntitiesTable() {
           </div>
         );
       }}
-    />
+    /></>
   );
 }

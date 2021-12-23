@@ -1,14 +1,15 @@
 import * as React from "react";
-import Spinner from "../common/spinner";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import { getCall } from "../utility/fetch";
-import { Table, Card } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
+import FlashMessage from 'react-flash-message';
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -22,17 +23,32 @@ export default function SourcesTable() {
 
   const getSources = () => {
     setShowSpinner(true);
-
-    getCall({
-      url: `${context.adminUrl}/gateways`,
-      handler: (data) => {
+    fetch(`${context.adminUrl}/gateways`, {
+      credentials: "include",
+      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
+          setSources(data["hydra:member"]);
+        }
         setShowSpinner(false);
-        setSources(data["hydra:member"]);
-      },
-    });
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
+      });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <Card title={"Sources"}
       cardHeader={function () {
         return (
@@ -102,6 +118,6 @@ export default function SourcesTable() {
           </div>
         )
       }}
-    />
+    /></>
   );
 }

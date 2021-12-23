@@ -1,14 +1,15 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import ConfigurationForm from "../../components/configurations/configurationForm";
+import EndpointsTable from "../../components/endpoints/endpointsTable";
 
-const IndexPage = (props) => {
+const IndexPage = () => {
   return (
-    <Layout title='Configuration' subtext="Edit your configuration here">
+    <Layout title={"Endpoints"} subtext={"An overview of your endpoints objects"}>
+      <title>Gateway - Endpoints</title>
       <main>
         <div className="row">
           <div className="col-12">
-            <ConfigurationForm id={props.params.id}/>
+            <EndpointsTable />
           </div>
         </div>
       </main>

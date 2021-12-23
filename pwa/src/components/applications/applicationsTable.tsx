@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
-import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 

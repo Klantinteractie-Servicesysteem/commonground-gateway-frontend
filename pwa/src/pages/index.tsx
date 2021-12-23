@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs, GenericInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
@@ -10,10 +10,12 @@ import {
   download,
 } from "../components/utility/DocumentDownload";
 import { postCall } from "../components/utility/fetch";
+import FlashMessage from 'react-flash-message';
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -40,9 +42,8 @@ const IndexPage = () => {
       username: usernameInput.value ? usernameInput.value : null,
       password: passwordInput.value ? passwordInput.value : null,
     };
-
-    postCall({
-      url: `${context.apiUrl}/users/login`,
+    fetch(`${context.apiUrl}/users/login`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         host: context.frontendUrl,
@@ -51,6 +52,11 @@ const IndexPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.type === 'error') {
+          setAlert(null);
+          setAlert({ type: 'danger', message: data.message });
+        }
+        console.log(data);
         setShowSpinner(false);
         let result = {
           username: data.username,
@@ -62,6 +68,8 @@ const IndexPage = () => {
       }).catch((error) => {
         setShowSpinner(false);
         console.log(error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -77,11 +85,13 @@ const IndexPage = () => {
       });
     }).catch((error) => {
       console.log('Error:', error)
-
+      setAlert(null);
+      setAlert({ type: 'danger', message: error.message });
     });
   };
 
   return (
+
     <Layout
       title={"Dashboard"}
       subtext={
@@ -90,6 +100,12 @@ const IndexPage = () => {
           : `Welcome to the gateway admin dashboard`
       }
     >
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        </FlashMessage>
+      }
       {isLoggedIn() && context !== null ? (
         <>
           <div className="page-top-item">

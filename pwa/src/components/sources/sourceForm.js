@@ -4,15 +4,16 @@ import {
   removeEmptyObjectValues,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import Spinner from "../common/spinner";
-import { GenericInputComponent, Accordion, SelectInputComponent, MultiDimensionalArrayInput, Card } from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Accordion, SelectInputComponent, MultiDimensionalArrayInput, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import FlashMessage from 'react-flash-message';
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -74,20 +75,20 @@ export default function SourceForm({ id }) {
 
 
     let body = {
-      name: nameInput.value ? nameInput.value : null,
-      location: locationInput.value ? locationInput.value : null,
-      type: typeInput.value ? typeInput.value : null,
-      auth: authInput.value ? authInput.value : null,
-      locale: localeInput.value ? localeInput.value : null,
-      accept: acceptInput.value ? acceptInput.value : null,
-      jwt: jwtInput.value ? jwtInput.value : null,
-      jwtId: jwtIdInput.value ? jwtIdInput.value : null,
-      secret: secretInput.value ? secretInput.value : null,
-      username: usernameInput.value ? usernameInput.value : null,
-      password: passwordInput.value ? passwordInput.value : null,
-      apikey: apikeyInput.value ? apikeyInput.value : null,
-      documentation: documentationInput.value ? documentationInput.value : null,
-      authorizationHeader: authorizationHeaderInput.value ? authorizationHeaderInput.value : null,
+      name: nameInput.value,
+      location: locationInput.value,
+      type: typeInput.value,
+      auth: authInput.value,
+      locale: localeInput.value,
+      accept: acceptInput.value,
+      jwt: jwtInput.value,
+      jwtId: jwtIdInput.value,
+      secret: secretInput.value,
+      username: usernameInput.value,
+      password: passwordInput.value,
+      apikey: apikeyInput.value,
+      documentation: documentationInput.value,
+      authorizationHeader: authorizationHeaderInput.value,
 
       // logging: logging,
 
@@ -117,10 +118,10 @@ export default function SourceForm({ id }) {
     // } else {
     //   body["translationConfigs"] = [];
     // }
+    body = removeEmptyObjectValues(body);
 
-    console.log(JSON.stringify(body));
-
-    // setShowSpinner(false); return;
+    setShowSpinner(false);
+    console.log(body);return;
 
     fetch(url, {
       method: method,
@@ -134,14 +135,26 @@ export default function SourceForm({ id }) {
         if (data.id !== undefined) {
           setSource(data);
           navigate(`/sources`);
+        } else {
+          setAlert(null);
+          setAlert({ type: 'danger', message: data['hydra:description'] });
         }
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <form id="dataForm" onSubmit={saveSource}>
       <Card title={"Source"}
         cardHeader={function () {
@@ -423,6 +436,6 @@ export default function SourceForm({ id }) {
           )
         }}
       />
-    </form >
+    </form ></>
   );
 }

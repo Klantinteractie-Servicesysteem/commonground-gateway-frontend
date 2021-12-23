@@ -5,7 +5,8 @@ import {
   SelectInputComponent,
   Accordion,
   MultiDimensionalArrayInput,
-  Card
+  Card,
+  Alert
 }
   from "@conductionnl/nl-design-system/lib";
 // import { ArrayInput }
@@ -16,10 +17,12 @@ import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
+import FlashMessage from 'react-flash-message';
 
 export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   const [entity, setEntity] = React.useState(null);
   const [sources, setSources] = React.useState(null);
@@ -171,7 +174,13 @@ export default function EntityForm({ id }) {
       });
   }
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <form id="dataForm" onSubmit={saveEntity}>
       <Card title="Values"
         cardHeader={function () {
@@ -425,6 +434,6 @@ export default function EntityForm({ id }) {
             </div>
           )
         }} />
-    </form>
+    </form></>
   );
 }

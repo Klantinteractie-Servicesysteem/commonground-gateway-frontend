@@ -6,30 +6,19 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import {
-  MultiDimensionalArrayInput
-} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
-import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { isLoggedIn } from "../../services/auth";
 import { isJsxAttributes } from "typescript";
+import FlashMessage from 'react-flash-message';
 
 export default function AttributeForm({ id, entity }) {
   const [context, setContext] = React.useState(null);
   const [attribute, setAttribute] = React.useState(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
-  React.useEffect(() => {
-    if (id !== "new") {
-      getAttribute();
-    }
-  }, []);
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
@@ -49,6 +38,12 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         setAttribute(data);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -62,6 +57,12 @@ export default function AttributeForm({ id, entity }) {
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setAttributes(data);
         }
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -195,9 +196,6 @@ export default function AttributeForm({ id, entity }) {
       return;
     }
 
-    console.log('body:', JSON.stringify(body));
-    // setShowSpinner(true);
-
     let url = context.adminUrl + "/attributes";
     let method = null;
     console.log(url);
@@ -207,7 +205,6 @@ export default function AttributeForm({ id, entity }) {
       url = `${url}/${id}`;
       method = "PUT";
     }
-    console.log(url);
 
     fetch(url, {
       method: method,
@@ -217,12 +214,16 @@ export default function AttributeForm({ id, entity }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("yes!", data);
         setShowSpinner(false);
-        // navigate(`/entities/${entity}`);
+        if (data.id !== undefined) {
+          navigate(`/entities/${entity}`);
+        }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -253,7 +254,13 @@ export default function AttributeForm({ id, entity }) {
     },
   ];
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <form id="attributeForm" onSubmit={saveAttribute}>
       <Card title="Values"
         cardHeader={function () {
@@ -1021,6 +1028,6 @@ export default function AttributeForm({ id, entity }) {
 
           )
         }} />
-    </form>
+    </form></>
   );
 }
