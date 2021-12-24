@@ -116,8 +116,8 @@ const IndexPage = () => {
                   active: true,
                 },
                 {
-                  name: "Incomming calls",
-                  id: "incommingcalls",
+                  name: "Incoming calls",
+                  id: "incomingcalls",
                 },
                 {
                   name: "Outgoing calls",
@@ -145,9 +145,9 @@ const IndexPage = () => {
             </div>
             <div
               className="tab-pane"
-              id="incommingcalls"
+              id="incomingcalls"
               role="tabpanel"
-              aria-labelledby="incommingcalls-tab"
+              aria-labelledby="incomingcalls-tab"
             >
               <br />
               <RequestTable />

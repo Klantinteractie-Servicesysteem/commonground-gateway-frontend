@@ -56,7 +56,7 @@ export default function RequestTable({ id = null }) {
         </FlashMessage>
       }
       <Card
-        title="Incomming calls"
+        title="Incoming calls"
         cardHeader={function () {
           return (
             <>
@@ -149,29 +149,29 @@ export default function RequestTable({ id = null }) {
       {requests !== null &&
         requests.map((request) => (
           <Modal
-            title={"Incomming call"}
+            title={"Incoming call"}
             id={`requestLogs${request.id}`}
             body={function () {
               return (<>
                 <Tabs
                   items={[
-                    { name: "Request", id: "incommingRequest", active: true },
+                    { name: "Request", id: "incomingRequest", active: true },
                     {
-                      name: "Response", id: "incommingResponse",
+                      name: "Response", id: "incomingResponse",
                     },
                   ]}
                 />
                 <div className="tab-content">
                   <div
                     className="tab-pane active"
-                    id="incommingRequest"
+                    id="incomingRequest"
                     role="tabpanel"
-                    aria-labelledby="incommingRequest-tab"
+                    aria-labelledby="incomingRequest-tab"
                   >
-                    <Accordion id="incommingRequestAccordion"
+                    <Accordion id="incomingRequestAccordion"
                       items={[{
                         title: "Headers",
-                        id: "incommingRequestHeaders",
+                        id: "incomingRequestHeaders",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.headers)}
@@ -180,7 +180,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Query paramaters",
-                        id: "incommingRequestQueryparamters",
+                        id: "incomingRequestQueryparamters",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.queryParams)}
@@ -189,7 +189,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Session",
-                        id: "incommingRequestSession",
+                        id: "incomingRequestSession",
                         render: function () {
                           return (<>
                             Session
@@ -198,7 +198,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Body",
-                        id: "incommingRequestBody",
+                        id: "incomingRequestBody",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.requestBody)}
@@ -209,14 +209,14 @@ export default function RequestTable({ id = null }) {
                   </div>
                   <div
                     className="tab-pane"
-                    id="incommingResponse"
+                    id="incomingResponse"
                     role="tabpanel"
-                    aria-labelledby="incommingResponse-tab"
+                    aria-labelledby="incomingResponse-tab"
                   >
-                    <Accordion id="incommingResponseAccordion"
+                    <Accordion id="incomingResponseAccordion"
                       items={[{
                         title: "Headers",
-                        id: "incommingResponseHeaders",
+                        id: "incomingResponseHeaders",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.headers)}
@@ -225,7 +225,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Query paramaters",
-                        id: "incommingResponseQueryparamters",
+                        id: "incomingResponseQueryparamters",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.queryParams)}
@@ -234,7 +234,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Session",
-                        id: "incommingResponseSession",
+                        id: "incomingResponseSession",
                         render: function () {
                           return (<>
                             Session 2
@@ -243,7 +243,7 @@ export default function RequestTable({ id = null }) {
                       },
                       {
                         title: "Body",
-                        id: "incommingResponseBody",
+                        id: "incomingResponseBody",
                         render: function () {
                           return (<>
                             {JSON.stringify(request.responseBody)}

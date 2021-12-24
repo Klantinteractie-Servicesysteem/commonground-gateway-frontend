@@ -33,7 +33,7 @@ const IndexPage = (props) => {
                       id: "attributes",
                     },
                     { name: "Data", id: "data" },
-                    { name: "Incomming calls", id: "request" },
+                    { name: "Incoming calls", id: "request" },
                     { name: "Outgoing calls", id: "response" },
                   ]}
                 />
