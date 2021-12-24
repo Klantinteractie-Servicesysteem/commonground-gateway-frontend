@@ -1,19 +1,20 @@
 import * as React from "react";
-import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
+import FlashMessage from 'react-flash-message';
 
 export default function DataTable({ id }) {
   const [data, setData] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
+
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       getData();
@@ -32,19 +33,33 @@ export default function DataTable({ id }) {
         if (response.ok) {
           return response.json();
         } else {
+          setAlert(null);
+          setAlert({ type: 'danger', message: response.statusText });
           throw new Error(response.statusText);
         }
       })
       .then((data) => {
-        setData(data["hydra:member"]);
         setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          console.log(data['hydra:member']);
+          setData(data["hydra:member"]);
+        }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <Card
       title={"Object entities"}
       cardHeader={function () {
@@ -81,8 +96,8 @@ export default function DataTable({ id }) {
                 <Table
                   columns={[
                     {
-                      headerName: "Name",
-                      field: "name",
+                      headerName: "Uri",
+                      field: "uri",
                     },
                     {
                       headerName: "Owner",
@@ -109,8 +124,8 @@ export default function DataTable({ id }) {
                 <Table
                   columns={[
                     {
-                      headerName: "Name",
-                      field: "name",
+                      headerName: "Uri",
+                      field: "uri",
                     },
                     {
                       headerName: "Owner",
@@ -124,6 +139,6 @@ export default function DataTable({ id }) {
           </div>
         );
       }}
-    />
+    /></>
   );
 }

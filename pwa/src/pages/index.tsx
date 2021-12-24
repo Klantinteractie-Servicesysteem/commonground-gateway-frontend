@@ -9,7 +9,7 @@ import {
   documentDownload,
   download,
 } from "../components/utility/DocumentDownload";
-import { postCall } from "../components/utility/fetch";
+// import { postCall } from "../components/utility/fetch";
 import FlashMessage from 'react-flash-message';
 
 const IndexPage = () => {
@@ -56,7 +56,6 @@ const IndexPage = () => {
           setAlert(null);
           setAlert({ type: 'danger', message: data.message });
         }
-        console.log(data);
         setShowSpinner(false);
         let result = {
           username: data.username,

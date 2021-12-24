@@ -1,13 +1,11 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import EntityRequestTable from "../../components/logs/entityRequestTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
-import EntityResponseTable from "../../components/logs/entityResponseTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -80,7 +78,7 @@ const IndexPage = (props) => {
                 aria-labelledby="response-tab"
               >
                 <br />
-                <EntityResponseTable id={props.params.id} />
+                <ResponseTable id={props.params.id} />
               </div>
               <div
                 className="tab-pane"
@@ -89,7 +87,7 @@ const IndexPage = (props) => {
                 aria-labelledby="request-tab"
               >
                 <br />
-                <EntityRequestTable id={props.params.id} />
+                <RequestTable id={props.params.id} />
               </div>
             </div>
           </div>
