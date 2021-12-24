@@ -18,6 +18,7 @@ import Spinner from "../common/spinner";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
+import { getDefaultLibFilePath } from "typescript";
 
 export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -43,43 +44,68 @@ export default function EntityForm({ id }) {
   }, [context]);
 
   const getEntity = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/entities/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
-        setEntity(data);
-      }).catch((error) => {
-        console.log('Error', error)
+        setShowSpinner(false);
+        if (data.id !== undefined) {
+          setEntity(data);
+        } else if (data['hydra:description'] !== undefined) {
+          setAlert(null);
+          setAlert({ type: 'danger', message: data['hydra:description'] });
+        }
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
   const getSources = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
-        setSources(data["hydra:member"]);
-      }).catch((error) => {
-        console.log('Error', error)
-      });;
+        setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          setSources(data["hydra:member"]);
+        }
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
+      });
   };
 
   const getSoaps = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/soaps`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data["hydra:member"] !== undefined) {
+        setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setSoaps(data["hydra:member"]);
         }
-      }).catch((error) => {
-        console.log('Error', error)
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   }
 
@@ -165,12 +191,20 @@ export default function EntityForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setEntity(data);
         setShowSpinner(false);
-        navigate(`/entities`);
+        if (data.id !== undefined) {
+          setEntity(data);
+          navigate(`/entities`);
+        } else if (data['hydra:description'] !== undefined) {
+          setAlert(null);
+          setAlert({ type: 'danger', message: data['hydra:description'] });
+        }
       })
       .catch((error) => {
+        setShowSpinner(false);
         console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   }
 
