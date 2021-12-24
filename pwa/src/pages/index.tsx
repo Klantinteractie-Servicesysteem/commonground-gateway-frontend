@@ -116,12 +116,12 @@ const IndexPage = () => {
                   active: true,
                 },
                 {
-                  name: "Response logs",
-                  id: "response",
+                  name: "Incomming calls",
+                  id: "incommingcalls",
                 },
                 {
-                  name: "Request logs",
-                  id: "request",
+                  name: "Outgoing calls",
+                  id: "outgoingcalls",
                 },
               ]}
             />
@@ -144,22 +144,22 @@ const IndexPage = () => {
               </button>
             </div>
             <div
-              className="tab-pane "
-              id="response"
-              role="tabpanel"
-              aria-labelledby="main-tab"
-            >
-              <br />
-              <ResponseTable />
-            </div>
-            <div
               className="tab-pane"
-              id="request"
+              id="incommingcalls"
               role="tabpanel"
-              aria-labelledby="attributes-tab"
+              aria-labelledby="incommingcalls-tab"
             >
               <br />
               <RequestTable />
+            </div>
+            <div
+              className="tab-pane "
+              id="outgoingcalls"
+              role="tabpanel"
+              aria-labelledby="outgoingcalls-tab"
+            >
+              <br />
+              <ResponseTable />
             </div>
           </div>
         </>

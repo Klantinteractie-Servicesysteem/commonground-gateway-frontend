@@ -40,8 +40,8 @@ export default function DataTable({ id }) {
       })
       .then((data) => {
         setShowSpinner(false);
+        console.log('Object entities:', data);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          console.log(data['hydra:member']);
           setData(data["hydra:member"]);
         }
       })
@@ -132,7 +132,7 @@ export default function DataTable({ id }) {
                       field: "owner",
                     },
                   ]}
-                  rows={[]}
+                  rows={[{uri: 'No results found'}]}
                 />
               )}
             </div>
