@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Table, Modal, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 
@@ -49,14 +49,14 @@ export default function RequestTable({ id = null }) {
 
   return (
     <>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        </FlashMessage>
+      }
       <Card
-        title="Request Logs"
+        title="Incomming calls"
         cardHeader={function () {
           return (
             <>
@@ -111,7 +111,7 @@ export default function RequestTable({ id = null }) {
                                     ""
                                   )}`}
                                 >
-                                  Request logs
+                                  More info
                                 </button>
                               </div>
                             );
@@ -149,69 +149,110 @@ export default function RequestTable({ id = null }) {
       {requests !== null &&
         requests.map((request) => (
           <Modal
-            title={"Request Logs"}
+            title={"Incomming call"}
             id={`requestLogs${request.id}`}
             body={function () {
-              return (
-                <div>
-                  {request.responseBody.path !== undefined &&
-                    request.responseBody.path !== null && (
-                      <>
-                        <p>
-                          <b>Path: </b>
-                          {request.responseBody.path}
-                        </p>
-                      </>
-                    )}
-                  {request.responseBody.type !== undefined &&
-                    request.responseBody.type !== null && (
-                      <>
-                        <p>
-                          <b>Type: </b>
-                          {request.responseBody.type}
-                        </p>
-                      </>
-                    )}
-                  {request.responseBody.message !== undefined &&
-                    request.responseBody.message !== null && (
-                      <>
-                        <b>Message</b>
-                        <p>{request.responseBody.message}</p>
-                      </>
-                    )}
-                  {request.responseBody.data !== undefined &&
-                    request.responseBody.data !== null && (
-                      <>
-                        <h5>Data</h5>
-                        {Object.entries(request.responseBody.data).map(
-                          ([key, value]) => (
-                            <>
-                              <p>
-                                <b>{typeof key === "string" && key}: </b>
-                                {typeof value === "string" && value}
-                              </p>
-                            </>
-                          )
-                        )}
-                      </>
-                    )}
-                  {request.requestBody !== undefined &&
-                    request.requestBody !== null && (
-                      <>
-                        <h5>Request body raw</h5>
-                        {JSON.stringify(request.requestBody)}
-                      </>
-                    )}
-                  {request.responseBody !== undefined &&
-                    request.responseBody !== null && (
-                      <>
-                        <br />
-                        <br />
-                        <h5>Response body raw</h5>
-                        {JSON.stringify(request.responseBody)}
-                      </>
-                    )}
-                </div>
+              return (<>
+                <Tabs
+                  items={[
+                    { name: "Request", id: "incommingRequest", active: true },
+                    {
+                      name: "Response", id: "incommingResponse",
+                    },
+                  ]}
+                />
+                <div className="tab-content">
+                  <div
+                    className="tab-pane active"
+                    id="incommingRequest"
+                    role="tabpanel"
+                    aria-labelledby="incommingRequest-tab"
+                  >
+                    <Accordion id="incommingRequestAccordion"
+                      items={[{
+                        title: "Headers",
+                        id: "incommingRequestHeaders",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.headers)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Query paramaters",
+                        id: "incommingRequestQueryparamters",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.queryParams)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Session",
+                        id: "incommingRequestSession",
+                        render: function () {
+                          return (<>
+                            Session
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Body",
+                        id: "incommingRequestBody",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.requestBody)}
+                          </>)
+                        }
+                      }]}
+                    />
+                  </div>
+                  <div
+                    className="tab-pane"
+                    id="incommingResponse"
+                    role="tabpanel"
+                    aria-labelledby="incommingResponse-tab"
+                  >
+                    <Accordion id="incommingResponseAccordion"
+                      items={[{
+                        title: "Headers",
+                        id: "incommingResponseHeaders",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.headers)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Query paramaters",
+                        id: "incommingResponseQueryparamters",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.queryParams)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Session",
+                        id: "incommingResponseSession",
+                        render: function () {
+                          return (<>
+                            Session 2
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Body",
+                        id: "incommingResponseBody",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(request.responseBody)}
+                          </>)
+                        }
+                      }]}
+                    />
+                  </div>
+                </div></>
               );
             }}
           />

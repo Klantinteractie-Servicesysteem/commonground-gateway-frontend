@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Table, Card, Spinner, Modal, Alert } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 
@@ -56,7 +56,7 @@ export default function ResponseTable({ id = null }) {
         </FlashMessage>
       }
       <Card
-        title="Response Logs"
+        title="Outgoing calls"
         cardHeader={function () {
           return (
             <>
@@ -111,7 +111,7 @@ export default function ResponseTable({ id = null }) {
                                     ""
                                   )}`}
                                 >
-                                  Response logs
+                                  More info
                                 </button>
                               </div>
                             );
@@ -149,53 +149,110 @@ export default function ResponseTable({ id = null }) {
       {responses !== null &&
         responses.map((response) => (
           <Modal
-            title={"Request Logs"}
-            id={`requestLogs${response.id}`}
+            title={"Outgoing call"}
+            id={`responseLogs${response.id}`}
             body={function () {
-              return (
-                <div>
-                  {response.responseBody.path !== undefined &&
-                    response.responseBody.path !== null && (
-                      <>
-                        <p>
-                          <b>Path: </b>
-                          {response.responseBody.path}
-                        </p>
-                      </>
-                    )}
-                  {response.responseBody.type !== undefined &&
-                    response.responseBody.type !== null && (
-                      <>
-                        <p>
-                          <b>Type: </b>
-                          {response.responseBody.type}
-                        </p>
-                      </>
-                    )}
-                  {response.responseBody.message !== undefined &&
-                    response.responseBody.message !== null && (
-                      <>
-                        <b>Message</b>
-                        <p>{response.responseBody.message}</p>
-                      </>
-                    )}
-                  {response.responseBody.data !== undefined &&
-                    response.responseBody.data !== null && (
-                      <>
-                        <h5>data</h5>
-                        {Object.entries(response.responseBody.data).map(
-                          ([key, value]) => (
-                            <>
-                              <p>
-                                <b>{typeof key === "string" && key}: </b>
-                                {typeof value === "string" && value}
-                              </p>
-                            </>
-                          )
-                        )}
-                      </>
-                    )}
-                </div>
+              return (<>
+                <Tabs
+                  items={[
+                    { name: "Request", id: "outgoingRequest", active: true },
+                    {
+                      name: "Response", id: "outgoingResponse",
+                    },
+                  ]}
+                />
+                <div className="tab-content">
+                  <div
+                    className="tab-pane active"
+                    id="outgoingRequest"
+                    role="tabpanel"
+                    aria-labelledby="outgoingRequest-tab"
+                  >
+                    <Accordion id="outgoingRequestAccordion"
+                      items={[{
+                        title: "Headers",
+                        id: "outgoingRequestHeaders",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.headers)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Query paramaters",
+                        id: "outgoingRequestQueryparamters",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.queryParams)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Session",
+                        id: "outgoingRequestSession",
+                        render: function () {
+                          return (<>
+                            Session
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Body",
+                        id: "outgoingRequestBody",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.requestBody)}
+                          </>)
+                        }
+                      }]}
+                    />
+                  </div>
+                  <div
+                    className="tab-pane"
+                    id="outgoingResponse"
+                    role="tabpanel"
+                    aria-labelledby="outgoingResponse-tab"
+                  >
+                    <Accordion id="outgoingResponseAccordion"
+                      items={[{
+                        title: "Headers",
+                        id: "outgoingResponseHeaders",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.headers)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Query paramaters",
+                        id: "outgoingResponseQueryparamters",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.queryParams)}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Session",
+                        id: "outgoingResponseSession",
+                        render: function () {
+                          return (<>
+                            Session 2
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Body",
+                        id: "outgoingResponseBody",
+                        render: function () {
+                          return (<>
+                            {JSON.stringify(response.responseBody)}
+                          </>)
+                        }
+                      }]}
+                    />
+                  </div>
+                </div></>
               );
             }}
           />
