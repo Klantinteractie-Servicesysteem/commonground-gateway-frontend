@@ -1,14 +1,13 @@
 import * as React from "react";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Table, Modal, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
-import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system";
+import FlashMessage from 'react-flash-message';
 
-export default function RequestTable() {
+export default function RequestTable({ id = null }) {
   const [context, setContext] = React.useState(null);
   const [requests, setRequest] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -22,7 +21,11 @@ export default function RequestTable() {
 
   const getRequests = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/request_logs?order[dateCreated]=desc`, {
+    let url = '/request_logs?order[dateCreated]=desc';
+    if (id !== null) {
+      url = `/request_logs?entity.id=${id}&order[dateCreated]=desc`
+    }
+    fetch(context.adminUrl + url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -31,24 +34,43 @@ export default function RequestTable() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined) {
+        console.log(data);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setRequest(data["hydra:member"]);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         setShowSpinner(false);
-        console.log('Error', error)
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
   return (
     <>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
       <Card
         title="Request Logs"
         cardHeader={function () {
           return (
             <>
+              <button
+                className="utrecht-link button-no-style"
+                data-toggle="modal"
+                data-target="helpModal"
+              >
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
               <a className="utrecht-link" onClick={getRequests}>
-                <i className="fas fa-sync-alt" />
+                <i className="fas fa-sync-alt mr-1" />
+                <span className="mr-2">Refresh</span>
               </a>
             </>
           );
@@ -114,7 +136,7 @@ export default function RequestTable() {
                           field: "method",
                         },
                       ]}
-                      rows={[]}
+                      rows={[{ status: 'No results found' }]}
                     />
                   )}
                 </>
@@ -160,7 +182,7 @@ export default function RequestTable() {
                   {request.responseBody.data !== undefined &&
                     request.responseBody.data !== null && (
                       <>
-                        <h5>data</h5>
+                        <h5>Data</h5>
                         {Object.entries(request.responseBody.data).map(
                           ([key, value]) => (
                             <>
@@ -171,6 +193,22 @@ export default function RequestTable() {
                             </>
                           )
                         )}
+                      </>
+                    )}
+                  {request.requestBody !== undefined &&
+                    request.requestBody !== null && (
+                      <>
+                        <h5>Request body raw</h5>
+                        {JSON.stringify(request.requestBody)}
+                      </>
+                    )}
+                  {request.responseBody !== undefined &&
+                    request.responseBody !== null && (
+                      <>
+                        <br />
+                        <br />
+                        <h5>Response body raw</h5>
+                        {JSON.stringify(request.responseBody)}
                       </>
                     )}
                 </div>

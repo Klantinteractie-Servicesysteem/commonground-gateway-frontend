@@ -1,14 +1,13 @@
 import * as React from "react";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Table, Card, Spinner, Modal, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
-import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system";
+import FlashMessage from 'react-flash-message';
 
-export default function ResponseTable() {
+export default function ResponseTable({ id = null }) {
   const [context, setContext] = React.useState(null);
   const [responses, setResponse] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -22,7 +21,11 @@ export default function ResponseTable() {
 
   const getResponses = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/response_logs?order[dateCreated]=desc`, {
+    let url = '/response_logs?order[dateCreated]=desc';
+    if (id !== null) {
+      url = `/response_logs?entity.id=${id}&order[dateCreated]=desc`;
+    }
+    fetch(context.adminUrl + url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -30,23 +33,44 @@ export default function ResponseTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setResponse(data["hydra:member"]);
         setShowSpinner(false);
-      }).catch((error) => {
+        console.log(data);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          setResponse(data["hydra:member"]);
+        }
+      })
+      .catch((error) => {
         setShowSpinner(false);
-        console.log('Error', error)
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
   return (
     <>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        </FlashMessage>
+      }
       <Card
         title="Response Logs"
         cardHeader={function () {
           return (
             <>
+              <button
+                className="utrecht-link button-no-style"
+                data-toggle="modal"
+                data-target="helpModal"
+              >
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
               <a className="utrecht-link" onClick={getResponses}>
-                <i className="fas fa-sync-alt" />
+                <i className="fas fa-sync-alt mr-1" />
+                <span className="mr-2">Refresh</span>
               </a>
             </>
           );
@@ -112,7 +136,7 @@ export default function ResponseTable() {
                           field: "method",
                         },
                       ]}
-                      rows={[]}
+                      rows={[{ status: 'No results found' }]}
                     />
                   )}
                 </>
