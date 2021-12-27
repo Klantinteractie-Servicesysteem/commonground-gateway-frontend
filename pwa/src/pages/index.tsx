@@ -3,6 +3,7 @@ import Layout from "../components/common/layout";
 import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
+import LogTable from "../components/logs/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
 import {
@@ -123,6 +124,10 @@ const IndexPage = () => {
                   name: "Outgoing calls",
                   id: "outgoingcalls",
                 },
+                {
+                  name: "Logs (new)",
+                  id: "logs",
+                },
               ]}
             />
           </div>
@@ -160,6 +165,15 @@ const IndexPage = () => {
             >
               <br />
               <ResponseTable />
+            </div>
+            <div
+              className="tab-pane "
+              id="logs"
+              role="tabpanel"
+              aria-labelledby="logs-tab"
+            >
+              <br />
+              <LogTable />
             </div>
           </div>
         </>
