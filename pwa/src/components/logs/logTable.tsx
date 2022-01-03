@@ -89,8 +89,12 @@ export default function LogTable({ id = null }) {
                           field: "type",
                         },
                         {
-                          headerName: "Request method",
+                          headerName: "Method",
                           field: "requestMethod",
+                        },
+                        {
+                          headerName: "Status",
+                          field: "responseStatus",
                         },
                         {
                           headerName: "Response time",
@@ -155,25 +159,23 @@ export default function LogTable({ id = null }) {
               return (<>
                 <Tabs
                   items={[
-                    { name: "Request", id: "logRequest", active: true },
-                    {
-                      name: "Response", id: "logResponse",
-                    },
+                    { name: "General", id: "logGeneral", active: true },
+                    { name: "Request", id: "logRequest" },
+                    { name: "Response", id: "logResponse", },
                   ]}
                 />
                 <div className="tab-content">
                   <div
                     className="tab-pane active"
-                    id="logRequest"
+                    id="logGeneral"
                     role="tabpanel"
-                    aria-labelledby="logRequest-tab"
+                    aria-labelledby="logGeneral-tab"
                   >
                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type && log.type}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Method: {log.requestMethod && log.requestMethod}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Languages: {log.requestLanguages && log.requestLanguages}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Status: {log.requestStatus && log.requestStatus} {log.requestStatusCode && log.requestStatusCode}</h5>
-                    <Accordion id="logRequestAccordion"
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Call id: {log.callId && log.callId}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Reponse time: {log.responseTime && log.responseTime}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Route: {log.routeName && log.routeName}</h5>
+                    <Accordion id="logGeneralAccordion"
                       items={[
                         {
                           title: "Session",
@@ -184,7 +186,20 @@ export default function LogTable({ id = null }) {
                               {log.sessionValues ? JSON.stringify(log.sessionValues) : <p className="utrecht-paragraph">No session values found</p>}
                             </>)
                           }
-                        },
+                        }]} />
+                  </div>
+                  <div
+                    className="tab-pane"
+                    id="logRequest"
+                    role="tabpanel"
+                    aria-labelledby="logRequest-tab"
+                  >
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Method: {log.requestMethod && log.requestMethod}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Languages: {log.requestLanguages && log.requestLanguages}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Status: {log.requestStatus && log.requestStatus} {log.requestStatusCode && log.requestStatusCode}</h5>
+                    <Accordion id="logRequestAccordion"
+                      items={[
                         {
                           title: "Headers",
                           id: "logRequestHeaders",
@@ -220,22 +235,10 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logResponse-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type && log.type}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Status: {log.responseStatus && log.responseStatus} {log.responseStatusCode && log.responseStatusCode}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Reponse time: {log.responseTime && log.responseTime}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Status: {log.responseStatus && log.responseStatus} {log.responseStatusCode && log.responseStatusCode}</h5>
 
                     <Accordion id="logResponseAccordion"
                       items={[
-                        {
-                          title: "Session",
-                          id: "logResponseSession",
-                          render: function () {
-                            return (<>
-                              {log.session && <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Session: {log.session && log.session}</h5>}
-                              {log.sessionValues ? JSON.stringify(log.sessionValues) : <p className="utrecht-paragraph">No session values found</p>}
-                            </>)
-                          }
-                        },
                         {
                           title: "Headers",
                           id: "logResponseHeaders",
