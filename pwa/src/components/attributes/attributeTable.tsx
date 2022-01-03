@@ -13,7 +13,7 @@ export default function AttributeTable({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -34,14 +34,14 @@ export default function AttributeTable({ id }) {
         if (response.ok) {
           return response.json();
         } else {
-          setShowSpinner(false);
-          setAttributes(null);
+          setAlert(null);
+          setAlert({ type: 'danger', message: response.statusText });
           throw new Error(response.statusText);
         }
       })
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setAttributes(data["hydra:member"]);
         }
       })

@@ -34,7 +34,7 @@ export default function ResponseTable({ id = null }) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        console.log(data);
+        // console.log(data);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setResponse(data["hydra:member"]);
         }
