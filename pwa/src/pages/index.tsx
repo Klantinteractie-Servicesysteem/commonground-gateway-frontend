@@ -1,19 +1,22 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs, GenericInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
+import LogTable from "../components/logs/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
 import {
   documentDownload,
   download,
 } from "../components/utility/DocumentDownload";
-import { postCall } from "../components/utility/fetch";
+// import { postCall } from "../components/utility/fetch";
+import FlashMessage from 'react-flash-message';
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -40,9 +43,8 @@ const IndexPage = () => {
       username: usernameInput.value ? usernameInput.value : null,
       password: passwordInput.value ? passwordInput.value : null,
     };
-
-    postCall({
-      url: `${context.apiUrl}/users/login`,
+    fetch(`${context.apiUrl}/users/login`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         host: context.frontendUrl,
@@ -51,6 +53,10 @@ const IndexPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.type === 'error') {
+          setAlert(null);
+          setAlert({ type: 'danger', message: data.message });
+        }
         setShowSpinner(false);
         let result = {
           username: data.username,
@@ -62,6 +68,8 @@ const IndexPage = () => {
       }).catch((error) => {
         setShowSpinner(false);
         console.log(error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -77,11 +85,13 @@ const IndexPage = () => {
       });
     }).catch((error) => {
       console.log('Error:', error)
-
+      setAlert(null);
+      setAlert({ type: 'danger', message: error.message });
     });
   };
 
   return (
+
     <Layout
       title={"Dashboard"}
       subtext={
@@ -90,6 +100,12 @@ const IndexPage = () => {
           : `Welcome to the gateway admin dashboard`
       }
     >
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        </FlashMessage>
+      }
       {isLoggedIn() && context !== null ? (
         <>
           <div className="page-top-item">
@@ -101,12 +117,16 @@ const IndexPage = () => {
                   active: true,
                 },
                 {
-                  name: "Response logs",
-                  id: "response",
+                  name: "Incoming calls",
+                  id: "incomingcalls",
                 },
                 {
-                  name: "Request logs",
-                  id: "request",
+                  name: "Outgoing calls",
+                  id: "outgoingcalls",
+                },
+                {
+                  name: "Logs (new)",
+                  id: "logs",
                 },
               ]}
             />
@@ -129,22 +149,31 @@ const IndexPage = () => {
               </button>
             </div>
             <div
-              className="tab-pane "
-              id="response"
+              className="tab-pane"
+              id="incomingcalls"
               role="tabpanel"
-              aria-labelledby="main-tab"
+              aria-labelledby="incomingcalls-tab"
+            >
+              <br />
+              <RequestTable />
+            </div>
+            <div
+              className="tab-pane "
+              id="outgoingcalls"
+              role="tabpanel"
+              aria-labelledby="outgoingcalls-tab"
             >
               <br />
               <ResponseTable />
             </div>
             <div
-              className="tab-pane"
-              id="request"
+              className="tab-pane "
+              id="logs"
               role="tabpanel"
-              aria-labelledby="attributes-tab"
+              aria-labelledby="logs-tab"
             >
               <br />
-              <RequestTable />
+              <LogTable />
             </div>
           </div>
         </>

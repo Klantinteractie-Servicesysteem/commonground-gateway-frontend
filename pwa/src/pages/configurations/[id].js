@@ -4,7 +4,7 @@ import ConfigurationForm from "../../components/configurations/configurationForm
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title='Configuration' subtext="Edit your configuration here">
       <main>
         <div className="row">
           <div className="col-12">

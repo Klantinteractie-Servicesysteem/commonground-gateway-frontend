@@ -1,14 +1,14 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import ApplicationForm from "../../components/applications/applicationForm";
+import EndpointForm from "../../components/endpoints/endpointForm";
 
 const IndexPage = (props) => {
   return (
-    <Layout title='Application' subtext="Edit your application here">
+    <Layout title="Endpoint" subtext="Edit your endpoint here">
       <main>
         <div className="row">
           <div className="col-12">
-            <ApplicationForm id={props.params.id}/>
+            <EndpointForm id={props.params.id}/>
           </div>
         </div>
       </main>

@@ -1,49 +1,41 @@
 import * as React from "react";
-import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-export default function AttributeTable({ id }) {
-  const [attributes, setAttributes] = React.useState(null);
+
+export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
+  const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else {
-      if (isLoggedIn()) {
-        getAttributes();
-      }
+    } else if (isLoggedIn()) {
+      getEndpoints(context);
     }
   }, [context]);
 
-  const getAttributes = () => {
+  const getEndpoints = (context) => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
+    fetch(`${context.adminUrl}/endpoints`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setAttributes(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
-          setAttributes(data["hydra:member"]);
+        console.log("Error:", data);
+        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
+          setEndpoints(data["hydra:member"]);
         }
+        setShowSpinner(false);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -61,7 +53,7 @@ export default function AttributeTable({ id }) {
       </FlashMessage>
     }
     <Card
-      title={"Attributes"}
+      title={"Endpoints"}
       cardHeader={function () {
         return (
           <>
@@ -73,11 +65,11 @@ export default function AttributeTable({ id }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getAttributes}>
+            <a className="utrecht-link" onClick={getEndpoints}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${id}`}>
+            <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -92,7 +84,7 @@ export default function AttributeTable({ id }) {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : attributes ? (
+              ) : endpoints ? (
                 <Table
                   columns={[
                     {
@@ -100,15 +92,15 @@ export default function AttributeTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Type",
-                      field: "type",
+                      headerName: "Path",
+                      field: "path",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/attributes/${item.id}`}>
+                          <Link to={`/endpoints/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -118,7 +110,7 @@ export default function AttributeTable({ id }) {
                       },
                     },
                   ]}
-                  rows={attributes}
+                  rows={endpoints}
                 />
               ) : (
                 <Table
@@ -128,11 +120,11 @@ export default function AttributeTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Type",
-                      field: "type",
+                      headerName: "Description",
+                      field: "description",
                     },
                   ]}
-                  rows={[]}
+                  rows={[{ name: "No results found", description: " " }]}
                 />
               )}
             </div>

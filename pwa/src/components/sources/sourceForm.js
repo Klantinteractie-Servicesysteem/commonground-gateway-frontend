@@ -1,15 +1,20 @@
 import * as React from "react";
 import { Link, navigate } from "gatsby";
-import Spinner from "../common/spinner";
-import { GenericInputComponent, Accordion, SelectInputComponent, MultiDimensionalArrayInput, Card } from "@conductionnl/nl-design-system/lib";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsObject,
+} from "../utility/inputHandler";
+import { GenericInputComponent, Accordion, MultiDimensionalArrayInput, Card, Alert, Spinner, SelectInputComponent } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
-import { retrieveFormArrayAsObject } from "../utility/inputHandler";
+import FlashMessage from 'react-flash-message';
 
 export default function SourceForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -22,6 +27,7 @@ export default function SourceForm({ id }) {
   }, [context]);
 
   const getSource = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/gateways/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
@@ -30,6 +36,17 @@ export default function SourceForm({ id }) {
       .then((data) => {
         // console.log('getSource:', data);
         setSource(data);
+        setShowSpinner(false);
+        if (data.id !== undefined) {
+          setSource(data);
+        } else {
+          setAlert({type: 'danger', message: data['hydra:description']})
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -112,8 +129,6 @@ export default function SourceForm({ id }) {
       body["translationConfigs"] = [];
     }
 
-    // setShowSpinner(false); return;
-
     fetch(url, {
       method: method,
       credentials: "include",
@@ -122,18 +137,28 @@ export default function SourceForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         if (data.id !== undefined) {
-          setSource(data);
           navigate(`/sources`);
+        } else {
+          setShowSpinner(false);
+          setAlert(null);
+          setAlert({ type: 'danger', message: data['hydra:description'] });
         }
       })
       .catch((error) => {
         console.error("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <form id="dataForm" onSubmit={saveSource}>
       <Card title={"Source"}
         cardHeader={function () {
@@ -162,18 +187,11 @@ export default function SourceForm({ id }) {
                   <>
                     <div className="row">
                       <div className="col-6 form-group">
-                        {source !== null && source.name !== null ? (
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={source.name} nameOverride={"Name"} required={"true"} />
-                        ) : (
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} nameOverride={"Name"} required={"true"} />
-                        )}
+                        <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={source && source.name && source.name} nameOverride={"Name"} required={"true"} />
                       </div>
                       <div className="col-6 form-group">
-                        {source !== null && source.location !== null ? (
-                          <GenericInputComponent nameOverride={"Location (url)"} name={"location"} data={source.location} type={"text"} required={"true"} id={"locationInput"} />
-                        ) : (
-                          <GenericInputComponent nameOverride={"Location (url)"} name={"location"} type={"text"} required={"true"} id={"locationInput"} />
-                        )}
+                        <GenericInputComponent nameOverride={"Location (url)"} name={"location"} data={source && source.location && source.location} type={"text"} required={"true"} id={"locationInput"} />
+
                       </div>
                     </div>
                     <div className="row">
@@ -193,22 +211,17 @@ export default function SourceForm({ id }) {
                         {/*) : (*/}
                         {/*  <GenericInputComponent type={"text"} name={"type"} id={"typeInput"} required={"true"} />*/}
                         {/*)}*/}
+                        <SelectInputComponent
+                          options={[{ name: "json", value: "json" }, { name: "xml", value: "xml" }, { name: "soap", value: "soap" }, { name: "ftp", value: "ftp" }, { name: "sftp", value: "sftp" }]}
+                          name={"type"} id={"typeInput"} nameOverride={"Type"} data={source && source.type && source.type} required={true} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-6 form-group">
-                        {source !== null && source.accept !== null ? (
-                          <GenericInputComponent nameOverride={"Accept (accept header used for this source)"} name={"accept"} data={source.accept} type={"text"} id={"acceptInput"} />
-                        ) : (
-                          <GenericInputComponent nameOverride={"Accept (accept header used for this source)"} name={"accept"} type={"text"} id={"acceptInput"} />
-                        )}
+                        <GenericInputComponent nameOverride={"Accept (accept header used for this source)"} name={"accept"} data={source && source.accept && source.accept} type={"text"} id={"acceptInput"} />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.locale !== null ? (
-                          <GenericInputComponent nameOverride={"Locale"} name={"locale"} data={source.locale} type={"text"} id={"localeInput"} />
-                        ) : (
-                          <GenericInputComponent nameOverride={"Locale"} name={"locale"} type={"text"} id={"localeInput"} maxLength={"10"} />
-                        )}
+                        <GenericInputComponent nameOverride={"Locale"} name={"locale"} data={source && source.locale && source.locale} type={"text"} id={"localeInput"} />
                       </div>
                     </div>
                     <div className="row">
@@ -223,85 +236,56 @@ export default function SourceForm({ id }) {
                               options={[{ name: "apikey", value: "apikey" }, { name: "jwt", value: "jwt" }, { name: "username-password", value: "username-password" }]}
                               name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true} />
                           )}
+                        <SelectInputComponent
+                          options={[{ name: "apikey", value: "apikey" }, { name: "jwt", value: "jwt" }, { name: "username-password", value: "username-password" }]}
+                          name={"auth"} id={"authInput"} nameOverride={"Auth"} data={source && source.auth && source.auth} required={true} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-4">
                         <div className="form-group">
-                          {source !== null && source.jwt !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Jwt"} name={"jwt"} data={source.jwt} type={"text"} id={"jwtInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Jwt"} name={"jwt"} type={"text"} id={"jwtInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Jwt"} name={"jwt"} data={source && source.jwt && source.jwt} type={"text"} id={"jwtInput"} />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          {source !== null && source.jwtId !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"JwtId"} name={"jwtId"} data={source.jwtId} type={"text"} id={"jwtIdInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"JwtId"} name={"jwtId"} type={"text"} id={"jwtIdInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"JwtId"} name={"jwtId"} data={source && source.jwtId && source.jwtId} type={"text"} id={"jwtIdInput"} />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          {source !== null && source.secret !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Secret"} name={"secret"} data={source.secret} type={"text"} id={"secretInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Secret"} name={"secret"} type={"text"} id={"secretInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Secret"} name={"secret"} data={source && source.secret && source.secret} type={"text"} id={"secretInput"} />
                         </div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {source !== null && source.username !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Username"} name={"username"} data={source.username} type={"text"} id={"usernameInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Username"} name={"username"} type={"text"} id={"usernameInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Username"} name={"username"} data={source && source.username && source.username} type={"text"} id={"usernameInput"} />
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          {source !== null && source.password !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Password"} name={"password"} data={source.password} type={"text"} id={"passwordInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Password"} name={"password"} type={"text"} id={"passwordInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Password"} name={"password"} data={source && source.password && source.password} type={"text"} id={"passwordInput"} />
                         </div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {source !== null && source.apikey !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Apikey"} name={"apikey"} data={source.apikey} type={"text"} id={"apikeyInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Apikey"} name={"apikey"} type={"text"} id={"apikeyInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Apikey"} name={"apikey"} data={source && source.apikey && source.apikey} type={"text"} id={"apikeyInput"} />
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          {source !== null && source.documentation !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Documentation"} name={"documentation"} data={source.documentation} type={"text"} id={"documentationInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Documentation"} name={"documentation"} type={"text"} id={"documentationInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"Documentation"} name={"documentation"} data={source && source.documentation && source.documentation} type={"text"} id={"documentationInput"} />
                         </div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {source !== null && source.authorizationHeader !== null ? (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"AuthorizationHeader"} name={"authorizationHeader"} data={source.authorizationHeader} type={"text"} id={"authorizationHeaderInput"} />
-                          ) : (
-                            <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"AuthorizationHeader"} name={"authorizationHeader"} type={"text"} id={"authorizationHeaderInput"} />
-                          )}
+                          <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input" nameOverride={"AuthorizationHeader"} name={"authorizationHeader"} data={source && source.authorizationHeader && source.authorizationHeader} type={"text"} id={"authorizationHeaderInput"} />
                         </div>
                       </div>
                     </div>
@@ -427,6 +411,6 @@ export default function SourceForm({ id }) {
           )
         }}
       />
-    </form >
+    </form ></>
   );
 }
