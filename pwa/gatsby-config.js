@@ -20,7 +20,7 @@ module.exports = {
           "font-src":
             "'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/",
           "connect-src":
-            "'self' https://backend-bisc-dev.commonground.nu/ http://backend-bisc-dev.commonground.nu/",
+            "'self' https://admin.acc-vrijbrp-zoetermeer.commonground.nu/ http://admin.acc-vrijbrp-zoetermeer.commonground.nu/",
         },
       },
     },

@@ -1,11 +1,7 @@
 import * as React from "react";
 import { Link, navigate } from "gatsby";
 import Spinner from "../common/spinner";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import { MultiDimensionalArrayInput } from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import { GenericInputComponent, Accordion, SelectInputComponent, MultiDimensionalArrayInput, Card } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { retrieveFormArrayAsObject } from "../utility/inputHandler";

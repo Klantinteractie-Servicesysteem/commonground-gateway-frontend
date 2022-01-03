@@ -30,10 +30,13 @@ export default function RequestTable() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
         if (data['hydra:member'] !== undefined) {
           setRequest(data["hydra:member"]);
-        setShowSpinner(false);
         }
+      }).catch((error) => {
+        setShowSpinner(false);
+        console.log('Error', error)
       });
   };
 
