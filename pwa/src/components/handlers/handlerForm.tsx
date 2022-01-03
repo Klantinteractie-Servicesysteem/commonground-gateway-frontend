@@ -6,7 +6,7 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert, ArrayInputComponent } from "@conductionnl/nl-design-system/lib";
 import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { isLoggedIn } from "../../services/auth";
 import { isJsxAttributes } from "typescript";
@@ -69,130 +69,50 @@ export default function HandlerForm({ id, endpoint }) {
   const saveHandler = (event) => {
     event.preventDefault();
 
-    // let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
-    // let allOf = retrieveFormArrayAsObject(event.target, "allOf");
-    // let anyOf = retrieveFormArrayAsObject(event.target, "anyOf");
-    // let oneOf = retrieveFormArrayAsObject(event.target, "oneOf");
-    // let forbiddenIf = retrieveFormArrayAsObject(event.target, "forbiddenIf");
-    // let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
-    // let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
+    let translationIn = retrieveFormArrayAsOArray(event.target, "translationIn");
+    let translationOut = retrieveFormArrayAsOArray(event.target, "translationOut");
+    let mappingIn = retrieveFormArrayAsObject(event.target, "mappingIn");
+    let mappingOut = retrieveFormArrayAsObject(event.target, "mappingOut");
 
     // get the inputs and check if set other set null
 
     let body = {
-      entity: `/admin/endpoints/${endpoint}`,
       name: event.target.name.value,
-      description: event.target.description.value
-        ? event.target.description.value
+      sequence: event.target.sequence.value
+        ? parseInt(event.target.sequence.value)
         : null,
-      type: event.target.type.value,
-      format: event.target.format.value ? event.target.format.value : null,
-      persistToGateway: event.target.persistToGateway.checked,
-      cascade: event.target.cascade.checked,
-      searchable: event.target.searchable.checked,
-      required: event.target.required.checked,
-      mustBeUnique: event.target.mustBeUnique.checked,
-      multiple: event.target.multiple.checked,
-      nullable: event.target.nullable.checked,
-      writeOnly: event.target.writeOnly.checked,
-      readOnly: event.target.readOnly.checked,
-      deprecated: event.target.deprecated.checked,
-      defaultValue: event.target.defaultValue.value
-        ? event.target.defaultValue.value
-        : null,
-      fileType: event.target.fileType.value
-        ? event.target.fileType.value
-        : null,
-      example: event.target.example.value ? event.target.example.value : null,
-      maxFileSize: event.target.maxFileSize.value
-        ? parseInt(event.target.maxFileSize.value)
-        : null,
-      inversedBy: event.target.inversedBy.value
-        ? event.target.inversedBy.value
-        : null,
-      multipleOf: event.target.multipleOf.value
-        ? parseInt(event.target.multipleOf.value)
-        : null,
-      maximum: event.target.maximum.value
-        ? parseInt(event.target.maximum.value)
-        : null,
-      minimum: event.target.minimum.value
-        ? parseInt(event.target.minimum.value)
-        : null,
-      exclusiveMaximum: event.target.exclusiveMaximum.checked,
-      exclusiveMinimum: event.target.exclusiveMinimum.checked,
-      maxLength: event.target.maxLength.value
-        ? parseInt(event.target.maxLength.value)
-        : null,
-      minLength: event.target.minLength.value
-        ? parseInt(event.target.minLength.value)
-        : null,
-      maxItems: event.target.maxItems.value
-        ? parseInt(event.target.maxItems.value)
-        : null,
-      minItems: event.target.minItems.value
-        ? parseInt(event.target.minItems.value)
-        : null,
-      maxDate: event.target.maxDate.value ? event.target.maxDate.value : null,
-      minDate: event.target.minDate.value ? event.target.minDate.value : null,
-      uniqueItems: event.target.uniqueItems.checked,
-      minProperties: event.target.minProperties.value
-        ? parseInt(event.target.minProperties.value)
-        : null,
-      maxProperties: event.target.maxProperties.value
-        ? parseInt(event.target.maxProperties.value)
-        : null,
+      endpoint: event.target.end.value,
+      entity: event.target.entity.value,
     };
 
-    // if (attributeEnum.length != 0) {
-    //   body["enum"] = attributeEnum;
-    // } else {
-    //   body["enum"] = [];
-    // }
+    if (translationIn.length != 0) {
+      body["translationIn"] = translationIn;
+    } else {
+      body["translationIn"] = [];
+    }
 
-    // if (Object.keys(allOf).length != 0) {
-    //   body["allOf"] = allOf;
-    // } else {
-    //   body["allOf"] = [];
-    // }
+    if (translationOut.length != 0) {
+      body["translationOut"] = translationOut;
+    } else {
+      body["translationOut"] = [];
+    }
 
-    // if (Object.keys(anyOf).length != 0) {
-    //   body["anyOf"] = anyOf;
-    // } else {
-    //   body["anyOf"] = [];
-    // }
+    if (Object.keys(mappingIn).length != 0) {
+      body["mappingIn"] = mappingIn;
+    } else {
+      body["mappingIn"] = [];
+    }
 
-    // if (Object.keys(oneOf).length != 0) {
-    //   body["oneOf"] = oneOf;
-    // } else {
-    //   body["oneOf"] = [];
-    // }
-
-    // if (Object.keys(forbiddenIf).length != 0) {
-    //   body["forbiddenIf"] = forbiddenIf;
-    // } else {
-    //   body["forbiddenIf"] = [];
-    // }
-
-    // if (Object.keys(requiredIf).length != 0) {
-    //   body["requiredIf"] = requiredIf;
-    // } else {
-    //   body["requiredIf"] = [];
-    // }
-
-    // if (Object.keys(objectConfig).length != 0) {
-    //   body["objectConfig"] = objectConfig;
-    // } else {
-    //   body["objectConfig"] = [];
-    // }
+    if (Object.keys(mappingOut).length != 0) {
+      body["mappingOut"] = mappingOut;
+    } else {
+      body["mappingOut"] = [];
+    }
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
-    if (body['type'] === "") {
-      delete body['type'];
-    }
 
-    if (!checkValues([body.name, body.type])) {
+    if (!checkValues([body.name])) {
       return;
     }
 
@@ -227,33 +147,6 @@ export default function HandlerForm({ id, endpoint }) {
       });
   };
 
-  const options = [
-    {
-      name: "String",
-      value: "string",
-    },
-    {
-      name: "Array",
-      value: "array",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-  ];
-
   return (<>
     {
       alert !== null &&
@@ -284,25 +177,151 @@ export default function HandlerForm({ id, endpoint }) {
                 ) : (
                   <>
                     <div className="row">
-                      {/*<div className="col-6">*/}
-                      {/*  {attribute !== null && attribute.name !== null ? (*/}
-                      {/*    <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={attribute.name}*/}
-                      {/*      nameOverride={"Name"} />*/}
-                      {/*  ) : (*/}
-                      {/*    <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}*/}
-                      {/*      nameOverride={"Name"} />*/}
-                      {/*  )}*/}
-                      {/*</div>*/}
-                      {/*<div className="col-6">*/}
-                      {/*  {attribute !== null && attribute.description !== null ? (*/}
-                      {/*    <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}*/}
-                      {/*      data={attribute.description} nameOverride={"Description"} />*/}
-                      {/*  ) : (*/}
-                      {/*    <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}*/}
-                      {/*      nameOverride={"Description"} />*/}
-                      {/*  )}*/}
-                      {/*</div>*/}
+                      <div className="col-6">
+                        {handler !== null && handler.name !== null ? (
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler.name}
+                            nameOverride={"Name"} />
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                            nameOverride={"Name"} />
+                        )}
+                      </div>
+                      <div className="col-6">
+                        {handler !== null && handler.sequence !== null ? (
+                          <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
+                            data={handler.sequence} nameOverride={"Sequence"} />
+                        ) : (
+                          <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
+                            nameOverride={"Sequence"} />
+                        )}
+                      </div>
                     </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        {handler !== null && handler.endpoint !== null ? (
+                          <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
+                                                 data={handler.endpoint}
+                                                 nameOverride={"Endpoint"}/>
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
+                                                 nameOverride={"Endpoint"}/>
+                        )}
+                      </div>
+                      <div className="col-6">
+                        {handler !== null && handler.entity !== null ? (
+                          <GenericInputComponent type={"text"} name={"entity"} id={"entityInput"}
+                                                 data={handler.entity}
+                                                 nameOverride={"Entity"}/>
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"entity"} id={"entityInput"}
+                                                 nameOverride={"Entity"}/>
+                        )}
+                      </div>
+                    </div>
+                    <Accordion id="handlerAccordion"
+                      items={[
+                      {
+                        title: "Translation In",
+                        id: "translationInAccordion",
+                        render: function () {
+                          return (<>
+                            {handler !== null && handler.translationIn !== null ? (
+                              <ArrayInputComponent
+                                id={"translationIn"}
+                                label={"Translation In"}
+                                data={[{ key: 'translationIn', value: handler.translationIn }]}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            ) : (
+                              <ArrayInputComponent
+                                id={"translationIn"}
+                                label={"Translation In"}
+                                data={null}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            )}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "TranslationOut",
+                        id: "translationOutAccordion",
+                        render: function () {
+                          return (<>
+                            {handler !== null && handler.translationOut !== null ? (
+                              <ArrayInputComponent
+                                id={"translationOut"}
+                                label={"Translation Out"}
+                                data={[{ key: 'translationOut', value: handler.translationOut }]}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            ) : (
+                              <ArrayInputComponent
+                                id={"translationOut"}
+                                label={"Translation Out"}
+                                data={null}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            )}
+                          </>)
+                        }
+                      },
+                      {
+                        title: "Mapping In",
+                        id: "mappingInAccordion",
+                        render: function () {
+                          return (<>
+                            {handler !== null && handler.mappingIn !== null ? (
+                              <MultiDimensionalArrayInput
+                                id={"mappingIn"}
+                                label={"Mapping In"}
+                                data={[{ key: 'mappingIn', value: handler.mappingIn }]}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            ) : (
+                              <MultiDimensionalArrayInput
+                                id={"mappingIn"}
+                                label={"Mapping In"}
+                                data={null}
+                                deleteFunction={deleteElementFunction}
+                                addFunction={addElement}
+                              />
+                            )}
+                          </>)
+                        }
+                      },
+                        {
+                          title: "Mapping Out",
+                          id: "mappingOutAccordion",
+                          render: function () {
+                            return (<>
+                              {handler !== null && handler.mappingOut !== null ? (
+                                <MultiDimensionalArrayInput
+                                  id={"mappingOut"}
+                                  label={"Mapping Out"}
+                                  data={[{ key: 'mappingOut', value: `${handler.mappingOut}`}]}
+                                  deleteFunction={deleteElementFunction}
+                                  addFunction={addElement}
+                                />
+                              ) : (
+                                <MultiDimensionalArrayInput
+                                  id={"mappingOut"}
+                                  label={"Mapping Out"}
+                                  data={null}
+                                  deleteFunction={deleteElementFunction}
+                                  addFunction={addElement}
+                                />
+                              )}
+                            </>)
+                          }
+                        }
+                      ]} />
                     <br />
                   </>
                 )}
