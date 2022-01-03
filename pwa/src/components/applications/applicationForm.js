@@ -1,8 +1,7 @@
 import * as React from "react";
-import { GenericInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { navigate } from "gatsby-link";
 import {
   checkValues,

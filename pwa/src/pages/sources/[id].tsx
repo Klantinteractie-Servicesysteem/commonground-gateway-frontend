@@ -4,7 +4,7 @@ import SourceForm from "../../components/sources/sourceForm";
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title={"Source"} subtext={"Edit your source here"}>
       <main>
         <div className="row">
           <div className="col-12">
