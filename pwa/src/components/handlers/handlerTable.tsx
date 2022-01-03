@@ -1,39 +1,48 @@
 import * as React from "react";
-import { Card, Table, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
+import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-
-export default function EndpointsTable() {
+export default function HandlerTable({ id }) {
+  const [handlers, setHandlers] = React.useState(null);
   const [context, setContext] = React.useState(null);
-  const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        apiUrl: window.GATSBY_API_URL,
       });
-    } else if (isLoggedIn()) {
-      getEndpoints(context);
+    } else {
+      if (isLoggedIn()) {
+        getHandlers();
+      }
     }
   }, [context]);
 
-  const getEndpoints = (context) => {
+  const getHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/endpoints`, {
+    fetch(`${context.adminUrl}/handlers?endpoint.id=${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          setShowSpinner(false);
+          setHandlers(null);
+          throw new Error(response.statusText);
+        }
+      })
       .then((data) => {
         setShowSpinner(false);
-        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
-          setEndpoints(data["hydra:member"]);
+        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
+          setHandlers(data["hydra:member"]);
         }
       })
       .catch((error) => {
@@ -52,7 +61,7 @@ export default function EndpointsTable() {
       </FlashMessage>
     }
     <Card
-      title={"Endpoints"}
+      title={"Handlers"}
       cardHeader={function () {
         return (
           <>
@@ -64,11 +73,11 @@ export default function EndpointsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getEndpoints}>
+            <a className="utrecht-link" onClick={getHandlers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/endpoints/new">
+            <Link to={`/handlers/new/${id}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -83,7 +92,7 @@ export default function EndpointsTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : endpoints ? (
+              ) : handlers ? (
                 <Table
                   columns={[
                     {
@@ -91,15 +100,15 @@ export default function EndpointsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Path",
-                      field: "path",
+                      headerName: "Type",
+                      field: "type",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/endpoints/${item.id}`}>
+                          <Link to={`/handlers/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -109,7 +118,7 @@ export default function EndpointsTable() {
                       },
                     },
                   ]}
-                  rows={endpoints}
+                  rows={handlers}
                 />
               ) : (
                 <Table
@@ -119,11 +128,11 @@ export default function EndpointsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Type",
+                      field: "type",
                     },
                   ]}
-                  rows={[{ name: "No results found", description: " " }]}
+                  rows={[]}
                 />
               )}
             </div>
