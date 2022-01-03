@@ -3,6 +3,7 @@ import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import EndpointForm from "../../components/endpoints/endpointForm";
+import HandlerTable from "../../components/handlers/handlerTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -54,7 +55,7 @@ const IndexPage = (props) => {
                 aria-labelledby="handlers-tab"
               >
                 <br />
-                <AttributeTable id={props.params.id} />
+                <HandlerTable id={props.params.id} />
               </div>
             </div>
           </div>
