@@ -31,11 +31,10 @@ export default function EndpointsTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Error:", data);
+        setShowSpinner(false);
         if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
           setEndpoints(data["hydra:member"]);
         }
-        setShowSpinner(false);
       })
       .catch((error) => {
         setShowSpinner(false);

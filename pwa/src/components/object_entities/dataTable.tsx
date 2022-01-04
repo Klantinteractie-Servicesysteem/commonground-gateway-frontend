@@ -40,7 +40,7 @@ export default function DataTable({ id }) {
       })
       .then((data) => {
         setShowSpinner(false);
-        console.log('Object entities:', data);
+        // console.log('Object entities:', data);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setData(data["hydra:member"]);
         }

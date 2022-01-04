@@ -69,13 +69,13 @@ export default function AttributeForm({ id, entity }) {
   const saveAttribute = (event) => {
     event.preventDefault();
 
-    // let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
-    // let allOf = retrieveFormArrayAsObject(event.target, "allOf");
-    // let anyOf = retrieveFormArrayAsObject(event.target, "anyOf");
-    // let oneOf = retrieveFormArrayAsObject(event.target, "oneOf");
-    // let forbiddenIf = retrieveFormArrayAsObject(event.target, "forbiddenIf");
-    // let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
-    // let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
+    let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
+    let allOf = retrieveFormArrayAsObject(event.target, "allOf");
+    let anyOf = retrieveFormArrayAsObject(event.target, "anyOf");
+    let oneOf = retrieveFormArrayAsObject(event.target, "oneOf");
+    let forbiddenIf = retrieveFormArrayAsObject(event.target, "forbiddenIf");
+    let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
+    let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
     // get the inputs and check if set other set null
 
@@ -144,47 +144,47 @@ export default function AttributeForm({ id, entity }) {
         : null,
     };
 
-    // if (attributeEnum.length != 0) {
-    //   body["enum"] = attributeEnum;
-    // } else {
-    //   body["enum"] = [];
-    // }
+    if (attributeEnum.length != 0) {
+      body["enum"] = attributeEnum;
+    } else {
+      body["enum"] = [];
+    }
 
-    // if (Object.keys(allOf).length != 0) {
-    //   body["allOf"] = allOf;
-    // } else {
-    //   body["allOf"] = [];
-    // }
+    if (Object.keys(allOf).length != 0) {
+      body["allOf"] = allOf;
+    } else {
+      body["allOf"] = [];
+    }
 
-    // if (Object.keys(anyOf).length != 0) {
-    //   body["anyOf"] = anyOf;
-    // } else {
-    //   body["anyOf"] = [];
-    // }
+    if (Object.keys(anyOf).length != 0) {
+      body["anyOf"] = anyOf;
+    } else {
+      body["anyOf"] = [];
+    }
 
-    // if (Object.keys(oneOf).length != 0) {
-    //   body["oneOf"] = oneOf;
-    // } else {
-    //   body["oneOf"] = [];
-    // }
+    if (Object.keys(oneOf).length != 0) {
+      body["oneOf"] = oneOf;
+    } else {
+      body["oneOf"] = [];
+    }
 
-    // if (Object.keys(forbiddenIf).length != 0) {
-    //   body["forbiddenIf"] = forbiddenIf;
-    // } else {
-    //   body["forbiddenIf"] = [];
-    // }
+    if (Object.keys(forbiddenIf).length != 0) {
+      body["forbiddenIf"] = forbiddenIf;
+    } else {
+      body["forbiddenIf"] = [];
+    }
 
-    // if (Object.keys(requiredIf).length != 0) {
-    //   body["requiredIf"] = requiredIf;
-    // } else {
-    //   body["requiredIf"] = [];
-    // }
+    if (Object.keys(requiredIf).length != 0) {
+      body["requiredIf"] = requiredIf;
+    } else {
+      body["requiredIf"] = [];
+    }
 
-    // if (Object.keys(objectConfig).length != 0) {
-    //   body["objectConfig"] = objectConfig;
-    // } else {
-    //   body["objectConfig"] = [];
-    // }
+    if (Object.keys(objectConfig).length != 0) {
+      body["objectConfig"] = objectConfig;
+    } else {
+      body["objectConfig"] = [];
+    }
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
@@ -198,7 +198,6 @@ export default function AttributeForm({ id, entity }) {
 
     let url = context.adminUrl + "/attributes";
     let method = null;
-    console.log(url);
     if (id === "new") {
       method = "POST";
     } else {
@@ -602,7 +601,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="row mt-3">
-                      {/* <div className="col-12 col-sm-6 ">
+                      <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           {attribute !== null ? (
                             <>
@@ -620,7 +619,7 @@ export default function AttributeForm({ id, entity }) {
                               nameLabel={"Inversed By"} nameAttribute={"inversedBy"}/>
                           )}
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           {attribute !== null ? (
@@ -844,7 +843,7 @@ export default function AttributeForm({ id, entity }) {
                     {/*  )}*/}
                     {/*</Accordion>*/}
 
-                    {/* <Accordion id="attributeAccordion"
+                    <Accordion id="attributeAccordion"
                       items={[{
                         title: "Object Config",
                         id: "objectConfigAccordion",
@@ -1020,7 +1019,7 @@ export default function AttributeForm({ id, entity }) {
                           </>)
                         }
                       }
-                      ]} /> */}
+                      ]} />
                   </>
                 )}
               </div>

@@ -4,8 +4,8 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-export default function AttributeTable({ id }) {
-  const [attributes, setAttributes] = React.useState(null);
+export default function HandlerTable({ id }) {
+  const [handlers, setHandlers] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
@@ -17,14 +17,14 @@ export default function AttributeTable({ id }) {
       });
     } else {
       if (isLoggedIn()) {
-        getAttributes();
+        getHandlers();
       }
     }
   }, [context]);
 
-  const getAttributes = () => {
+  const getHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
+    fetch(`${context.adminUrl}/handlers?endpoint.id=${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -34,15 +34,15 @@ export default function AttributeTable({ id }) {
         if (response.ok) {
           return response.json();
         } else {
-          setAlert(null);
-          setAlert({ type: 'danger', message: response.statusText });
+          setShowSpinner(false);
+          setHandlers(null);
           throw new Error(response.statusText);
         }
       })
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data["hydra:member"]);
+        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
+          setHandlers(data["hydra:member"]);
         }
       })
       .catch((error) => {
@@ -61,7 +61,7 @@ export default function AttributeTable({ id }) {
       </FlashMessage>
     }
     <Card
-      title={"Attributes"}
+      title={"Handlers"}
       cardHeader={function () {
         return (
           <>
@@ -73,11 +73,11 @@ export default function AttributeTable({ id }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getAttributes}>
+            <a className="utrecht-link" onClick={getHandlers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${id}`}>
+            <Link to={`/handlers/new/${id}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -92,7 +92,7 @@ export default function AttributeTable({ id }) {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : attributes ? (
+              ) : handlers ? (
                 <Table
                   columns={[
                     {
@@ -100,15 +100,15 @@ export default function AttributeTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Type",
-                      field: "type",
+                      headerName: "Endpoint",
+                      field: "endpoint",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/attributes/${item.id}`}>
+                          <Link to={`/handlers/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -118,7 +118,7 @@ export default function AttributeTable({ id }) {
                       },
                     },
                   ]}
-                  rows={attributes}
+                  rows={handlers}
                 />
               ) : (
                 <Table
@@ -128,8 +128,8 @@ export default function AttributeTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Type",
-                      field: "type",
+                      headerName: "Endpoint",
+                      field: "endpoint",
                     },
                   ]}
                   rows={[]}
