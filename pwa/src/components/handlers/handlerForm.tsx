@@ -361,16 +361,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"mappingIn"}
                                                  label={"Mapping In"}
                                                  data={[{key: 'mappingIn', value: handler.mappingIn}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"mappingIn"}
                                                  label={"Mapping In"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -386,16 +382,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"mappingOut"}
                                                  label={"Mapping Out"}
                                                  data={[{key: 'mappingOut', value: `${handler.mappingOut}`}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"mappingOut"}
                                                  label={"Mapping Out"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)

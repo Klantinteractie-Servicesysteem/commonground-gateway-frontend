@@ -7,7 +7,6 @@ import {
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
-import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { isLoggedIn } from "../../services/auth";
 import { isJsxAttributes } from "typescript";
 import FlashMessage from 'react-flash-message';
@@ -37,6 +36,7 @@ export default function AttributeForm({ id, entity }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setAttribute(data);
       })
       .catch((error) => {
@@ -303,25 +303,6 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <br />
-                    <div className="row">
-                      <div className="col-6">
-                        {attributes !== null && isJsxAttributes.length > 0 && (
-                          <SelectInputComponent
-                            options={[{ name: "String", value: 'string' }, {
-                              name: "Array",
-                              value: "array"
-                            }, { name: "Integer", value: "integer" }, { name: "Boolean", value: "boolean" },
-                            { name: "Object", value: "object" }, { name: "Date", value: "date" }, {
-                              name: "Datetime",
-                              value: "datetime"
-                            }, { name: "Number", value: "number" }, { name: "Float", value: "float" }, {
-                              name: "File",
-                              value: "file"
-                            }]}
-                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute.type} required={true} />
-                        )}
-                      </div>
-                    </div>
                     <div className="row">
                       <div className="col-6">
                         {attribute !== null && attribute.type !== null ? (
@@ -854,16 +835,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={[{ key: 'objectConfig', value: attribute.objectConfig }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -879,16 +856,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"enum"}
                                 label={"Enum"}
                                 data={[{ key: 'enum', value: attribute.enum }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"enum"}
                                 label={"Enum"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -904,16 +877,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={[{ key: 'requiredIf', value: attribute.requiredIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -929,16 +898,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"forbiddenIf"}
                                 label={"Forbidden If"}
                                 data={[{ key: 'forbiddenIf', value: attribute.forbiddenIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"forbiddenIf"}
                                 label={"Forbidden If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -954,16 +919,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={[{ key: 'allOf', value: attribute.allOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -979,16 +940,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={[{ key: 'anyOf', value: attribute.anyOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -1004,16 +961,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={[{ key: 'oneOf', value: attribute.oneOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
