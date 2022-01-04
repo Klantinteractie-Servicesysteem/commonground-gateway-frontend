@@ -108,7 +108,7 @@ export default function AttributeTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/attributes/${item.id}`}>
+                          <Link to={`/attributes/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
