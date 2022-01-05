@@ -15,7 +15,6 @@ import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import { addElement, deleteElementFunction } from "../utility/elementCreation";
 import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import { getDefaultLibFilePath } from "typescript";
@@ -390,16 +389,12 @@ export default function EntityForm({ id }) {
                                     id={"transformations"}
                                     label={"Transformations"}
                                     data={entity.transformations}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                   />
                                 ) : (
                                   <MultiDimensionalArrayInput
                                     id={"transformations"}
                                     label={"Transformations"}
                                     data={null}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                   />
                                 )}
                               </>
@@ -417,16 +412,12 @@ export default function EntityForm({ id }) {
                                     id={"translationConfig"}
                                     label={"Translation Config"}
                                     data={entity.translationConfig}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                   />
                                 ) : (
                                   <MultiDimensionalArrayInput
                                     id={"translationConfig"}
                                     label={"Translation Config"}
                                     data={null}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                   />
                                 )}
                               </>
@@ -444,15 +435,11 @@ export default function EntityForm({ id }) {
                                     id={"collectionConfig"}
                                     data={entity.collectionConfig}
                                     label={"Collection Config"}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                   />
                                 ) : (
                                   <MultiDimensionalArrayInput
                                     id={"collectionConfig"}
                                     label={"Collection Config"}
-                                    deleteFunction={deleteElementFunction}
-                                    addFunction={addElement}
                                     data={null}
                                   />
                                 )}

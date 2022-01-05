@@ -6,9 +6,6 @@ import {
 } from "../utility/inputHandler";
 import Spinner from "../common/spinner";
 import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
-import { MultiDimensionalArrayInput } from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 
 export default function SoapForm({ id }) {

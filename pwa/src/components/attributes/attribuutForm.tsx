@@ -6,10 +6,18 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
-import { addElement, deleteElementFunction } from "../utility/elementCreation";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import { ArrayInputComponent } from "../common/arrayInput";
+import {
+  GenericInputComponent,
+  Checkbox,
+  SelectInputComponent,
+  Accordion,
+  Spinner,
+  Card,
+  Alert,
+} from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { isJsxAttributes } from "typescript";
 import FlashMessage from 'react-flash-message';
 
 export default function AttributeForm({ id, entity }) {
@@ -31,12 +39,14 @@ export default function AttributeForm({ id, entity }) {
   }, [context]);
 
   const getAttribute = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
         setAttribute(data);
       })
       .catch((error) => {
@@ -68,6 +78,7 @@ export default function AttributeForm({ id, entity }) {
 
   const saveAttribute = (event) => {
     event.preventDefault();
+    setShowSpinner(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
     let allOf = retrieveFormArrayAsObject(event.target, "allOf");
@@ -107,9 +118,9 @@ export default function AttributeForm({ id, entity }) {
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value)
         : null,
-      inversedBy: event.target.inversedBy.value
-        ? event.target.inversedBy.value
-        : null,
+      // inversedBy: event.target.inversedBy.value
+      //   ? event.target.inversedBy.value
+      //   : null,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value)
         : null,
@@ -214,9 +225,10 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (data.id !== undefined) {
-          navigate(`/entities/${entity}`);
-        }
+        setAttribute(data);
+        // if (data.id !== undefined) {
+        //   navigate(`/entities/${entity}`);
+        // }
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -225,33 +237,6 @@ export default function AttributeForm({ id, entity }) {
         setAlert({ type: 'danger', message: error.message });
       });
   };
-
-  const options = [
-    {
-      name: "String",
-      value: "string",
-    },
-    {
-      name: "Array",
-      value: "array",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-  ];
 
   return (<>
     {
@@ -305,25 +290,6 @@ export default function AttributeForm({ id, entity }) {
                     <br />
                     <div className="row">
                       <div className="col-6">
-                        {attributes !== null && isJsxAttributes.length > 0 && (
-                          <SelectInputComponent
-                            options={[{ name: "String", value: 'string' }, {
-                              name: "Array",
-                              value: "array"
-                            }, { name: "Integer", value: "integer" }, { name: "Boolean", value: "boolean" },
-                            { name: "Object", value: "object" }, { name: "Date", value: "date" }, {
-                              name: "Datetime",
-                              value: "datetime"
-                            }, { name: "Number", value: "number" }, { name: "Float", value: "float" }, {
-                              name: "File",
-                              value: "file"
-                            }]}
-                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute.type} required={true} />
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
                         {attribute !== null && attribute.type !== null ? (
                           <SelectInputComponent
                             options={[{ name: "String", value: 'string' }, {
@@ -355,58 +321,58 @@ export default function AttributeForm({ id, entity }) {
                               name={"type"} id={"typeInput"} nameOverride={"Type"} required={true} />
                           )}
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
-                        {
-                          attributes !== null && attributes.length > 0 ? (
-                            <>
-                              {attribute !== null &&
-                                attribute.inversedBy !== undefined &&
-                                attribute.inversedBy !== null ? (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  data={attribute.inversedBy}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
-                              ) : (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
-                              )}
-                            </>
-                          ) : (
-                            <SelectInputComponent
-                              options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
-                              name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
-                          )}
-                      </div>
                       <div className="col-6">
                         {attribute !== null && attribute.format !== null ? (
-                          <SelectInputComponent
-                            options={[{ name: "Email", value: 'email' }, {
-                              name: "Phone",
-                              value: 'phone'
-                            }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                            { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                              name: "Json",
-                              value: 'json'
-                            }]}
-                            name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
-                        ) :
+                            <SelectInputComponent
+                              options={[{ name: "Email", value: 'email' }, {
+                                name: "Phone",
+                                value: 'phone'
+                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
+                              name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
+                          ) :
                           (
                             <SelectInputComponent
                               options={[{ name: "Email", value: 'email' }, {
                                 name: "Phone",
                                 value: 'phone'
                               }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                              { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                                name: "Json",
-                                value: 'json'
-                              }]}
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
                               name={"format"} id={"formatInput"} nameOverride={"Format"} />
                           )}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        {/*{*/}
+                        {/*  attributes !== null && attributes.length > 0 ? (*/}
+                        {/*    <>*/}
+                        {/*      {attribute !== null &&*/}
+                        {/*        attribute.inversedBy !== undefined &&*/}
+                        {/*        attribute.inversedBy !== null ? (*/}
+                        {/*        <SelectInputComponent*/}
+                        {/*          options={attributes}*/}
+                        {/*          data={attribute.inversedBy}*/}
+                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
+                        {/*          value={"/admin/attributes/"} />*/}
+                        {/*      ) : (*/}
+                        {/*        <SelectInputComponent*/}
+                        {/*          options={attributes}*/}
+                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
+                        {/*          value={"/admin/attributes/"} />*/}
+                        {/*      )}*/}
+                        {/*    </>*/}
+                        {/*  ) : (*/}
+                        {/*    <SelectInputComponent*/}
+                        {/*      options={[{ name: "Please create a attribute to use inversedBy", value: null }]}*/}
+                        {/*      name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />*/}
+                        {/*  )}*/}
                       </div>
                     </div>
                     <div className="row mt-3">
@@ -854,16 +820,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={[{ key: 'objectConfig', value: attribute.objectConfig }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -875,20 +837,16 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.enum !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"enum"}
-                                label={"Enum"}
-                                data={[{ key: 'enum', value: attribute.enum }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
+                                <ArrayInputComponent
+                                  id={"enum"}
+                                  label={"Enum"}
+                                  data={attribute.enum}
+                                />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 id={"enum"}
                                 label={"Enum"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -904,16 +862,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={[{ key: 'requiredIf', value: attribute.requiredIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -929,16 +883,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"forbiddenIf"}
                                 label={"Forbidden If"}
                                 data={[{ key: 'forbiddenIf', value: attribute.forbiddenIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"forbiddenIf"}
                                 label={"Forbidden If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -954,16 +904,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={[{ key: 'allOf', value: attribute.allOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -979,16 +925,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={[{ key: 'anyOf', value: attribute.anyOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -1004,16 +946,12 @@ export default function AttributeForm({ id, entity }) {
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={[{ key: 'oneOf', value: attribute.oneOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)

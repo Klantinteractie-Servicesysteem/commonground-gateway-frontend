@@ -15,7 +15,6 @@ import {
   SelectInputComponent
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
-import {addElement, deleteElementFunction} from "../utility/elementCreation";
 import FlashMessage from 'react-flash-message';
 
 export default function SourceForm({id}) {
@@ -344,17 +343,13 @@ export default function SourceForm({id}) {
                                              <MultiDimensionalArrayInput
                                                id={"headers"}
                                                label={"Headers"}
-                                               // data={source.headers}
                                                data={[{key: "headers", value: source.headers}]}
-                                               deleteFunction={deleteElementFunction}
-                                               addFunction={addElement}/>
+                                             />
                                            ) : (
                                              <MultiDimensionalArrayInput
                                                id={"headers"}
                                                label={"Headers"}
                                                data={null}
-                                               deleteFunction={deleteElementFunction}
-                                               addFunction={addElement}
                                              />
                                            )}
                                          </>)
@@ -370,15 +365,12 @@ export default function SourceForm({id}) {
                                                  id={"oas"}
                                                  label={"OAS"}
                                                  data={[{key: 'oas', value: source.oas}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}/>
+                                               />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"oas"}
                                                  label={"oas"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -394,15 +386,12 @@ export default function SourceForm({id}) {
                                                  id={"paths"}
                                                  label={"paths"}
                                                  data={[{key: 'paths', value: source.paths}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}/>
+                                               />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"paths"}
                                                  label={"paths"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -418,15 +407,12 @@ export default function SourceForm({id}) {
                                                  id={"translationConfig"}
                                                  label={"translationConfig"}
                                                  data={[{key: 'translationConfig', value: source.translationConfig}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}/>
+                                               />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"translationConfig"}
                                                  label={"translationConfig"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)

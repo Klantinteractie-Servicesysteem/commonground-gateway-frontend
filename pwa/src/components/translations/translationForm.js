@@ -1,10 +1,6 @@
 import * as React from "react";
 import {
   GenericInputComponent,
-  Checkbox,
-  SelectInputComponent,
-  Accordion,
-  MultiDimensionalArrayInput,
   Card,
   Alert
 }
@@ -13,10 +9,7 @@ import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import { addElement, deleteElementFunction } from "../utility/elementCreation";
-import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import { getDefaultLibFilePath } from "typescript";
 
 export default function TranslationForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -117,7 +110,7 @@ export default function TranslationForm({ id }) {
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
     };
-    
+
     let url = context.adminUrl + "/translations";
     let method = null;
     if (id === "new") {

@@ -17,7 +17,6 @@ import {
   Alert,
   ArrayInputComponent
 } from "@conductionnl/nl-design-system/lib";
-import {addElement, deleteElementFunction} from "../utility/elementCreation";
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 
@@ -311,16 +310,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"translationIn"}
                                                  label={"Translation In"}
                                                  data={[{key: 'translationIn', value: handler.translationIn}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <ArrayInputComponent
                                                  id={"translationIn"}
                                                  label={"Translation In"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -336,16 +331,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"translationOut"}
                                                  label={"Translation Out"}
                                                  data={[{key: 'translationOut', value: handler.translationOut}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <ArrayInputComponent
                                                  id={"translationOut"}
                                                  label={"Translation Out"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -361,16 +352,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"mappingIn"}
                                                  label={"Mapping In"}
                                                  data={[{key: 'mappingIn', value: handler.mappingIn}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"mappingIn"}
                                                  label={"Mapping In"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
@@ -386,16 +373,12 @@ export default function HandlerForm({id, endpointId}) {
                                                  id={"mappingOut"}
                                                  label={"Mapping Out"}
                                                  data={[{key: 'mappingOut', value: `${handler.mappingOut}`}]}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              ) : (
                                                <MultiDimensionalArrayInput
                                                  id={"mappingOut"}
                                                  label={"Mapping Out"}
                                                  data={null}
-                                                 deleteFunction={deleteElementFunction}
-                                                 addFunction={addElement}
                                                />
                                              )}
                                            </>)
