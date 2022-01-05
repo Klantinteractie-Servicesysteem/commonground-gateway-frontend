@@ -4,20 +4,22 @@ import {
   Checkbox,
   SelectInputComponent,
   Accordion,
-  MultiDimensionalArrayInput,
   Card,
   Alert
 }
   from "@conductionnl/nl-design-system/lib";
-// import { ArrayInput }
-//   from "@conductionnl/nl-design-system/lib/ArrayInput/src/ArrayInput";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import { isLoggedIn } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import { retrieveFormArrayAsObject, retrieveFormArrayAsOArray, removeEmptyObjectValues, checkValues } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import { getDefaultLibFilePath } from "typescript";
+import {
+  checkValues,
+  removeEmptyObjectValues, retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject
+} from "../utility/inputHandler";
+import { ArrayInputComponent } from "../common/arrayInput";
 
 export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
@@ -50,13 +52,10 @@ export default function EntityForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        // console.log("get entity")
+        // console.log(data)
         setShowSpinner(false);
-        if (data.id !== undefined) {
-          setEntity(data);
-        } else if (data['hydra:description'] !== undefined) {
-          setAlert(null);
-          setAlert({ type: 'danger', message: data['hydra:description'] });
-        }
+        setEntity(data);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -112,66 +111,49 @@ export default function EntityForm({ id }) {
     event.preventDefault();
     setShowSpinner(true);
 
-    // retrieve arrays
-    // let transformations = retrieveFormArrayAsObject(
-    //   event.target,
-    //   "transformations"
-    // );
-    // let translationConfig = retrieveFormArrayAsObject(
-    //   event.target,
-    //   "translationConfig"
-    // );
-    // let collectionConfig = retrieveFormArrayAsObject(
-    //   event.target,
-    //   "collectionConfig"
-    // );
-
-    // let usedProperties = retrieveFormArrayAsOArray(
-    //   event.target,
-    //   "usedProperties"
-    // );
+    let transformations = retrieveFormArrayAsOArray(event.target, "transformations");
+    let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
+    let collectionConfig = retrieveFormArrayAsObject(event.target, "collectionConfig");
 
     let body = {
-      name: event.target.name ? event.target.name.value : null,
-      description: event.target.description ? event.target.description.value : null,
-      route: event.target.route ? event.target.route.value : null,
-      endpoint: event.target.endpoint ? event.target.endpoint.value : null,
-      gateway: event.target.gateway ? event.target.gateway.value : null,
-      extend: event.target.extend.checked ? true : false,
-      function: event.target.function ? event.target.function.value : null,
+      name: event.target.name.value,
+      description: event.target.description.value ? event.target.description.value : null,
+      route: event.target.route.value ? event.target.route.value : null,
+      endpoint: event.target.endpoint.value ? event.target.endpoint.value : null,
+      // gateway: event.target.gateway.value
+      //   ? event.target.gateway.value
+      //   : null,
+      extend: event.target.extend.checked,
+      function: event.target.function.value ? event.target.function.value : null,
     };
 
     // check arrays
-    // if (Object.keys(transformations).length != 0) {
-    //   body["transformations"] = transformations;
-    // } else {
-    //   body["transformations"] = [];
-    // }
+    if (transformations.length !== 0) {
+      body["transformations"] = transformations;
+    } else {
+      body["transformations"] = [];
+    }
 
-    // if (Object.keys(translationConfig).length != 0) {
-    //   body["translationConfig"] = translationConfig;
-    // } else {
-    //   body["translationConfig"] = [];
-    // }
+    if (translationConfig.length !== 0) {
+      body["translationConfig"] = translationConfig;
+    } else {
+      body["translationConfig"] = [];
+    }
 
-    // if (Object.keys(collectionConfig).length != 0) {
-    //   body["collectionConfig"] = collectionConfig;
-    // } else {
-    //   body["collectionConfig"] = [];
-    // }
-
-    // if (usedProperties.length != 0) {
-    //   body["usedProperties"] = usedProperties;
-    // } else {
-    //   body["usedProperties"] = [];
-    // }
+    if (Object.keys(collectionConfig).length !== 0) {
+      body["collectionConfig"] = collectionConfig;
+    } else {
+      body["collectionConfig"] = [];
+    }
 
     // This removes empty values from the body
-    // body = removeEmptyObjectValues(body);
+    body = removeEmptyObjectValues(body);
+    // console.log("body")
+    // console.log(body)
 
-    // if (!checkValues([body.name])) {
-    //   return;
-    // }
+    if (!checkValues([body.name])) {
+      return;
+    }
 
     let url = context.adminUrl + "/entities";
     let method = null;
@@ -190,14 +172,13 @@ export default function EntityForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        // console.log("save entity")
+        // console.log(data)
         setShowSpinner(false);
-        if (data.id !== undefined) {
-          setEntity(data);
-          navigate(`/entities`);
-        } else if (data['hydra:description'] !== undefined) {
-          setAlert(null);
-          setAlert({ type: 'danger', message: data['hydra:description'] });
-        }
+        setEntity(data);
+        // if (data.id !== undefined) {
+        //   navigate(`/entities`);
+        // }
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -241,25 +222,22 @@ export default function EntityForm({ id }) {
                   <>
                     <div className="row">
                       <div className="col-6">
-                        <div className="form-group">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={entity && entity.name && entity.name}
-                            nameOverride={"Name"}
-                            required={"true"} />
-                        </div>
+                        {entity !== null && entity.name !== null ? (
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
+                                                 nameOverride={"Name"} />
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                 nameOverride={"Name"} />
+                        )}
                       </div>
                       <div className="col-6">
-                        <div className="form-group">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={entity && entity.description && entity.description}
-                            nameOverride={"Description"} />
-                        </div>
+                        {entity !== null && entity.description !== null ? (
+                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                 data={entity.description} nameOverride={"Description"} />
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                 nameOverride={"Description"} />
+                        )}
                       </div>
                     </div>
                     <div className="row">
@@ -275,26 +253,54 @@ export default function EntityForm({ id }) {
                         </div>
                       </div>
                     </div>
-
                     <div className="row">
                       <div className="col-6">
-                        <div className="form-group">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"endpoint"}
-                            id={"endpointInput"}
-                            data={entity && entity.endpoint && entity.endpoint}
-                            nameOverride={"Endpoint"} />
-                        </div>
+                        {entity !== null && entity.endpoint !== null ? (
+                          <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"} data={entity.endpoint}
+                                                 nameOverride={"Endpoint"} />
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
+                                                 nameOverride={"Endpoint"} />
+                        )}
                       </div>
                       <div className="col-6">
+                        {entity !== null && entity.route !== null ? (
+                          <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
+                                                 data={entity.route} nameOverride={"Route"} />
+                        ) : (
+                          <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
+                                                 nameOverride={"Route"} />
+                        )}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12">
                         <div className="form-group">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"route"}
-                            id={"routeInput"}
-                            data={entity && entity.route && entity.route}
-                            nameOverride={"Route"} />
+                          {/*{*/}
+                          {/*  sources !== null && sources.length > 0 ? (*/}
+                          {/*    <>*/}
+                          {/*      {entity !== null &&*/}
+                          {/*        entity.gateway !== undefined &&*/}
+                          {/*        entity.gateway !== null ? (*/}
+                          {/*        <SelectInputComponent*/}
+                          {/*          options={sources}*/}
+                          {/*          data={entity.gateway}*/}
+                          {/*          valueOverride={entity.gateway.location}*/}
+                          {/*          name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}*/}
+                          {/*          value={"/admin/gateways/"} />*/}
+                          {/*      )*/}
+                          {/*        : (*/}
+                          {/*          <SelectInputComponent*/}
+                          {/*            options={sources}*/}
+                          {/*            name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}*/}
+                          {/*            value={"/admin/gateways/"} />*/}
+                          {/*        )}*/}
+                          {/*    </>*/}
+                          {/*  ) : (*/}
+                          {/*    <SelectInputComponent*/}
+                          {/*      options={[{ name: "Please create a Source before creating an Entity" }]}*/}
+                          {/*      name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} />*/}
+                          {/*  )}*/}
                         </div>
                       </div>
                     </div>
@@ -302,59 +308,33 @@ export default function EntityForm({ id }) {
                       <div className="col-12">
                         <div className="form-group">
                           {
-                            sources !== null && sources.length > 0 ? (
+                            soaps !== null && soaps.length > 0 ? (
                               <>
                                 {entity !== null &&
-                                  entity.gateway !== undefined &&
-                                  entity.gateway !== null ? (
-                                  <SelectInputComponent
-                                    options={sources}
-                                    data={entity.gateway}
-                                    name={"source"} id={"sourceInput"} nameOverride={"Source"}
-                                    value={"/admin/gateways/"} />
-                                )
+                                entity.toSoap !== undefined &&
+                                entity.toSoap !== null ? (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      data={entity.toSoap}
+                                      name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
+                                      value={"/admin/soaps/"} />
+                                  )
                                   : (
                                     <SelectInputComponent
                                       options={sources}
-                                      name={"source"} id={"sourceInput"} nameOverride={"Source"}
-                                      value={"/admin/gateways/"} />
+                                      name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
+                                      value={"/admin/soaps/"} />
                                   )}
                               </>
                             ) : (
                               <SelectInputComponent
-                                options={[{ name: "Please create a Source before creating an Entity" }]}
-                                name={"source"} id={"sourceInput"} nameOverride={"Source"} />
+                                options={[{ name: "Please create a soap first to use it", value: null}]}
+                                name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
+                              />
                             )}
                         </div>
                       </div>
                     </div>
-                    {
-                      soaps && soaps.length > 0 &&
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-group">
-                            {entity !== null &&
-                              entity.toSoap !== undefined &&
-                              entity.toSoap !== null ? (
-                              <SelectInputComponent
-                                options={soaps}
-                                data={entity.gateway}
-                                name={"toSoap"}
-                                id={"toSoapInput"}
-                                nameOverride={"toSoap"}
-                                value={"/admin/soaps/"} />
-                            ) : (
-                              <SelectInputComponent
-                                options={soaps}
-                                name={"toSoap"}
-                                id={"toSoapInput"}
-                                nameOverride={"toSoap"}
-                                value={"/admin/soaps/"} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    }
                     {/* FromSoap TODO */}
                     {/* <div className="row">
                       <div className="col-12">
@@ -366,12 +346,23 @@ export default function EntityForm({ id }) {
                     <div className="row">
                       <div className="col-12">
                         <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"extendInput"}
-                            nameLabel={"Extend"}
-                            nameAttribute={"extend"}
-                            data={entity && entity.extend && entity.extend} />
+                          {entity !== null ? (
+                            <>
+                              {entity.extend ? (
+                                <Checkbox type={"checkbox"} id={"extendInput"}
+                                          nameLabel={"Extend"} nameAttribute={"extend"}
+                                          data={entity.extend} />
+                              ) : (
+                                <Checkbox type={"checkbox"} id={"extendInput"}
+                                          nameLabel={"Extend"} nameAttribute={"extend"}
+                                          />
+                              )}
+                            </>
+                          ) : (
+                            <Checkbox type={"checkbox"} id={"extendInput"}
+                                      nameLabel={"Extend"} nameAttribute={"extend"}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -384,14 +375,14 @@ export default function EntityForm({ id }) {
                           render: function () {
                             return (
                               <>
-                                {entity !== null ? (
-                                  <MultiDimensionalArrayInput
+                                {entity !== null && entity.transformations !== null ? (
+                                  <ArrayInputComponent
                                     id={"transformations"}
                                     label={"Transformations"}
                                     data={entity.transformations}
                                   />
                                 ) : (
-                                  <MultiDimensionalArrayInput
+                                  <ArrayInputComponent
                                     id={"transformations"}
                                     label={"Transformations"}
                                     data={null}
@@ -407,14 +398,14 @@ export default function EntityForm({ id }) {
                           render: function () {
                             return (
                               <>
-                                {entity !== null ? (
-                                  <MultiDimensionalArrayInput
+                                {entity !== null && entity.translationConfig !== null ? (
+                                  <ArrayInputComponent
                                     id={"translationConfig"}
                                     label={"Translation Config"}
                                     data={entity.translationConfig}
                                   />
                                 ) : (
-                                  <MultiDimensionalArrayInput
+                                  <ArrayInputComponent
                                     id={"translationConfig"}
                                     label={"Translation Config"}
                                     data={null}
@@ -430,10 +421,11 @@ export default function EntityForm({ id }) {
                           render: function () {
                             return (
                               <>
-                                {entity !== null ? (
+                                {entity !== null && entity.collectionConfig !== null ? (
                                   <MultiDimensionalArrayInput
                                     id={"collectionConfig"}
-                                    data={entity.collectionConfig}
+                                    data={[{ key: 'collectionConfig', value: entity.collectionConfig }]}
+                                    // data={entity.collectionConfig}
                                     label={"Collection Config"}
                                   />
                                 ) : (
@@ -444,9 +436,9 @@ export default function EntityForm({ id }) {
                                   />
                                 )}
                               </>
-                            );
-                          },
-                        },
+                            )
+                          }
+                        }
                       ]}
                     />
                   </>
