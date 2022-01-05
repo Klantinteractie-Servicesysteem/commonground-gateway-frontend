@@ -32,8 +32,10 @@ export default function AttributeForm({ id, entity }) {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else if (isLoggedIn() && id !== 'new') {
-      getAttribute();
+    } else if (isLoggedIn()) {
+      if (id !== 'new') {
+        getAttribute();
+      }
       getAttributes();
     }
   }, [context]);
@@ -65,7 +67,7 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data);
+          setAttributes(data['hydra:member']);
         }
       })
       .catch((error) => {
@@ -81,10 +83,10 @@ export default function AttributeForm({ id, entity }) {
     setShowSpinner(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
-    let allOf = retrieveFormArrayAsObject(event.target, "allOf");
-    let anyOf = retrieveFormArrayAsObject(event.target, "anyOf");
-    let oneOf = retrieveFormArrayAsObject(event.target, "oneOf");
-    let forbiddenIf = retrieveFormArrayAsObject(event.target, "forbiddenIf");
+    let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
+    let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
+    let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
+    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
@@ -118,9 +120,9 @@ export default function AttributeForm({ id, entity }) {
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value)
         : null,
-      // inversedBy: event.target.inversedBy.value
-      //   ? event.target.inversedBy.value
-      //   : null,
+      inversedBy: event.target.inversedBy.value
+        ? event.target.inversedBy.value
+        : null,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value)
         : null,
@@ -155,43 +157,43 @@ export default function AttributeForm({ id, entity }) {
         : null,
     };
 
-    if (attributeEnum.length != 0) {
+    if (attributeEnum.length !== 0) {
       body["enum"] = attributeEnum;
     } else {
       body["enum"] = [];
     }
 
-    if (Object.keys(allOf).length != 0) {
+    if (allOf.length !== 0) {
       body["allOf"] = allOf;
     } else {
       body["allOf"] = [];
     }
 
-    if (Object.keys(anyOf).length != 0) {
+    if (anyOf.length !== 0) {
       body["anyOf"] = anyOf;
     } else {
       body["anyOf"] = [];
     }
 
-    if (Object.keys(oneOf).length != 0) {
+    if (oneOf.length !== 0) {
       body["oneOf"] = oneOf;
     } else {
       body["oneOf"] = [];
     }
 
-    if (Object.keys(forbiddenIf).length != 0) {
+    if (forbiddenIf.length !== 0) {
       body["forbiddenIf"] = forbiddenIf;
     } else {
       body["forbiddenIf"] = [];
     }
 
-    if (Object.keys(requiredIf).length != 0) {
+    if (Object.keys(requiredIf).length !== 0) {
       body["requiredIf"] = requiredIf;
     } else {
       body["requiredIf"] = [];
     }
 
-    if (Object.keys(objectConfig).length != 0) {
+    if (Object.keys(objectConfig).length !== 0) {
       body["objectConfig"] = objectConfig;
     } else {
       body["objectConfig"] = [];
@@ -207,7 +209,7 @@ export default function AttributeForm({ id, entity }) {
       return;
     }
 
-    let url = context.adminUrl + "/attributes";
+    let url = `${context.adminUrl}/attributes`
     let method = null;
     if (id === "new") {
       method = "POST";
@@ -350,29 +352,29 @@ export default function AttributeForm({ id, entity }) {
                     </div>
                     <div className="row">
                       <div className="col-6">
-                        {/*{*/}
-                        {/*  attributes !== null && attributes.length > 0 ? (*/}
-                        {/*    <>*/}
-                        {/*      {attribute !== null &&*/}
-                        {/*        attribute.inversedBy !== undefined &&*/}
-                        {/*        attribute.inversedBy !== null ? (*/}
-                        {/*        <SelectInputComponent*/}
-                        {/*          options={attributes}*/}
-                        {/*          data={attribute.inversedBy}*/}
-                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
-                        {/*          value={"/admin/attributes/"} />*/}
-                        {/*      ) : (*/}
-                        {/*        <SelectInputComponent*/}
-                        {/*          options={attributes}*/}
-                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
-                        {/*          value={"/admin/attributes/"} />*/}
-                        {/*      )}*/}
-                        {/*    </>*/}
-                        {/*  ) : (*/}
-                        {/*    <SelectInputComponent*/}
-                        {/*      options={[{ name: "Please create a attribute to use inversedBy", value: null }]}*/}
-                        {/*      name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />*/}
-                        {/*  )}*/}
+                        {
+                          attributes !== null && attributes.length > 0 ? (
+                            <>
+                              {attribute !== null &&
+                                attribute.inversedBy !== undefined &&
+                                attribute.inversedBy !== null ? (
+                                <SelectInputComponent
+                                  options={attributes}
+                                  data={attribute.inversedBy.name}
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                  value={"/admin/attributes/"} />
+                              ) : (
+                                <SelectInputComponent
+                                  options={attributes}
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                  value={"/admin/attributes/"} />
+                              )}
+                            </>
+                          ) : (
+                            <SelectInputComponent
+                              options={[{ name: "Please create a attribute to use inversedBy", value: null}]}
+                              name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
+                          )}
                       </div>
                     </div>
                     <div className="row mt-3">
@@ -421,16 +423,16 @@ export default function AttributeForm({ id, entity }) {
                           {attribute !== null ? (
                             <>
                               {attribute.exclusiveMinimum ? (
-                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                                   nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"}
                                   data={attribute.exclusiveMinimum} />
                               ) : (
-                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                                   nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                               )}
                             </>
                           ) : (
-                            <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                            <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                               nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                           )}
                         </div>
@@ -878,15 +880,15 @@ export default function AttributeForm({ id, entity }) {
                         id: "forbiddenIfAccordion",
                         render: function () {
                           return (<>
-                            {attribute !== null && attribute.forbiddenIf !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"forbiddenIf"}
+                            {attribute !== null && attribute.forbidenIf !== null ? (
+                              <ArrayInputComponent
+                                id={"forbidenIf"}
                                 label={"Forbidden If"}
-                                data={[{ key: 'forbiddenIf', value: attribute.forbiddenIf }]}
+                                data={attribute.forbidenIf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
-                                id={"forbiddenIf"}
+                              <ArrayInputComponent
+                                id={"forbidenIf"}
                                 label={"Forbidden If"}
                                 data={null}
                               />
@@ -900,13 +902,13 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.allOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"All Of"}
                                 id={"allOf"}
-                                data={[{ key: 'allOf', value: attribute.allOf }]}
+                                data={attribute.allOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={null}
@@ -921,13 +923,13 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.anyOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"Any Of"}
                                 id={"anyOf"}
-                                data={[{ key: 'anyOf', value: attribute.anyOf }]}
+                                data={attribute.anyOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={null}
@@ -942,13 +944,13 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.oneOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"One Of"}
                                 id={"oneOf"}
-                                data={[{ key: 'oneOf', value: attribute.oneOf }]}
+                                data={attribute.oneOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={null}
