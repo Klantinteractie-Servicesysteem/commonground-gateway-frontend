@@ -23,7 +23,8 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
       <div id={`new${_.upperFirst(props.id)}`}>
         {props.data !== undefined &&
         props.data !== null &&
-        Object.entries(props.data).map(([key, value]) => {
+        props.data.map((item) => (
+          item.value && Object.entries(item.value).map(([key, value]) => {
               return (
                 <>
                   <div key={value} className={`row ${key}`}>
@@ -54,7 +55,7 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
                   </div>
                 </>
               );
-            })}
+            })))}
       </div>
       <br />
       <div className="separator-solid" />

@@ -111,9 +111,9 @@ export default function AttributeForm({ id, entity }) {
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value)
         : null,
-      inversedBy: event.target.inversedBy.value
-        ? event.target.inversedBy.value
-        : null,
+      // inversedBy: event.target.inversedBy.value
+      //   ? event.target.inversedBy.value
+      //   : null,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value)
         : null,
@@ -343,29 +343,29 @@ export default function AttributeForm({ id, entity }) {
                     </div>
                     <div className="row">
                       <div className="col-6">
-                        {
-                          attributes !== null && attributes.length > 0 ? (
-                            <>
-                              {attribute !== null &&
-                                attribute.inversedBy !== undefined &&
-                                attribute.inversedBy !== null ? (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  data={attribute.inversedBy}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
-                              ) : (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
-                              )}
-                            </>
-                          ) : (
-                            <SelectInputComponent
-                              options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
-                              name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
-                          )}
+                        {/*{*/}
+                        {/*  attributes !== null && attributes.length > 0 ? (*/}
+                        {/*    <>*/}
+                        {/*      {attribute !== null &&*/}
+                        {/*        attribute.inversedBy !== undefined &&*/}
+                        {/*        attribute.inversedBy !== null ? (*/}
+                        {/*        <SelectInputComponent*/}
+                        {/*          options={attributes}*/}
+                        {/*          data={attribute.inversedBy}*/}
+                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
+                        {/*          value={"/admin/attributes/"} />*/}
+                        {/*      ) : (*/}
+                        {/*        <SelectInputComponent*/}
+                        {/*          options={attributes}*/}
+                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
+                        {/*          value={"/admin/attributes/"} />*/}
+                        {/*      )}*/}
+                        {/*    </>*/}
+                        {/*  ) : (*/}
+                        {/*    <SelectInputComponent*/}
+                        {/*      options={[{ name: "Please create a attribute to use inversedBy", value: null }]}*/}
+                        {/*      name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />*/}
+                        {/*  )}*/}
                       </div>
                     </div>
                     <div className="row mt-3">
@@ -812,7 +812,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
-                                data={{ key: 'objectConfig', value: attribute.objectConfig }}
+                                data={[{ key: 'objectConfig', value: attribute.objectConfig }]}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
@@ -833,7 +833,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"enum"}
                                 label={"Enum"}
-                                data={{ key: 'enum', value: attribute.enum }}
+                                data={[{ key: 'enum', value: attribute.enum }]}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
