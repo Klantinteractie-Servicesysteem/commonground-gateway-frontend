@@ -6,7 +6,8 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, MultiDimensionalArrayInput, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
+import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { isJsxAttributes } from "typescript";
 import FlashMessage from 'react-flash-message';
@@ -213,6 +214,7 @@ export default function AttributeForm({ id, entity }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setShowSpinner(false);
         if (data.id !== undefined) {
           navigate(`/entities/${entity}`);
@@ -225,33 +227,6 @@ export default function AttributeForm({ id, entity }) {
         setAlert({ type: 'danger', message: error.message });
       });
   };
-
-  const options = [
-    {
-      name: "String",
-      value: "string",
-    },
-    {
-      name: "Array",
-      value: "array",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-  ];
 
   return (<>
     {
@@ -336,6 +311,32 @@ export default function AttributeForm({ id, entity }) {
                               name={"type"} id={"typeInput"} nameOverride={"Type"} required={true} />
                           )}
                       </div>
+                      <div className="col-6">
+                        {attribute !== null && attribute.format !== null ? (
+                            <SelectInputComponent
+                              options={[{ name: "Email", value: 'email' }, {
+                                name: "Phone",
+                                value: 'phone'
+                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
+                              name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
+                          ) :
+                          (
+                            <SelectInputComponent
+                              options={[{ name: "Email", value: 'email' }, {
+                                name: "Phone",
+                                value: 'phone'
+                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
+                              name={"format"} id={"formatInput"} nameOverride={"Format"} />
+                          )}
+                      </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
@@ -361,32 +362,6 @@ export default function AttributeForm({ id, entity }) {
                             <SelectInputComponent
                               options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
                               name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
-                          )}
-                      </div>
-                      <div className="col-6">
-                        {attribute !== null && attribute.format !== null ? (
-                          <SelectInputComponent
-                            options={[{ name: "Email", value: 'email' }, {
-                              name: "Phone",
-                              value: 'phone'
-                            }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                            { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                              name: "Json",
-                              value: 'json'
-                            }]}
-                            name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
-                        ) :
-                          (
-                            <SelectInputComponent
-                              options={[{ name: "Email", value: 'email' }, {
-                                name: "Phone",
-                                value: 'phone'
-                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                              { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                                name: "Json",
-                                value: 'json'
-                              }]}
-                              name={"format"} id={"formatInput"} nameOverride={"Format"} />
                           )}
                       </div>
                     </div>
@@ -834,7 +809,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
-                                data={[{ key: 'objectConfig', value: attribute.objectConfig }]}
+                                data={{ key: 'objectConfig', value: attribute.objectConfig }}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
@@ -855,7 +830,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"enum"}
                                 label={"Enum"}
-                                data={[{ key: 'enum', value: attribute.enum }]}
+                                data={{ key: 'enum', value: attribute.enum }}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
