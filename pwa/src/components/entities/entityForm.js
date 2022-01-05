@@ -111,7 +111,9 @@ export default function EntityForm({ id }) {
 
     let transformations = retrieveFormArrayAsOArray(event.target, "transformations");
     let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
-    let collectionConfig = retrieveFormArrayAsObject(event.target, "collectionConfig");
+    let usedProperties = retrieveFormArrayAsOArray(event.target, "usedProperties");
+    let availableProperties = retrieveFormArrayAsOArray(event.target, "availableProperties");
+    let collectionConfig = retrieveFormArrayAsOArray(event.target, "collectionConfig");
 
     let body = {
       name: event.target.name.value,
@@ -138,7 +140,19 @@ export default function EntityForm({ id }) {
       body["translationConfig"] = [];
     }
 
-    if (Object.keys(collectionConfig).length !== 0) {
+    if (usedProperties.length !== 0) {
+      body["usedProperties"] = usedProperties;
+    } else {
+      body["usedProperties"] = [];
+    }
+
+    if (availableProperties.length !== 0) {
+      body["availableProperties"] = availableProperties;
+    } else {
+      body["availableProperties"] = [];
+    }
+
+    if (collectionConfig.length !== 0) {
       body["collectionConfig"] = collectionConfig;
     } else {
       body["collectionConfig"] = [];
@@ -268,7 +282,7 @@ export default function EntityForm({ id }) {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-12">
+                      <div className="col-6">
                         <div className="form-group">
                           {
                             sources !== null && sources.length > 0 ? (
@@ -296,9 +310,7 @@ export default function EntityForm({ id }) {
                             )}
                         </div>
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
+                      <div className="col-6">
                         <div className="form-group">
                           {
                             soaps !== null && soaps.length > 0 ? (
@@ -415,14 +427,13 @@ export default function EntityForm({ id }) {
                             return (
                               <>
                                 {entity !== null && entity.collectionConfig !== null ? (
-                                  <MultiDimensionalArrayInput
+                                  <ArrayInputComponent
                                     id={"collectionConfig"}
-                                    data={[{ key: 'collectionConfig', value: entity.collectionConfig }]}
-                                    // data={entity.collectionConfig}
+                                    data={entity.collectionConfig}
                                     label={"Collection Config"}
                                   />
                                 ) : (
-                                  <MultiDimensionalArrayInput
+                                  <ArrayInputComponent
                                     id={"collectionConfig"}
                                     label={"Collection Config"}
                                     data={null}
@@ -431,6 +442,52 @@ export default function EntityForm({ id }) {
                               </>
                             )
                           }
+                        },
+                        {
+                          title: "Used Properties",
+                          id: "usedPropertiesAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                {entity !== null && entity.usedProperties !== null ? (
+                                  <ArrayInputComponent
+                                    id={"usedProperties"}
+                                    label={"Used Properties"}
+                                    data={entity.usedProperties}
+                                  />
+                                ) : (
+                                  <ArrayInputComponent
+                                    id={"usedProperties"}
+                                    label={"Used Properties"}
+                                    data={null}
+                                  />
+                                )}
+                              </>
+                            );
+                          },
+                        },
+                        {
+                          title: "Available Properties",
+                          id: "availablePropertiesAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                {entity !== null && entity.availableProperties !== null ? (
+                                  <ArrayInputComponent
+                                    id={"availableProperties"}
+                                    label={"Available Properties"}
+                                    data={entity.availableProperties}
+                                  />
+                                ) : (
+                                  <ArrayInputComponent
+                                    id={"availableProperties"}
+                                    label={"Available Properties"}
+                                    data={null}
+                                  />
+                                )}
+                              </>
+                            );
+                          },
                         }
                       ]}
                     />
