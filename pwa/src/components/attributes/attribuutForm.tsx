@@ -32,8 +32,10 @@ export default function AttributeForm({ id, entity }) {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    } else if (isLoggedIn() && id !== 'new') {
-      getAttribute();
+    } else if (isLoggedIn()) {
+      if (id !== 'new') {
+        getAttribute();
+      }
       getAttributes();
     }
   }, [context]);
@@ -65,7 +67,7 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data);
+          setAttributes(data['hydra:member']);
         }
       })
       .catch((error) => {
@@ -118,9 +120,9 @@ export default function AttributeForm({ id, entity }) {
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value)
         : null,
-      // inversedBy: event.target.inversedBy.value
-      //   ? event.target.inversedBy.value
-      //   : null,
+      inversedBy: event.target.inversedBy.value
+        ? event.target.inversedBy.value
+        : null,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value)
         : null,
@@ -350,29 +352,29 @@ export default function AttributeForm({ id, entity }) {
                     </div>
                     <div className="row">
                       <div className="col-6">
-                        {/*{*/}
-                        {/*  attributes !== null && attributes.length > 0 ? (*/}
-                        {/*    <>*/}
-                        {/*      {attribute !== null &&*/}
-                        {/*        attribute.inversedBy !== undefined &&*/}
-                        {/*        attribute.inversedBy !== null ? (*/}
-                        {/*        <SelectInputComponent*/}
-                        {/*          options={attributes}*/}
-                        {/*          data={attribute.inversedBy}*/}
-                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
-                        {/*          value={"/admin/attributes/"} />*/}
-                        {/*      ) : (*/}
-                        {/*        <SelectInputComponent*/}
-                        {/*          options={attributes}*/}
-                        {/*          name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}*/}
-                        {/*          value={"/admin/attributes/"} />*/}
-                        {/*      )}*/}
-                        {/*    </>*/}
-                        {/*  ) : (*/}
-                        {/*    <SelectInputComponent*/}
-                        {/*      options={[{ name: "Please create a attribute to use inversedBy", value: null }]}*/}
-                        {/*      name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />*/}
-                        {/*  )}*/}
+                        {
+                          attributes !== null && attributes.length > 0 ? (
+                            <>
+                              {attribute !== null &&
+                                attribute.inversedBy !== undefined &&
+                                attribute.inversedBy !== null ? (
+                                <SelectInputComponent
+                                  options={attributes}
+                                  data={attribute.inversedBy}
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                  value={"/admin/attributes/"} />
+                              ) : (
+                                <SelectInputComponent
+                                  options={attributes}
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                  value={"/admin/attributes/"} />
+                              )}
+                            </>
+                          ) : (
+                            <SelectInputComponent
+                              options={[{ name: "Please create a attribute to use inversedBy"}]}
+                              name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
+                          )}
                       </div>
                     </div>
                     <div className="row mt-3">
