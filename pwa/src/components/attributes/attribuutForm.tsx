@@ -6,10 +6,18 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
-import { GenericInputComponent, Checkbox, SelectInputComponent, Accordion, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import { ArrayInputComponent } from "../common/arrayInput";
+import {
+  GenericInputComponent,
+  Checkbox,
+  SelectInputComponent,
+  Accordion,
+  Spinner,
+  Card,
+  Alert,
+} from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { isJsxAttributes } from "typescript";
 import FlashMessage from 'react-flash-message';
 
 export default function AttributeForm({ id, entity }) {
@@ -39,7 +47,6 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        console.log(data)
         setAttribute(data);
       })
       .catch((error) => {
@@ -830,13 +837,13 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.enum !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"enum"}
-                                label={"Enum"}
-                                data={[{ key: 'enum', value: attribute.enum }]}
-                              />
+                                <ArrayInputComponent
+                                  id={"enum"}
+                                  label={"Enum"}
+                                  data={attribute.enum}
+                                />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 id={"enum"}
                                 label={"Enum"}
                                 data={null}

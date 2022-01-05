@@ -25,21 +25,21 @@ export function ArrayInputComponent(props: ArrayInputProps) {
         {props.data !== undefined &&
           props.data !== null &&
           props.data.map((item) => (
-            <div key={item.value} className={`row ${item.value}`}>
+            <div key={item} className={`row ${item}`}>
               <div className="col-5">
                 <div className="form-group">
                   <input
                     type="text"
                     id="value"
-                    name={`${props.id}[${item.value}]`}
-                    defaultValue={item.value}
+                    name={`${props.id}[${item}]`}
+                    defaultValue={item}
                     className="utrecht-textbox utrecht-textbox--html-input mb-2"
                   />
                 </div>
               </div>
               <div className="col-2 d-flex mt-auto mb-4">
                 <button
-                  value={item.value}
+                  value={item}
                   onClick={deleteElementFunction}
                   type="button"
                   className="utrecht-button utrecht-button-sm btn-sm btn-danger"
