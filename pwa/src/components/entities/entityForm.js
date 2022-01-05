@@ -52,8 +52,6 @@ export default function EntityForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("get entity")
-        // console.log(data)
         setShowSpinner(false);
         setEntity(data);
       })
@@ -120,9 +118,9 @@ export default function EntityForm({ id }) {
       description: event.target.description.value ? event.target.description.value : null,
       route: event.target.route.value ? event.target.route.value : null,
       endpoint: event.target.endpoint.value ? event.target.endpoint.value : null,
-      // gateway: event.target.gateway.value
-      //   ? event.target.gateway.value
-      //   : null,
+      gateway: event.target.gateway.value
+        ? event.target.gateway.value
+        : null,
       extend: event.target.extend.checked,
       function: event.target.function.value ? event.target.function.value : null,
     };
@@ -148,8 +146,6 @@ export default function EntityForm({ id }) {
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
-    // console.log("body")
-    // console.log(body)
 
     if (!checkValues([body.name])) {
       return;
@@ -172,8 +168,6 @@ export default function EntityForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("save entity")
-        // console.log(data)
         setShowSpinner(false);
         setEntity(data);
         // if (data.id !== undefined) {
@@ -276,31 +270,30 @@ export default function EntityForm({ id }) {
                     <div className="row">
                       <div className="col-12">
                         <div className="form-group">
-                          {/*{*/}
-                          {/*  sources !== null && sources.length > 0 ? (*/}
-                          {/*    <>*/}
-                          {/*      {entity !== null &&*/}
-                          {/*        entity.gateway !== undefined &&*/}
-                          {/*        entity.gateway !== null ? (*/}
-                          {/*        <SelectInputComponent*/}
-                          {/*          options={sources}*/}
-                          {/*          data={entity.gateway}*/}
-                          {/*          valueOverride={entity.gateway.location}*/}
-                          {/*          name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}*/}
-                          {/*          value={"/admin/gateways/"} />*/}
-                          {/*      )*/}
-                          {/*        : (*/}
-                          {/*          <SelectInputComponent*/}
-                          {/*            options={sources}*/}
-                          {/*            name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}*/}
-                          {/*            value={"/admin/gateways/"} />*/}
-                          {/*        )}*/}
-                          {/*    </>*/}
-                          {/*  ) : (*/}
-                          {/*    <SelectInputComponent*/}
-                          {/*      options={[{ name: "Please create a Source before creating an Entity" }]}*/}
-                          {/*      name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} />*/}
-                          {/*  )}*/}
+                          {
+                            sources !== null && sources.length > 0 ? (
+                              <>
+                                {entity !== null &&
+                                  entity.gateway !== undefined &&
+                                  entity.gateway !== null ? (
+                                  <SelectInputComponent
+                                    options={sources}
+                                    data={entity.gateway.name}
+                                    name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}
+                                    value={"/admin/gateways/"} />
+                                )
+                                  : (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}
+                                      value={"/admin/gateways/"} />
+                                  )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                options={[{ name: "Please create a Source before creating an Entity", value: null }]}
+                                name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} />
+                            )}
                         </div>
                       </div>
                     </div>
@@ -315,7 +308,7 @@ export default function EntityForm({ id }) {
                                 entity.toSoap !== null ? (
                                     <SelectInputComponent
                                       options={sources}
-                                      data={entity.toSoap}
+                                      data={entity.toSoap.name}
                                       name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
                                       value={"/admin/soaps/"} />
                                   )
