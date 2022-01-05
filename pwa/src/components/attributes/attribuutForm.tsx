@@ -209,7 +209,7 @@ export default function AttributeForm({ id, entity }) {
       return;
     }
 
-    let url = context.adminUrl + "/attributes";
+    let url = `${context.adminUrl}/attributes`
     let method = null;
     if (id === "new") {
       method = "POST";
