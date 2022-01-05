@@ -31,12 +31,14 @@ export default function AttributeForm({ id, entity }) {
   }, [context]);
 
   const getAttribute = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
         console.log(data)
         setAttribute(data);
       })
@@ -69,6 +71,7 @@ export default function AttributeForm({ id, entity }) {
 
   const saveAttribute = (event) => {
     event.preventDefault();
+    setShowSpinner(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
     let allOf = retrieveFormArrayAsObject(event.target, "allOf");
@@ -214,11 +217,11 @@ export default function AttributeForm({ id, entity }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setShowSpinner(false);
-        if (data.id !== undefined) {
-          navigate(`/entities/${entity}`);
-        }
+        setAttribute(data);
+        // if (data.id !== undefined) {
+        //   navigate(`/entities/${entity}`);
+        // }
       })
       .catch((error) => {
         setShowSpinner(false);
