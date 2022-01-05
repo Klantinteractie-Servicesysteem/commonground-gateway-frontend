@@ -157,43 +157,43 @@ export default function AttributeForm({ id, entity }) {
         : null,
     };
 
-    if (attributeEnum.length != 0) {
+    if (attributeEnum.length !== 0) {
       body["enum"] = attributeEnum;
     } else {
       body["enum"] = [];
     }
 
-    if (Object.keys(allOf).length != 0) {
+    if (Object.keys(allOf).length !== 0) {
       body["allOf"] = allOf;
     } else {
       body["allOf"] = [];
     }
 
-    if (Object.keys(anyOf).length != 0) {
+    if (Object.keys(anyOf).length !== 0) {
       body["anyOf"] = anyOf;
     } else {
       body["anyOf"] = [];
     }
 
-    if (Object.keys(oneOf).length != 0) {
+    if (Object.keys(oneOf).length !== 0) {
       body["oneOf"] = oneOf;
     } else {
       body["oneOf"] = [];
     }
 
-    if (Object.keys(forbiddenIf).length != 0) {
+    if (Object.keys(forbiddenIf).length !== 0) {
       body["forbiddenIf"] = forbiddenIf;
     } else {
       body["forbiddenIf"] = [];
     }
 
-    if (Object.keys(requiredIf).length != 0) {
+    if (Object.keys(requiredIf).length !== 0) {
       body["requiredIf"] = requiredIf;
     } else {
       body["requiredIf"] = [];
     }
 
-    if (Object.keys(objectConfig).length != 0) {
+    if (Object.keys(objectConfig).length !== 0) {
       body["objectConfig"] = objectConfig;
     } else {
       body["objectConfig"] = [];
