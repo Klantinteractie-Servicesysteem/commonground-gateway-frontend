@@ -6,49 +6,56 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import {Checkbox} from "@conductionnl/nl-design-system/lib/Checkbox/src/checkbox";
-import { SelectInputComponent } from "@conductionnl/nl-design-system/lib/SelectInput/src/selectInput";
-import { Accordion } from "@conductionnl/nl-design-system/lib/Accordion/src/accordion";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import { ArrayInputComponent } from "../common/arrayInput";
 import {
-  MultiDimensionalArrayInput
-} from "@conductionnl/nl-design-system/lib/MultiDimenionalArrayInput/src/multiDimensionalArrayInput";
-import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
-import { addElement, deleteElementFunction } from "../utility/elementCreation";
+  GenericInputComponent,
+  Checkbox,
+  SelectInputComponent,
+  Accordion,
+  Spinner,
+  Card,
+  Alert,
+} from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { isJsxAttributes } from "typescript";
+import FlashMessage from 'react-flash-message';
 
 export default function AttributeForm({ id, entity }) {
   const [context, setContext] = React.useState(null);
   const [attribute, setAttribute] = React.useState(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
-  React.useEffect(() => {
-    if (id !== "new") {
-      getAttribute();
-    }
-  }, []);
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: window['GATSBY_ADMIN_URL']
       });
-    } else if (isLoggedIn() && id !== 'new') {
-      getAttribute();
+    } else if (isLoggedIn()) {
+      if (id !== 'new') {
+        getAttribute();
+      }
       getAttributes();
     }
   }, [context]);
 
   const getAttribute = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
         setAttribute(data);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -60,21 +67,28 @@ export default function AttributeForm({ id, entity }) {
       .then((response) => response.json())
       .then((data) => {
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data);
+          setAttributes(data['hydra:member']);
         }
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
   const saveAttribute = (event) => {
     event.preventDefault();
+    setShowSpinner(true);
 
-    // let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
-    // let allOf = retrieveFormArrayAsObject(event.target, "allOf");
-    // let anyOf = retrieveFormArrayAsObject(event.target, "anyOf");
-    // let oneOf = retrieveFormArrayAsObject(event.target, "oneOf");
-    // let forbiddenIf = retrieveFormArrayAsObject(event.target, "forbiddenIf");
-    // let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
-    // let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
+    let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
+    let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
+    let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
+    let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
+    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
+    let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
+    let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
     // get the inputs and check if set other set null
 
@@ -143,47 +157,47 @@ export default function AttributeForm({ id, entity }) {
         : null,
     };
 
-    // if (attributeEnum.length != 0) {
-    //   body["enum"] = attributeEnum;
-    // } else {
-    //   body["enum"] = [];
-    // }
+    if (attributeEnum.length !== 0) {
+      body["enum"] = attributeEnum;
+    } else {
+      body["enum"] = [];
+    }
 
-    // if (Object.keys(allOf).length != 0) {
-    //   body["allOf"] = allOf;
-    // } else {
-    //   body["allOf"] = [];
-    // }
+    if (allOf.length !== 0) {
+      body["allOf"] = allOf;
+    } else {
+      body["allOf"] = [];
+    }
 
-    // if (Object.keys(anyOf).length != 0) {
-    //   body["anyOf"] = anyOf;
-    // } else {
-    //   body["anyOf"] = [];
-    // }
+    if (anyOf.length !== 0) {
+      body["anyOf"] = anyOf;
+    } else {
+      body["anyOf"] = [];
+    }
 
-    // if (Object.keys(oneOf).length != 0) {
-    //   body["oneOf"] = oneOf;
-    // } else {
-    //   body["oneOf"] = [];
-    // }
+    if (oneOf.length !== 0) {
+      body["oneOf"] = oneOf;
+    } else {
+      body["oneOf"] = [];
+    }
 
-    // if (Object.keys(forbiddenIf).length != 0) {
-    //   body["forbiddenIf"] = forbiddenIf;
-    // } else {
-    //   body["forbiddenIf"] = [];
-    // }
+    if (forbiddenIf.length !== 0) {
+      body["forbiddenIf"] = forbiddenIf;
+    } else {
+      body["forbiddenIf"] = [];
+    }
 
-    // if (Object.keys(requiredIf).length != 0) {
-    //   body["requiredIf"] = requiredIf;
-    // } else {
-    //   body["requiredIf"] = [];
-    // }
+    if (Object.keys(requiredIf).length !== 0) {
+      body["requiredIf"] = requiredIf;
+    } else {
+      body["requiredIf"] = [];
+    }
 
-    // if (Object.keys(objectConfig).length != 0) {
-    //   body["objectConfig"] = objectConfig;
-    // } else {
-    //   body["objectConfig"] = [];
-    // }
+    if (Object.keys(objectConfig).length !== 0) {
+      body["objectConfig"] = objectConfig;
+    } else {
+      body["objectConfig"] = [];
+    }
 
     // This removes empty values from the body
     // body = removeEmptyObjectValues(body);
@@ -196,19 +210,14 @@ export default function AttributeForm({ id, entity }) {
       return;
     }
 
-    console.log('body:', JSON.stringify(body));
-    // setShowSpinner(true);
-
-    let url = context.adminUrl + "/attributes";
+    let url = `${context.adminUrl}/attributes`
     let method = null;
-    console.log(url);
     if (id === "new") {
       method = "POST";
     } else {
       url = `${url}/${id}`;
       method = "PUT";
     }
-    console.log(url);
 
     fetch(url, {
       method: method,
@@ -218,43 +227,27 @@ export default function AttributeForm({ id, entity }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("yes!", data);
         setShowSpinner(false);
-        // navigate(`/entities/${entity}`);
+        setAttribute(data);
+        // if (data.id !== undefined) {
+        //   navigate(`/entities/${entity}`);
+        // }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  const options = [
+  return (<>
     {
-      name: "String",
-      value: "string",
-    },
-    {
-      name: "Array",
-      value: "array",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-    {
-      name: "Integer",
-      value: "integer",
-    },
-  ];
-
-  return (
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <form id="attributeForm" onSubmit={saveAttribute}>
       <Card title="Values"
         cardHeader={function () {
@@ -300,25 +293,6 @@ export default function AttributeForm({ id, entity }) {
                     <br />
                     <div className="row">
                       <div className="col-6">
-                        {attributes !== null && isJsxAttributes.length > 0 && (
-                          <SelectInputComponent
-                            options={[{ name: "String", value: 'string' }, {
-                              name: "Array",
-                              value: "array"
-                            }, { name: "Integer", value: "integer" }, { name: "Boolean", value: "boolean" },
-                            { name: "Object", value: "object" }, { name: "Date", value: "date" }, {
-                              name: "Datetime",
-                              value: "datetime"
-                            }, { name: "Number", value: "number" }, { name: "Float", value: "float" }, {
-                              name: "File",
-                              value: "file"
-                            }]}
-                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute.type} required={true} />
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
                         {attribute !== null && attribute.type !== null ? (
                           <SelectInputComponent
                             options={[{ name: "String", value: 'string' }, {
@@ -350,6 +324,32 @@ export default function AttributeForm({ id, entity }) {
                               name={"type"} id={"typeInput"} nameOverride={"Type"} required={true} />
                           )}
                       </div>
+                      <div className="col-6">
+                        {attribute !== null && attribute.format !== null ? (
+                            <SelectInputComponent
+                              options={[{ name: "Email", value: 'email' }, {
+                                name: "Phone",
+                                value: 'phone'
+                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
+                              name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
+                          ) :
+                          (
+                            <SelectInputComponent
+                              options={[{ name: "Email", value: 'email' }, {
+                                name: "Phone",
+                                value: 'phone'
+                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
+                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
+                                  name: "Json",
+                                  value: 'json'
+                                }]}
+                              name={"format"} id={"formatInput"} nameOverride={"Format"} />
+                          )}
+                      </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
@@ -361,8 +361,9 @@ export default function AttributeForm({ id, entity }) {
                                 attribute.inversedBy !== null ? (
                                 <SelectInputComponent
                                   options={attributes}
-                                  data={attribute.inversedBy}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}/>
+                                  data={attribute.inversedBy.name}
+                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                  value={"/admin/attributes/"} />
                               ) : (
                                 <SelectInputComponent
                                   options={attributes}
@@ -371,34 +372,8 @@ export default function AttributeForm({ id, entity }) {
                             </>
                           ) : (
                             <SelectInputComponent
-                              options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
+                              options={[{ name: "Please create a attribute to use inversedBy", value: null}]}
                               name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
-                          )}
-                      </div>
-                      <div className="col-6">
-                        {attribute !== null && attribute.format !== null ? (
-                          <SelectInputComponent
-                            options={[{ name: "Email", value: 'email' }, {
-                              name: "Phone",
-                              value: 'phone'
-                            }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                            { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                              name: "Json",
-                              value: 'json'
-                            }]}
-                            name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute.format} />
-                        ) :
-                          (
-                            <SelectInputComponent
-                              options={[{ name: "Email", value: 'email' }, {
-                                name: "Phone",
-                                value: 'phone'
-                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                              { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                                name: "Json",
-                                value: 'json'
-                              }]}
-                              name={"format"} id={"formatInput"} nameOverride={"Format"} />
                           )}
                       </div>
                     </div>
@@ -448,16 +423,16 @@ export default function AttributeForm({ id, entity }) {
                           {attribute !== null ? (
                             <>
                               {attribute.exclusiveMinimum ? (
-                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                                   nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"}
                                   data={attribute.exclusiveMinimum} />
                               ) : (
-                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                                <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                                   nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                               )}
                             </>
                           ) : (
-                            <Checkbox type={"checkbox"} id={"exclusiveMinimumInout"}
+                            <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
                               nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"} />
                           )}
                         </div>
@@ -594,7 +569,7 @@ export default function AttributeForm({ id, entity }) {
                       </div>
                     </div>
                     <div className="row mt-3">
-                      {/* <div className="col-12 col-sm-6 ">
+                      <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           {attribute !== null ? (
                             <>
@@ -612,7 +587,7 @@ export default function AttributeForm({ id, entity }) {
                               nameLabel={"Inversed By"} nameAttribute={"inversedBy"}/>
                           )}
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           {attribute !== null ? (
@@ -836,7 +811,7 @@ export default function AttributeForm({ id, entity }) {
                     {/*  )}*/}
                     {/*</Accordion>*/}
 
-                    {/* <Accordion id="attributeAccordion"
+                    <Accordion id="attributeAccordion"
                       items={[{
                         title: "Object Config",
                         id: "objectConfigAccordion",
@@ -847,16 +822,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={[{ key: 'objectConfig', value: attribute.objectConfig }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -868,20 +839,16 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.enum !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"enum"}
-                                label={"Enum"}
-                                data={[{ key: 'enum', value: attribute.enum }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
-                              />
+                                <ArrayInputComponent
+                                  id={"enum"}
+                                  label={"Enum"}
+                                  data={attribute.enum}
+                                />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 id={"enum"}
                                 label={"Enum"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -897,16 +864,12 @@ export default function AttributeForm({ id, entity }) {
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={[{ key: 'requiredIf', value: attribute.requiredIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             ) : (
                               <MultiDimensionalArrayInput
                                 id={"requiredIf"}
                                 label={"Required If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -917,21 +880,17 @@ export default function AttributeForm({ id, entity }) {
                         id: "forbiddenIfAccordion",
                         render: function () {
                           return (<>
-                            {attribute !== null && attribute.forbiddenIf !== null ? (
-                              <MultiDimensionalArrayInput
-                                id={"forbiddenIf"}
+                            {attribute !== null && attribute.forbidenIf !== null ? (
+                              <ArrayInputComponent
+                                id={"forbidenIf"}
                                 label={"Forbidden If"}
-                                data={[{ key: 'forbiddenIf', value: attribute.forbiddenIf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
+                                data={attribute.forbidenIf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
-                                id={"forbiddenIf"}
+                              <ArrayInputComponent
+                                id={"forbidenIf"}
                                 label={"Forbidden If"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -943,20 +902,16 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.allOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"All Of"}
                                 id={"allOf"}
-                                data={[{ key: 'allOf', value: attribute.allOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
+                                data={attribute.allOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"All Of"}
                                 id={"allOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -968,20 +923,16 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.anyOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"Any Of"}
                                 id={"anyOf"}
-                                data={[{ key: 'anyOf', value: attribute.anyOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
+                                data={attribute.anyOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"Any Of"}
                                 id={"anyOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
@@ -993,26 +944,22 @@ export default function AttributeForm({ id, entity }) {
                         render: function () {
                           return (<>
                             {attribute !== null && attribute.oneOf !== null ? (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"One Of"}
                                 id={"oneOf"}
-                                data={[{ key: 'oneOf', value: attribute.oneOf }]}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
+                                data={attribute.oneOf}
                               />
                             ) : (
-                              <MultiDimensionalArrayInput
+                              <ArrayInputComponent
                                 label={"One Of"}
                                 id={"oneOf"}
                                 data={null}
-                                deleteFunction={deleteElementFunction}
-                                addFunction={addElement}
                               />
                             )}
                           </>)
                         }
                       }
-                      ]} /> */}
+                      ]} />
                   </>
                 )}
               </div>
@@ -1020,6 +967,6 @@ export default function AttributeForm({ id, entity }) {
 
           )
         }} />
-    </form>
+    </form></>
   );
 }

@@ -1,14 +1,15 @@
 import * as React from "react";
-import Spinner from "../common/spinner";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { getCall } from "../utility/fetch";
+import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
+import FlashMessage from 'react-flash-message';
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -28,17 +29,26 @@ export default function SourcesTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
+        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
           setSources(data["hydra:member"]);
-          setShowSpinner(false);
         }
+        setShowSpinner(false);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <Card title={"Sources"}
       cardHeader={function () {
         return (
@@ -47,7 +57,7 @@ export default function SourcesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link">
+            <a className="utrecht-link" onClick={getSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -108,6 +118,6 @@ export default function SourcesTable() {
           </div>
         )
       }}
-    />
+    /></>
   );
 }

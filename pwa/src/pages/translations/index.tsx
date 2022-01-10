@@ -1,15 +1,16 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import SourceForm from "../../components/sources/sourceForm";
+import TranslationsTable from "../../components/translations/translationsTable";
 
-const IndexPage = (props) => {
+const IndexPage = () => {
   return (
-    <Layout title={"Source"} subtext={"Edit your source here"}>
+    <Layout title={"Translations"} subtext={"An overview of your translation objects"}>
+      <title>Gateway - Translations</title>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <SourceForm id={props.params.id} />
+              <TranslationsTable />
             </div>
           </div>
         </div>

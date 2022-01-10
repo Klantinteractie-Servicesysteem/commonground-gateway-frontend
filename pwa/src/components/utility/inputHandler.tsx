@@ -9,7 +9,7 @@ import * as _ from "lodash";
 export const checkValues = (array: any[]) => {
   let valid = true;
   for (let i = 0; i < array.length; i++) {
-    if (array[i].length === 0 || _.isEmpty(array[i])) {
+    if (array[i] === undefined || _.isEmpty(array[i]) || array[i].length === 0) {
       valid = false;
     }
   }
@@ -25,7 +25,7 @@ export const removeEmptyObjectValues = (obj: {}) => {
   for (var propName in obj) {
     if (
       obj[propName] === undefined ||
-      (obj[propName] === null && obj[propName] !== false)
+      (obj[propName] === null && obj[propName] !== false) || obj[propName] === ''
     ) {
       delete obj[propName];
     }

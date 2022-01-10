@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
-import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
+import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 
@@ -22,7 +20,7 @@ export default function ApplicationsTable() {
 
   const getApplications = (context) => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/applications/`, {
+    fetch(`${context.adminUrl}/applications`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -35,6 +33,7 @@ export default function ApplicationsTable() {
         console.log(data);
       })
       .catch((error) => {
+        setShowSpinner(false);
         console.error("Error:", error);
       });
   };
@@ -112,7 +111,7 @@ export default function ApplicationsTable() {
                       field: "description",
                     },
                   ]}
-                  rows={[]}
+                  rows={[{name: "No results found", description: " "}]}
                 />
               )}
             </div>

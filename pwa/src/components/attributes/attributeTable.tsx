@@ -1,29 +1,29 @@
 import * as React from "react";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
-import Spinner from "../common/spinner";
+import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
+import FlashMessage from 'react-flash-message';
 
 export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window['GATSBY_API_URL'],
+        adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
-        setShowSpinner(true);
         getAttributes();
       }
     }
   }, [context]);
 
   const getAttributes = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -34,23 +34,32 @@ export default function AttributeTable({ id }) {
         if (response.ok) {
           return response.json();
         } else {
-          setShowSpinner(false);
-          setAttributes(null);
+          setAlert(null);
+          setAlert({ type: 'danger', message: response.statusText });
           throw new Error(response.statusText);
         }
       })
       .then((data) => {
-        setAttributes(data["hydra:member"]);
         setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          setAttributes(data["hydra:member"]);
+        }
       })
       .catch((error) => {
-        console.error("Error:", error);
         setShowSpinner(false);
-        setAttributes(null);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (
+  return (<>
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
     <Card
       title={"Attributes"}
       cardHeader={function () {
@@ -99,7 +108,7 @@ export default function AttributeTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/attributes/${item.id}`}>
+                          <Link to={`/attributes/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -130,6 +139,6 @@ export default function AttributeTable({ id }) {
           </div>
         );
       }}
-    />
+    /></>
   );
 }

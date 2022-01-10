@@ -4,8 +4,8 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-export default function EntitiesTable() {
-  const [entities, setEntities] = React.useState(null);
+export default function TranslationsTable() {
+  const [translations, setTranslations] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
@@ -16,13 +16,13 @@ export default function EntitiesTable() {
         adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      getEntities();
+      getTranslations();
     }
   }, [context]);
 
-  const getEntities = () => {
+  const getTranslations = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/entities`, {
+    fetch(`${context.adminUrl}/translations`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -32,7 +32,7 @@ export default function EntitiesTable() {
       .then((data) => {
         setShowSpinner(false);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setEntities(data["hydra:member"]);
+          setTranslations(data["hydra:member"]);
         }
       })
       .catch((error) => {
@@ -40,6 +40,7 @@ export default function EntitiesTable() {
         console.log("Error:", error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
+        setTranslations([{id: "123", translationTable: "Test table", translateTo: "Test", translateFrom: "Testing", language: "en"}]);
       });
   };
 
@@ -51,7 +52,7 @@ export default function EntitiesTable() {
       </FlashMessage>
     }
     <Card
-      title={"Entities"}
+      title={"Translations"}
       cardHeader={function () {
         return (
           <>
@@ -63,11 +64,11 @@ export default function EntitiesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getEntities}>
+            <a className="utrecht-link" onClick={getTranslations}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/entities/new">
+            <Link to="/translations/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -87,34 +88,31 @@ export default function EntitiesTable() {
                   <div className="col-12">
                     {showSpinner === true ? (
                       <Spinner />
-                    ) : entities ? (
+                    ) : translations ? (
                       <Table
                         columns={[
                           {
-                            headerName: "Name",
-                            field: "name",
+                            headerName: "Table",
+                            field: "translationTable",
                           },
                           {
-                            headerName: "Endpoint",
-                            field: "endpoint",
+                            headerName: "From",
+                            field: "translateFrom",
                           },
                           {
-                            headerName: "Route",
-                            field: "route",
+                            headerName: "To",
+                            field: "translateTo",
                           },
                           {
-                            headerName: "Source",
-                            field: "gateway",
-                            valueFormatter: (item) => {
-                              return item ? item.name : "";
-                            },
+                            headerName: "Language",
+                            field: "language",
                           },
                           {
                             field: "id",
                             headerName: "Edit ",
                             renderCell: (item) => {
                               return (
-                                <Link to={`/entities/${item.id}`}>
+                                <Link to={`/translations/${item.id}`}>
                                   <button className="utrecht-button btn-sm btn-success">
                                     <i className="fas fa-edit pr-1" />
                                     Edit
@@ -124,7 +122,7 @@ export default function EntitiesTable() {
                             },
                           },
                         ]}
-                        rows={entities}
+                        rows={translations}
                       />
                     ) : (
                       <Table

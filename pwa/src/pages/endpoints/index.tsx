@@ -1,14 +1,15 @@
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import ObjectEntityForm from "../../components/object_entities/object_entityForm";
+import EndpointsTable from "../../components/endpoints/endpointsTable";
 
-const IndexPage = (props) => {
+const IndexPage = () => {
   return (
-    <Layout title='Object entity' subtext="Edit your object entity here">
+    <Layout title={"Endpoints"} subtext={"An overview of your endpoints objects"}>
+      <title>Gateway - Endpoints</title>
       <main>
         <div className="row">
           <div className="col-12">
-            <ObjectEntityForm id={props.params.id}/>
+            <EndpointsTable />
           </div>
         </div>
       </main>

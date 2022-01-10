@@ -4,7 +4,7 @@ import ApplicationForm from "../../components/applications/applicationForm";
 
 const IndexPage = (props) => {
   return (
-    <Layout>
+    <Layout title='Application' subtext="Edit your application here">
       <main>
         <div className="row">
           <div className="col-12">
