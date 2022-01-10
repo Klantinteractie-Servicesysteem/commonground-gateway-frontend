@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 interface Value {
+  id: string,
   key?: string,
   value: string,
 }
@@ -9,25 +10,16 @@ const ElementCreationNew: React.FC = () => {
   const valueInputEl = React.useRef(null)
   const [values, setValues] = React.useState<Value[]>([])
 
-  const handleAdd = (e) => {
-    e.preventDefault() // this should not go to prod
-
+  const handleAdd = () => {
     if (!valueInputEl.current.value) return
 
-    setValues([...values, {value: valueInputEl.current.value}])
-    valueInputEl.current.value = ""
+    setValues([...values, { id: Math.random().toString(36), value: valueInputEl.current.value}])
+
+    valueInputEl.current.value = null // empty input after processing
   }
 
   const handleDelete = (e) => {
-    e.preventDefault() // this should not go to prod
-
-    const tempValues = [...values]
-
-
-    console.log(tempValues)
-    tempValues.splice(e.target.id, 1)
-    console.log(tempValues)
-    setValues(tempValues)
+    setValues(values.filter(value => value.id !== e.target.id))
   }
 
   return (
@@ -38,7 +30,7 @@ const ElementCreationNew: React.FC = () => {
             return (
               <li key={idx}>
                 {value.value}
-                <button id={idx.toString()} onClick={handleDelete}>Delete</button>
+                <button id={value.id} onClick={handleDelete}>Delete</button>
               </li>
             )
           })}
