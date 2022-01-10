@@ -5,10 +5,11 @@ import {
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
+import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
+import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
   Accordion,
-  MultiDimensionalArrayInput,
   Card,
   Alert,
   Spinner,
@@ -58,14 +59,14 @@ export default function SourceForm({id}) {
     event.preventDefault();
     setShowSpinner(true);
 
-    let headers = retrieveFormArrayAsObject(event.target, "headers");
-    let oas = retrieveFormArrayAsObject(event.target, "oas");
-    let paths = retrieveFormArrayAsObject(event.target, "paths");
-    let translationConfigs = retrieveFormArrayAsOArray(event.target, "translationConfigs");
+    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let oas = retrieveFormArrayAsOArray(event.target, "oas");
+    let paths = retrieveFormArrayAsOArray(event.target, "paths");
+    let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
 
     let body = {
       name: event.target.name.value,
-      description: event.target.description.value
+      description: event.target.description
         ? event.target.description.value
         : null,
       type: event.target.type.value,
@@ -83,25 +84,26 @@ export default function SourceForm({id}) {
       authorizationHeader: event.target.authorizationHeader.value,
     };
 
-    if (Object.keys(headers).length !== 0 && headers !== "") {
+
+    if (headers.length !== 0) {
       body["headers"] = headers;
     } else {
       body["headers"] = [];
     }
-    if (Object.keys(oas).length !== 0 && oas !== "") {
+    if (oas.length !== 0) {
       body["oas"] = oas;
     } else {
       body["oas"] = [];
     }
-    if (Object.keys(paths).length !== 0 && paths !== "") {
+    if (paths.length !== 0) {
       body["paths"] = paths;
     } else {
       body["paths"] = [];
     }
-    if (translationConfigs.length !== 0) {
-      body["translationConfigs"] = translationConfigs;
+    if (translationConfig.length !== 0) {
+      body["translationConfig"] = translationConfig;
     } else {
-      body["translationConfigs"] = [];
+      body["translationConfig"] = [];
     }
 
     body = removeEmptyObjectValues(body);
@@ -119,7 +121,6 @@ export default function SourceForm({id}) {
       url = `${url}/${id}`;
       method = "PUT";
     }
-
     fetch(url, {
       method: method,
       credentials: "include",
@@ -128,6 +129,7 @@ export default function SourceForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setShowSpinner(false);
         setSource(data)
       })
@@ -250,7 +252,7 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-12">
-                              {source !== null && source.type !== null ? (
+                              {source !== null && source.auth !== null ? (
                                   <SelectInputComponent
                                     options={[{name: "apikey", value: "apikey"}, {
                                       name: "jwt",
@@ -390,34 +392,20 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                           </div>
-
-                          {/* Logging input */}
-                          {/* <div className="row mt-3">
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
-                          {
-                            source !== null && source.logging !== null && source.logging === true ? <>
-                              <Checkbox type="checkbox" id="loggingInput" nameLabel="logging" nameAttribute="logging" data={true} /></> : <>
-                              <Checkbox type="checkbox" id="loggingInput" nameLabel="logging" nameAttribute="logging" /> </>
-                          }
-                        </div>
-                      </div>
-                    </div> */}
-
                           <Accordion id="sourceAccordion"
                                      items={[{
                                        title: "Headers",
-                                       id: "headers",
+                                       id: "headersAccordion",
                                        render: function () {
                                          return (<>
                                            {source !== null && source.headers !== null ? (
-                                             <MultiDimensionalArrayInput
+                                             <ArrayInputComponent
                                                id={"headers"}
                                                label={"Headers"}
-                                               data={[{key: "headers", value: source.headers}]}
+                                               data={source.headers}
                                              />
                                            ) : (
-                                             <MultiDimensionalArrayInput
+                                             <ArrayInputComponent
                                                id={"headers"}
                                                label={"Headers"}
                                                data={null}
@@ -428,19 +416,19 @@ export default function SourceForm({id}) {
                                      },
                                        {
                                          title: "OAS",
-                                         id: "oas",
+                                         id: "oasAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.oas !== null ? (
+                                               <ArrayInputComponent
                                                  id={"oas"}
                                                  label={"OAS"}
-                                                 data={[{key: 'oas', value: source.oas}]}
+                                                 data={source.oas}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"oas"}
-                                                 label={"oas"}
+                                                 label={"OAS"}
                                                  data={null}
                                                />
                                              )}
@@ -449,19 +437,19 @@ export default function SourceForm({id}) {
                                        },
                                        {
                                          title: "Paths",
-                                         id: "paths",
+                                         id: "pathsAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.paths !== null ? (
+                                               <ArrayInputComponent
                                                  id={"paths"}
-                                                 label={"paths"}
-                                                 data={[{key: 'paths', value: source.paths}]}
+                                                 label={"Paths"}
+                                                 data={source.paths}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"paths"}
-                                                 label={"paths"}
+                                                 label={"Paths"}
                                                  data={null}
                                                />
                                              )}
@@ -470,19 +458,19 @@ export default function SourceForm({id}) {
                                        },
                                        {
                                          title: "Translation config",
-                                         id: "translationConfig",
+                                         id: "translationConfigAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.translationConfig !== null ? (
+                                               <ArrayInputComponent
                                                  id={"translationConfig"}
-                                                 label={"translationConfig"}
-                                                 data={[{key: 'translationConfig', value: source.translationConfig}]}
+                                                 label={"Translation Config"}
+                                                 data={source.translationConfig}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"translationConfig"}
-                                                 label={"translationConfig"}
+                                                 label={"Translation Config"}
                                                  data={null}
                                                />
                                              )}
