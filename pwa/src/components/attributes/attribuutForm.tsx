@@ -968,7 +968,8 @@ export default function AttributeForm({ id, entity }) {
 
           )
         }} />
-        <ElementCreationNew />
-    </form></>
+    </form>
+    <ElementCreationNew />
+  </>
   );
 }
