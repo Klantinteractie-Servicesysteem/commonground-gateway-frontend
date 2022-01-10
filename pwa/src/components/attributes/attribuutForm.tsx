@@ -19,6 +19,7 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
+import ElementCreationNew from '../common/elementCreationNew'
 
 export default function AttributeForm({ id, entity }) {
   const [context, setContext] = React.useState(null);
@@ -967,6 +968,7 @@ export default function AttributeForm({ id, entity }) {
 
           )
         }} />
+        <ElementCreationNew />
     </form></>
   );
 }
