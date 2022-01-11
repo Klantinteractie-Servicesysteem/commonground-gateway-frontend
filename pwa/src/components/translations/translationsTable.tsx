@@ -16,11 +16,11 @@ export default function TranslationsTable() {
         adminUrl: window.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      getTranslations();
+      getTranslations(context);
     }
   }, [context]);
 
-  const getTranslations = () => {
+  const getTranslations = (context) => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/translations`, {
       headers: {
@@ -40,7 +40,6 @@ export default function TranslationsTable() {
         console.log("Error:", error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
-        setTranslations([{id: "123", translationTable: "Test table", translateTo: "Test", translateFrom: "Testing", language: "en"}]);
       });
   };
 
@@ -82,11 +81,6 @@ export default function TranslationsTable() {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner />
-              ) : (
-                <div className="row">
-                  <div className="col-12">
-                    {showSpinner === true ? (
                       <Spinner />
                     ) : translations ? (
                       <Table
@@ -132,28 +126,29 @@ export default function TranslationsTable() {
                             field: "name",
                           },
                           {
-                            headerName: "Endpoint",
-                            field: "endpoint",
+                            headerName: "Table",
+                            field: "translationTable",
                           },
                           {
-                            headerName: "Route",
-                            field: "route",
+                            headerName: "From",
+                            field: "translateFrom",
                           },
                           {
-                            headerName: "Source",
-                            field: "gateway.name",
+                            headerName: "To",
+                            field: "translateTo",
                           },
+                          {
+                            headerName: "Language",
+                            field: "language",
+                          }
                         ]}
                         rows={[{name: 'No results found'}]}
                       />
                     )}
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
-        );
-      }}
-    /></>
-  );
+              );}}
+      />
+  </>
+  )
 }

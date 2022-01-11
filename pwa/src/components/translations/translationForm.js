@@ -186,7 +186,7 @@ export default function TranslationForm({ id }) {
                             id={"translationTableInput"}
                             data={translation && translation.translationTable && translation.translationTable}
                             nameOverride={"Table"}
-                            required={"true"} />
+                            required={true} />
                         </div>
                       </div>
                       <div className="col-6">
@@ -209,7 +209,7 @@ export default function TranslationForm({ id }) {
                             id={"translateFromInput"}
                             data={translation && translation.translateFrom && translation.translateFrom}
                             nameOverride={"From"}
-                            required={"true"} />
+                            required={true} />
                         </div>
                       </div>
                       <div className="col-6">
@@ -220,7 +220,7 @@ export default function TranslationForm({ id }) {
                             id={"translateToInput"}
                             data={translation && translation.translateTo && translation.translateTo}
                             nameOverride={"To"}
-                            required={"true"} />
+                            required={true} />
                         </div>
                       </div>
                     </div>
