@@ -100,8 +100,8 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                     {
                       field: "id",
@@ -128,8 +128,8 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                   ]}
                   rows={[]}
