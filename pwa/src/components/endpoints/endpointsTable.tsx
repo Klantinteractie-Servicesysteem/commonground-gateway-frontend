@@ -4,7 +4,6 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-
 export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
   const [endpoints, setEndpoints] = React.useState(null);
