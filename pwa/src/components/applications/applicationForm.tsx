@@ -18,9 +18,9 @@ import FlashMessage from 'react-flash-message';
 
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
-  const [alert, setAlert] = React.useState(null);
-  const [application, setApplication] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState<any>(null);
+  const [application, setApplication] = React.useState<any>(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -62,12 +62,12 @@ export default function ApplicationForm({ id }) {
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
-      description: event.target.description.value,
-      public: event.target.public.value,
-      secret: event.target.secret.value,
-      resource: event.target.resource.value,
+      description: event.target.description ? event.target.description.value : null,
+      public: event.target.public.value ? event.target.public.value : null,
+      secret: event.target.secret.value ? event.target.secret.value : null,
+      resource: event.target.resource.value ? event.target.resource.value : null,
     };
 
     if (domains.length !== 0) {
@@ -77,7 +77,8 @@ export default function ApplicationForm({ id }) {
     }
 
     body = removeEmptyObjectValues(body);
-    if (!checkValues([body.name])) {
+
+    if (!checkValues([body["name"], body["domains"]])) {
       return;
     }
 
@@ -110,7 +111,7 @@ export default function ApplicationForm({ id }) {
       });
   };
 
-  return (<>
+  return (<div>
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -127,7 +128,7 @@ export default function ApplicationForm({ id }) {
                     </button>
                   </Link>
                   <button
-                    className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                    className="utrecht-button utrecht-button-sm btn-sm btn-success"
                     type="submit"
                   >
                     <i className="fas fa-save mr-2" />Save
@@ -141,56 +142,31 @@ export default function ApplicationForm({ id }) {
                       {showSpinner === true ? (
                         <Spinner />
                       ) : (
-                        <>
+                        <div>
                           <div className="row">
                             <div className="col-6">
-                              {application !== null && application.name !== null ? (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application.name}
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application && application.name && application.name }
                                                        nameOverride={"Name"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name"} />
-                              )}
                             </div>
                             <div className="col-6">
-                              {application !== null && application.description !== null ? (
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={application.description} nameOverride={"Description"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       nameOverride={"Description"} />
-                              )}
+                                                       data={application && application.description && application.description} nameOverride={"Description"} />
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {application !== null && application.public !== null ? (
-                                <GenericInputComponent type={"text"} name={"public"} id={"publicInput"} data={application.public}
+                                <GenericInputComponent type={"text"} name={"public"} id={"publicInput"} data={application && application.public && application.public}
                                                        nameOverride={"Public"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"public"} id={"publicInput"}
-                                                       nameOverride={"Public"} />
-                              )}
                             </div>
                             <div className="col-6">
-                              {application !== null && application.secret !== null ? (
                                 <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
-                                                       data={application.secret} nameOverride={"Secret"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
-                                                       nameOverride={"Secret"} />
-                              )}
+                                                       data={application && application.secret && application.secret} nameOverride={"Secret"} />
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {application !== null && application.resource !== null ? (
-                                <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"} data={application.resource}
+                                <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"} data={application && application.resource && application.resource}
                                                        nameOverride={"Resource"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"}
-                                                       nameOverride={"Resource"} />
-                              )}
                             </div>
                           </div>
 
@@ -202,32 +178,24 @@ export default function ApplicationForm({ id }) {
                                 id: "domainsAccordion",
                                 render: function () {
                                   return (
-                                    <>
-                                      {application !== null && application.domains !== null ? (
                                         <ArrayInputComponent
                                           id={"domains"}
                                           label={"Domains"}
-                                          data={application.domains}
+                                          data={application && application.domains && application.domains}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"domains"}
-                                          label={"Domains"}
-                                          data={null}
-                                        />
-                                      )}
-                                    </>
                                   );
                                 },
                               }
                             ]}
                           />
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
                 )
-              }} />
-      </form></>
+              }}
+        />
+      </form>
+  </div>
   );
 }
