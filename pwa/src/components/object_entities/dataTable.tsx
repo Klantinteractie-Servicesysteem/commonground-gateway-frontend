@@ -77,7 +77,7 @@ export default function DataTable({ id }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/object_entities/new">
+            <Link to={`/object_entities/new/${id}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Add
@@ -108,7 +108,7 @@ export default function DataTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/object_entities/${item.id}`}>
+                          <Link to={`/object_entities/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
