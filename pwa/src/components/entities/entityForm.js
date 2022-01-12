@@ -329,7 +329,7 @@ export default function EntityForm({ id }) {
                               </>
                             ) : (
                               <SelectInputComponent
-                                options={[{ name: "Please create a soap first to use it", value: null}]}
+                                options={[{ name: "Please create a soaps first to use it", value: null}]}
                                 name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
                               />
                             )}

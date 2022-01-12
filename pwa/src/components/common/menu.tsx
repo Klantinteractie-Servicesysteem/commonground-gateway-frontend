@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "gatsby";
-// import Modal from "./modal";
-import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
+
+
 import { isLoggedIn, logout } from "../../services/auth";
 import { navigate } from "gatsby-link";
 
@@ -61,8 +61,8 @@ export default function MainMenu() {
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
-                    <Link to={"/soap"} className="utrecht-topnav__link">
-                      SOAP
+                    <Link to={"/soaps"} className="utrecht-topnav__link">
+                      SOAPs
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">

@@ -184,8 +184,8 @@ export default function SourceForm({id}) {
                               {source !== null && source.type !== null ? (
                                   <SelectInputComponent
                                     options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
-                                      name: "soap",
-                                      value: "soap"
+                                      name: "soaps",
+                                      value: "soaps"
                                     }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
                                     name={"type"} id={"typeInput"} nameOverride={"Type"} data={source.type}
                                     required={true}/>
@@ -193,8 +193,8 @@ export default function SourceForm({id}) {
                                 (
                                   <SelectInputComponent
                                     options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
-                                      name: "soap",
-                                      value: "soap"
+                                      name: "soaps",
+                                      value: "soaps"
                                     }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
                                     name={"type"} id={"typeInput"} nameOverride={"Type"} required={true}/>
                                 )}

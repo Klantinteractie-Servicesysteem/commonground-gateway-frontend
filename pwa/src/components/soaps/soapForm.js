@@ -45,7 +45,7 @@ export default function SoapForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("get soap")
+        console.log("get soaps")
         console.log(data)
         setShowSpinner(false);
         setSoap(data);
@@ -113,7 +113,7 @@ export default function SoapForm({id}) {
       setShowSpinner(false);
       return;
     }
-    console.log("saveSoap")
+
     let url = `${context.adminUrl}/soaps`
     let method = null;
     if (id === "new") {
