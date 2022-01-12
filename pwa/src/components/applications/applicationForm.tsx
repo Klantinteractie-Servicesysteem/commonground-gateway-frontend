@@ -16,17 +16,25 @@ import {
 import {ArrayInputComponent} from "../common/arrayInput";
 import FlashMessage from 'react-flash-message';
 
+interface IApplication {
+  name: string,
+  description: string,
+  public: string,
+  secret: string,
+  resource: string,
+  domains: Array<string>,
+}
+
 export default function ApplicationForm({ id }) {
   const [context, setContext] = React.useState(null);
-  const [alert, setAlert] = React.useState<any>(null);
-  const [application, setApplication] = React.useState<any>(null);
+  const [alert, setAlert] = React.useState<Record<string, string>>(null);
+  const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -148,7 +156,7 @@ export default function ApplicationForm({ id }) {
                         <div>
                           <div className="row">
                             <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application && application.name && application.name }
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application && application.name && application.name}
                                                        nameOverride={"Name"} required />
                             </div>
                             <div className="col-6">
@@ -177,7 +185,7 @@ export default function ApplicationForm({ id }) {
                             id="applicationAccordion"
                             items={[
                               {
-                                title: "Domains",
+                                title: "Domains *",
                                 id: "domainsAccordion",
                                 render: function () {
                                   return (
