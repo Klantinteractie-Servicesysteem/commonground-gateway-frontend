@@ -19,8 +19,7 @@ export default function EndpointForm({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       if (id !== "new") {
