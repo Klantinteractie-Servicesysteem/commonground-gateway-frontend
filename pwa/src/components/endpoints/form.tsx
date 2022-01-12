@@ -11,10 +11,10 @@ import FlashMessage from 'react-flash-message';
 
 export default function EndpointForm({ id }) {
   const [context, setContext] = React.useState(null);
-  const [endpoint, setEndpoint] = React.useState(null);
-  const [applications, setApplications] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const [endpoint, setEndpoint] = React.useState<any>(null);
+  const [applications, setApplications] = React.useState<any>(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -75,7 +75,7 @@ export default function EndpointForm({ id }) {
     event.preventDefault();
     setShowSpinner(true);
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description.value ? event.target.description.value : null,
       type: event.target.type.value,
@@ -84,7 +84,7 @@ export default function EndpointForm({ id }) {
     };
 
     body = removeEmptyObjectValues(body);
-    if (!checkValues([body.name, body.type, body.path])) {
+    if (!checkValues([body["name"], body["type"], body["path"]])) {
       setAlert(null);
       setAlert({ type: 'danger', message: 'Required fields are empty' });
       setShowSpinner(false);
@@ -108,15 +108,13 @@ export default function EndpointForm({ id }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("post endpoint")
-        // console.log(data)
         setShowSpinner(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.error("Error:", error);
+        console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
@@ -132,7 +130,8 @@ export default function EndpointForm({ id }) {
       <form id="dataForm" onSubmit={saveEndpoint}>
         <Card title="Values"
               cardHeader={function () {
-                return (<>
+                return (
+                  <div>
                   <Link className="utrecht-link" to={"/endpoints"}>
                     <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
                       <i className="fas fa-long-arrow-alt-left mr-2" />Back
@@ -144,7 +143,8 @@ export default function EndpointForm({ id }) {
                   >
                     <i className="fas fa-save mr-2" />Save
                   </button>
-                </>)
+                </div>
+                )
               }}
               cardBody={function () {
                 return (
@@ -153,25 +153,15 @@ export default function EndpointForm({ id }) {
                       {showSpinner === true ? (
                         <Spinner />
                       ) : (
-                        <>
+                        <div>
                           <div className="row">
                             <div className="col-6">
-                              {endpoint !== null && endpoint.name !== null ? (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint.name}
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint && endpoint.name && endpoint.name}
                                                        nameOverride={"Name"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name"} />
-                              )}
                             </div>
                             <div className="col-6">
-                              {endpoint !== null && endpoint.description !== null ? (
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={endpoint.description} nameOverride={"Description"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       nameOverride={"Description"} />
-                              )}
+                                                       data={endpoint && endpoint.description && endpoint.description} nameOverride={"Description"} />
                             </div>
                           </div>
                           <br/>
@@ -229,7 +219,7 @@ export default function EndpointForm({ id }) {
                               </div>
                             </div>
                           </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
