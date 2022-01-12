@@ -79,6 +79,9 @@ export default function ApplicationForm({ id }) {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["domains"]])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
       return;
     }
 
