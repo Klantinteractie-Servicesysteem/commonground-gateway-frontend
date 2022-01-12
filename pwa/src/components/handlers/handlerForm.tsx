@@ -30,7 +30,7 @@ export default function HandlerForm({id, endpointId}) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       if (id !== "new") {
@@ -95,7 +95,7 @@ export default function HandlerForm({id, endpointId}) {
     let conditions = retrieveFormArrayAsOArray(event.target, "conditions");
 
     // get the inputs and check if set other set null
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description ? event.target.description.value : null,
       sequence: event.target.sequence.value
@@ -224,56 +224,31 @@ export default function HandlerForm({id, endpointId}) {
                         <>
                         <div className="row">
                           <div className="col-6">
-                            {handler !== null && handler.name !== null ? (
-                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler.name}
+                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler && handler.name && handler.name}
                                                      nameOverride={"Name"}/>
-                            ) : (
-                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                     nameOverride={"Name"}/>
-                            )}
                           </div>
                           <div className="col-6">
-                            {handler !== null && handler.description !== null ? (
                               <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                     data={handler.description}
+                                                     data={handler && handler.description && handler.description}
                                                      nameOverride={"Description"}/>
-                            ) : (
-                              <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                     nameOverride={"Description"}/>
-                            )}
                           </div>
                         </div>
                         <br/>
                         <div className="row">
                           <div className="col-6">
-                            {handler !== null && handler.sequence !== null ? (
                               <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
-                                                     data={handler.sequence} nameOverride={"Sequence"}/>
-                            ) : (
-                              <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
-                                                     nameOverride={"Sequence"}/>
-                            )}
+                                                     data={handler && handler.sequence && handler.sequence} nameOverride={"Sequence"}/>
                           </div>
                           <div className="col-6">
-                            {handler !== null && handler.templateType !== null ? (
                               <GenericInputComponent type={"text"} name={"templateType"} id={"templateTypeInput"}
-                                                     data={handler.templateType} nameOverride={"Template Type"}/>
-                            ) : (
-                              <GenericInputComponent type={"text"} name={"templateType"} id={"templateTypeInput"}
-                                                     nameOverride={"Template Type"}/>
-                            )}
+                                                     data={handler && handler.templateType && handler.templateType} nameOverride={"Template Type"}/>
                           </div>
                         </div>
                         <br/>
                         <div className="row">
                           <div className="col-6">
-                            {handler !== null && handler.template !== null ? (
                               <GenericInputComponent type={"text"} name={"template"} id={"templateInput"}
-                                                     data={handler.template} nameOverride={"Template"}/>
-                            ) : (
-                              <GenericInputComponent type={"text"} name={"template"} id={"templateInput"}
-                                                     nameOverride={"Template"}/>
-                            )}
+                                                     data={handler && handler.template && handler.template} nameOverride={"Template"}/>
                           </div>
                           <div className="col-6">
                             <div className="form-group">
@@ -311,147 +286,91 @@ export default function HandlerForm({id, endpointId}) {
                                        title: "Conditions",
                                        id: "conditionsAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.conditions !== null ? (
+                                         return (
                                              <ArrayInputComponent
                                                id={"conditions"}
                                                label={"Conditions"}
-                                               data={[{key: 'conditions', value: handler.conditions}]}
+                                               data={handler && handler.conditions ? [{key: 'conditions', value: handler.conditions}] : null}
                                              />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"conditions"}
-                                               label={"Conditions"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                          )
                                        }
                                      },
                                      {
                                        title: "Translation In",
                                        id: "translationInAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.translationIn !== null ? (
+                                         return (
                                              <ArrayInputComponent
                                                id={"translationIn"}
                                                label={"Translation In"}
-                                               data={[{key: 'translationIn', value: handler.translationIn}]}
+                                               data={handler && handler.translationIn ? [{key: 'translationIn', value: handler.translationIn}] : null}
                                              />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"translationIn"}
-                                               label={"Translation In"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                        )
                                        }
                                      },
                                      {
                                        title: "TranslationOut",
                                        id: "translationOutAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.translationOut !== null ? (
+                                         return (
                                              <ArrayInputComponent
                                                id={"translationOut"}
                                                label={"Translation Out"}
-                                               data={[{key: 'translationOut', value: handler.translationOut}]}
+                                               data={handler && handler.translationOut ? [{key: 'translationOut', value: handler.translationOut}] : null}
                                              />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"translationOut"}
-                                               label={"Translation Out"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                         )
                                        }
                                      },
                                      {
                                        title: "Mapping In",
                                        id: "mappingInAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.mappingIn !== null ? (
+                                         return (
                                              <MultiDimensionalArrayInput
                                                id={"mappingIn"}
                                                label={"Mapping In"}
-                                               data={[{key: 'mappingIn', value: handler.mappingIn}]}
+                                               data={handler && handler.mappingIn ? [{key: 'mappingIn', value: handler.mappingIn}] : null}
                                              />
-                                           ) : (
-                                             <MultiDimensionalArrayInput
-                                               id={"mappingIn"}
-                                               label={"Mapping In"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                             )
                                        }
                                      },
                                      {
                                        title: "Mapping Out",
                                        id: "mappingOutAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.mappingOut !== null ? (
+                                         return (
                                              <MultiDimensionalArrayInput
                                                id={"mappingOut"}
                                                label={"Mapping Out"}
-                                               data={[{key: 'mappingOut', value: `${handler.mappingOut}`}]}
+                                               data={handler && handler.mappingOut ? [{key: 'mappingOut', value: `${handler.mappingOut}`}] : null}
                                              />
-                                           ) : (
-                                             <MultiDimensionalArrayInput
-                                               id={"mappingOut"}
-                                               label={"Mapping Out"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                           )
                                        }
                                      },
                                      {
                                        title: "Skeleton In",
                                        id: "skeletonInAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.skeletonIn !== null ? (
+                                         return (
                                              <ArrayInputComponent
                                                id={"skeletonIn"}
                                                label={"Skeleton In"}
-                                               data={[{key: 'skeletonIn', value: handler.skeletonIn}]}
+                                               data={handler && handler.skeletonIn ? [{key: 'skeletonIn', value: handler.skeletonIn}] : null}
                                              />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"skeletonIn"}
-                                               label={"Skeleton In"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                         )
                                        }
                                      },
                                      {
                                        title: "Skeleton Out",
                                        id: "skeletonOutAccordion",
                                        render: function () {
-                                         return (<>
-                                           {handler !== null && handler.skeletonOut !== null ? (
+                                         return (
                                              <ArrayInputComponent
                                                id={"skeletonOut"}
                                                label={"Skeleton Out"}
-                                               data={[{key: 'skeletonOut', value: handler.skeletonOut}]}
+                                               data={handler && handler.skeletonOut ? [{key: 'skeletonOut', value: handler.skeletonOut}] : null}
                                              />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"skeletonOut"}
-                                               label={"Skeleton Out"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
+                                         )
                                        }
                                      }
                                    ]}/>
