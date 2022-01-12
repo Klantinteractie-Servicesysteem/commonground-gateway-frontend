@@ -184,7 +184,7 @@ export default function ApplicationForm({ id }) {
                                         <ArrayInputComponent
                                           id={"domains"}
                                           label={"Domains"}
-                                          data={application && application.domains && application.domains}
+                                          data={application && application.domains ? application.domains : null}
                                         />
                                   );
                                 },

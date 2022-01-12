@@ -529,7 +529,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
-                                data={attribute && attribute.objectConfig && [{ key: 'objectConfig', value: attribute.objectConfig }]}
+                                data={attribute && attribute.objectConfig ? [{ key: 'objectConfig', value: attribute.objectConfig }] : null}
                               />
                           )
                         }
@@ -542,7 +542,7 @@ export default function AttributeForm({ id, entity }) {
                                 <ArrayInputComponent
                                   id={"enum"}
                                   label={"Enum"}
-                                  data={attribute && attribute.enum && attribute.enum}
+                                  data={attribute && attribute.enum ? attribute.enum : null}
                                 />
                           )
                         }
@@ -555,7 +555,7 @@ export default function AttributeForm({ id, entity }) {
                               <MultiDimensionalArrayInput
                                 id={"requiredIf"}
                                 label={"Required If"}
-                                data={ attribute && attribute.requiredIf && [{ key: 'requiredIf', value: attribute.requiredIf }]}
+                                data={ attribute && attribute.requiredIf ? [{ key: 'requiredIf', value: attribute.requiredIf }] : null}
                               />
                               )
                         }
@@ -568,7 +568,7 @@ export default function AttributeForm({ id, entity }) {
                               <ArrayInputComponent
                                 id={"forbidenIf"}
                                 label={"Forbidden If"}
-                                data={attribute && attribute.forbidenIf && attribute.forbidenIf}
+                                data={attribute && attribute.forbidenIf ? attribute.forbidenIf : null}
                               />
                             )
                         }
@@ -581,7 +581,7 @@ export default function AttributeForm({ id, entity }) {
                               <ArrayInputComponent
                                 label={"All Of"}
                                 id={"allOf"}
-                                data={attribute && attribute.allOf && attribute.allOf}
+                                data={attribute && attribute.allOf ? attribute.allOf : null}
                               />
                           )
                         }
@@ -594,7 +594,7 @@ export default function AttributeForm({ id, entity }) {
                               <ArrayInputComponent
                                 label={"Any Of"}
                                 id={"anyOf"}
-                                data={attribute && attribute.anyOf && attribute.anyOf}
+                                data={attribute && attribute.anyOf ? attribute.anyOf : null}
                               />
                           )
                         }
@@ -607,7 +607,7 @@ export default function AttributeForm({ id, entity }) {
                               <ArrayInputComponent
                                 label={"One Of"}
                                 id={"oneOf"}
-                                data={attribute && attribute.oneOf && attribute.oneOf}
+                                data={attribute && attribute.oneOf ? attribute.oneOf : null}
                               />)
                         }
                       }
