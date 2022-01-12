@@ -6,18 +6,15 @@ import {
   Accordion,
   Card,
   Alert
-}
-  from "@conductionnl/nl-design-system/lib";
-import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+} from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {
   checkValues,
-  removeEmptyObjectValues, retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
 import { ArrayInputComponent } from "../common/arrayInput";
 
@@ -25,7 +22,6 @@ export default function EntityForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
-
   const [entity, setEntity] = React.useState(null);
   const [sources, setSources] = React.useState(null);
   const [soaps, setSoaps] = React.useState(null);

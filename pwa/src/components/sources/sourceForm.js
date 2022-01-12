@@ -2,10 +2,9 @@ import * as React from "react";
 import {Link, navigate} from "gatsby";
 import {
   checkValues,
-  removeEmptyObjectValues, retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
@@ -82,29 +81,12 @@ export default function SourceForm({id}) {
       apikey: event.target.apikey.value,
       documentation: event.target.documentation.value,
       authorizationHeader: event.target.authorizationHeader.value,
+      headers,
+      oas,
+      paths,
+      translationConfig
     };
 
-
-    if (headers.length !== 0) {
-      body["headers"] = headers;
-    } else {
-      body["headers"] = [];
-    }
-    if (oas.length !== 0) {
-      body["oas"] = oas;
-    } else {
-      body["oas"] = [];
-    }
-    if (paths.length !== 0) {
-      body["paths"] = paths;
-    } else {
-      body["paths"] = [];
-    }
-    if (translationConfig.length !== 0) {
-      body["translationConfig"] = translationConfig;
-    } else {
-      body["translationConfig"] = [];
-    }
 
     body = removeEmptyObjectValues(body);
 

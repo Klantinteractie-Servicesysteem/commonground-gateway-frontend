@@ -1,224 +1,415 @@
 import * as React from "react";
-import { Link, navigate } from "gatsby";
+import {Link} from "gatsby";
 import {
+  checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import Spinner from "../common/spinner";
-import { GenericInputComponent } from "@conductionnl/nl-design-system/lib/GenericInput/src/genericInput";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {
+  GenericInputComponent,
+  Accordion,
+  Card,
+  Alert,
+  Spinner,
+  SelectInputComponent
+} from "@conductionnl/nl-design-system/lib";
+import {ArrayInputComponent} from "../common/arrayInput";
+import FlashMessage from 'react-flash-message';
+import {isLoggedIn} from "../../services/auth";
 
-export default function SoapForm({ id }) {
+export default function SoapForm({id}) {
   const [context, setContext] = React.useState(null);
   const [soap, setSoap] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
+  const [entities, setEntities] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
       });
-    }
-    if (id !== "new") {
-      getSoap();
+    } else if (isLoggedIn) {
+      if (id !== 'new') {
+        getSoap();
+      }
+      getEntities();
     }
   }, [context]);
 
   const getSoap = () => {
+    setShowSpinner(true);
     fetch(`${context.adminUrl}/soaps/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("get soap")
+        console.log(data)
+        setShowSpinner(false);
         setSoap(data);
-        console.log(data);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
+      });
+  };
+
+  const getEntities = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/entities`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          setEntities(data["hydra:member"]);
+        }
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
   const saveSoap = (event) => {
-    setShowSpinner(true);
     event.preventDefault();
-    let headers = retrieveFormArrayAsObject(event.target, "headers");
+    setShowSpinner(true);
 
-    let url = context.adminUrl + "/gateways";
-    let method = "POST";
-    if (id !== "new") {
-      url = url + "/" + id;
+    let requestSkeleton = retrieveFormArrayAsOArray(event.target, "requestSkeleton");
+    let requestHydration = retrieveFormArrayAsOArray(event.target, "requestHydration");
+    let responseSkeleton = retrieveFormArrayAsOArray(event.target, "responseSkeleton");
+    let responseHydration = retrieveFormArrayAsOArray(event.target, "responseHydration");
+
+    let body = {
+      name: event.target.name.value,
+      description: event.target.description
+        ? event.target.description.value
+        : null,
+      type: event.target.type.value,
+      zaaktype: event.target.zaaktype.value,
+      toEntity: event.target.toEntity.value,
+      fromEntity: event.target.fromEntity.value,
+      requestHydration,
+      responseSkeleton,
+      responseHydration,
+      requestSkeleton,
+    };
+
+
+    // This removes empty values from the body
+    body = removeEmptyObjectValues(body);
+
+    if (!checkValues([body.name, body.type, ])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
+      return;
+    }
+    console.log("saveSoap")
+    let url = `${context.adminUrl}/soaps`
+    let method = null;
+    if (id === "new") {
+      method = "POST";
+    } else {
+      url = `${url}/${id}`;
       method = "PUT";
     }
 
-    let nameInput = document.getElementById("nameInput");
-    let locationInput = document.getElementById("locationInput");
-    let authInput = document.getElementById("authInput");
-    let localeInput = document.getElementById("localeInput");
-    let acceptInput = document.getElementById("acceptInput");
-    let jwtInput = document.getElementById("jwtInput");
-    let jwtIdInput = document.getElementById("jwtIdInput");
-    let secretInput = document.getElementById("secretInput");
-    let usernameInput = document.getElementById("usernameInput");
-    let passwordInput = document.getElementById("passwordInput");
-    let apikeyInput = document.getElementById("apikeyInput");
-    let documentationInput = document.getElementById("documentationInput");
-    let authorizationHeaderInput = document.getElementById(
-      "authorizationHeaderInput"
-    );
-    // let authorizationHeaderInput = document.getElementById('authorizationHeaderInput');
 
-    let body = {
-      name: nameInput.value,
-      location: locationInput.value,
-      auth: authInput.value,
-      locale: localeInput.value,
-      accept: acceptInput.value,
-      jwt: jwtInput.value,
-      jwtId: jwtIdInput.value,
-      secret: secretInput.value,
-      username: usernameInput.value,
-      password: passwordInput.value,
-      apikey: apikeyInput.value,
-      documentation: documentationInput.value,
-      authorizationHeader: authorizationHeaderInput.value,
-    };
-
-    if (Object.keys(headers).length !== 0) {
-      body["headers"] = headers;
-    } else {
-      body["headers"] = [];
-    }
-
-    body = removeEmptyObjectValues(body);
 
     fetch(url, {
       method: method,
-      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
       .then((data) => {
-        setSoap(data);
+        console.log(data)
         setShowSpinner(false);
-        navigate("/soap");
+        setSoap(data)
       })
       .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
-  return (
-    <form id="dataForm" onSubmit={saveSoap}>
-      <Card
-        title={"Soap"}
-        cardHeader={function () {
-          return (
-            <>
-              <Link className="utrecht-link" to={"/soaps"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />
-                  Back
-                </button>
-              </Link>
-              <button
-                className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                type="submit"
-              >
-                <i className="fas fa-save mr-2" />
-                Save
-              </button>
-            </>
-          );
-        }}
-        cardBody={function () {
-          return (
-            <div className="row">
-              <div className="col-12">
-                {showSpinner === true ? (
-                  <Spinner />
-                ) : (
-                  <>
-                    <div className="row mb-3">
-                      <div className="col-6">
-                        {soap !== null && soap.name !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={soap.name}
-                            nameOverride={"Name"}
-                            required={"true"}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            nameOverride={"Name"}
-                            required={"true"}
-                          />
-                        )}
-                      </div>
-                      <div className="col-6">
-                        {soap !== null && soap.description !== null ? (
-                          <GenericInputComponent
-                            name={"description"}
-                            data={soap.description}
-                            type={"text"}
-                            id={"descriptionInput"}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            name={"description"}
-                            type={"text"}
-                            id={"descriptionInput"}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-6">
-                        {soap !== null && soap.type !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"type"}
-                            id={"typeInput"}
-                            data={soap.type}
-                            required={"true"}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"type"}
-                            id={"typeInput"}
-                            required={"true"}
-                          />
-                        )}
-                      </div>
-                      <div className="col-6">
-                        {soap !== null && soap.zaaktype !== null ? (
-                          <GenericInputComponent
-                            name={"zaaktype"}
-                            data={soap.zaaktype}
-                            type={"text"}
-                            id={"zaaktypeInput"}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            name={"zaaktype"}
-                            type={"text"}
-                            id={"zaaktypeInput"}
-                          />
-                        )}
-                      </div>
-                    </div>
+  return (<>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="dataForm" onSubmit={saveSoap}>
+        <Card title={"Soap"}
+              cardHeader={function () {
+                return (<>
+                    <Link className="utrecht-link" to={"/soaps"}>
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                        <i className="fas fa-long-arrow-alt-left mr-2"/>
+                        Back
+                      </button>
+                    </Link>
+                    <button
+                      className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                      type="submit"
+                    >
+                      <i className="fas fa-save mr-2"/>
+                      Save
+                    </button>
                   </>
-                )}
-              </div>
-            </div>
-          );
-        }}
-      />
-    </form>
+                );
+              }}
+              cardBody={function () {
+                return (
+                  <div className="row">
+                    <div className="col-12">
+                      {showSpinner === true ? (
+                        <Spinner/>
+                      ) : (
+                        <>
+                          <div className="row mb-3">
+                            <div className="col-6">
+                              {soap !== null && soap.name !== null ? (
+                                <GenericInputComponent
+                                  type={"text"}
+                                  name={"name"}
+                                  id={"nameInput"}
+                                  data={soap.name}
+                                  nameOverride={"Name"}
+                                  required={"true"}
+                                />
+                              ) : (
+                                <GenericInputComponent
+                                  type={"text"}
+                                  name={"name"}
+                                  id={"nameInput"}
+                                  nameOverride={"Name"}
+                                  required={"true"}
+                                />
+                              )}
+                            </div>
+                            <div className="col-6">
+                              {soap !== null && soap.description !== null ? (
+                                <GenericInputComponent
+                                  name={"description"}
+                                  data={soap.description}
+                                  type={"text"}
+                                  id={"descriptionInput"}
+                                />
+                              ) : (
+                                <GenericInputComponent
+                                  name={"description"}
+                                  type={"text"}
+                                  id={"descriptionInput"}
+                                />
+                              )}
+                            </div>
+                          </div>
+                          <div className="row mb-3">
+                            <div className="col-6">
+                              {soap !== null && soap.type !== null ? (
+                                <GenericInputComponent
+                                  type={"text"}
+                                  name={"type"}
+                                  id={"typeInput"}
+                                  data={soap.type}
+                                  required={"true"}
+                                />
+                              ) : (
+                                <GenericInputComponent
+                                  type={"text"}
+                                  name={"type"}
+                                  id={"typeInput"}
+                                  required={"true"}
+                                />
+                              )}
+                            </div>
+                            <div className="col-6">
+                              {soap !== null && soap.zaaktype !== null ? (
+                                <GenericInputComponent
+                                  name={"zaaktype"}
+                                  data={soap.zaaktype}
+                                  type={"text"}
+                                  id={"zaaktypeInput"}
+                                />
+                              ) : (
+                                <GenericInputComponent
+                                  name={"zaaktype"}
+                                  type={"text"}
+                                  id={"zaaktypeInput"}
+                                />
+                              )}
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                              <div className="form-group">
+                                {
+                                  entities !== null && entities.length > 0 ? (
+                                    <>
+                                      {soap !== null &&
+                                      soap.toEntity !== undefined &&
+                                      soap.toEntity !== null ? (
+                                          <SelectInputComponent
+                                           options={entities}
+                                            data={soap.toEntity.name}
+                                            name={"toEntity"} id={"toEntityInput"} nameOverride={"To Entity"}
+                                            value={"/admin/entities/"}/>
+                                        )
+                                        : (
+                                          <SelectInputComponent
+                                            options={entities}
+                                            name={"toEntity"} id={"toEntityInput"} nameOverride={"To Entity"}
+                                            value={"/admin/entities/"}/>
+                                        )}
+                                    </>
+                                  ) : (
+                                    <SelectInputComponent
+                                      options={[{name: "Please create a entity first to use it", value: null}]}
+                                      name={"toEntity"} id={"toEntityInput"} nameOverride={"To Entity"}
+                                    />
+                                  )}
+                              </div>
+                            </div>
+                            <div className="col-6">
+                              <div className="form-group">
+                                {
+                                  entities !== null && entities.length > 0 ? (
+                                    <>
+                                      {soap !== null &&
+                                      soap.fromEntity !== undefined &&
+                                      soap.fromEntity !== null ? (
+                                          <SelectInputComponent
+                                           options={entities}
+                                            data={soap.fromEntity.name}
+                                            name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
+                                            value={"/admin/entities/"} />
+                                        )
+                                        : (
+                                          <SelectInputComponent
+                                           options={entities}
+                                            name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
+                                            value={"/admin/entities/"} />
+                                        )}
+                                    </>
+                                  ) : (
+                                    <SelectInputComponent
+                                      options={[{ name: "Please create a entity first to use it", value: null}]}
+                                      name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
+                                    />
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+                          <Accordion id="soapAccordion"
+                                     items={[{
+                                       title: "RequestSkeleton",
+                                       id: "requestSkeletonAccordion",
+                                       render: function () {
+                                         return (<>
+                                           {soap !== null && soap.requestSkeleton !== null ? (
+                                             <ArrayInputComponent
+                                               id={"requestSkeleton"}
+                                               label={"RequestSkeleton"}
+                                               data={soap.requestSkeleton}
+                                             />
+                                           ) : (
+                                             <ArrayInputComponent
+                                               id={"requestSkeleton"}
+                                               label={"RequestSkeleton"}
+                                               data={null}
+                                             />
+                                           )}
+                                         </>)
+                                       }
+                                     },
+                                       {
+                                         title: "RequestHydration",
+                                         id: "requestHydrationAccordion",
+                                         render: function () {
+                                           return (<>
+                                             {soap !== null && soap.requestHydration !== null ? (
+                                               <ArrayInputComponent
+                                                 id={"requestHydration"}
+                                                 label={"RequestHydration"}
+                                                 data={soap.requestHydration}
+                                               />
+                                             ) : (
+                                               <ArrayInputComponent
+                                                 id={"requestHydration"}
+                                                 label={"RequestHydration"}
+                                                 data={null}
+                                               />
+                                             )}
+                                           </>)
+                                         }
+                                       },
+                                       {
+                                         title: "ResponseSkeleton",
+                                         id: "responseSkeletonAccordion",
+                                         render: function () {
+                                           return (<>
+                                             {soap !== null && soap.responseSkeleton !== null ? (
+                                               <ArrayInputComponent
+                                                 id={"responseSkeleton"}
+                                                 label={"ResponseSkeleton"}
+                                                 data={soap.responseSkeleton}
+                                               />
+                                             ) : (
+                                               <ArrayInputComponent
+                                                 id={"responseSkeleton"}
+                                                 label={"ResponseSkeleton"}
+                                                 data={null}
+                                               />
+                                             )}
+                                           </>)
+                                         }
+                                       },
+                                       {
+                                         title: "ResponseHydration",
+                                         id: "responseHydrationAccordion",
+                                         render: function () {
+                                           return (<>
+                                             {soap !== null && soap.responseHydration !== null ? (
+                                               <ArrayInputComponent
+                                                 id={"responseHydration"}
+                                                 label={"ResponseHydration"}
+                                                 data={soap.responseHydration}
+                                               />
+                                             ) : (
+                                               <ArrayInputComponent
+                                                 id={"responseHydration"}
+                                                 label={"ResponseHydration"}
+                                                 data={null}
+                                               />
+                                             )}
+                                           </>)
+                                         }
+                                       }]}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )
+              }}
+        />
+      </form>
+    </>
   );
 }
