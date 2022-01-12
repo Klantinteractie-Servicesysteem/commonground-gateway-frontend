@@ -8,25 +8,25 @@ import {
   Alert
 }
   from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
-import { navigate } from "gatsby-link";
-import { Link } from "gatsby";
+import {isLoggedIn} from "../../services/auth";
+import {navigate} from "gatsby-link";
+import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import { ArrayInputComponent } from "../common/arrayInput";
+import {ArrayInputComponent} from "../common/arrayInput";
 
-export default function EntityForm({ id }) {
+export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
 
-  const [entity, setEntity] = React.useState(null);
-  const [sources, setSources] = React.useState(null);
-  const [soaps, setSoaps] = React.useState(null);
+  const [entity, setEntity] = React.useState<any>(null);
+  const [sources, setSources] = React.useState<any>(null);
+  const [soaps, setSoaps] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -46,7 +46,7 @@ export default function EntityForm({ id }) {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/entities/${id}`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -57,7 +57,7 @@ export default function EntityForm({ id }) {
         setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -65,7 +65,7 @@ export default function EntityForm({ id }) {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/gateways`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -78,7 +78,7 @@ export default function EntityForm({ id }) {
         setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -86,7 +86,7 @@ export default function EntityForm({ id }) {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/soaps`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -99,7 +99,7 @@ export default function EntityForm({ id }) {
         setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   }
 
@@ -113,7 +113,7 @@ export default function EntityForm({ id }) {
     let availableProperties = retrieveFormArrayAsOArray(event.target, "availableProperties");
     let collectionConfig = retrieveFormArrayAsOArray(event.target, "collectionConfig");
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description.value ? event.target.description.value : null,
       route: event.target.route.value ? event.target.route.value : null,
@@ -159,11 +159,11 @@ export default function EntityForm({ id }) {
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name])) {
+    if (!checkValues([body["name"]])) {
       return;
     }
 
-    let url = context.adminUrl + "/entities";
+    let url = `${context.adminUrl}/entities`;
     let method = "POST";
     if (id !== "new") {
       url = `${url}/${id}`;
@@ -173,7 +173,7 @@ export default function EntityForm({ id }) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
@@ -186,7 +186,7 @@ export default function EntityForm({ id }) {
         setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   }
 
@@ -194,85 +194,72 @@ export default function EntityForm({ id }) {
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveEntity}>
         <Card title="Values"
               cardHeader={function () {
-                return (<>
-                  <Link className="utrecht-link" to={"/entities"}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
-                      <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                return (
+                  <div>
+                    <Link className="utrecht-link" to={"/entities"}>
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                        <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                      </button>
+                    </Link>
+                    <button
+                      className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                      type="submit"
+                    >
+                      <i className="fas fa-save mr-2"/>Save
                     </button>
-                  </Link>
-                  <button
-                    className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                    type="submit"
-                  >
-                    <i className="fas fa-save mr-2" />Save
-                  </button>
-                </>)
-              }}
+                  </div>
+                )}}
               cardBody={function () {
                 return (
                   <div className="row">
                     <div className="col-12">
                       {showSpinner === true ? (
-                        <Spinner />
+                        <Spinner/>
                       ) : (
-                        <>
+                        <div>
                           <div className="row">
                             <div className="col-6">
-                              {entity !== null && entity.name !== null ? (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
-                                                       nameOverride={"Name"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name"} />
-                              )}
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity && entity.name && entity.name}
+                                                       nameOverride={"Name"}/>
                             </div>
                             <div className="col-6">
-                              {entity !== null && entity.description !== null ? (
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={entity.description} nameOverride={"Description"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       nameOverride={"Description"} />
-                              )}
+                                                       data={entity && entity.description && entity.description} nameOverride={"Description"}/>
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
                               <div className="form-group">
                                 <SelectInputComponent
-                                  options={[{ name: 'Organization', value: 'organization' }, { name: 'User', value: 'user' }, { name: 'User group', value: 'userGroup' }]}
+                                  options={[{name: 'Organization', value: 'organization'}, {
+                                    name: 'User',
+                                    value: 'user'
+                                  }, {name: 'User group', value: 'userGroup'}]}
                                   data={entity && entity.function ? entity.function : null}
                                   name={"function"}
                                   id={"functionInput"}
                                   nameOverride={"Function"}
-                                  required={true} />
+                                  required={true}/>
                               </div>
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {entity !== null && entity.endpoint !== null ? (
-                                <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"} data={entity.endpoint}
-                                                       nameOverride={"Endpoint"} />
-                              ) : (
                                 <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                                                       nameOverride={"Endpoint"} />
-                              )}
+                                                       data={entity && entity.endpoint && entity.endpoint}
+                                                       nameOverride={"Endpoint"}/>
                             </div>
                             <div className="col-6">
-                              {entity !== null && entity.route !== null ? (
                                 <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                       data={entity.route} nameOverride={"Route"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                       nameOverride={"Route"} />
-                              )}
+                                                       data={entity && entity.route && entity.route} nameOverride={"Route"}/>
                             </div>
                           </div>
                           <div className="row">
@@ -288,19 +275,22 @@ export default function EntityForm({ id }) {
                                             options={sources}
                                             data={entity.gateway.name}
                                             name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}
-                                            value={"/admin/gateways/"} />
+                                            value={"/admin/gateways/"}/>
                                         )
                                         : (
                                           <SelectInputComponent
                                             options={sources}
                                             name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}
-                                            value={"/admin/gateways/"} />
+                                            value={"/admin/gateways/"}/>
                                         )}
                                     </>
                                   ) : (
                                     <SelectInputComponent
-                                      options={[{ name: "Please create a Source before creating an Entity", value: null }]}
-                                      name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} />
+                                      options={[{
+                                        name: "Please create a Source before creating an Entity",
+                                        value: null
+                                      }]}
+                                      name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}/>
                                   )}
                               </div>
                             </div>
@@ -316,18 +306,18 @@ export default function EntityForm({ id }) {
                                             options={sources}
                                             data={entity.toSoap.name}
                                             name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
-                                            value={"/admin/soaps/"} />
+                                            value={"/admin/soaps/"}/>
                                         )
                                         : (
                                           <SelectInputComponent
                                             options={sources}
                                             name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
-                                            value={"/admin/soaps/"} />
+                                            value={"/admin/soaps/"}/>
                                         )}
                                     </>
                                   ) : (
                                     <SelectInputComponent
-                                      options={[{ name: "Please create a soap first to use it", value: null}]}
+                                      options={[{name: "Please create a soap first to use it", value: null}]}
                                       name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
                                     />
                                   )}
@@ -345,23 +335,9 @@ export default function EntityForm({ id }) {
                           <div className="row">
                             <div className="col-12">
                               <div className="form-check">
-                                {entity !== null ? (
-                                  <>
-                                    {entity.extend ? (
                                       <Checkbox type={"checkbox"} id={"extendInput"}
                                                 nameLabel={"Extend"} nameAttribute={"extend"}
-                                                data={entity.extend} />
-                                    ) : (
-                                      <Checkbox type={"checkbox"} id={"extendInput"}
-                                                nameLabel={"Extend"} nameAttribute={"extend"}
-                                      />
-                                    )}
-                                  </>
-                                ) : (
-                                  <Checkbox type={"checkbox"} id={"extendInput"}
-                                            nameLabel={"Extend"} nameAttribute={"extend"}
-                                  />
-                                )}
+                                                data={entity && entity.extend && entity.extend}/>
                               </div>
                             </div>
                           </div>
@@ -374,19 +350,11 @@ export default function EntityForm({ id }) {
                                 render: function () {
                                   return (
                                     <>
-                                      {entity !== null && entity.transformations !== null ? (
                                         <ArrayInputComponent
                                           id={"transformations"}
                                           label={"Transformations"}
-                                          data={entity.transformations}
+                                          data={entity && entity.transformations ? entity.transformations : null}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"transformations"}
-                                          label={"Transformations"}
-                                          data={null}
-                                        />
-                                      )}
                                     </>
                                   );
                                 },
@@ -396,21 +364,11 @@ export default function EntityForm({ id }) {
                                 id: "translationConfigAccordion",
                                 render: function () {
                                   return (
-                                    <>
-                                      {entity !== null && entity.translationConfig !== null ? (
                                         <ArrayInputComponent
                                           id={"translationConfig"}
                                           label={"Translation Config"}
-                                          data={entity.translationConfig}
+                                          data={entity && entity.translationConfig ? entity.translationConfig : null}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"translationConfig"}
-                                          label={"Translation Config"}
-                                          data={null}
-                                        />
-                                      )}
-                                    </>
                                   );
                                 },
                               },
@@ -419,21 +377,11 @@ export default function EntityForm({ id }) {
                                 id: "collectionConfigAccordion",
                                 render: function () {
                                   return (
-                                    <>
-                                      {entity !== null && entity.collectionConfig !== null ? (
                                         <ArrayInputComponent
                                           id={"collectionConfig"}
-                                          data={entity.collectionConfig}
+                                          data={entity && entity.collectionConfig ? entity.collectionConfig : null}
                                           label={"Collection Config"}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"collectionConfig"}
-                                          label={"Collection Config"}
-                                          data={null}
-                                        />
-                                      )}
-                                    </>
                                   )
                                 }
                               },
@@ -442,21 +390,11 @@ export default function EntityForm({ id }) {
                                 id: "usedPropertiesAccordion",
                                 render: function () {
                                   return (
-                                    <>
-                                      {entity !== null && entity.usedProperties !== null ? (
                                         <ArrayInputComponent
                                           id={"usedProperties"}
                                           label={"Used Properties"}
-                                          data={entity.usedProperties}
+                                          data={entity && entity.usedProperties ? entity.usedProperties : null}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"usedProperties"}
-                                          label={"Used Properties"}
-                                          data={null}
-                                        />
-                                      )}
-                                    </>
                                   );
                                 },
                               },
@@ -465,32 +403,23 @@ export default function EntityForm({ id }) {
                                 id: "availablePropertiesAccordion",
                                 render: function () {
                                   return (
-                                    <>
-                                      {entity !== null && entity.availableProperties !== null ? (
                                         <ArrayInputComponent
                                           id={"availableProperties"}
                                           label={"Available Properties"}
-                                          data={entity.availableProperties}
+                                          data={entity && entity.availableProperties ? entity.availableProperties : null}
                                         />
-                                      ) : (
-                                        <ArrayInputComponent
-                                          id={"availableProperties"}
-                                          label={"Available Properties"}
-                                          data={null}
-                                        />
-                                      )}
-                                    </>
                                   );
                                 },
                               }
                             ]}
                           />
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
                 )
-              }} />
-      </form></>
+              }}/>
+      </form>
+    </>
   );
 }
