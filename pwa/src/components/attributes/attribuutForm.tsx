@@ -229,7 +229,7 @@ export default function AttributeForm({ id, entity }) {
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.log("Error:", error);
+        console.log(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
@@ -267,7 +267,7 @@ export default function AttributeForm({ id, entity }) {
                     <div className="row">
                       <div className="col-6">
                           <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={attribute && attribute.name && attribute.name}
-                            nameOverride={"Name"} />
+                            nameOverride={"Name"} required/>
                       </div>
                       <div className="col-6">
                           <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
@@ -289,7 +289,7 @@ export default function AttributeForm({ id, entity }) {
                               name: "File",
                               value: "file"
                             }]}
-                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute && attribute.type && attribute.type} required={true} />
+                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute && attribute.type && attribute.type} required />
                       </div>
                       <div className="col-6">
                             <SelectInputComponent

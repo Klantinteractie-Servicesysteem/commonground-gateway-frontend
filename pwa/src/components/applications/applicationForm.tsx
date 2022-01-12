@@ -108,7 +108,7 @@ export default function ApplicationForm({ id }) {
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.error("Error:", error);
+        console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
@@ -149,7 +149,7 @@ export default function ApplicationForm({ id }) {
                           <div className="row">
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application && application.name && application.name }
-                                                       nameOverride={"Name"} />
+                                                       nameOverride={"Name"} required />
                             </div>
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}

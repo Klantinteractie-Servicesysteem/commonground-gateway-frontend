@@ -184,7 +184,7 @@ export default function EntityForm({id}) {
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.error("Error:", error);
+        console.error(error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
@@ -228,7 +228,7 @@ export default function EntityForm({id}) {
                           <div className="row">
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity && entity.name && entity.name}
-                                                       nameOverride={"Name"}/>
+                                                       nameOverride={"Name"} required/>
                             </div>
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
@@ -247,7 +247,7 @@ export default function EntityForm({id}) {
                                   name={"function"}
                                   id={"functionInput"}
                                   nameOverride={"Function"}
-                                  required={true}/>
+                                  required/>
                               </div>
                             </div>
                           </div>
