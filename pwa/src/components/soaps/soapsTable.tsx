@@ -54,7 +54,7 @@ export default function SoapsTable() {
               <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/soap/new">
+            <Link to="/soaps/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2"/>
                 Add

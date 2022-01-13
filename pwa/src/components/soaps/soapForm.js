@@ -17,7 +17,7 @@ import {ArrayInputComponent} from "../common/arrayInput";
 import FlashMessage from 'react-flash-message';
 import {isLoggedIn} from "../../services/auth";
 
-export default function SoapForm({id}) {
+export default function SoapsForm({id}) {
   const [context, setContext] = React.useState(null);
   const [soap, setSoap] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -31,13 +31,13 @@ export default function SoapForm({id}) {
       });
     } else if (isLoggedIn) {
       if (id !== 'new') {
-        getSoap();
+        getSoaps();
       }
       getEntities();
     }
   }, [context]);
 
-  const getSoap = () => {
+  const getSoaps = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/soaps/${id}`, {
       credentials: "include",
@@ -155,7 +155,7 @@ export default function SoapForm({id}) {
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveSoap}>
-        <Card title={"Soap"}
+        <Card title={"Soaps"}
               cardHeader={function () {
                 return (<>
                     <Link className="utrecht-link" to={"/soaps"}>
