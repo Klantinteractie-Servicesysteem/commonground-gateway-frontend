@@ -59,7 +59,7 @@ export default function SoapsTable() {
                 <i className="fas fa-plus mr-2"/>
                 Add
               </button>
-            </Link>
+            </Link> vb
           </>
         );
       }}
@@ -81,7 +81,7 @@ export default function SoapsTable() {
                       headerName: "Edit",
                       renderCell: (item) => {
                         return (
-                          <Link to={`/soap/${item.id}`}>
+                          <Link to={`/soaps/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>
                               Edit
