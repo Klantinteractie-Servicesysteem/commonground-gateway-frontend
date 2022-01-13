@@ -1,16 +1,16 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import SoapForm from "../../components/soap/soapForm";
+import SoapsTable from "../../components/soaps/soapsTable";
 
-const IndexPage = (props) => {
+const IndexPage = () => {
   return (
-    <Layout title={"Soap"} subtext={"Edit or create a soap object"}>
+    <Layout title={"Soaps"} subtext={"An overview of your soaps objects"}>
       <title>Gateway - Soaps</title>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <SoapForm id={props.params.id} />
+              <SoapsTable />
             </div>
           </div>
         </div>

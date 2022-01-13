@@ -3,12 +3,12 @@ import {Link, navigate} from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
+import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
   Accordion,
-  MultiDimensionalArrayInput,
   Card,
   Alert,
   Spinner,
@@ -41,14 +41,13 @@ export default function SourceForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("get source")
+        console.log(data)
         setShowSpinner(false);
-        if (data.id !== undefined) {
-          setSource(data);
-        } else {
-          setAlert({type: 'danger', message: data['hydra:description']})
-        }
+        setSource(data);
       })
       .catch((error) => {
+        setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
@@ -58,83 +57,39 @@ export default function SourceForm({id}) {
   const saveSource = (event) => {
     event.preventDefault();
     setShowSpinner(true);
-    let headers = retrieveFormArrayAsObject(event.target, "headers");
-    let oas = retrieveFormArrayAsObject(event.target, "oas");
-    let paths = retrieveFormArrayAsObject(event.target, "paths");
-    let translationConfigs = retrieveFormArrayAsObject(event.target, "translationConfigs");
 
-    let url = context.adminUrl + "/gateways";
-    let method = "POST";
-    if (id !== "new") {
-      url = url + "/" + id;
-      method = "PUT";
-    }
-
-    let nameInput = document.getElementById("nameInput");
-    let locationInput = document.getElementById("locationInput");
-    let typeInput = document.getElementById("typeInput");
-    let authInput = document.getElementById("authInput");
-    let localeInput = document.getElementById("localeInput");
-    let acceptInput = document.getElementById("acceptInput");
-    let jwtInput = document.getElementById("jwtInput");
-    let jwtIdInput = document.getElementById("jwtIdInput");
-    let secretInput = document.getElementById("secretInput");
-    let usernameInput = document.getElementById("usernameInput");
-    let passwordInput = document.getElementById("passwordInput");
-    let apikeyInput = document.getElementById("apikeyInput");
-    let documentationInput = document.getElementById("documentationInput");
-    let authorizationHeaderInput = document.getElementById(
-      "authorizationHeaderInput"
-    );
-
-    // let loggingInput = document.getElementById("loggingInput");
-    // let logging = loggingInput.checked ? true : false;
+    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let oas = retrieveFormArrayAsOArray(event.target, "oas");
+    let paths = retrieveFormArrayAsOArray(event.target, "paths");
+    let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
 
     let body = {
-      name: nameInput.value,
-      location: locationInput.value,
-      type: typeInput.value,
-      auth: authInput.value,
-      locale: localeInput.value,
-      accept: acceptInput.value,
-      jwt: jwtInput.value,
-      jwtId: jwtIdInput.value,
-      secret: secretInput.value,
-      username: usernameInput.value,
-      password: passwordInput.value,
-      apikey: apikeyInput.value,
-      documentation: documentationInput.value,
-      authorizationHeader: authorizationHeaderInput.value,
-
-      // logging: logging,
-
-      headers: headers ? headers : null,
-      oas: oas ? oas : null,
-      paths: paths ? paths : null,
-      translationConfigs: translationConfigs ? translationConfigs : null
+      name: event.target.name.value,
+      description: event.target.description
+        ? event.target.description.value
+        : null,
+      type: event.target.type.value,
+      auth: event.target.auth.value,
+      locale: event.target.locale.value,
+      location: event.target.location.value,
+      accept: event.target.accept.value,
+      jwt: event.target.jwt.value,
+      jwtId: event.target.jwtId.value,
+      secret: event.target.secret.value,
+      username: event.target.username.value,
+      password: event.target.password.value,
+      apikey: event.target.apikey.value,
+      documentation: event.target.documentation.value,
+      authorizationHeader: event.target.authorizationHeader.value,
+      headers,
+      oas,
+      paths,
+      translationConfig
     };
 
-    if (Object.keys(headers).length !== 0 && headers !== "") {
-      body["headers"] = headers;
-    } else {
-      body["headers"] = [];
-    }
-    if (Object.keys(oas).length !== 0 && oas !== "") {
-      body["oas"] = oas;
-    } else {
-      body["oas"] = [];
-    }
-    if (Object.keys(paths).length !== 0 && paths !== "") {
-      body["paths"] = paths;
-    } else {
-      body["paths"] = [];
-    }
-    if (Object.keys(translationConfigs).length !== 0 && translationConfigs !== "") {
-      body["translationConfigs"] = translationConfigs;
-    } else {
-      body["translationConfigs"] = [];
-    }
+
     body = removeEmptyObjectValues(body);
+
     if (!checkValues([body.name, body.location, body.type, body.auth])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
@@ -142,6 +97,12 @@ export default function SourceForm({id}) {
       return;
     }
 
+    let url = `${context.adminUrl}/gateways`;
+    let method = "POST";
+    if (id !== "new") {
+      url = `${url}/${id}`;
+      method = "PUT";
+    }
     fetch(url, {
       method: method,
       credentials: "include",
@@ -150,16 +111,13 @@ export default function SourceForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.id !== undefined) {
-          navigate(`/sources`);
-        } else {
-          setShowSpinner(false);
-          setAlert(null);
-          setAlert({type: 'danger', message: data['hydra:description']});
-        }
+        console.log(data)
+        setShowSpinner(false);
+        setSource(data)
       })
       .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
@@ -201,152 +159,235 @@ export default function SourceForm({id}) {
                       ) : (
                         <>
                           <div className="row">
-                            <div className="col-6 form-group">
-                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                     data={source && source.name && source.name} nameOverride={"Name"}
-                                                     required={"true"}/>
-                            </div>
-                            <div className="col-6 form-group">
-                              <GenericInputComponent nameOverride={"Location (url)"} name={"location"}
-                                                     data={source && source.location && source.location} type={"text"}
-                                                     required={"true"} id={"locationInput"}/>
-
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6 form-group">
-                              <SelectInputComponent
-                                options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
-                                  name: "soap",
-                                  value: "soap"
-                                }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
-                                name={"type"} id={"typeInput"} nameOverride={"Type"}
-                                data={source && source.type && source.type} required={true}/>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6 form-group">
-                              <GenericInputComponent nameOverride={"Accept (accept header used for this source)"}
-                                                     name={"accept"} data={source && source.accept && source.accept}
-                                                     type={"text"} id={"acceptInput"}/>
+                            <div className="col-6">
+                              {source !== null && source.name !== null ? (
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={source.name}
+                                                       nameOverride={"Name"}/>
+                              ) : (
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                       nameOverride={"Name"}/>
+                              )}
                             </div>
                             <div className="col-6">
-                              <GenericInputComponent nameOverride={"Locale"} name={"locale"}
-                                                     data={source && source.locale && source.locale} type={"text"}
-                                                     id={"localeInput"}/>
+                              {source !== null && source.location !== null ? (
+                                <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
+                                                       data={source.location}
+                                                       nameOverride={"Location (url)"}/>
+                              ) : (
+                                <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
+                                                       nameOverride={"Location (url)"}/>
+                              )}
                             </div>
                           </div>
                           <div className="row">
-                            <div className="col-12 form-group">
-                              <SelectInputComponent
-                                options={[{name: "apikey", value: "apikey"}, {
-                                  name: "jwt",
-                                  value: "jwt"
-                                }, {name: "username-password", value: "username-password"}]}
-                                name={"auth"} id={"authInput"} nameOverride={"Auth"}
-                                data={source && source.auth && source.auth} required={true}/>
+                            <div className="col-6">
+                              {source !== null && source.type !== null ? (
+                                  <SelectInputComponent
+                                    options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
+                                      name: "soaps",
+                                      value: "soaps"
+                                    }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
+                                    name={"type"} id={"typeInput"} nameOverride={"Type"} data={source.type}
+                                    required={true}/>
+                                ) :
+                                (
+                                  <SelectInputComponent
+                                    options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
+                                      name: "soaps",
+                                      value: "soaps"
+                                    }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
+                                    name={"type"} id={"typeInput"} nameOverride={"Type"} required={true}/>
+                                )}
                             </div>
                           </div>
                           <div className="row">
-                            <div className="col-4">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
+                            <div className="col-6">
+                              {source !== null && source.accept !== null ? (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Accept (accept header used for this source)"}
+                                                       name={"accept"}
+                                                       id={"acceptInput"}
+                                                       data={source.accept}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Accept (accept header used for this source)"}
+                                                       name={"accept"}
+                                                       id={"acceptInput"}
+                                />
+                              )}
+                            </div>
+                            <div className="col-6">
+                              {source !== null && source.locale !== null ? (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Locale"} name={"locale"}
+                                                       id={"localeInput"}
+                                                       data={source.locale}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Locale"} name={"locale"}
+                                                       id={"localeInput"}
+                                />
+                              )}
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-12">
+                              {source !== null && source.auth !== null ? (
+                                  <SelectInputComponent
+                                    options={[{name: "apikey", value: "apikey"}, {
+                                      name: "jwt",
+                                      value: "jwt"
+                                    }, {name: "username-password", value: "username-password"}]}
+                                    name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true}
+                                    data={source.auth}
+                                  />
+                                ) :
+                                (
+                                  <SelectInputComponent
+                                    options={[{name: "apikey", value: "apikey"}, {
+                                      name: "jwt",
+                                      value: "jwt"
+                                    }, {name: "username-password", value: "username-password"}]}
+                                    name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true}/>
+                                )}
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                              {source !== null && source.jwt !== null ? (
+                                <GenericInputComponent type={"text"}
                                                        nameOverride={"Jwt"} name={"jwt"}
-                                                       data={source && source.jwt && source.jwt} type={"text"}
-                                                       id={"jwtInput"}/>
-                              </div>
+                                                       id={"jwtInput"}
+                                                       data={source.jwt}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Jwt"} name={"jwt"}
+                                                       id={"jwtInput"}
+                                />
+                              )}
                             </div>
-                            <div className="col-4">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
+                            <div className="col-6">
+                              {source !== null && source.jwtId !== null ? (
+                                <GenericInputComponent type={"text"}
                                                        nameOverride={"JwtId"} name={"jwtId"}
-                                                       data={source && source.jwtId && source.jwtId} type={"text"}
-                                                       id={"jwtIdInput"}/>
-                              </div>
+                                                       id={"jwtIdInput"}
+                                                       data={source.jwtId}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"JwtId"} name={"jwtId"}
+                                                       id={"jwtIdInput"}
+                                />
+                              )}
                             </div>
-                            <div className="col-4">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                              {source !== null && source.secret !== null ? (
+                                <GenericInputComponent type={"text"}
                                                        nameOverride={"Secret"} name={"secret"}
-                                                       data={source && source.secret && source.secret} type={"text"}
-                                                       id={"secretInput"}/>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
-                                                       nameOverride={"Username"} name={"username"}
-                                                       data={source && source.username && source.username} type={"text"}
-                                                       id={"usernameInput"}/>
-                              </div>
+                                                       id={"secretInput"}
+                                                       data={source.secret}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Secret"} name={"secret"}
+                                                       id={"secretInput"}
+                                />
+                              )}
                             </div>
                             <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
-                                                       nameOverride={"Password"} name={"password"}
-                                                       data={source && source.password && source.password} type={"text"}
-                                                       id={"passwordInput"}/>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
+                              {source !== null && source.apikey !== null ? (
+                                <GenericInputComponent type={"text"}
                                                        nameOverride={"Apikey"} name={"apikey"}
-                                                       data={source && source.apikey && source.apikey} type={"text"}
-                                                       id={"apikeyInput"}/>
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
-                                                       nameOverride={"Documentation"} name={"documentation"}
-                                                       data={source && source.documentation && source.documentation}
-                                                       type={"text"} id={"documentationInput"}/>
-                              </div>
+                                                       id={"apikeyInput"}
+                                                       data={source.apikey}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Apikey"} name={"apikey"}
+                                                       id={"apikeyInput"}
+                                />
+                              )}
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent className="utrecht-textbox utrecht-textbox--html-input"
+                              {source !== null && source.documentation !== null ? (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Documentation"} name={"documentation"}
+                                                       id={"documentationInput"}
+                                                       data={source.documentation}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Documentation"} name={"documentation"}
+                                                       id={"documentationInput"}
+                                />
+                              )}
+                            </div>
+                            <div className="col-6">
+                              {source !== null && source.authorizationHeader !== null ? (
+                                <GenericInputComponent type={"text"}
                                                        nameOverride={"AuthorizationHeader"} name={"authorizationHeader"}
-                                                       data={source && source.authorizationHeader && source.authorizationHeader}
-                                                       type={"text"} id={"authorizationHeaderInput"}/>
-                              </div>
+                                                       id={"authorizationHeaderInput"}
+                                                       data={source.authorizationHeader}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"AuthorizationHeader"} name={"authorizationHeader"}
+                                                       id={"authorizationHeaderInput"}
+                                />
+                              )}
                             </div>
                           </div>
-
-                          {/* Logging input */}
-                          {/* <div className="row mt-3">
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
-                          {
-                            source !== null && source.logging !== null && source.logging === true ? <>
-                              <Checkbox type="checkbox" id="loggingInput" nameLabel="logging" nameAttribute="logging" data={true} /></> : <>
-                              <Checkbox type="checkbox" id="loggingInput" nameLabel="logging" nameAttribute="logging" /> </>
-                          }
-                        </div>
-                      </div>
-                    </div> */}
-
+                          <div className="row">
+                            <div className="col-6">
+                              {source !== null && source.username !== null ? (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Username"} name={"username"}
+                                                       id={"usernameInput"}
+                                                       data={source.username}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Username"} name={"username"}
+                                                       id={"usernameInput"}
+                                />
+                              )}
+                            </div>
+                            <div className="col-6">
+                              {source !== null && source.password !== null ? (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Password"} name={"password"}
+                                                       id={"passwordInput"}
+                                                       data={source.password}
+                                />
+                              ) : (
+                                <GenericInputComponent type={"text"}
+                                                       nameOverride={"Password"} name={"password"}
+                                                       id={"passwordInput"}
+                                />
+                              )}
+                            </div>
+                          </div>
                           <Accordion id="sourceAccordion"
                                      items={[{
                                        title: "Headers",
-                                       id: "headers",
+                                       id: "headersAccordion",
                                        render: function () {
                                          return (<>
                                            {source !== null && source.headers !== null ? (
-                                             <MultiDimensionalArrayInput
+                                             <ArrayInputComponent
                                                id={"headers"}
                                                label={"Headers"}
-                                               data={[{key: "headers", value: source.headers}]}
+                                               data={source.headers}
                                              />
                                            ) : (
-                                             <MultiDimensionalArrayInput
+                                             <ArrayInputComponent
                                                id={"headers"}
                                                label={"Headers"}
                                                data={null}
@@ -357,19 +398,19 @@ export default function SourceForm({id}) {
                                      },
                                        {
                                          title: "OAS",
-                                         id: "oas",
+                                         id: "oasAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.oas !== null ? (
+                                               <ArrayInputComponent
                                                  id={"oas"}
                                                  label={"OAS"}
-                                                 data={[{key: 'oas', value: source.oas}]}
+                                                 data={source.oas}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"oas"}
-                                                 label={"oas"}
+                                                 label={"OAS"}
                                                  data={null}
                                                />
                                              )}
@@ -378,19 +419,19 @@ export default function SourceForm({id}) {
                                        },
                                        {
                                          title: "Paths",
-                                         id: "paths",
+                                         id: "pathsAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.paths !== null ? (
+                                               <ArrayInputComponent
                                                  id={"paths"}
-                                                 label={"paths"}
-                                                 data={[{key: 'paths', value: source.paths}]}
+                                                 label={"Paths"}
+                                                 data={source.paths}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"paths"}
-                                                 label={"paths"}
+                                                 label={"Paths"}
                                                  data={null}
                                                />
                                              )}
@@ -399,19 +440,19 @@ export default function SourceForm({id}) {
                                        },
                                        {
                                          title: "Translation config",
-                                         id: "translationConfig",
+                                         id: "translationConfigAccordion",
                                          render: function () {
                                            return (<>
-                                             {source !== null ? (
-                                               <MultiDimensionalArrayInput
+                                             {source !== null && source.translationConfig !== null ? (
+                                               <ArrayInputComponent
                                                  id={"translationConfig"}
-                                                 label={"translationConfig"}
-                                                 data={[{key: 'translationConfig', value: source.translationConfig}]}
+                                                 label={"Translation Config"}
+                                                 data={source.translationConfig}
                                                />
                                              ) : (
-                                               <MultiDimensionalArrayInput
+                                               <ArrayInputComponent
                                                  id={"translationConfig"}
-                                                 label={"translationConfig"}
+                                                 label={"Translation Config"}
                                                  data={null}
                                                />
                                              )}

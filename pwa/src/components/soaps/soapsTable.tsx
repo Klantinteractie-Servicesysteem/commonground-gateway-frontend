@@ -1,29 +1,28 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
-import { isLoggedIn } from "../../services/auth";
-import { useState } from "react";
-import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
-import { Link } from "gatsby";
+import {Table} from "@conductionnl/nl-design-system/lib/Table/src/table";
+import {isLoggedIn} from "../../services/auth";
+import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {Link} from "gatsby";
 
-export default function ConfigurationsTable() {
+export default function SoapsTable() {
+  const [entities, setEntities] = React.useState(null);
   const [context, setContext] = React.useState(null);
-  const [configurations, setConfigurations] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
+        adminUrl: window["GATSBY_ADMIN_URL"],
       });
     } else if (isLoggedIn()) {
-      getConfigs();
+      getSoap();
     }
   }, [context]);
 
-  const getConfigs = () => {
+  const getSoap = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/", {
+    fetch(`${context.adminUrl}/soaps`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -31,22 +30,15 @@ export default function ConfigurationsTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
-          setConfigurations(data["hydra:member"]);
-          setShowSpinner(false);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log(data);
+        setEntities(data["hydra:member"]);
       });
   };
 
   return (
     <Card
-      title={"Configurations"}
+      title={"Soaps"}
       cardHeader={function () {
         return (
           <>
@@ -55,19 +47,19 @@ export default function ConfigurationsTable() {
               data-toggle="modal"
               data-target="helpModal"
             >
-              <i className="fas fa-question mr-1" />
+              <i className="fas fa-question mr-1"/>
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getConfigs}>
-              <i className="fas fa-sync-alt mr-1" />
+            <a className="utrecht-link" onClick={getSoap}>
+              <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/configurations/new">
+            <Link to="/soaps/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
+                <i className="fas fa-plus mr-2"/>
                 Add
               </button>
-            </Link>
+            </Link> vb
           </>
         );
       }}
@@ -76,8 +68,8 @@ export default function ConfigurationsTable() {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner />
-              ) : configurations ? (
+                <Spinner/>
+              ) : entities ? (
                 <Table
                   columns={[
                     {
@@ -85,17 +77,13 @@ export default function ConfigurationsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
-                    },
-                    {
                       field: "id",
-                      headerName: " ",
-                      renderCell: (item: { id: string }) => {
+                      headerName: "Edit",
+                      renderCell: (item) => {
                         return (
-                          <Link to={`/configurations/${item.id}`}>
+                          <Link to={`/soaps/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
+                              <i className="fas fa-edit pr-1"/>
                               Edit
                             </button>
                           </Link>
@@ -103,7 +91,7 @@ export default function ConfigurationsTable() {
                       },
                     },
                   ]}
-                  rows={configurations}
+                  rows={entities}
                 />
               ) : (
                 <Table
@@ -111,10 +99,6 @@ export default function ConfigurationsTable() {
                     {
                       headerName: "Name",
                       field: "name",
-                    },
-                    {
-                      headerName: "Description",
-                      field: "description",
                     },
                   ]}
                   rows={[]}
