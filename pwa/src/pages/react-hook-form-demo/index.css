@@ -1,0 +1,14 @@
+.demoPage-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.demoPage-form > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.demoPage-form > div > span {
+    color: red;
+}
