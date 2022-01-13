@@ -1,7 +1,5 @@
 import * as React from "react";
 import { Link } from "gatsby";
-
-
 import { isLoggedIn, logout } from "../../services/auth";
 import { navigate } from "gatsby-link";
 
