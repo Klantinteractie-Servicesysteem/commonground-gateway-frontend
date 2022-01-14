@@ -2,13 +2,12 @@ import * as React from "react";
 import Spinner from "../common/spinner";
 import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 import { isLoggedIn } from "../../services/auth";
-import { useState } from "react";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
 
 export default function ConfigurationsTable() {
   const [context, setContext] = React.useState(null);
-  const [configurations, setConfigurations] = useState(null);
+  const [configurations, setConfigurations] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
@@ -17,13 +16,13 @@ export default function ConfigurationsTable() {
         adminUrl: window['GATSBY_ADMIN_URL']
       });
     } else if (isLoggedIn()) {
-      getConfigs();
+      getConfigurations();
     }
   }, [context]);
 
-  const getConfigs = () => {
+  const getConfigurations = () => {
     setShowSpinner(true);
-    fetch(context.apiUrl + "/", {
+    fetch(`${context.adminUrl}/configurations`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -31,16 +30,9 @@ export default function ConfigurationsTable() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
-          setConfigurations(data["hydra:member"]);
-          setShowSpinner(false);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+        setShowSpinner(false);
+        console.log(data);
+        setConfigurations(data["hydra:member"]);
       });
   };
 
@@ -58,7 +50,7 @@ export default function ConfigurationsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getConfigs}>
+            <a className="utrecht-link" onClick={getConfigurations}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -67,7 +59,7 @@ export default function ConfigurationsTable() {
                 <i className="fas fa-plus mr-2" />
                 Add
               </button>
-            </Link>
+            </Link> vb
           </>
         );
       }}
@@ -85,13 +77,9 @@ export default function ConfigurationsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
-                    },
-                    {
                       field: "id",
-                      headerName: " ",
-                      renderCell: (item: { id: string }) => {
+                      headerName: "Edit",
+                      renderCell: (item) => {
                         return (
                           <Link to={`/configurations/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
@@ -111,10 +99,6 @@ export default function ConfigurationsTable() {
                     {
                       headerName: "Name",
                       field: "name",
-                    },
-                    {
-                      headerName: "Description",
-                      field: "description",
                     },
                   ]}
                   rows={[]}
