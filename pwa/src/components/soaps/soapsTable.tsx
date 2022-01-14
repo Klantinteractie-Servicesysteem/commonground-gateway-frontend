@@ -16,11 +16,11 @@ export default function SoapsTable() {
         adminUrl: window["GATSBY_ADMIN_URL"],
       });
     } else if (isLoggedIn()) {
-      getSoap();
+      getSoaps();
     }
   }, [context]);
 
-  const getSoap = () => {
+  const getSoaps = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/soaps`, {
       headers: {
@@ -50,7 +50,7 @@ export default function SoapsTable() {
               <i className="fas fa-question mr-1"/>
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getSoap}>
+            <a className="utrecht-link" onClick={getSoaps}>
               <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>

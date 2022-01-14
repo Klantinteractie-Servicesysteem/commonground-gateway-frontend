@@ -103,7 +103,6 @@ export default function SoapsForm({id}) {
       requestSkeleton,
     };
 
-
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
