@@ -107,7 +107,7 @@ export default function SoapsForm({id}) {
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name, body.type, ])) {
+    if (!checkValues([body.name, body.type,])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
@@ -122,7 +122,6 @@ export default function SoapsForm({id}) {
       url = `${url}/${id}`;
       method = "PUT";
     }
-
 
 
     fetch(url, {
@@ -266,7 +265,7 @@ export default function SoapsForm({id}) {
                                       soap.toEntity !== undefined &&
                                       soap.toEntity !== null ? (
                                           <SelectInputComponent
-                                           options={entities}
+                                            options={entities}
                                             data={soap.toEntity.name}
                                             name={"toEntity"} id={"toEntityInput"} nameOverride={"To Entity"}
                                             value={"/admin/entities/"}/>
@@ -295,21 +294,21 @@ export default function SoapsForm({id}) {
                                       soap.fromEntity !== undefined &&
                                       soap.fromEntity !== null ? (
                                           <SelectInputComponent
-                                           options={entities}
+                                            options={entities}
                                             data={soap.fromEntity.name}
                                             name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
-                                            value={"/admin/entities/"} />
+                                            value={"/admin/entities/"}/>
                                         )
                                         : (
                                           <SelectInputComponent
-                                           options={entities}
+                                            options={entities}
                                             name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
-                                            value={"/admin/entities/"} />
+                                            value={"/admin/entities/"}/>
                                         )}
                                     </>
                                   ) : (
                                     <SelectInputComponent
-                                      options={[{ name: "Please create a entity first to use it", value: null}]}
+                                      options={[{name: "Please create a entity first to use it", value: null}]}
                                       name={"fromEntity"} id={"fromEntityInput"} nameOverride={"From Entity"}
                                     />
                                   )}
@@ -322,28 +321,32 @@ export default function SoapsForm({id}) {
                               title: "RequestSkeleton",
                               id: "requestSkeletonAccordion",
                               render: function () {
-                                return <ElementCreationNew id="requestSkeleton" label="RequestSkeleton" data={soap?.requestSkeleton} />
+                                return <ElementCreationNew id="requestSkeleton" label="RequestSkeleton"
+                                                           data={soap?.requestSkeleton}/>
                               }
                             },
                               {
                                 title: "RequestHydration",
                                 id: "requestHydrationAccordion",
                                 render: function () {
-                                  return <ElementCreationNew id="requestHydration" label="RequestHydration" data={soap?.requestHydration} />
+                                  return <ElementCreationNew id="requestHydration" label="RequestHydration"
+                                                             data={soap?.requestHydration}/>
                                 }
                               },
                               {
                                 title: "ResponseSkeleton",
                                 id: "responseSkeletonAccordion",
                                 render: function () {
-                                  return <ElementCreationNew id="responseSkeleton" label="ResponseSkeleton" data={soap?.responseSkeleton} />
+                                  return <ElementCreationNew id="responseSkeleton" label="ResponseSkeleton"
+                                                             data={soap?.responseSkeleton}/>
                                 }
                               },
                               {
                                 title: "ResponseHydration",
                                 id: "responseHydrationAccordion",
                                 render: function () {
-                                  return <ElementCreationNew id="responseHydration" label="ResponseHydration" data={soap?.responseHydration} />
+                                  return <ElementCreationNew id="responseHydration" label="ResponseHydration"
+                                                             data={soap?.responseHydration}/>
                                 }
                               }]}
                           />
