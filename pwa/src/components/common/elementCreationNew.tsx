@@ -2,6 +2,7 @@ import * as React from 'react'
 
 interface ElementCreationNewProps {
   id: string,
+  label: string,
   data?: any,
 }
 
@@ -10,7 +11,7 @@ interface IValue {
   value: string,
 }
 
-const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, data}) => {
+const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}) => {
   const [value, setValue] = React.useState<string>("")
   const [values, setValues] = React.useState<IValue[]>([])
 
@@ -39,20 +40,52 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, data}) => {
   return (
     <div>
       {values.length > 0 &&
-        <ul>
+        <ul style={{paddingLeft: 0}}>
           {values.map((value, idx) => {
             return (
-              <li key={idx}>
-                <input value={value.value} name={`${id}[${value.value}]`} id={value.value} type="text" disabled/>
-                <button id={value.id} onClick={handleDelete}>Delete</button>
+              <li key={idx} style={{listStyleType: 'none'}}>
+                <div className="row">
+                  <div className="col-10">
+                    <input
+                      disabled
+                      type="text"
+                      id={value.value}
+                      value={value.value}
+                      name={`${id}[${value.value}]`}
+                      className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                    />
+                  </div>
+                  <div className="col-2">
+                    <button
+                      id={value.id}
+                      onClick={handleDelete}
+                      className="utrecht-button utrecht-button-sm btn-danger"
+                    >
+                        Delete
+                      </button>
+                  </div>
+                </div>
               </li>
             )
           })}
         </ul>
       }
 
-      <input value={value} onChange={(e) => setValue(e.target.value)} type="text" />
-      <button onClick={handleAdd} disabled={!value}>Add</button>
+      <div className="row">
+        <h5>Add {label}</h5>
+        <div className="col-10">
+          <input
+            type="text"
+            value={value}
+            placeholder={`Add ${label}`}
+            onChange={(e) => setValue(e.target.value)}
+            className="utrecht-textbox utrecht-textbox--html-input mb-2"
+          />
+        </div>
+        <div className="col-2">
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add</button>
+        </div>
+      </div>
     </div>
   )
 }
