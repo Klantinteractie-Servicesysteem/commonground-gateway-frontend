@@ -1,20 +1,40 @@
 import * as React from 'react'
 
+interface ElementCreationNewProps {
+  id: string,
+  data?: any,
+}
+
 interface IValue {
   id: string,
   value: string,
 }
 
-const ElementCreationNew: React.FC = () => {
+const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, data}) => {
   const [value, setValue] = React.useState<string>("")
   const [values, setValues] = React.useState<IValue[]>([])
 
+  React.useEffect(() => {
+    if (!data) return
+
+    const loadedValues: IValue[] = data?.map((value) => {
+      return { id: generateId(), value: value}
+    })
+
+    setValues([...loadedValues])
+  }, [data])
+
   const handleAdd = () => {
-    setValues([...values, { id: Math.random().toString(36), value: value }])
+    setValues([...values, { id: generateId(), value: value }])
     setValue("")
   }
 
-  const handleDelete = (e) => { setValues(values.filter(value => value.id !== e.target.id)) }
+  const handleDelete = (e) => {
+    e.preventDefault()
+    setValues(values.filter(value => value.id !== e.target.id))
+  }
+
+  const generateId = (): string => Math.random().toString(36)
 
   return (
     <div>
@@ -23,7 +43,7 @@ const ElementCreationNew: React.FC = () => {
           {values.map((value, idx) => {
             return (
               <li key={idx}>
-                {value.value}
+                <input value={value.value} name={`${id}[${value.value}]`} id={value.value} type="text" disabled/>
                 <button id={value.id} onClick={handleDelete}>Delete</button>
               </li>
             )
