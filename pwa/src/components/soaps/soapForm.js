@@ -13,9 +13,9 @@ import {
   Spinner,
   SelectInputComponent
 } from "@conductionnl/nl-design-system/lib";
-import {ArrayInputComponent} from "../common/arrayInput";
 import FlashMessage from 'react-flash-message';
 import {isLoggedIn} from "../../services/auth";
+import ElementCreationNew from "../common/elementCreationNew"
 
 export default function SoapsForm({id}) {
   const [context, setContext] = React.useState(null);
@@ -316,91 +316,36 @@ export default function SoapsForm({id}) {
                               </div>
                             </div>
                           </div>
-                          <Accordion id="soapAccordion"
-                                     items={[{
-                                       title: "RequestSkeleton",
-                                       id: "requestSkeletonAccordion",
-                                       render: function () {
-                                         return (<>
-                                           {soap !== null && soap.requestSkeleton !== null ? (
-                                             <ArrayInputComponent
-                                               id={"requestSkeleton"}
-                                               label={"RequestSkeleton"}
-                                               data={soap.requestSkeleton}
-                                             />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"requestSkeleton"}
-                                               label={"RequestSkeleton"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
-                                       }
-                                     },
-                                       {
-                                         title: "RequestHydration",
-                                         id: "requestHydrationAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {soap !== null && soap.requestHydration !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"requestHydration"}
-                                                 label={"RequestHydration"}
-                                                 data={soap.requestHydration}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"requestHydration"}
-                                                 label={"RequestHydration"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       },
-                                       {
-                                         title: "ResponseSkeleton",
-                                         id: "responseSkeletonAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {soap !== null && soap.responseSkeleton !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"responseSkeleton"}
-                                                 label={"ResponseSkeleton"}
-                                                 data={soap.responseSkeleton}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"responseSkeleton"}
-                                                 label={"ResponseSkeleton"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       },
-                                       {
-                                         title: "ResponseHydration",
-                                         id: "responseHydrationAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {soap !== null && soap.responseHydration !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"responseHydration"}
-                                                 label={"ResponseHydration"}
-                                                 data={soap.responseHydration}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"responseHydration"}
-                                                 label={"ResponseHydration"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       }]}
+                          <Accordion
+                            id="soapAccordion"
+                            items={[{
+                              title: "RequestSkeleton",
+                              id: "requestSkeletonAccordion",
+                              render: function () {
+                                return <ElementCreationNew id="requestSkeleton" label="RequestSkeleton" data={soap?.requestSkeleton} />
+                              }
+                            },
+                              {
+                                title: "RequestHydration",
+                                id: "requestHydrationAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="requestHydration" label="RequestHydration" data={soap?.requestHydration} />
+                                }
+                              },
+                              {
+                                title: "ResponseSkeleton",
+                                id: "responseSkeletonAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="responseSkeleton" label="ResponseSkeleton" data={soap?.responseSkeleton} />
+                                }
+                              },
+                              {
+                                title: "ResponseHydration",
+                                id: "responseHydrationAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="responseHydration" label="ResponseHydration" data={soap?.responseHydration} />
+                                }
+                              }]}
                           />
                         </>
                       )}
