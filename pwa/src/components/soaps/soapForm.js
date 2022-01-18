@@ -107,7 +107,7 @@ export default function SoapsForm({id}) {
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name, body.type,])) {
+    if (!checkValues([body.name, body.type])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
