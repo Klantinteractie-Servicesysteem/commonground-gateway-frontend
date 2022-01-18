@@ -1,9 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-// import { deleteElementFunction, addElement } from "../../ElementCreation/src/elementCreation";
 import { deleteElementFunction, addElement } from "./elementCreation";
-
-
 
 interface ArrayInputProps {
   data: Array<Record<"value", any>>;
