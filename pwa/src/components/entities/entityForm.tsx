@@ -1,36 +1,37 @@
 import * as React from "react";
-import {Link} from "gatsby";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
-} from "../utility/inputHandler";
 import {
   GenericInputComponent,
+  Checkbox,
+  SelectInputComponent,
   Accordion,
   Card,
-  Alert,
-  Spinner,
-  Checkbox,
-  SelectInputComponent
-} from "@conductionnl/nl-design-system/lib";
-import FlashMessage from 'react-flash-message';
+  Alert
+}
+  from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
-import ElementCreationNew from "../common/elementCreationNew"
-
+import {navigate} from "gatsby-link";
+import {Link} from "gatsby";
+import Spinner from "../common/spinner";
+import FlashMessage from 'react-flash-message';
+import {
+  checkValues,
+  removeEmptyObjectValues, retrieveFormArrayAsOArray,
+} from "../utility/inputHandler";
+import {ArrayInputComponent} from "../common/arrayInput";
 
 export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
-  const [entity, setEntity] = React.useState(null);
-  const [sources, setSources] = React.useState(null);
-  const [soaps, setSoaps] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
+
+  const [entity, setEntity] = React.useState<any>(null);
+  const [sources, setSources] = React.useState<any>(null);
+  const [soaps, setSoaps] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       if (id !== 'new') {
@@ -112,7 +113,7 @@ export default function EntityForm({id}) {
     let availableProperties = retrieveFormArrayAsOArray(event.target, "availableProperties");
     let collectionConfig = retrieveFormArrayAsOArray(event.target, "collectionConfig");
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description.value ? event.target.description.value : null,
       route: event.target.route.value ? event.target.route.value : null,
@@ -122,27 +123,49 @@ export default function EntityForm({id}) {
         : null,
       extend: event.target.extend.checked,
       function: event.target.function.value ? event.target.function.value : null,
-      transformations,
-      translationConfig,
-      usedProperties,
-      availableProperties,
-      collectionConfig,
     };
 
+    // check arrays
+    if (transformations.length !== 0) {
+      body["transformations"] = transformations;
+    } else {
+      body["transformations"] = [];
+    }
 
+    if (translationConfig.length !== 0) {
+      body["translationConfig"] = translationConfig;
+    } else {
+      body["translationConfig"] = [];
+    }
+
+    if (usedProperties.length !== 0) {
+      body["usedProperties"] = usedProperties;
+    } else {
+      body["usedProperties"] = [];
+    }
+
+    if (availableProperties.length !== 0) {
+      body["availableProperties"] = availableProperties;
+    } else {
+      body["availableProperties"] = [];
+    }
+
+    if (collectionConfig.length !== 0) {
+      body["collectionConfig"] = collectionConfig;
+    } else {
+      body["collectionConfig"] = [];
+    }
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name])) {
+    if (!checkValues([body["name"]])) {
       return;
     }
 
-    let url = context.adminUrl + "/entities";
-    let method = null;
-    if (id === "new") {
-      method = "POST";
-    } else {
+    let url = `${context.adminUrl}/entities`;
+    let method = "POST";
+    if (id !== "new") {
       url = `${url}/${id}`;
       method = "PUT";
     }
@@ -155,13 +178,13 @@ export default function EntityForm({id}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setShowSpinner(false);
         setEntity(data);
+        method === 'POST' && navigate(`/entities`)
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.error("Error:", error);
+        console.error(error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
@@ -179,22 +202,21 @@ export default function EntityForm({id}) {
       <form id="dataForm" onSubmit={saveEntity}>
         <Card title="Values"
               cardHeader={function () {
-                return (<>
-                  <Link className="utrecht-link" to={"/entities"}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                      <i className="fas fa-long-arrow-alt-left mr-2"/>
-                      Back
+                return (
+                  <div>
+                    <Link className="utrecht-link" to={"/entities"}>
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                        <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                      </button>
+                    </Link>
+                    <button
+                      className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                      type="submit"
+                    >
+                      <i className="fas fa-save mr-2"/>Save
                     </button>
-                  </Link>
-                  <button
-                    className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                    type="submit"
-                  >
-                    <i className="fas fa-save mr-2"/>
-                    Save
-                  </button>
-                </>)
-              }}
+                  </div>
+                )}}
               cardBody={function () {
                 return (
                   <div className="row">
@@ -202,25 +224,15 @@ export default function EntityForm({id}) {
                       {showSpinner === true ? (
                         <Spinner/>
                       ) : (
-                        <>
+                        <div>
                           <div className="row">
                             <div className="col-6">
-                              {entity !== null && entity.name !== null ? (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity.name}
-                                                       nameOverride={"Name"}/>
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name"}/>
-                              )}
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity && entity.name && entity.name}
+                                                       nameOverride={"Name"} required/>
                             </div>
                             <div className="col-6">
-                              {entity !== null && entity.description !== null ? (
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={entity.description} nameOverride={"Description"}/>
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       nameOverride={"Description"}/>
-                              )}
+                                                       data={entity && entity.description && entity.description} nameOverride={"Description"}/>
                             </div>
                           </div>
                           <div className="row">
@@ -235,29 +247,19 @@ export default function EntityForm({id}) {
                                   name={"function"}
                                   id={"functionInput"}
                                   nameOverride={"Function"}
-                                  required={true}/>
+                                  required/>
                               </div>
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {entity !== null && entity.endpoint !== null ? (
                                 <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                                                       data={entity.endpoint}
+                                                       data={entity && entity.endpoint && entity.endpoint}
                                                        nameOverride={"Endpoint"}/>
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                                                       nameOverride={"Endpoint"}/>
-                              )}
                             </div>
                             <div className="col-6">
-                              {entity !== null && entity.route !== null ? (
                                 <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                       data={entity.route} nameOverride={"Route"}/>
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                       nameOverride={"Route"}/>
-                              )}
+                                                       data={entity && entity.route && entity.route} nameOverride={"Route"}/>
                             </div>
                           </div>
                           <div className="row">
@@ -315,101 +317,108 @@ export default function EntityForm({id}) {
                                     </>
                                   ) : (
                                     <SelectInputComponent
-                                      options={[{name: "Please create a soaps first to use it", value: null}]}
+                                      options={[{name: "Please create a soap first to use it", value: null}]}
                                       name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
                                     />
                                   )}
                               </div>
                             </div>
                           </div>
+                          {/* FromSoap TODO */}
+                          {/* <div className="row">
+                      <div className="col-12">
+                        <div className="form-group">
+                          <ArrayInput />
+                        </div>
+                      </div>
+                    </div> */}
                           <div className="row">
                             <div className="col-12">
                               <div className="form-check">
-                                {entity !== null ? (
-                                  <>
-                                    {entity.extend ? (
                                       <Checkbox type={"checkbox"} id={"extendInput"}
                                                 nameLabel={"Extend"} nameAttribute={"extend"}
-                                                data={entity.extend}/>
-                                    ) : (
-                                      <Checkbox type={"checkbox"} id={"extendInput"}
-                                                nameLabel={"Extend"} nameAttribute={"extend"}
-                                      />
-                                    )}
-                                  </>
-                                ) : (
-                                  <Checkbox type={"checkbox"} id={"extendInput"}
-                                            nameLabel={"Extend"} nameAttribute={"extend"}
-                                  />
-                                )}
+                                                data={entity && entity.extend && entity.extend}/>
                               </div>
                             </div>
                           </div>
                           <Accordion
                             id="entityAccordion"
-                            items={[{
-                              title: "Transformations",
-                              id: "transformationsAccordion",
-                              render: function () {
-                                return <ElementCreationNew
-                                  id="transformations"
-                                  label="Transformations"
-                                  data={entity.transformations}
-                                />
-                              }
-                            },
+                            items={[
+                              {
+                                title: "Transformations",
+                                id: "transformationsAccordion",
+                                render: function () {
+                                  return (
+                                    <>
+                                        <ArrayInputComponent
+                                          id={"transformations"}
+                                          label={"Transformations"}
+                                          data={entity && entity.transformations ? entity.transformations : null}
+                                        />
+                                    </>
+                                  );
+                                },
+                              },
                               {
                                 title: "Translation Config",
                                 id: "translationConfigAccordion",
                                 render: function () {
-                                  return <ElementCreationNew
-                                    id="translationConfig"
-                                    label="Translation Config"
-                                    data={entity.translationConfig}
-                                  />
-                                }
+                                  return (
+                                        <ArrayInputComponent
+                                          id={"translationConfig"}
+                                          label={"Translation Config"}
+                                          data={entity && entity.translationConfig ? entity.translationConfig : null}
+                                        />
+                                  );
+                                },
                               },
                               {
                                 title: "Collection Config",
                                 id: "collectionConfigAccordion",
                                 render: function () {
-                                  return <ElementCreationNew
-                                    id="collectionConfig"
-                                    label="Collection Config"
-                                    data={entity.collectionConfig}
-                                  />
+                                  return (
+                                        <ArrayInputComponent
+                                          id={"collectionConfig"}
+                                          data={entity && entity.collectionConfig ? entity.collectionConfig : null}
+                                          label={"Collection Config"}
+                                        />
+                                  )
                                 }
                               },
                               {
                                 title: "Used Properties",
                                 id: "usedPropertiesAccordion",
                                 render: function () {
-                                  return <ElementCreationNew
-                                    id={"usedProperties"}
-                                    label={"Used Properties"}
-                                    data={entity.usedProperties}
-                                  />
-                                }
+                                  return (
+                                        <ArrayInputComponent
+                                          id={"usedProperties"}
+                                          label={"Used Properties"}
+                                          data={entity && entity.usedProperties ? entity.usedProperties : null}
+                                        />
+                                  );
+                                },
                               },
                               {
                                 title: "Available Properties",
                                 id: "availablePropertiesAccordion",
                                 render: function () {
-                                  return <ElementCreationNew
-                                    id={"availableProperties"}
-                                    label={"Available Properties"}
-                                    data={entity.availableProperties}
-                                  />
-                                }
-                              }]}
+                                  return (
+                                        <ArrayInputComponent
+                                          id={"availableProperties"}
+                                          label={"Available Properties"}
+                                          data={entity && entity.availableProperties ? entity.availableProperties : null}
+                                        />
+                                  );
+                                },
+                              }
+                            ]}
                           />
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
                 )
-              }}
-        />
+              }}/>
       </form>
     </>
   );
