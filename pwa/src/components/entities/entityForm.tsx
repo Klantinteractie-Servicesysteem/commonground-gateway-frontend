@@ -341,78 +341,7 @@ export default function EntityForm({id}) {
                               </div>
                             </div>
                           </div>
-                          <Accordion
-                            id="entityAccordion"
-                            items={[
-                              {
-                                title: "Transformations",
-                                id: "transformationsAccordion",
-                                render: function () {
-                                  return (
-                                    <>
-                                        <ArrayInputComponent
-                                          id={"transformations"}
-                                          label={"Transformations"}
-                                          data={entity && entity.transformations ? entity.transformations : null}
-                                        />
-                                    </>
-                                  );
-                                },
-                              },
-                              {
-                                title: "Translation Config",
-                                id: "translationConfigAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"translationConfig"}
-                                          label={"Translation Config"}
-                                          data={entity && entity.translationConfig ? entity.translationConfig : null}
-                                        />
-                                  );
-                                },
-                              },
-                              {
-                                title: "Collection Config",
-                                id: "collectionConfigAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"collectionConfig"}
-                                          data={entity && entity.collectionConfig ? entity.collectionConfig : null}
-                                          label={"Collection Config"}
-                                        />
-                                  )
-                                }
-                              },
-                              {
-                                title: "Used Properties",
-                                id: "usedPropertiesAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"usedProperties"}
-                                          label={"Used Properties"}
-                                          data={entity && entity.usedProperties ? entity.usedProperties : null}
-                                        />
-                                  );
-                                },
-                              },
-                              {
-                                title: "Available Properties",
-                                id: "availablePropertiesAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"availableProperties"}
-                                          label={"Available Properties"}
-                                          data={entity && entity.availableProperties ? entity.availableProperties : null}
-                                        />
-                                  );
-                                },
-                              }
-                            ]}
-                          />
+                          {/* @TODO Accordion met properties */}
                         </div>
                       )}
                     </div>
