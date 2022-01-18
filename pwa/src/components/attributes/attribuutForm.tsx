@@ -6,8 +6,8 @@ import {
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
-import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
-import { ArrayInputComponent } from "../common/arrayInput";
+import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
+import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
   Checkbox,
@@ -17,11 +17,11 @@ import {
   Card,
   Alert,
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 
-export default function AttributeForm({ id, entity }) {
+export default function AttributeForm({id, entity}) {
   const [context, setContext] = React.useState(null);
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
@@ -45,7 +45,7 @@ export default function AttributeForm({ id, entity }) {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/attributes/${id}`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -56,14 +56,14 @@ export default function AttributeForm({ id, entity }) {
         setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
   const getAttributes = () => {
     fetch(`${context.adminUrl}/attributes`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -75,7 +75,7 @@ export default function AttributeForm({ id, entity }) {
         setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -218,7 +218,7 @@ export default function AttributeForm({ id, entity }) {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
@@ -231,7 +231,7 @@ export default function AttributeForm({ id, entity }) {
         setShowSpinner(false);
         console.log(error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -318,10 +318,8 @@ export default function AttributeForm({ id, entity }) {
                                   name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
                                   value={"/admin/attributes/"} />
                               ) : (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                       nameOverride={"Name"}/>
                               )}
                             </>
                           ) : (
@@ -509,16 +507,7 @@ export default function AttributeForm({ id, entity }) {
                         </div>
                       </div>
                     </div>
-                    {/*<Accordion id="validationsAccordion" title="Validations">*/}
-                    {/*  {attribute !== null ? (*/}
-                    {/*    <MultiDimensionalArrayInput*/}
-                    {/*      target={"validations"}*/}
-                    {/*      data={attribute.validations}*/}
-                    {/*    />*/}
-                    {/*  ) : (*/}
-                    {/*    <MultiDimensionalArrayInput target={"Validations"} />*/}
-                    {/*  )}*/}
-                    {/*</Accordion>*/}
+                  </div>
 
                     <Accordion id="attributeAccordion"
                       items={[{
