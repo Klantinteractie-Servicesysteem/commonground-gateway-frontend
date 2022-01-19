@@ -16,7 +16,7 @@ const IndexPage = () => {
         </div>
       </main>
     </Layout>
-  );
-};
+  )
+}
 
 export default IndexPage;

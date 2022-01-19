@@ -13,7 +13,7 @@ const IndexPage = ({ id, entity }) => {
         </div>
       </main>
     </Layout>
-  );
-};
+  )
+}
 
 export default IndexPage;

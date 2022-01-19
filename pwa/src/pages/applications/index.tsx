@@ -9,7 +9,9 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
+            <div className="page-top-item">
             <ApplicationsTable />
+            </div>
           </div>
         </div>
       </main>
