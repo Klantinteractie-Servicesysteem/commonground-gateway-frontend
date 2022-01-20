@@ -225,19 +225,19 @@ export default function HandlerForm({id, endpointId}) {
                         <div className="row">
                           <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler && handler.name && handler.name}
-                                                     nameOverride={"Name"} required={true}/>
+                                                     nameOverride={"Name"} required/>
                           </div>
                           <div className="col-6">
                               <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
                                                      data={handler && handler.description && handler.description}
-                                                     nameOverride={"Description"} required={true}/>
+                                                     nameOverride={"Description"}/>
                           </div>
                         </div>
                         <br/>
                         <div className="row">
                           <div className="col-6">
                               <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
-                                                     data={handler && handler.sequence && handler.sequence} nameOverride={"Sequence"} required={true}/>
+                                                     data={handler && handler.sequence && handler.sequence} nameOverride={"Sequence"}/>
                           </div>
                           <div className="col-6">
                               <GenericInputComponent type={"text"} name={"templateType"} id={"templateTypeInput"}
