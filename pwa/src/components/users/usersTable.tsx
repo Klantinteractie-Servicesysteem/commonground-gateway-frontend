@@ -13,7 +13,7 @@ export default function UsersTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        apiUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       getUsers();

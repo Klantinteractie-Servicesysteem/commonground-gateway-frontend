@@ -2,8 +2,6 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationForm from "../../components/translations/translationForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import ResponseTable from "../../components/logs/responseTable";
-import RequestTable from "../../components/logs/requestTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -11,7 +9,7 @@ const IndexPage = (props) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);

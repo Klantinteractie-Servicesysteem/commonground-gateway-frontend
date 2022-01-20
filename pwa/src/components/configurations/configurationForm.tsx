@@ -15,8 +15,8 @@ export default function ConfigurationForm({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_ADMIN_URL,
+        frontendUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {

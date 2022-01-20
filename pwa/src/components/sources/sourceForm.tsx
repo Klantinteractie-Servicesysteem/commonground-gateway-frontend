@@ -26,7 +26,7 @@ export default function SourceForm({id}) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn && id !== 'new') {
       getSource();
@@ -63,7 +63,7 @@ export default function SourceForm({id}) {
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
     let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description
         ? event.target.description.value
@@ -90,7 +90,7 @@ export default function SourceForm({id}) {
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name, body.location, body.type, body.auth])) {
+    if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
