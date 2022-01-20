@@ -5,7 +5,20 @@ import FlashMessage from 'react-flash-message';
 
 export default function LogTable({ id = null }) {
   const [context, setContext] = React.useState(null);
-  const [logs, setLogs] = React.useState([{ id: '12-34', type: 'test' }]);
+  const [logs, setLogs] = React.useState([
+    {
+      id: '12-34',
+      type: 'in',
+      callId: 'dc7ce044-e674-46b0-b8e2-089c66ab1b68',
+      routeName: '/api/weer',
+      requestMethod: 'POST',
+      responseStatus: 'HTTP_CREATED',
+      responseStatusCode: 201,
+      responseTime: 8,
+      requestPathInfo: '/api/weer',
+      requestLanguages: "content type?",
+      responseContent: "{'test': 'abc'}"
+    }]);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
 
