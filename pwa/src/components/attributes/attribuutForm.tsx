@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "gatsby";
+import {Link} from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
@@ -20,6 +20,7 @@ import {
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
+import ElementCreationNew from "../common/elementCreationNew";
 
 export default function AttributeForm({id, entity}) {
   const [context, setContext] = React.useState(null);
@@ -91,16 +92,14 @@ export default function AttributeForm({id, entity}) {
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
-    // get the inputs and check if set other set null
-
     let body: {} = {
       entity: `/admin/entities/${entity}`,
       name: event.target.name.value,
       description: event.target.description.value
-        ? event.target.description.value
-        : null,
+        ? event.target.description.value : null,
       type: event.target.type.value,
-      format: event.target.format.value ? event.target.format.value : null,
+      format: event.target.format.value
+        ? event.target.format.value : null,
       persistToGateway: event.target.persistToGateway.checked,
       cascade: event.target.cascade.checked,
       searchable: event.target.searchable.checked,
@@ -112,93 +111,48 @@ export default function AttributeForm({id, entity}) {
       readOnly: event.target.readOnly.checked,
       deprecated: event.target.deprecated.checked,
       defaultValue: event.target.defaultValue.value
-        ? event.target.defaultValue.value
-        : null,
+        ? event.target.defaultValue.value : null,
       fileType: event.target.fileType.value
-        ? event.target.fileType.value
-        : null,
-      example: event.target.example.value ? event.target.example.value : null,
+        ? event.target.fileType.value : null,
+      example: event.target.example.value
+        ? event.target.example.value : null,
       maxFileSize: event.target.maxFileSize.value
-        ? parseInt(event.target.maxFileSize.value)
-        : null,
+        ? parseInt(event.target.maxFileSize.value) : null,
       inversedBy: event.target.inversedBy.checked,
       multipleOf: event.target.multipleOf.value
-        ? parseInt(event.target.multipleOf.value)
-        : null,
+        ? parseInt(event.target.multipleOf.value) : null,
       maximum: event.target.maximum.value
-        ? parseInt(event.target.maximum.value)
-        : null,
+        ? parseInt(event.target.maximum.value) : null,
       minimum: event.target.minimum.value
-        ? parseInt(event.target.minimum.value)
-        : null,
+        ? parseInt(event.target.minimum.value) : null,
       exclusiveMaximum: event.target.exclusiveMaximum.checked,
       exclusiveMinimum: event.target.exclusiveMinimum.checked,
       maxLength: event.target.maxLength.value
-        ? parseInt(event.target.maxLength.value)
-        : null,
+        ? parseInt(event.target.maxLength.value) : null,
       minLength: event.target.minLength.value
-        ? parseInt(event.target.minLength.value)
-        : null,
+        ? parseInt(event.target.minLength.value) : null,
       maxItems: event.target.maxItems.value
-        ? parseInt(event.target.maxItems.value)
-        : null,
+        ? parseInt(event.target.maxItems.value) : null,
       minItems: event.target.minItems.value
-        ? parseInt(event.target.minItems.value)
-        : null,
-      maxDate: event.target.maxDate.value ? event.target.maxDate.value : null,
-      minDate: event.target.minDate.value ? event.target.minDate.value : null,
+        ? parseInt(event.target.minItems.value) : null,
+      maxDate: event.target.maxDate.value
+        ? event.target.maxDate.value : null,
+      minDate: event.target.minDate.value
+        ? event.target.minDate.value : null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
-        ? parseInt(event.target.minProperties.value)
-        : null,
+        ? parseInt(event.target.minProperties.value) : null,
       maxProperties: event.target.maxProperties.value
-        ? parseInt(event.target.maxProperties.value)
-        : null,
+        ? parseInt(event.target.maxProperties.value) : null,
+      attributeEnum,
+      allOf,
+      oneOf,
+      anyOf,
+      forbiddenIf,
+      requiredIf,
+      objectConfig,
     };
 
-    if (attributeEnum.length !== 0) {
-      body["enum"] = attributeEnum;
-    } else {
-      body["enum"] = [];
-    }
-
-    if (allOf.length !== 0) {
-      body["allOf"] = allOf;
-    } else {
-      body["allOf"] = [];
-    }
-
-    if (anyOf.length !== 0) {
-      body["anyOf"] = anyOf;
-    } else {
-      body["anyOf"] = [];
-    }
-
-    if (oneOf.length !== 0) {
-      body["oneOf"] = oneOf;
-    } else {
-      body["oneOf"] = [];
-    }
-
-    if (forbiddenIf.length !== 0) {
-      body["forbiddenIf"] = forbiddenIf;
-    } else {
-      body["forbiddenIf"] = [];
-    }
-
-    if (Object.keys(requiredIf).length !== 0) {
-      body["requiredIf"] = requiredIf;
-    } else {
-      body["requiredIf"] = [];
-    }
-
-    if (Object.keys(objectConfig).length !== 0) {
-      body["objectConfig"] = objectConfig;
-    } else {
-      body["objectConfig"] = [];
-    }
-
-    // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["type"]])) {
@@ -236,379 +190,417 @@ export default function AttributeForm({id, entity}) {
   };
 
   return (<div>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
-    <form id="attributeForm" onSubmit={saveAttribute}>
-      <Card title="Values"
-        cardHeader={function () {
-          return (<>
-            <Link className="utrecht-link" to={`/entities/${entity}`}>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2" />Back
-              </button>
-            </Link>
-            <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-              <i className="fas fa-save mr-2" />Save
-            </button>
-          </>)
-        }}
-        cardBody={function () {
-          return (
-            <div className="row">
-              <div className="col-12">
-                {showSpinner === true ? (
-                  <Spinner />
-                ) : (
-                  <div>
-                    <div className="row">
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={attribute && attribute.name && attribute.name}
-                            nameOverride={"Name"} required/>
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                            data={attribute && attribute.description && attribute.description} nameOverride={"Description"} />
-                      </div>
-                    </div>
-                    <br />
-                    <div className="row">
-                      <div className="col-6">
-                          <SelectInputComponent
-                            options={[{ name: "String", value: 'string' }, {
-                              name: "Array",
-                              value: "array"
-                            }, { name: "Integer", value: "integer" }, { name: "Boolean", value: "boolean" },
-                            { name: "Object", value: "object" }, { name: "Date", value: "date" }, {
-                              name: "Datetime",
-                              value: "datetime"
-                            }, { name: "Number", value: "number" }, { name: "Float", value: "float" }, {
-                              name: "File",
-                              value: "file"
-                            }]}
-                            name={"type"} id={"typeInput"} nameOverride={"Type"} data={attribute && attribute.type && attribute.type} required />
-                      </div>
-                      <div className="col-6">
-                            <SelectInputComponent
-                              options={[{ name: "Email", value: 'email' }, {
-                                name: "Phone",
-                                value: 'phone'
-                              }, { name: "Country code", value: 'country code' }, { name: "BSN", value: 'bsn' },
-                                { name: "Url", value: 'url' }, { name: "UUID", value: 'uuid' }, {
-                                  name: "Json",
-                                  value: 'json'
-                                }]}
-                              name={"format"} id={"formatInput"} nameOverride={"Format"} data={attribute && attribute.format && attribute.format} />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
-                        {
-                          attributes !== null && attributes.length > 0 ? (
-                            <>
-                              {attribute !== null &&
-                                attribute.inversedBy !== undefined &&
-                                attribute.inversedBy !== null ? (
-                                <SelectInputComponent
-                                  options={attributes}
-                                  data={attribute.inversedBy.name}
-                                  name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
-                                  value={"/admin/attributes/"} />
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                       nameOverride={"Name"}/>
-                              )}
-                            </>
-                          ) : (
-                            <SelectInputComponent
-                              options={[{ name: "Please create a attribute to use inversedBy", value: null}]}
-                              name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"} />
-                          )}
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"defaultValue"} id={"defaultValueInput"}
-                            data={attribute && attribute.defaultValue && attribute.defaultValue} nameOverride={"Default Value"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"multipleOf"} id={"multipleOfInput"}
-                            data={attribute && attribute.multipleOf && attribute.multipleOf} nameOverride={"Multiple Of"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"minimum"} id={"minimumInput"}
-                            data={attribute && attribute.minimum && attribute.minimum} nameOverride={"Minimum"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"maximum"} id={"maximumInput"}
-                            data={attribute && attribute.maximum && attribute.maximum} nameOverride={"Maximum"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="attributeForm" onSubmit={saveAttribute}>
+        <Card title="Values"
+              cardHeader={function () {
+                return (<>
+                  <Link className="utrecht-link" to={`/entities/${entity}`}>
+                    <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                      <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                    </button>
+                  </Link>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                    <i className="fas fa-save mr-2"/>Save
+                  </button>
+                </>)
+              }}
+              cardBody={function () {
+                return (
+                  <div className="row">
+                    <div className="col-12">
+                      {showSpinner === true ? (
+                        <Spinner/>
+                      ) : (
+                        <div>
+                          <div className="row">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                     data={attribute && attribute.name && attribute.name}
+                                                     nameOverride={"Name"} required/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                     data={attribute && attribute.description && attribute.description}
+                                                     nameOverride={"Description"}/>
+                            </div>
+                          </div>
+                          <br/>
+                          <div className="row">
+                            <div className="col-6">
+                              <SelectInputComponent
+                                options={[{name: "String", value: 'string'}, {
+                                  name: "Array",
+                                  value: "array"
+                                }, {name: "Integer", value: "integer"}, {name: "Boolean", value: "boolean"},
+                                  {name: "Object", value: "object"}, {name: "Date", value: "date"}, {
+                                    name: "Datetime",
+                                    value: "datetime"
+                                  }, {name: "Number", value: "number"}, {name: "Float", value: "float"}, {
+                                    name: "File",
+                                    value: "file"
+                                  }]}
+                                name={"type"} id={"typeInput"} nameOverride={"Type"}
+                                data={attribute && attribute.type && attribute.type} required/>
+                            </div>
+                            <div className="col-6">
+                              <SelectInputComponent
+                                options={[{name: "Email", value: 'email'}, {
+                                  name: "Phone",
+                                  value: 'phone'
+                                }, {name: "Country code", value: 'country code'}, {name: "BSN", value: 'bsn'},
+                                  {name: "Url", value: 'url'}, {name: "UUID", value: 'uuid'}, {
+                                    name: "Json",
+                                    value: 'json'
+                                  }]}
+                                name={"format"} id={"formatInput"} nameOverride={"Format"}
+                                data={attribute && attribute.format && attribute.format}/>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                              {
+                                attributes !== null && attributes.length > 0 ? (
+                                  <>
+                                    {attribute !== null &&
+                                    attribute.inversedBy !== undefined &&
+                                    attribute.inversedBy !== null ? (
+                                      <SelectInputComponent
+                                        options={attributes}
+                                        data={attribute.inversedBy.name}
+                                        name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                        value={"/admin/attributes/"}/>
+                                    ) : (
+                                      <SelectInputComponent
+                                        options={attributes}
+                                        name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}
+                                        value={"/admin/attributes/"}/>
+                                    )}
+                                  </>
+                                ) : (
+                                  <SelectInputComponent
+                                    options={[{name: "Please create a attribute to use inversedBy", value: null}]}
+                                    name={"inversedBy"} id={"inversedByInput"} nameOverride={"inversedBy"}/>
+                                )}
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"defaultValue"} id={"defaultValueInput"}
+                                                     data={attribute && attribute.defaultValue && attribute.defaultValue}
+                                                     nameOverride={"Default Value"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"multipleOf"} id={"multipleOfInput"}
+                                                     data={attribute && attribute.multipleOf && attribute.multipleOf}
+                                                     nameOverride={"Multiple Of"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"minimum"} id={"minimumInput"}
+                                                     data={attribute && attribute.minimum && attribute.minimum}
+                                                     nameOverride={"Minimum"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"maximum"} id={"maximumInput"}
+                                                     data={attribute && attribute.maximum && attribute.maximum}
+                                                     nameOverride={"Maximum"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"exclusiveMinimumInput"}
-                                  nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"}
-                                  data={attribute && attribute.exclusiveMinimum && attribute.exclusiveMinimum} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameLabel={"Exclusive minimum"} nameAttribute={"exclusiveMinimum"}
+                                          data={attribute && attribute.exclusiveMinimum && attribute.exclusiveMinimum}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"exclusiveMaximumInput"}
-                                  nameLabel={"Exclusive Maximum"} nameAttribute={"exclusiveMaximum"}
-                                  data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"minLength"} id={"minLengthInput"}
-                            data={attribute && attribute.minLength && attribute.minLength} nameOverride={"MinLength"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"maxLength"} id={"maxLengthInput"}
-                            data={attribute && attribute.maxLength && attribute.maxLength} nameOverride={"MaxLength"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"minItems"} id={"minItemsInput"}
-                            data={attribute && attribute.minItems && attribute.minItems} nameOverride={"MinItems"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"maxItems"} id={"maxItemsInput"}
-                            data={attribute && attribute.maxItems && attribute.maxItems} nameOverride={"MaxItems"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"minDate"} id={"minDateInput"}
-                            data={attribute && attribute.minDate && attribute.minDate} nameOverride={"MinDate"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"maxDate"} id={"maxDateInput"}
-                            data={attribute && attribute.maxDate && attribute.maxDate} nameOverride={"MaxDate"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"minProperties"} id={"minPropertiesInput"}
-                            data={attribute && attribute.minProperties && attribute.minProperties} nameOverride={"Min Properties"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"maxProperties"} id={"maxPropertiesInput"}
-                            data={attribute && attribute.maxProperties && attribute.maxProperties} nameOverride={"Max Properties"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"example"} id={"exampleInput"}
-                            data={attribute && attribute.example && attribute.example} nameOverride={"Example"} />
-                      </div>
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"fileType"} id={"fileTypeInput"}
-                            data={attribute && attribute.fileType && attribute.fileType} nameOverride={"File Type"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"maxFileSize"} id={"maxFileSizeInput"}
-                            data={attribute && attribute.maxFileSize && attribute.maxFileSize} nameOverride={"Max File Size"} />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
+                                          nameLabel={"Exclusive Maximum"} nameAttribute={"exclusiveMaximum"}
+                                          data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum}/>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"minLength"} id={"minLengthInput"}
+                                                     data={attribute && attribute.minLength && attribute.minLength}
+                                                     nameOverride={"MinLength"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"maxLength"} id={"maxLengthInput"}
+                                                     data={attribute && attribute.maxLength && attribute.maxLength}
+                                                     nameOverride={"MaxLength"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"minItems"} id={"minItemsInput"}
+                                                     data={attribute && attribute.minItems && attribute.minItems}
+                                                     nameOverride={"MinItems"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"maxItems"} id={"maxItemsInput"}
+                                                     data={attribute && attribute.maxItems && attribute.maxItems}
+                                                     nameOverride={"MaxItems"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"minDate"} id={"minDateInput"}
+                                                     data={attribute && attribute.minDate && attribute.minDate}
+                                                     nameOverride={"MinDate"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"maxDate"} id={"maxDateInput"}
+                                                     data={attribute && attribute.maxDate && attribute.maxDate}
+                                                     nameOverride={"MaxDate"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"minProperties"} id={"minPropertiesInput"}
+                                                     data={attribute && attribute.minProperties && attribute.minProperties}
+                                                     nameOverride={"Min Properties"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"number"} name={"maxProperties"} id={"maxPropertiesInput"}
+                                                     data={attribute && attribute.maxProperties && attribute.maxProperties}
+                                                     nameOverride={"Max Properties"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"example"} id={"exampleInput"}
+                                                     data={attribute && attribute.example && attribute.example}
+                                                     nameOverride={"Example"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"fileType"} id={"fileTypeInput"}
+                                                     data={attribute && attribute.fileType && attribute.fileType}
+                                                     nameOverride={"File Type"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"maxFileSize"} id={"maxFileSizeInput"}
+                                                     data={attribute && attribute.maxFileSize && attribute.maxFileSize}
+                                                     nameOverride={"Max File Size"}/>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-12 col-sm-6 ">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"inversedByInput"}
-                                  nameLabel={"Inversed By"} nameAttribute={"inversedBy"}
-                                  data={attribute && attribute.inversedBy && attribute.inversedBy} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
+                                          nameLabel={"Inversed By"} nameAttribute={"inversedBy"}
+                                          data={attribute && attribute.inversedBy && attribute.inversedBy}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6 ">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"persistToGatewayInput"}
-                                  nameLabel={"Persist To Gateway"} nameAttribute={"persistToGateway"}
-                                  data={attribute && attribute.persistToGateway && attribute.persistToGateway} defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
+                                          nameLabel={"Persist To Gateway"} nameAttribute={"persistToGateway"}
+                                          data={attribute && attribute.persistToGateway && attribute.persistToGateway}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6 ">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"cascadeInput"} nameLabel={"Cascade"}
-                                  nameAttribute={"cascade"} data={attribute && attribute.cascade && attribute.cascade}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
+                                          nameAttribute={"cascade"}
+                                          data={attribute && attribute.cascade && attribute.cascade}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6 ">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"requiredInput"} nameLabel={"Required"}
-                                  nameAttribute={"required"} data={attribute && attribute.required && attribute.required}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
+                                          nameAttribute={"required"}
+                                          data={attribute && attribute.required && attribute.required}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6 ">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"searchableInput"} nameLabel={"Searchable"}
-                                  nameAttribute={"searchable"} data={attribute && attribute.searchable && attribute.searchable}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"searchable"}
+                                          data={attribute && attribute.searchable && attribute.searchable}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"mustBeUniqueInput"} nameLabel={"Must Be Unique"}
-                                  nameAttribute={"mustBeUnique"} data={attribute && attribute.mustBeUnique && attribute.mustBeUnique}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"mustBeUnique"}
+                                          data={attribute && attribute.mustBeUnique && attribute.mustBeUnique}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"uniqueItemsInput"} nameLabel={"Unique Items"}
-                                  nameAttribute={"uniqueItems"} data={attribute && attribute.uniqueItems && attribute.uniqueItems}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"uniqueItems"}
+                                          data={attribute && attribute.uniqueItems && attribute.uniqueItems}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"multipleInput"} nameLabel={"Multiple"}
-                                  nameAttribute={"multiple"} data={attribute && attribute.multiple && attribute.multiple}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"multiple"}
+                                          data={attribute && attribute.multiple && attribute.multiple}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"nullableInput"} nameLabel={"Nullable"}
-                                  nameAttribute={"nullable"} data={attribute && attribute.nullable && attribute.nullable}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"nullable"}
+                                          data={attribute && attribute.nullable && attribute.nullable}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"readOnlyInput"} nameLabel={"Read Only"}
-                                  nameAttribute={"readOnly"} data={attribute && attribute.readOnly && attribute.readOnly}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"readOnly"}
+                                          data={attribute && attribute.readOnly && attribute.readOnly}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"writeOnlyInput"} nameLabel={"Write Only"}
-                                  nameAttribute={"writeOnly"} data={attribute && attribute.writeOnly && attribute.writeOnly}
-                                  defaultValue={"true"} />
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
+                                          nameAttribute={"writeOnly"}
+                                          data={attribute && attribute.writeOnly && attribute.writeOnly}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                            <div className="col-12 col-sm-6">
+                              <div className="form-check">
                                 <Checkbox type={"checkbox"} id={"deprecatedInput"} nameLabel={"Deprecated"}
-                                  nameAttribute={"deprecated"} data={attribute && attribute.deprecated && attribute.deprecated}
-                                  defaultValue={"true"} />
+                                          nameAttribute={"deprecated"}
+                                          data={attribute && attribute.deprecated && attribute.deprecated}
+                                          defaultValue={"true"}/>
+                              </div>
+                            </div>
+                          </div>
+                          <Accordion id="attributeAccordion"
+                                     items={[{
+                                       title: "Object Config",
+                                       id: "objectConfigAccordion",
+                                       render: function () {
+                                         return (
+                                           <MultiDimensionalArrayInput
+                                             id={"objectConfig"}
+                                             label={"Object Config"}
+                                             data={attribute && attribute.objectConfig ? [{
+                                               key: 'objectConfig',
+                                               value: attribute.objectConfig
+                                             }] : null}
+                                           />
+                                         )
+                                       }
+                                     },
+                                       {
+                                         title: "Enum",
+                                         id: "enumAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               id={"enum"}
+                                               label={"Enum"}
+                                               data={attribute?.enum}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "Required If",
+                                         id: "requiredIfAccordion",
+                                         render: function () {
+                                           return (
+                                             <MultiDimensionalArrayInput
+                                               id={"requiredIf"}
+                                               label={"Required If"}
+                                               data={attribute && attribute.requiredIf ? [{
+                                                 key: 'requiredIf',
+                                                 value: attribute.requiredIf
+                                               }] : null}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "Forbidden If",
+                                         id: "forbiddenIfAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               id={"forbiddenIf"}
+                                               label={"Forbidden If"}
+                                               data={attribute?.forbiddenIf}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "All Of",
+                                         id: "allOfAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               label={"All Of"}
+                                               id={"allOf"}
+                                               data={attribute?.allOf}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "Any Of",
+                                         id: "anyOfAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               label={"Any Of"}
+                                               id={"anyOf"}
+                                               data={attribute?.anyOf}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "One Of",
+                                         id: "oneOfAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               label={"One Of"}
+                                               id={"oneOf"}
+                                               data={attribute?.oneOf}
+                                             />)
+                                         }
+                                       }
+                                     ]}/>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
-                    <Accordion id="attributeAccordion"
-                      items={[{
-                        title: "Object Config",
-                        id: "objectConfigAccordion",
-                        render: function () {
-                          return (
-                              <MultiDimensionalArrayInput
-                                id={"objectConfig"}
-                                label={"Object Config"}
-                                data={attribute && attribute.objectConfig ? [{ key: 'objectConfig', value: attribute.objectConfig }] : null}
-                              />
-                          )
-                        }
-                      },
-                      {
-                        title: "Enum",
-                        id: "enumAccordion",
-                        render: function () {
-                          return (
-                                <ArrayInputComponent
-                                  id={"enum"}
-                                  label={"Enum"}
-                                  data={attribute && attribute.enum ? attribute.enum : null}
-                                />
-                          )
-                        }
-                      },
-                      {
-                        title: "Required If",
-                        id: "requiredIfAccordion",
-                        render: function () {
-                          return (
-                              <MultiDimensionalArrayInput
-                                id={"requiredIf"}
-                                label={"Required If"}
-                                data={ attribute && attribute.requiredIf ? [{ key: 'requiredIf', value: attribute.requiredIf }] : null}
-                              />
-                              )
-                        }
-                      },
-                      {
-                        title: "Forbidden If",
-                        id: "forbiddenIfAccordion",
-                        render: function () {
-                          return (
-                              <ArrayInputComponent
-                                id={"forbidenIf"}
-                                label={"Forbidden If"}
-                                data={attribute && attribute.forbidenIf ? attribute.forbidenIf : null}
-                              />
-                            )
-                        }
-                      },
-                      {
-                        title: "All Of",
-                        id: "allOfAccordion",
-                        render: function () {
-                          return (
-                              <ArrayInputComponent
-                                label={"All Of"}
-                                id={"allOf"}
-                                data={attribute && attribute.allOf ? attribute.allOf : null}
-                              />
-                          )
-                        }
-                      },
-                      {
-                        title: "Any Of",
-                        id: "anyOfAccordion",
-                        render: function () {
-                          return (
-                              <ArrayInputComponent
-                                label={"Any Of"}
-                                id={"anyOf"}
-                                data={attribute && attribute.anyOf ? attribute.anyOf : null}
-                              />
-                          )
-                        }
-                      },
-                      {
-                        title: "One Of",
-                        id: "oneOfAccordion",
-                        render: function () {
-                          return (
-                              <ArrayInputComponent
-                                label={"One Of"}
-                                id={"oneOf"}
-                                data={attribute && attribute.oneOf ? attribute.oneOf : null}
-                              />)
-                        }
-                      }
-                      ]} />
-                  </div>
-                )}
-              </div>
-            </div>
-
-          )
-        }} />
-    </form>
-  </div>
+                )
+              }}/>
+      </form>
+    </div>
   );
 }
