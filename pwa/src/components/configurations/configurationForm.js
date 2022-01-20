@@ -10,7 +10,6 @@ export default function ConfigurationForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [configuration, setConfiguration] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [title, setTitle] = React.useState("Application");
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -34,7 +33,7 @@ export default function ConfigurationForm({ id }) {
         }
       }
     }
-  }, [context]);
+  }, [context, id]);
 
   const saveConfiguration = () => {
     setShowSpinner(true);
@@ -67,7 +66,6 @@ export default function ConfigurationForm({ id }) {
         console.log("Saved source:", data);
         setConfiguration(data);
         setShowSpinner(false);
-        setTitle(configuration.name);
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -24,6 +24,27 @@ export default function SourceForm({id}) {
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
+    const getSource = () => {
+      setShowSpinner(true);
+      fetch(`${context.adminUrl}/gateways/${id}`, {
+        credentials: "include",
+        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("get source")
+          console.log(data)
+          setShowSpinner(false);
+          setSource(data);
+        })
+        .catch((error) => {
+          setShowSpinner(false);
+          console.error("Error:", error);
+          setAlert(null);
+          setAlert({type: 'danger', message: error.message});
+        });
+    };
+
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: window.GATSBY_ADMIN_URL,
@@ -31,28 +52,8 @@ export default function SourceForm({id}) {
     } else if (isLoggedIn && id !== 'new') {
       getSource();
     }
-  }, [context]);
+  }, [context, id]);
 
-  const getSource = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("get source")
-        console.log(data)
-        setShowSpinner(false);
-        setSource(data);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
 
   const saveSource = (event) => {
     event.preventDefault();
