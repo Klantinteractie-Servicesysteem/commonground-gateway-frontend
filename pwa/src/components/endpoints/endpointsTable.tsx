@@ -47,7 +47,8 @@ export default function EndpointsTable() {
     {
       alert !== null &&
       <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        <Alert alertClass={alert.type} body={function () {
+          return (<>{alert.message}</>) }} />
       </FlashMessage>
     }
     <Card
