@@ -195,10 +195,11 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logGeneral-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type && log.type}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Call id: {log.callId && log.callId}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Reponse time: {log.responseTime && log.responseTime}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Route: {log.routeName && log.routeName}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type === 'in' ? 'Incoming' : 'Outcoming'}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Call id: {log.callId && log.callId}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Reponse time: {log.responseTime && log.responseTime} seconds</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Route: {log.routeName && log.routeName}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Status: {log.requestStatus && log.requestStatus} <b style={{ color: log.responseStatusCode > 199 && log.responseStatusCode < 300 ? 'limegreen' : 'red' }}>{log.responseStatusCode} <i style={{ color: 'limegreen' }} className="fas fa-circle"></i></b></h5>
                     <Accordion id="logGeneralAccordion"
                       items={[
                         {
@@ -219,9 +220,8 @@ export default function LogTable({ id = null }) {
                     aria-labelledby="logRequest-tab"
                   >
                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Method: {log.requestMethod && log.requestMethod}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Languages: {log.requestLanguages && log.requestLanguages}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Status: {log.requestStatus && log.requestStatus} {log.requestStatusCode && log.requestStatusCode}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Languages: {log.requestLanguages && log.requestLanguages}</h5>
                     <Accordion id="logRequestAccordion"
                       items={[
                         {
@@ -243,11 +243,11 @@ export default function LogTable({ id = null }) {
                           }
                         },
                         {
-                          title: "Context",
-                          id: "logRequestContext",
+                          title: "Content",
+                          id: "logRequestContent",
                           render: function () {
                             return (<>
-                              {log.requestContext ? JSON.stringify(log.requestContext) : <p className="utrecht-paragraph">No context found</p>}
+                              {log.requestContent ? JSON.stringify(log.requestContent) : <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
@@ -259,7 +259,6 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logResponse-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Status: {log.responseStatus && log.responseStatus} {log.responseStatusCode && log.responseStatusCode}</h5>
 
                     <Accordion id="logResponseAccordion"
                       items={[
@@ -277,7 +276,7 @@ export default function LogTable({ id = null }) {
                           id: "logResponseContent",
                           render: function () {
                             return (<>
-                              {log.responseContent ? JSON.stringify(log.responseContent) : <p className="utrecht-paragraph">No content found</p>}
+                              {log.responseContent ? <pre><code>{log.responseContent}</code></pre> : <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
