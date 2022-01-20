@@ -9,8 +9,8 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-            <UsersTable/>
-              </div>
+              <UsersTable/>
+            </div>
           </div>
         </div>
       </main>
