@@ -72,18 +72,18 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}
       }
 
       <div className="row">
-        <h5>Add {label}</h5>
+        <h5>Create {label}</h5>
         <div className="col-10">
           <input
             type="text"
             value={value}
-            placeholder={`Add ${label}`}
+            placeholder={`Create ${label}`}
             onChange={(e) => setValue(e.target.value)}
             className="utrecht-textbox utrecht-textbox--html-input mb-2"
           />
         </div>
         <div className="col-2">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add</button>
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Create</button>
         </div>
       </div>
     </div>

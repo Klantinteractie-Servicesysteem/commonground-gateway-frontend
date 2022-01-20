@@ -17,7 +17,7 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={"Translation"} subtext={"Add or modify your translation"}>
+    <Layout title={"Translation"} subtext={"Create or modify your translation"}>
       <main>
         <div className="row">
           <div className="col-12">

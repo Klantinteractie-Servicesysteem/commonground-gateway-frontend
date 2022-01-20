@@ -19,7 +19,7 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={"Entity"} subtext={"Add or modify your entity"}>
+    <Layout title={"Entity"} subtext={"Create or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">

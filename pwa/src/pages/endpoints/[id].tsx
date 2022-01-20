@@ -16,7 +16,7 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={"Endpoints"} subtext={"Add or modify your endpoint"}>
+    <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
       <main>
         <div className="row">
           <div className="col-12">
