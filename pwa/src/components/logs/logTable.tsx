@@ -100,18 +100,28 @@ export default function LogTable({ id = null }) {
                         {
                           headerName: "Type",
                           field: "type",
+                          renderCell: (item) => {
+                            return (
+                              <span>{item.type === 'in' ? 'Incoming' : 'Outcoming'}</span>
+                            );
+                          },
                         },
                         {
                           headerName: "Method",
                           field: "requestMethod",
                         },
                         {
-                          headerName: "Status",
-                          field: "responseStatus",
+                          headerName: "Response time (seconds)",
+                          field: "responseTime",
                         },
                         {
-                          headerName: "Response time",
-                          field: "responseTime",
+                          headerName: "Status",
+                          field: "responseStatusCode",
+                          renderCell: (item) => {
+                            return (
+                              <b style={{ color: item.responseStatusCode > 199 && item.responseStatusCode < 300 ? 'limegreen' : 'red' }}>{item.responseStatusCode} <i style={{ color: 'limegreen' }} className="fas fa-circle"></i></b>
+                            );
+                          },
                         },
                         {
                           field: "id",
