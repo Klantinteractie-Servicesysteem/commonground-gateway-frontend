@@ -38,7 +38,6 @@ export default function EntityForm({id}) {
         getEntity();
       }
       getSources();
-      getSoaps();
     }
   }, [context]);
 
@@ -81,27 +80,6 @@ export default function EntityForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-
-  const getSoaps = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/soaps`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setSoaps(data["hydra:member"]);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  }
 
   const saveEntity = (event) => {
     event.preventDefault();
@@ -294,44 +272,7 @@ export default function EntityForm({id}) {
                                   )}
                               </div>
                             </div>
-                            <div className="col-6">
-                              <div className="form-group">
-                                {
-                                  soaps !== null && soaps.length > 0 ? (
-                                    <>
-                                      {entity !== null &&
-                                      entity.toSoap !== undefined &&
-                                      entity.toSoap !== null ? (
-                                          <SelectInputComponent
-                                            options={sources}
-                                            data={entity.toSoap.name}
-                                            name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
-                                            value={"/admin/soaps/"}/>
-                                        )
-                                        : (
-                                          <SelectInputComponent
-                                            options={sources}
-                                            name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
-                                            value={"/admin/soaps/"}/>
-                                        )}
-                                    </>
-                                  ) : (
-                                    <SelectInputComponent
-                                      options={[{name: "Please create a soap first to use it", value: null}]}
-                                      name={"toSoap"} id={"toSoapInput"} nameOverride={"To Soap"}
-                                    />
-                                  )}
-                              </div>
-                            </div>
                           </div>
-                          {/* FromSoap TODO */}
-                          {/* <div className="row">
-                      <div className="col-12">
-                        <div className="form-group">
-                          <ArrayInput />
-                        </div>
-                      </div>
-                    </div> */}
                           <div className="row">
                             <div className="col-12">
                               <div className="form-check">
@@ -341,78 +282,7 @@ export default function EntityForm({id}) {
                               </div>
                             </div>
                           </div>
-                          <Accordion
-                            id="entityAccordion"
-                            items={[
-                              {
-                                title: "Transformations",
-                                id: "transformationsAccordion",
-                                render: function () {
-                                  return (
-                                    <>
-                                        <ArrayInputComponent
-                                          id={"transformations"}
-                                          label={"Transformations"}
-                                          data={entity && entity.transformations ? entity.transformations : null}
-                                        />
-                                    </>
-                                  );
-                                },
-                              },
-                              {
-                                title: "Translation Config",
-                                id: "translationConfigAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"translationConfig"}
-                                          label={"Translation Config"}
-                                          data={entity && entity.translationConfig ? entity.translationConfig : null}
-                                        />
-                                  );
-                                },
-                              },
-                              {
-                                title: "Collection Config",
-                                id: "collectionConfigAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"collectionConfig"}
-                                          data={entity && entity.collectionConfig ? entity.collectionConfig : null}
-                                          label={"Collection Config"}
-                                        />
-                                  )
-                                }
-                              },
-                              {
-                                title: "Used Properties",
-                                id: "usedPropertiesAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"usedProperties"}
-                                          label={"Used Properties"}
-                                          data={entity && entity.usedProperties ? entity.usedProperties : null}
-                                        />
-                                  );
-                                },
-                              },
-                              {
-                                title: "Available Properties",
-                                id: "availablePropertiesAccordion",
-                                render: function () {
-                                  return (
-                                        <ArrayInputComponent
-                                          id={"availableProperties"}
-                                          label={"Available Properties"}
-                                          data={entity && entity.availableProperties ? entity.availableProperties : null}
-                                        />
-                                  );
-                                },
-                              }
-                            ]}
-                          />
+                          {/* @TODO Accordion met properties */}
                         </div>
                       )}
                     </div>
