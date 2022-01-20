@@ -16,6 +16,7 @@ export default function TranslationForm({ id }) {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -91,6 +92,12 @@ export default function TranslationForm({ id }) {
       });
   }
 
+  if(id !== "new"){
+    title = "Edit Translation";
+  }else{
+    title = "Create Translation";
+  }
+
   return (<>
       {
         alert !== null &&
@@ -99,7 +106,7 @@ export default function TranslationForm({ id }) {
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveTranslation}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (
                   <div>

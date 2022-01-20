@@ -9,6 +9,7 @@ export default function ObjectEntityForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [objectEntity, setObjectEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -105,11 +106,17 @@ export default function ObjectEntityForm({ id }) {
         console.error("Error:", error);
       });
   };
+  if(id !== "new"){
+    title = "Edit Object entities";
+  }else{
+    title = "Create Object entities";
+  }
+
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
       <Card
-        title="Values"
+        title={title}
         cardHeader={function () {
           return (
             <>

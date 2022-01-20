@@ -74,10 +74,16 @@ export default function ConfigurationForm({ id }) {
       });
   };
 
+/*  if(id !== "new"){
+    title = "Edit Configuration";
+  }else{
+    title = "Create Configuration";
+  }*/
+
   return (
     <form id="dataForm" onSubmit={saveConfiguration}>
       <Card
-        title="Values"
+        title=/*{title}*/ "title"
         back="/entities"
         save={true}
         cardHeader={function () {

@@ -30,6 +30,7 @@ export default function ApplicationForm({ id }) {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -121,6 +122,11 @@ export default function ApplicationForm({ id }) {
         setAlert({ type: 'danger', message: error.message });
       });
   };
+  if(id !== "new"){
+    title = "Edit Application";
+  }else{
+    title = "Create Application";
+  }
 
   return (<div>
       {
@@ -130,7 +136,7 @@ export default function ApplicationForm({ id }) {
         </FlashMessage>
       }
       <form id="applicationForm" onSubmit={saveApplication}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={"/applications"}>

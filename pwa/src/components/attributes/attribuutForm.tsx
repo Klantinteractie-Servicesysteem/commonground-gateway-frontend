@@ -27,6 +27,7 @@ export default function AttributeForm({ id, entity }) {
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -231,7 +232,11 @@ export default function AttributeForm({ id, entity }) {
         setAlert({ type: 'danger', message: error.message });
       });
   };
-
+  if(id !== "new"){
+    title = "Edit Attribute";
+  }else{
+    title = "Create Attribute";
+  }
   return (<div>
       {
         alert !== null &&
@@ -240,7 +245,7 @@ export default function AttributeForm({ id, entity }) {
         </FlashMessage>
       }
       <form id="attributeForm" onSubmit={saveAttribute}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={`/entities/${entity}`}>

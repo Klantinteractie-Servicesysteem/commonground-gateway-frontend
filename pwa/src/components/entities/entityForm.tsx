@@ -27,6 +27,7 @@ export default function EntityForm({id}) {
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [soaps, setSoaps] = React.useState<any>(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -167,6 +168,11 @@ export default function EntityForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   }
+  if(id !== "new"){
+    title = "Edit Entity";
+  }else{
+    title = "Create Entity";
+  }
 
   return (<>
       {
@@ -178,7 +184,7 @@ export default function EntityForm({id}) {
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveEntity}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (
                   <div>

@@ -15,6 +15,7 @@ export default function ObjectEntityForm({id, entityId}) {
   const [alert, setAlert] = React.useState(null);
   const [applications, setApplications] = React.useState(null);
   const [objectValues, setObjectValues] = React.useState(null);
+  let title;
 
 
   React.useEffect(() => {
@@ -157,11 +158,16 @@ export default function ObjectEntityForm({id, entityId}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
+  if(id !== "new"){
+    title = "Edit Object entities";
+  }else{
+    title = "Create Object entities";
+  }
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
       <Card
-        title="Values"
+        title={title}
         cardHeader={function () {
           return (
             <>

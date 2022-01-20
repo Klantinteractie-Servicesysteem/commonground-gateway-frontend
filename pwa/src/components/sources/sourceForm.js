@@ -22,6 +22,7 @@ export default function SourceForm({id}) {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -122,6 +123,11 @@ export default function SourceForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
+  if(id !== "new"){
+    title = "Edit Source";
+  }else{
+    title = "Create Source";
+  }
 
   return (<>
       {
@@ -133,7 +139,7 @@ export default function SourceForm({id}) {
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveSource}>
-        <Card title={"Source"}
+        <Card title={title}
               cardHeader={function () {
                 return (<>
                     <Link className="utrecht-link" to={"/sources"}>

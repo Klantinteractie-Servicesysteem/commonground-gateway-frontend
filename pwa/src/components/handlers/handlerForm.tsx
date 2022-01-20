@@ -26,6 +26,7 @@ export default function HandlerForm({id, endpointId}) {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -190,6 +191,11 @@ export default function HandlerForm({id, endpointId}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
+  if(id !== "new"){
+    title = "Edit Handler";
+  }else{
+    title = "Create Handler";
+  }
 
   return (<>
       {
@@ -201,7 +207,7 @@ export default function HandlerForm({id, endpointId}) {
         </FlashMessage>
       }
       <form id="handlerForm" onSubmit={saveHandler}>
-        <Card title="Handler values"
+        <Card title = {title}
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>

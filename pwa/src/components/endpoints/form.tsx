@@ -15,6 +15,7 @@ export default function EndpointForm({ id }) {
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
+  let title;
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -119,6 +120,12 @@ export default function EndpointForm({ id }) {
       });
   };
 
+  if(id !== "new"){
+    title = "Edit Endpoint";
+  }else{
+    title = "Create Endpoint";
+  }
+
   return (<>
       {
         alert !== null &&
@@ -127,7 +134,7 @@ export default function EndpointForm({ id }) {
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveEndpoint}>
-        <Card title="Values"
+        <Card title= {title}
               cardHeader={function () {
                 return (
                   <div>
