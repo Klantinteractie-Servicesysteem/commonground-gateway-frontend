@@ -88,7 +88,7 @@ export default function AttributeForm({id, entity}) {
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
     let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
     let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
-    let forbidenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
+    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
@@ -148,7 +148,7 @@ export default function AttributeForm({id, entity}) {
       allOf,
       oneOf,
       anyOf,
-      forbidenIf,
+      forbiddenIf,
       requiredIf,
       objectConfig,
     };
@@ -547,9 +547,9 @@ export default function AttributeForm({id, entity}) {
                                          render: function () {
                                            return (
                                              <ElementCreationNew
-                                               id={"forbidenIf"}
+                                               id={"forbiddenIf"}
                                                label={"Forbidden If"}
-                                               data={attribute?.forbidenIf}
+                                               data={attribute?.forbiddenIf}
                                              />
                                            )
                                          }
