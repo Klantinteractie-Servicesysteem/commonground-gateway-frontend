@@ -137,12 +137,12 @@ export default function SourceForm({id}) {
               cardHeader={function () {
                 return (<>
                     <Link className="utrecht-link" to={"/sources"}>
-                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                         <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                       </button>
                     </Link>
                     <button
-                      className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                      className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
                       type="submit"
                     >
                       <i className="fas fa-save mr-2"/>Save
