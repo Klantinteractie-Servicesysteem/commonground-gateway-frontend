@@ -4,7 +4,6 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-
 export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
   const [endpoints, setEndpoints] = React.useState(null);
@@ -14,7 +13,7 @@ export default function EndpointsTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       getEndpoints(context);

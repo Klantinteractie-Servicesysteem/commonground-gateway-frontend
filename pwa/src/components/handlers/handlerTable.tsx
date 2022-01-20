@@ -13,7 +13,7 @@ export default function HandlerTable({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -100,8 +100,8 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                     {
                       field: "id",
@@ -128,8 +128,8 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                   ]}
                   rows={[]}

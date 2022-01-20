@@ -30,7 +30,6 @@ export default function ApplicationsTable() {
       .then((data) => {
         setApplications(data["hydra:member"]);
         setShowSpinner(false);
-        console.log(data);
       })
       .catch((error) => {
         setShowSpinner(false);
