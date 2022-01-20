@@ -151,8 +151,9 @@ export default function LogTable({ id = null }) {
       />
 
       {logs !== null &&
-        logs.map((log) => (
+        logs.map((log, idx) => (
           <Modal
+            key={idx}
             title={"Call log"}
             id={`logs${log.id}`}
             body={function () {
