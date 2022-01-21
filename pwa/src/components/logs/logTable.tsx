@@ -17,10 +17,12 @@ export default function LogTable({ id = null }) {
       responseTime: 8,
       requestPathInfo: '/api/weer',
       requestLanguages: "content type?",
-      responseContent: "{'test': 'abc'}"
+      responseContent: "{'test': 'abc'}",
+      requestContent: "{'test': 'abc'}"
     }]);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -247,7 +249,15 @@ export default function LogTable({ id = null }) {
                           id: "logRequestContent",
                           render: function () {
                             return (<>
-                              {log.requestContent ? JSON.stringify(log.requestContent) : <p className="utrecht-paragraph">No content found</p>}
+                              {log.requestContent
+                                ?
+                                <pre style={{ 'backgroundColor': 'black', 'overflowWrap': 'break-word' }}>
+                                  <code id="requestContent" style={{ color: 'orange' }} className="language-json">
+                                    {log.requestContent}
+                                  </code>
+                                </pre>
+                                :
+                                <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
@@ -276,7 +286,12 @@ export default function LogTable({ id = null }) {
                           id: "logResponseContent",
                           render: function () {
                             return (<>
-                              {log.responseContent ? <pre><code>{log.responseContent}</code></pre> : <p className="utrecht-paragraph">No content found</p>}
+                              {log.responseContent ? 
+                                <pre style={{ 'backgroundColor': 'black', 'overflowWrap': 'break-word' }}>
+                                  <code id="responseContent" style={{ color: 'orange' }} className="language-json">
+                                    {log.responseContent}
+                                  </code>
+                                </pre> : <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
