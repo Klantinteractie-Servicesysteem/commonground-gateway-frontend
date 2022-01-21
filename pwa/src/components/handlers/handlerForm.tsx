@@ -225,7 +225,7 @@ export default function HandlerForm({id, endpointId}) {
                         <div className="row">
                           <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler && handler.name && handler.name}
-                                                     nameOverride={"Name"}/>
+                                                     nameOverride={"Name"} required/>
                           </div>
                           <div className="col-6">
                               <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
