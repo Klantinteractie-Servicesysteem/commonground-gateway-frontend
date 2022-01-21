@@ -107,7 +107,7 @@ export default function ObjectEntityForm({id, entityId}) {
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
     let externalResult = retrieveFormArrayAsOArray(event.target, "externalResult");
 
-    let body = {
+    let body:{} = {
       uri: event.target.uri.value,
       externalId: event.target.externalId ? event.target.externalId.value : null,
       application: event.target.application.value
@@ -122,12 +122,15 @@ export default function ObjectEntityForm({id, entityId}) {
         ? event.target.objectValues.value
         : null,
       subresourceOf: event.target.subresourceOf.value ? event.target.subresourceOf.value : null,
+      errors,
+      promises,
+      externalResult,
     };
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.uri])) {
+    if (!checkValues([body["uri"]])) {
       return;
     }
 

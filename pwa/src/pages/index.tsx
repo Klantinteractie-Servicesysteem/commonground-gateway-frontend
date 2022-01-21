@@ -7,10 +7,8 @@ import LogTable from "../components/logs/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
 import {
-  documentDownload,
   download,
 } from "../components/utility/DocumentDownload";
-// import { postCall } from "../components/utility/fetch";
 import FlashMessage from 'react-flash-message';
 
 const IndexPage = () => {
@@ -21,9 +19,9 @@ const IndexPage = () => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        adminUrl: window.GATSBY_ADMIN_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl:process.env.GATSBY_ADMIN_URL,
+        frontendUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react"
 import PropTypes from "prop-types";
 
 export default function HTML(props) {
@@ -44,6 +44,7 @@ export default function HTML(props) {
         />
         {props.headComponents}
       </head>
+
       <body {...props.bodyAttributes}>
         {props.preBodyComponents}
         <div
