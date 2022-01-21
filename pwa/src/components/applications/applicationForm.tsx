@@ -6,15 +6,16 @@ import {
   Alert,
   Accordion
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
-import { Link } from "gatsby";
-import { navigate } from "gatsby-link";
+import {isLoggedIn} from "../../services/auth";
+import {Link} from "gatsby";
+import {navigate} from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
 import {ArrayInputComponent} from "../common/arrayInput";
 import FlashMessage from 'react-flash-message';
+import ElementCreationNew from "../common/elementCreationNew";
 
 interface IApplication {
   name: string,
@@ -25,7 +26,7 @@ interface IApplication {
   domains: Array<string>,
 }
 
-export default function ApplicationForm({ id }) {
+export default function ApplicationForm({id}) {
   const [context, setContext] = React.useState(null);
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
@@ -49,7 +50,7 @@ export default function ApplicationForm({ id }) {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/applications/${id}`, {
       credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
@@ -60,7 +61,7 @@ export default function ApplicationForm({ id }) {
         setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -72,17 +73,17 @@ export default function ApplicationForm({ id }) {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description ? event.target.description.value : null,
-      public: event.target.public.value ? event.target.public.value : null,
-      secret: event.target.secret.value ? event.target.secret.value : null,
-      resource: event.target.resource.value ? event.target.resource.value : null,
+      description: event.target.description
+        ? event.target.description.value : null,
+      public: event.target.public.value
+        ? event.target.public.value : null,
+      secret: event.target.secret.value
+        ? event.target.secret.value : null,
+      resource: event.target.resource.value
+        ? event.target.resource.value : null,
+      domains,
     };
 
-    if (domains.length !== 0) {
-      body["domains"] = domains;
-    } else {
-      body["domains"] = [];
-    }
 
     body = removeEmptyObjectValues(body);
 
@@ -118,7 +119,7 @@ export default function ApplicationForm({ id }) {
         setShowSpinner(false);
         console.error(error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
   };
 
@@ -126,7 +127,9 @@ export default function ApplicationForm({ id }) {
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
         </FlashMessage>
       }
       <form id="applicationForm" onSubmit={saveApplication}>
@@ -134,15 +137,15 @@ export default function ApplicationForm({ id }) {
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={"/applications"}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                      <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                    <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                      <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                     </button>
                   </Link>
                   <button
                     className="utrecht-button utrecht-button-sm btn-sm btn-success"
                     type="submit"
                   >
-                    <i className="fas fa-save mr-2" />Save
+                    <i className="fas fa-save mr-2"/>Save
                   </button>
                 </>)
               }}
@@ -151,33 +154,38 @@ export default function ApplicationForm({ id }) {
                   <div className="row">
                     <div className="col-12">
                       {showSpinner === true ? (
-                        <Spinner />
+                        <Spinner/>
                       ) : (
                         <div>
                           <div className="row">
                             <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={application && application.name && application.name}
-                                                       nameOverride={"Name"} required />
+                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                     data={application && application.name && application.name}
+                                                     nameOverride={"Name"} required/>
                             </div>
                             <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={application && application.description && application.description} nameOverride={"Description"} />
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"public"} id={"publicInput"} data={application && application.public && application.public}
-                                                       nameOverride={"Public"} />
-                            </div>
-                            <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
-                                                       data={application && application.secret && application.secret} nameOverride={"Secret"} />
+                              <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                     data={application && application.description && application.description}
+                                                     nameOverride={"Description"}/>
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"} data={application && application.resource && application.resource}
-                                                       nameOverride={"Resource"} />
+                              <GenericInputComponent type={"text"} name={"public"} id={"publicInput"}
+                                                     data={application && application.public && application.public}
+                                                     nameOverride={"Public"}/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
+                                                     data={application && application.secret && application.secret}
+                                                     nameOverride={"Secret"}/>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"}
+                                                     data={application && application.resource && application.resource}
+                                                     nameOverride={"Resource"}/>
                             </div>
                           </div>
 
@@ -189,11 +197,11 @@ export default function ApplicationForm({ id }) {
                                 id: "domainsAccordion",
                                 render: function () {
                                   return (
-                                        <ArrayInputComponent
-                                          id={"domains"}
-                                          label={"Domains"}
-                                          data={application && application.domains ? application.domains : null}
-                                        />
+                                    <ElementCreationNew
+                                      id="domains"
+                                      label="Domains"
+                                      data={application?.domains}
+                                    />
                                   );
                                 },
                               }
@@ -207,6 +215,6 @@ export default function ApplicationForm({ id }) {
               }}
         />
       </form>
-  </div>
+    </div>
   );
 }
