@@ -88,7 +88,7 @@ export default function AttributeForm({id, entity}) {
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
     let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
     let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
-    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
+    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbiddenIf");
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
