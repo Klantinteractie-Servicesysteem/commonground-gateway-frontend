@@ -17,11 +17,12 @@ const IndexPage = () => {
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
+    console.log(process.env.GATSBY_API_URL);
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: process.env.GATSBY_ADMIN_URL,
+        apiUrl: process.env.GATSBY_API_URL,
         adminUrl:process.env.GATSBY_ADMIN_URL,
-        frontendUrl: process.env.GATSBY_ADMIN_URL,
+        frontendUrl: process.env.GATSBY_FRONTEND_URL,
       });
     }
   }, [context]);
@@ -41,6 +42,7 @@ const IndexPage = () => {
       username: usernameInput.value ? usernameInput.value : null,
       password: passwordInput.value ? passwordInput.value : null,
     };
+
     fetch(`${context.apiUrl}/users/login`, {
       method: "POST",
       headers: {
