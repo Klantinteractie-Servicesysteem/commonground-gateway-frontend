@@ -13,8 +13,8 @@ export default function ObjectEntityForm({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        frontendUrl: process.env.GATSBY_ADMIN_URL,
-        apiUrl: process.env.GATSBY_ADMIN_URL,
+        frontendUrl: process.env.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_API_URL,
       });
     } else {
       if (isLoggedIn()) {
