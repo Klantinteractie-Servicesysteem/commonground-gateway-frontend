@@ -122,7 +122,7 @@ const IndexPage = () => {
 
           <div className="tab-content">
             <div
-              className="tab-pane "
+              className="tab-pane active"
               id="logs"
               role="tabpanel"
               aria-labelledby="logs-tab"
