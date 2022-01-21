@@ -13,8 +13,8 @@ export default function ObjectEntityForm({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        frontendUrl: process.env.GATSBY_ADMIN_URL,
+        apiUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -76,7 +76,7 @@ export default function ObjectEntityForm({ id }) {
     // This removes empty values from the body
     body = removeEmptyValues(body);
 
-    if (!checkInputs([body.name])) {
+    if (!checkInputs([body["name"]])) {
       setShowSpinner(false);
       return;
     }
@@ -148,7 +148,6 @@ export default function ObjectEntityForm({ id }) {
                               id={"uriInput"}
                               data={objectEntity.uri}
                               nameOverride={"Uri *"}
-                              required={"true"}
                             />
                           ) : (
                             <GenericInputComponent
@@ -156,7 +155,6 @@ export default function ObjectEntityForm({ id }) {
                               name={"uri"}
                               id={"uriInput"}
                               nameOverride={"Uri"}
-                              required={"true"}
                             />
                           )}
                         </div>

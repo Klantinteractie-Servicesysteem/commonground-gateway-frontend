@@ -17,7 +17,7 @@ import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import {ArrayInputComponent} from "../common/arrayInput";
+
 
 export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
