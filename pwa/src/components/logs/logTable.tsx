@@ -2,24 +2,11 @@ import * as React from "react";
 import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
+import logsArray from '../../dummy_data/logs';
 
 export default function LogTable({ id = null }) {
   const [context, setContext] = React.useState(null);
-  const [logs, setLogs] = React.useState([
-    {
-      id: '12-34',
-      type: 'in',
-      callId: 'dc7ce044-e674-46b0-b8e2-089c66ab1b68',
-      routeName: '/api/weer',
-      requestMethod: 'POST',
-      responseStatus: 'HTTP_CREATED',
-      responseStatusCode: 201,
-      responseTime: 8,
-      requestPathInfo: '/api/weer',
-      requestLanguages: "content type?",
-      responseContent: "{'test': 'abc'}",
-      requestContent: "{'test': 'abc'}"
-    }]);
+  const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
 
