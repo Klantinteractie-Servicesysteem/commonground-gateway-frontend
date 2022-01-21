@@ -3,15 +3,8 @@ import Layout from "../../components/common/layout";
 import SourcesTable from "../../components/sources/sourcesTable";
 
 const IndexPage = () => {
-  // @ts-ignore
   return (
-    <Layout title={"Sources"} subtext={
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="#">Home</a></li>
-          <li className="breadcrumb-item active" aria-current="page">Library</li>
-        </ol>
-    }>
-
+    <Layout title={"Sources"} subtext={"An overview of your Source objects"}>
       <main>
         <div className="row">
           <div className="col-12">
