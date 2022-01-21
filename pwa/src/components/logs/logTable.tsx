@@ -3,8 +3,13 @@ import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conduction
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import logsArray from '../../dummy_data/logs';
+import JsonCode from '../common/jsonCode';
 
-export default function LogTable({ id = null }) {
+interface LogTableProps {
+  id: string | null
+}
+
+export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
   const [context, setContext] = React.useState(null);
   const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -291,3 +296,5 @@ export default function LogTable({ id = null }) {
     </>
   );
 }
+
+export default LogTable;
