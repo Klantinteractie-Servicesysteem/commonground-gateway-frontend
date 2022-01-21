@@ -1,9 +1,10 @@
 import * as React from "react";
+import './logTable.css';
 import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
-import logsArray from '../../dummy_data/logs';
-import JsonCode from '../common/jsonCode';
+import logsArray from '../../../dummy_data/logs';
+import JsonCode from '../../common/jsonCode';
 
 interface LogTableProps {
   id: string | null
@@ -54,7 +55,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
   };
 
   return (
-    <>
+    <div className="logTable">
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -112,7 +113,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                           field: "responseStatusCode",
                           renderCell: (item) => {
                             return (
-                              <span>{item?.responseStatus} {item?.responseStatusCode} <i style={{ color: (item?.responseStatusCode > 199 && item?.responseStatusCode < 300 ? 'limegreen' : 'red'), fontSize: '10px' }} className="fas fa-circle"></i></span>
+                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
                             );
                           },
                         },
@@ -207,7 +208,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                       </tr>
                       <tr>
                         <th style={{ width: "30%" }}>Status</th>
-                        <td>{log?.responseStatus} {log?.responseStatusCode} <i style={{ color: (log?.responseStatusCode > 199 && log?.responseStatusCode < 300 ? 'limegreen' : 'red'), fontSize: '10px' }} className="fas fa-circle"></i></td>
+                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
                       </tr>
                     </table>
 
@@ -316,7 +317,18 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
             }}
           />
         ))}
-    </>
+    </div>
+  );
+}
+
+interface StatusCodeProps {
+  code: number,
+  message: string | null
+}
+
+const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
+  return (
+    <span>{message} {code} <i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i></span>
   );
 }
 
