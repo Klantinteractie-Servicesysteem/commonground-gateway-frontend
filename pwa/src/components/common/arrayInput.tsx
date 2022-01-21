@@ -74,7 +74,7 @@ export function ArrayInputComponent(props: ArrayInputProps) {
               );
             }}
           >
-            Add
+            Create
           </button>
         </div>
       </div>
