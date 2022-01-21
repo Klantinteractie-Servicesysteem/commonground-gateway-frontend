@@ -188,11 +188,29 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                     role="tabpanel"
                     aria-labelledby="logGeneral-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type === 'in' ? 'Incoming' : 'Outcoming'}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Call id: {log.callId && log.callId}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Reponse time: {log.responseTime && log.responseTime} seconds</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Route: {log.routeName && log.routeName}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Status: {log.requestStatus && log.requestStatus} <b style={{ color: log.responseStatusCode > 199 && log.responseStatusCode < 300 ? 'limegreen' : 'red' }}>{log.responseStatusCode} <i style={{ color: 'limegreen' }} className="fas fa-circle"></i></b></h5>
+                    <table style={{ width: "100%" }} className="mt-3">
+                      <tr>
+                        <th style={{ width: "30%" }}>Type</th>
+                        <td>{log?.type === 'in' ? 'Incoming' : 'Outcoming'}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Call ID</th>
+                        <td>{log?.callId}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Response time</th>
+                        <td>{log?.responseTime.toString() + ' seconds'}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Route</th>
+                        <td>{log?.routeName}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Status</th>
+                        <td>{log?.responseStatus} {log?.responseStatusCode} <i style={{ color: (log?.responseStatusCode > 199 && log?.responseStatusCode < 300 ? 'limegreen' : 'red'), fontSize: '10px' }} className="fas fa-circle"></i></td>
+                      </tr>
+                    </table>
+
                     <Accordion id="logGeneralAccordion"
                       items={[
                         {
@@ -212,9 +230,20 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                     role="tabpanel"
                     aria-labelledby="logRequest-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Method: {log.requestMethod && log.requestMethod}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-1">Languages: {log.requestLanguages && log.requestLanguages}</h5>
+                    <table style={{ width: "100%" }} className="mt-3">
+                      <tr>
+                        <th style={{ width: "30%" }}>Method</th>
+                        <td>{log?.requestMethod}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Path info</th>
+                        <td>{log?.requestPathInfo}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Languages</th>
+                        <td>{log?.requestLanguages}</td>
+                      </tr>
+                    </table>
                     <Accordion id="logRequestAccordion"
                       items={[
                         {
