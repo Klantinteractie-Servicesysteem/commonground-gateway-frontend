@@ -112,7 +112,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                           field: "responseStatusCode",
                           renderCell: (item) => {
                             return (
-                              <b style={{ color: item.responseStatusCode > 199 && item.responseStatusCode < 300 ? 'limegreen' : 'red' }}>{item.responseStatusCode} <i style={{ color: 'limegreen' }} className="fas fa-circle"></i></b>
+                              <span>{item?.responseStatus} {item?.responseStatusCode} <i style={{ color: (item?.responseStatusCode > 199 && item?.responseStatusCode < 300 ? 'limegreen' : 'red'), fontSize: '10px' }} className="fas fa-circle"></i></span>
                             );
                           },
                         },
@@ -271,11 +271,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                             return (<>
                               {log.requestContent
                                 ?
-                                <pre style={{ 'backgroundColor': 'black', 'overflowWrap': 'break-word' }}>
-                                  <code id="requestContent" style={{ color: 'orange' }} className="language-json">
-                                    {log.requestContent}
-                                  </code>
-                                </pre>
+                                <JsonCode body={log.requestContent} />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
@@ -306,12 +302,10 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                           id: "logResponseContent",
                           render: function () {
                             return (<>
-                              {log.responseContent ? 
-                                <pre style={{ 'backgroundColor': 'black', 'overflowWrap': 'break-word' }}>
-                                  <code id="responseContent" style={{ color: 'orange' }} className="language-json">
-                                    {log.responseContent}
-                                  </code>
-                                </pre> : <p className="utrecht-paragraph">No content found</p>}
+                              {log.responseContent ?
+                                <JsonCode body={log.responseContent} />
+                                :
+                                <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
