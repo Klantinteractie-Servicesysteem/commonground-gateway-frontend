@@ -1,6 +1,5 @@
 import * as React from "react";
 import Layout from "../../../components/common/layout";
-import AttributeForm from "../../../components/attributes/attribuutForm";
 import HandlerForm from "../../../components/handlers/handlerForm";
 
 const IndexPage = ({ id, endpoint }) => {

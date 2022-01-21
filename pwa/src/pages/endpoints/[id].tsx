@@ -1,7 +1,7 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import EndpointForm from "../../components/endpoints/form";
+import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlerTable from "../../components/handlers/handlerTable";
 
 const IndexPage = (props) => {
@@ -10,13 +10,13 @@ const IndexPage = (props) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
 
   return (
-    <Layout title={"Endpoints"} subtext={"Add or modify your endpoint"}>
+    <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
       <main>
         <div className="row">
           <div className="col-12">

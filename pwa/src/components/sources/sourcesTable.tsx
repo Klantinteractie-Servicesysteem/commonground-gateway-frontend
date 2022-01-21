@@ -72,7 +72,7 @@ export default function SourcesTable() {
             </a>
             <Link to="/sources/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-                className="fas fa-plus mr-2" />Add
+                className="fas fa-plus mr-2" />Create
               </button>
             </Link>
           </>

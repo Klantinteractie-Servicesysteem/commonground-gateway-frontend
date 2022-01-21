@@ -1,11 +1,10 @@
 import * as React from "react";
-import {Link, navigate} from "gatsby";
+import {Link} from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
   Accordion,
@@ -16,6 +15,7 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
+import ElementCreationNew from "../common/elementCreationNew"
 
 export default function SourceForm({id}) {
   const [context, setContext] = React.useState(null);
@@ -25,35 +25,36 @@ export default function SourceForm({id}) {
   let title;
 
   React.useEffect(() => {
+    const getSource = () => {
+      setShowSpinner(true);
+      fetch(`${context.adminUrl}/gateways/${id}`, {
+        credentials: "include",
+        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("get source")
+          console.log(data)
+          setShowSpinner(false);
+          setSource(data);
+        })
+        .catch((error) => {
+          setShowSpinner(false);
+          console.error("Error:", error);
+          setAlert(null);
+          setAlert({type: 'danger', message: error.message});
+        });
+    };
+
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn && id !== 'new') {
       getSource();
     }
-  }, [context]);
+  }, [context, id]);
 
-  const getSource = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("get source")
-        console.log(data)
-        setShowSpinner(false);
-        setSource(data);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
 
   const saveSource = (event) => {
     event.preventDefault();
@@ -64,7 +65,7 @@ export default function SourceForm({id}) {
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
     let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
 
-    let body = {
+    let body: {} = {
       name: event.target.name.value,
       description: event.target.description
         ? event.target.description.value
@@ -91,7 +92,7 @@ export default function SourceForm({id}) {
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.name, body.location, body.type, body.auth])) {
+    if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
@@ -143,12 +144,12 @@ export default function SourceForm({id}) {
               cardHeader={function () {
                 return (<>
                     <Link className="utrecht-link" to={"/sources"}>
-                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                         <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                       </button>
                     </Link>
                     <button
-                      className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                      className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
                       type="submit"
                     >
                       <i className="fas fa-save mr-2"/>Save
@@ -380,91 +381,39 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                           </div>
-                          <Accordion id="sourceAccordion"
-                                     items={[{
-                                       title: "Headers",
-                                       id: "headersAccordion",
-                                       render: function () {
-                                         return (<>
-                                           {source !== null && source.headers !== null ? (
-                                             <ArrayInputComponent
-                                               id={"headers"}
-                                               label={"Headers"}
-                                               data={source.headers}
-                                             />
-                                           ) : (
-                                             <ArrayInputComponent
-                                               id={"headers"}
-                                               label={"Headers"}
-                                               data={null}
-                                             />
-                                           )}
-                                         </>)
-                                       }
-                                     },
-                                       {
-                                         title: "OAS",
-                                         id: "oasAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {source !== null && source.oas !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"oas"}
-                                                 label={"OAS"}
-                                                 data={source.oas}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"oas"}
-                                                 label={"OAS"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       },
-                                       {
-                                         title: "Paths",
-                                         id: "pathsAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {source !== null && source.paths !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"paths"}
-                                                 label={"Paths"}
-                                                 data={source.paths}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"paths"}
-                                                 label={"Paths"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       },
-                                       {
-                                         title: "Translation config",
-                                         id: "translationConfigAccordion",
-                                         render: function () {
-                                           return (<>
-                                             {source !== null && source.translationConfig !== null ? (
-                                               <ArrayInputComponent
-                                                 id={"translationConfig"}
-                                                 label={"Translation Config"}
-                                                 data={source.translationConfig}
-                                               />
-                                             ) : (
-                                               <ArrayInputComponent
-                                                 id={"translationConfig"}
-                                                 label={"Translation Config"}
-                                                 data={null}
-                                               />
-                                             )}
-                                           </>)
-                                         }
-                                       }]}
+                          <Accordion
+                            id="sourceAccordion"
+                            items={[{
+                              title: "Headers",
+                              id: "headersAccordion",
+                              render: function () {
+                                return <ElementCreationNew id="headers" label="Headers" data={source?.headers}
+                                />
+                              }
+                            },
+                              {
+                                title: "OAS",
+                                id: "oasAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="oas" label="OAS" data={source?.oas}/>
+                                }
+                              },
+                              {
+                                title: "Paths",
+                                id: "pathsAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="paths" label="Paths" data={source?.paths}/>
+                                }
+                              },
+                              {
+                                title: "Translation config",
+                                id: "translationConfigAccordion",
+                                render: function () {
+                                  return <ElementCreationNew id="translationConfig" label="Translation Config"
+                                                             data={source?.translationConfig}/>
+                                }
+
+                              }]}
                           />
                         </>
                       )}

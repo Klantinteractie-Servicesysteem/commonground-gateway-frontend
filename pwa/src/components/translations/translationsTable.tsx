@@ -70,7 +70,7 @@ export default function TranslationsTable() {
             <Link to="/translations/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>

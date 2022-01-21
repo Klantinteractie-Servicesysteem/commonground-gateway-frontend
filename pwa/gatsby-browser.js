@@ -1,7 +1,6 @@
 import React from "react";
 import "@utrecht/design-tokens/dist/theme/index.css";
 import { UrlContextWrapper } from "./src/context/urlContext";
-import { Helmet } from "react-helmet";
 import { UserContextWrapper } from "./src/context/userContext";
 import "./src/styles/main.css";
 
