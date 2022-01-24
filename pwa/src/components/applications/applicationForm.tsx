@@ -76,7 +76,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) {
+    if (!id) { // no id means that we're creating a new entry
       createApplication(body)
         .then((res) => {
           setApplication(res.data)
@@ -88,7 +88,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         })
     }
 
-    if (id) {
+    if (id) { // set id means we're updating a existing entry
       updateApplication(body, id)
         .then((res) => {
           setApplication(res.data)
