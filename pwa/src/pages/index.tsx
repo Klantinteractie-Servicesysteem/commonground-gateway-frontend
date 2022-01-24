@@ -62,7 +62,6 @@ const IndexPage = () => {
           username: data.username,
         };
         setUser(result);
-        localStorage.setItem("jwt", data.jwtToken);
         sessionStorage.setItem("jwt", data.jwtToken);
         sessionStorage.setItem("user", JSON.stringify(result));
         navigate('/')
