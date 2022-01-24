@@ -9,7 +9,10 @@ export const getApplication = (id: string): Promise<AxiosResponse> => {
   return axiosClient.get(`/applications/${id}`)
 }
 
-// TODO: test
-// export const addApplication = (data): Promise<AxiosResponse> => {
-//   return axios.post('/applications', JSON.stringify(data))
-// }
+export const createApplication = (data: any): Promise<AxiosResponse> => {
+  return axiosClient.post('/applications', JSON.stringify(data))
+}
+
+export const updateApplication = (data: any, id: string): Promise<AxiosResponse> => {
+  return axiosClient.put(`/applications/${id}`, JSON.stringify(data))
+}
