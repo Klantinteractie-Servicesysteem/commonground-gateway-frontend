@@ -73,23 +73,6 @@ const IndexPage = () => {
       });
   };
 
-  const handleExport = () => {
-    fetch(`${context.adminUrl}/export/all`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    }).then((response) => {
-      response.text().then(function (text) {
-        download("export.yaml", text, "text/yaml");
-      });
-    }).catch((error) => {
-      console.log('Error:', error)
-      setAlert(null);
-      setAlert({ type: 'danger', message: error.message });
-    });
-  };
-
   return (
 
     <Layout
@@ -139,14 +122,6 @@ const IndexPage = () => {
               role="tabpanel"
               aria-labelledby="main-tab"
             >
-              <br />
-              <button
-                className="utrecht-button"
-                type="button"
-                onClick={handleExport}
-              >
-                Export Configuration
-              </button>
             </div>
             <div
               className="tab-pane"
