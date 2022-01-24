@@ -17,16 +17,20 @@ import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
+import EndpointForm from "../endpoints/endpointForm";
 
+interface EntityFormProps {
+  id: string
+}
+export const EntityForm:React.FC<EntityFormProps> = ({ id }) => {
 
-export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [soaps, setSoaps] = React.useState<any>(null);
-  let title;
+  const title:string = (id === "new") ? "Create Entity" : "Edit Entity"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -167,11 +171,7 @@ export default function EntityForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   }
-  if(id !== "new"){
-    title = "Edit Entity";
-  }else{
-    title = "Create Entity";
-  }
+
 
   return (<>
       {
@@ -298,3 +298,5 @@ export default function EntityForm({id}) {
     </>
   );
 }
+  export default EndpointForm
+

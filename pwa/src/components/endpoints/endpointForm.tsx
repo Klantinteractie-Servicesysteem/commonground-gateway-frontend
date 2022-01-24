@@ -9,13 +9,18 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 
-export default function EndpointForm({ id }) {
-  const [context, setContext] = React.useState(null);
+
+interface EndpointFormProps {
+  id: string
+}
+  export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
+
+    const [context, setContext] = React.useState(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  let title;
+  const title:string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -119,12 +124,6 @@ export default function EndpointForm({ id }) {
         setAlert({ type: 'danger', message: error.message });
       });
   };
-
-  if(id !== "new"){
-    title = "Edit Endpoint";
-  }else{
-    title = "Create Endpoint";
-  }
 
   return (<>
       {
@@ -235,3 +234,4 @@ export default function EndpointForm({ id }) {
       </form ></>
   );
 }
+export default EndpointForm

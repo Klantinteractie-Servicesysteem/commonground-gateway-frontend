@@ -21,14 +21,21 @@ import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
+import ApplicationForm from "../applications/applicationForm";
 
-export default function AttributeForm({id, entity}) {
-  const [context, setContext] = React.useState(null);
+
+interface AttributeFormProps {
+  id: string
+  entity
+}
+  export const AttributeForm:React.FC<AttributeFormProps> = ({ id, entity }) => {
+
+    const [context, setContext] = React.useState(null);
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  let title;
+  const title:string = (id === "new") ? "Create Attribute" : "Edit Application"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -189,11 +196,7 @@ export default function AttributeForm({id, entity}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-  if(id !== "new"){
-    title = "Edit Attribute";
-  }else{
-    title = "Create Attribute";
-  }
+
   return (<div>
       {
         alert !== null &&
@@ -609,3 +612,4 @@ export default function AttributeForm({id, entity}) {
     </div>
   );
 }
+export default ApplicationForm

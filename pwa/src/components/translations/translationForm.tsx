@@ -11,12 +11,16 @@ import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 
-export default function TranslationForm({ id }) {
-  const [context, setContext] = React.useState(null);
+interface TranslationFormProps {
+  id: string
+}
+  export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
+
+    const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
-  let title;
+  const title:string = (id === "new") ? "Create Translation" : "Edit Translation"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -90,12 +94,6 @@ export default function TranslationForm({ id }) {
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
-  }
-
-  if(id !== "new"){
-    title = "Edit Translation";
-  }else{
-    title = "Create Translation";
   }
 
   return (<>
@@ -187,3 +185,4 @@ export default function TranslationForm({ id }) {
       </form></>
   );
 }
+  export default TranslationForm

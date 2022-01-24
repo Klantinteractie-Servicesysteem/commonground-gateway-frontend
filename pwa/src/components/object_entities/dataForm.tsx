@@ -8,15 +8,19 @@ import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from ".
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 
-export default function ObjectEntityForm({id, entityId}) {
+interface ObjectEntityFormProps {
+  id: string
+  entityId
+}
+export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId }) => {
+
   const [context, setContext] = React.useState(null);
   const [objectEntity, setObjectEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [applications, setApplications] = React.useState(null);
   const [objectValues, setObjectValues] = React.useState(null);
-  let title;
-
+  const title:string = (id === "new") ? "Create Object entities" : "Edit Object entities"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -161,11 +165,6 @@ export default function ObjectEntityForm({id, entityId}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-  if(id !== "new"){
-    title = "Edit Object entities";
-  }else{
-    title = "Create Object entities";
-  }
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
@@ -406,3 +405,4 @@ export default function ObjectEntityForm({id, entityId}) {
     </form>
   );
 }
+  export default ObjectEntityForm

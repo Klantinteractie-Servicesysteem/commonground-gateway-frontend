@@ -16,13 +16,18 @@ import {
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew"
+import EndpointForm from "../endpoints/endpointForm";
 
-export default function SourceForm({id}) {
-  const [context, setContext] = React.useState(null);
+interface SourceFormProps {
+  id: string
+}
+  export const SourceForm:React.FC<SourceFormProps> = ({ id }) => {
+
+    const [context, setContext] = React.useState(null);
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
-  let title;
+  const title:string = (id === "new") ? "Create Source" : "Edit Source"
 
   React.useEffect(() => {
     const getSource = () => {
@@ -124,11 +129,7 @@ export default function SourceForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-  if(id !== "new"){
-    title = "Edit Source";
-  }else{
-    title = "Create Source";
-  }
+
 
   return (<>
       {
@@ -426,3 +427,4 @@ export default function SourceForm({id}) {
     </>
   );
 }
+  export default EndpointForm

@@ -16,16 +16,22 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
-import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
-import ElementCreationNew from "../common/elementCreationNew"
+import { ArrayInputComponent } from "../common/arrayInput";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import EndpointForm from "../endpoints/endpointForm";
 
-export default function HandlerForm({id, endpointId}) {
+interface HandlerFormProps {
+  id: string
+  endpointId
+}
+export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
+
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
-  let title;
+  const title:string = (id === "new") ? "Create Handler" : "Edit Handler"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -160,11 +166,6 @@ export default function HandlerForm({id, endpointId}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-  if(id !== "new"){
-    title = "Edit Handler";
-  }else{
-    title = "Create Handler";
-  }
 
   return (<>
       {
@@ -176,7 +177,7 @@ export default function HandlerForm({id, endpointId}) {
         </FlashMessage>
       }
       <form id="handlerForm" onSubmit={saveHandler}>
-        <Card title = {title}
+        <Card title={title}
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
@@ -199,9 +200,8 @@ export default function HandlerForm({id, endpointId}) {
                         <>
                           <div className="row">
                             <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                     data={handler && handler.name && handler.name}
-                                                     nameOverride={"Name"} required/>
+
+                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={handler && handler.name && handler.name} nameOverride={"Name"} required/>
                             </div>
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
@@ -212,22 +212,18 @@ export default function HandlerForm({id, endpointId}) {
                           <br/>
                           <div className="row">
                             <div className="col-6">
-                              <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
-                                                     data={handler && handler.sequence && handler.sequence}
-                                                     nameOverride={"Sequence"}/>
+                              <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"} data={handler && handler.sequence && handler.sequence} nameOverride={"Sequence"}/>
                             </div>
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"templateType"} id={"templateTypeInput"}
-                                                     data={handler && handler.templateType && handler.templateType}
-                                                     nameOverride={"Template Type"}/>
+                                                     data={handler && handler.templateType && handler.templateType} nameOverride={"Template Type"}/>
                             </div>
                           </div>
                           <br/>
                           <div className="row">
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"template"} id={"templateInput"}
-                                                     data={handler && handler.template && handler.template}
-                                                     nameOverride={"Template"}/>
+                                                     data={handler && handler.template && handler.template} nameOverride={"Template"}/>
                             </div>
                             <div className="col-6">
                               <div className="form-group">
@@ -266,10 +262,10 @@ export default function HandlerForm({id, endpointId}) {
                                          id: "conditionsAccordion",
                                          render: function () {
                                            return (
-                                             <ElementCreationNew
-                                               id="conditions"
-                                               label="Conditions"
-                                               data={handler?.conditions}
+                                             <ArrayInputComponent
+                                               id={"conditions"}
+                                               label={"Conditions"}
+                                               data={handler && handler.conditions ? [{key: 'conditions', value: handler.conditions}] : null}
                                              />
                                            )
                                          }
@@ -279,7 +275,7 @@ export default function HandlerForm({id, endpointId}) {
                                          id: "translationInAccordion",
                                          render: function () {
                                            return (
-                                             <ElementCreationNew
+                                             <ArrayInputComponent
                                                id={"translationIn"}
                                                label={"Translation In"}
                                                data={handler?.translationIn}
@@ -292,10 +288,10 @@ export default function HandlerForm({id, endpointId}) {
                                          id: "translationOutAccordion",
                                          render: function () {
                                            return (
-                                             <ElementCreationNew
-                                               id="translationOut"
-                                               label="Translation Out"
-                                               data={handler?.translationOut}
+                                             <ArrayInputComponent
+                                               id={"translationOut"}
+                                               label={"Translation Out"}
+                                               data={handler && handler.translationOut ? [{key: 'translationOut', value: handler.translationOut}] : null}
                                              />
                                            )
                                          }
@@ -337,10 +333,10 @@ export default function HandlerForm({id, endpointId}) {
                                          id: "skeletonInAccordion",
                                          render: function () {
                                            return (
-                                             <ElementCreationNew
-                                               id="skeletonIn"
-                                               label="Skeleton In"
-                                               data={handler?.skeletonIn}
+                                             <ArrayInputComponent
+                                               id={"skeletonIn"}
+                                               label={"Skeleton In"}
+                                               data={handler && handler.skeletonIn ? [{key: 'skeletonIn', value: handler.skeletonIn}] : null}
                                              />
                                            )
                                          }
@@ -350,10 +346,10 @@ export default function HandlerForm({id, endpointId}) {
                                          id: "skeletonOutAccordion",
                                          render: function () {
                                            return (
-                                             <ElementCreationNew
-                                               id="skeletonOut"
-                                               label="Skeleton Out"
-                                               data={handler?.skeletonOut}
+                                             <ArrayInputComponent
+                                               id={"skeletonOut"}
+                                               label={"Skeleton Out"}
+                                               data={handler && handler.skeletonOut ? [{key: 'skeletonOut', value: handler.skeletonOut}] : null}
                                              />
                                            )
                                          }
@@ -370,3 +366,5 @@ export default function HandlerForm({id, endpointId}) {
     </>
   );
 }
+export default HandlerForm
+

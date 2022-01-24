@@ -26,12 +26,19 @@ interface IApplication {
   domains: Array<string>,
 }
 
+<<<<<<< Updated upstream
 export default function ApplicationForm({id}) {
+=======
+interface ApplicationFormProps {
+  id: string
+}
+export const ApplicationForm:React.FC<ApplicationFormProps> = ({ id }) => {
+>>>>>>> Stashed changes
   const [context, setContext] = React.useState(null);
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  let title;
+  const title:string = (id === "new") ? "Create Application" : "Edit Application"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -123,11 +130,6 @@ export default function ApplicationForm({id}) {
         setAlert({type: 'danger', message: error.message});
       });
   };
-  if(id !== "new"){
-    title = "Edit Application";
-  }else{
-    title = "Create Application";
-  }
 
   return (<div>
       {
@@ -224,3 +226,4 @@ export default function ApplicationForm({id}) {
     </div>
   );
 }
+export default ApplicationForm
