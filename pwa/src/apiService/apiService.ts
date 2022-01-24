@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const axiosClient = axios.create({
-  baseURL: 'http://localhost/admin',
+  baseURL: process.env.GATSBY_ADMIN_URL,
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
