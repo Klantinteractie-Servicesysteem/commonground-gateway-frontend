@@ -1,41 +1,24 @@
 import * as React from "react";
 import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import { getApplications } from "../../apiService/resources/application";
 
 export default function ApplicationsTable() {
-  const [context, setContext] = React.useState(null);
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    } else if (isLoggedIn()) {
-      getApplications(context);
-    }
-  }, [context]);
+    handleSetApplications()
+  }, [])
 
-  const getApplications = (context) => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/applications`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setApplications(data["hydra:member"]);
-        setShowSpinner(false);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-      });
-  };
+  const handleSetApplications = () => {
+    setShowSpinner(true)
+
+    getApplications()
+      .then((res) => { setApplications(res.data) })
+      .catch((err) => { throw new Error ('GET Applications error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   return (
     <Card
@@ -51,7 +34,7 @@ export default function ApplicationsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getApplications}>
+            <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
