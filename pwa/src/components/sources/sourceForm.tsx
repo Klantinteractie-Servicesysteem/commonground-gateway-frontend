@@ -173,10 +173,14 @@ export default function SourceForm({id}) {
                               {source !== null && source.location !== null ? (
                                 <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
                                                        data={source.location}
-                                                       nameOverride={"Location (url)"}/>
+                                                       nameOverride={"Location (url)"}
+                                                       infoTooltip={{content:<h3>Haallllooo</h3>}}
+                                />
                               ) : (
                                 <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
-                                                       nameOverride={"Location (url)"}/>
+                                                       nameOverride={"Location (url)"}
+
+                                />
                               )}
                             </div>
                           </div>
