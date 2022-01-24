@@ -23,7 +23,6 @@ export default function EntityForm({id}) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [soaps, setSoaps] = React.useState<any>(null);
@@ -189,7 +188,7 @@ export default function EntityForm({id}) {
                 return (
                   <div>
                     <Link className="utrecht-link" to={"/entities"}>
-                      <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                      <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                         <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                       </button>
                     </Link>

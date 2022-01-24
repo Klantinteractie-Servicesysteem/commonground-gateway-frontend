@@ -6,7 +6,7 @@ import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
 import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
-import {ArrayInputComponent} from "../common/arrayInput";
+import ElementCreationNew from "../common/elementCreationNew"
 
 export default function ObjectEntityForm({id, entityId}) {
   const [context, setContext] = React.useState(null);
@@ -108,7 +108,7 @@ export default function ObjectEntityForm({id, entityId}) {
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
     let externalResult = retrieveFormArrayAsOArray(event.target, "externalResult");
 
-    let body:{} = {
+    let body: {} = {
       uri: event.target.uri.value,
       externalId: event.target.externalId ? event.target.externalId.value : null,
       application: event.target.application.value
@@ -175,7 +175,7 @@ export default function ObjectEntityForm({id, entityId}) {
           return (
             <>
               <Link className="utrecht-link" to={"/sources"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2"/>
                   Back
                 </button>
@@ -355,10 +355,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"errors"}
-                                  label={"Errors"}
-                                  data={objectEntity && objectEntity.errors ? objectEntity.errors : null}
+                                <ElementCreationNew
+                                  id="errors"
+                                  label="Errors"
+                                  data={objectEntity?.errors}
                                 />
                               </>
                             );
@@ -370,10 +370,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"promises"}
-                                  label={"Promises"}
-                                  data={objectEntity && objectEntity.promises ? objectEntity.promises : null}
+                                <ElementCreationNew
+                                  id="promises"
+                                  label="Promises"
+                                  data={objectEntity?.promises}
                                 />
                               </>
                             );
@@ -385,10 +385,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"externalResult"}
-                                  label={"External Result"}
-                                  data={objectEntity && objectEntity.externalResult ? objectEntity.externalResult : null}
+                                <ElementCreationNew
+                                  id="externalResult"
+                                  label="External Result"
+                                  data={objectEntity?.externalResult}
                                 />
                               </>
                             );
