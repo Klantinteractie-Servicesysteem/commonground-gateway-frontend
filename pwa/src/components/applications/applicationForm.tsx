@@ -26,14 +26,11 @@ interface IApplication {
   domains: Array<string>,
 }
 
-<<<<<<< Updated upstream
-export default function ApplicationForm({id}) {
-=======
+
 interface ApplicationFormProps {
   id: string
 }
 export const ApplicationForm:React.FC<ApplicationFormProps> = ({ id }) => {
->>>>>>> Stashed changes
   const [context, setContext] = React.useState(null);
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
