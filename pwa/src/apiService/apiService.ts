@@ -5,7 +5,6 @@ export const axiosClient = axios.create({
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+    Authorization: "Bearer " + sessionStorage?.getItem("jwt"),
   }
 });
-
