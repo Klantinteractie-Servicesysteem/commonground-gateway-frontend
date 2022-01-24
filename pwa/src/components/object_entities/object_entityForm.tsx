@@ -5,11 +5,15 @@ import { isLoggedIn } from "../../services/auth";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
 
-export default function ObjectEntityForm({ id }) {
+interface ObjectEntityFormProps {
+  id: string,
+}
+
+export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id }) => {
   const [context, setContext] = React.useState(null);
   const [objectEntity, setObjectEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  let title;
+  const title:string = (id === "new") ? "Create Object entities" : "Edit Object entities"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -106,12 +110,6 @@ export default function ObjectEntityForm({ id }) {
         console.error("Error:", error);
       });
   };
-  if(id !== "new"){
-    title = "Edit Object entities";
-  }else{
-    title = "Create Object entities";
-  }
-
 
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
@@ -268,3 +266,4 @@ export default function ObjectEntityForm({ id }) {
     </form>
   );
 }
+export default ObjectEntityForm

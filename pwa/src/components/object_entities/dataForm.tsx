@@ -9,8 +9,8 @@ import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 
 interface ObjectEntityFormProps {
-  id: string
-  entityId
+  id: string,
+  entityId: string,
 }
 export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId }) => {
 

@@ -9,13 +9,13 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 
-
 interface EndpointFormProps {
-  id: string
+  id: string,
 }
-  export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
 
-    const [context, setContext] = React.useState(null);
+export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
+
+  const [context, setContext] = React.useState(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -126,112 +126,112 @@ interface EndpointFormProps {
   };
 
   return (<>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-        </FlashMessage>
-      }
-      <form id="dataForm" onSubmit={saveEndpoint}>
-        <Card title= {title}
-              cardHeader={function () {
-                return (
+    {
+      alert !== null &&
+      <FlashMessage duration={5000}>
+        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+      </FlashMessage>
+    }
+    <form id="dataForm" onSubmit={saveEndpoint}>
+      <Card title= {title}
+        cardHeader={function () {
+          return (
+            <div>
+            <Link className="utrecht-link" to={"/endpoints"}>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                <i className="fas fa-long-arrow-alt-left mr-2" />Back
+              </button>
+            </Link>
+            <button
+              className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+              type="submit"
+            >
+              <i className="fas fa-save mr-2" />Save
+            </button>
+          </div>
+          )
+        }}
+        cardBody={function () {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner />
+                ) : (
                   <div>
-                  <Link className="utrecht-link" to={"/endpoints"}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                      <i className="fas fa-long-arrow-alt-left mr-2" />Back
-                    </button>
-                  </Link>
-                  <button
-                    className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                    type="submit"
-                  >
-                    <i className="fas fa-save mr-2" />Save
-                  </button>
-                </div>
-                )
-              }}
-              cardBody={function () {
-                return (
-                  <div className="row">
-                    <div className="col-12">
-                      {showSpinner === true ? (
-                        <Spinner />
-                      ) : (
-                        <div>
-                          <div className="row">
-                            <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint && endpoint.name && endpoint.name}
-                                                       nameOverride={"Name"} />
-                            </div>
-                            <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={endpoint && endpoint.description && endpoint.description} nameOverride={"Description"} />
-                            </div>
-                          </div>
-                          <br/>
-                          <div className="row">
-                            <div className="col-6">
-                              <div className="form-group">
-                                <SelectInputComponent
-                                  options={[{ name: "gateway-endpoint", value: "gateway-endpoint" }, { name: 'entity-route', value: 'entity-route' }, { name: 'entity-endpoint', value: 'entity-endpoint' }, { name: 'documentation-endpoint', value: 'documentation-endpoint' }]}
-                                  name={"type"} id={"typeInput"}
-                                  nameOverride={"Type"}
-                                  data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
-                                  required={true} />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="form-group">
-                                <GenericInputComponent
-                                  nameOverride={"Path"}
-                                  name={"path"}
-                                  data={endpoint && endpoint.path && endpoint.path}
-                                  type={"text"}
-                                  id={"pathInput"}
-                                  required={true}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-12">
-                              <div className="form-group">
-                                {
-                                  applications !== null && applications.length > 0 ? (
-                                    <>
-                                      {endpoint !== null &&
-                                      endpoint.application !== undefined &&
-                                      endpoint.application !== null ? (
-                                          <SelectInputComponent
-                                            options={applications}
-                                            data={endpoint.application.name}
-                                            name={"application"} id={"applicationInput"} nameOverride={"Applications"}
-                                            value={"/admin/applications/"} />
-                                        )
-                                        : (
-                                          <SelectInputComponent
-                                            options={applications}
-                                            name={"application"} id={"applicationInput"} nameOverride={"Applications"}
-                                            value={"/admin/applications/"} />
-                                        )}
-                                    </>
-                                  ) : (
-                                    <SelectInputComponent
-                                      options={[{ name: "Please create a Application.", value: null }]}
-                                      name={"application"} id={"applicationInput"} nameOverride={"Applications"}/>
-                                  )}
-                              </div>
-                            </div>
-                          </div>
+                    <div className="row">
+                      <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint && endpoint.name && endpoint.name}
+                                                 nameOverride={"Name"} />
+                      </div>
+                      <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                 data={endpoint && endpoint.description && endpoint.description} nameOverride={"Description"} />
+                      </div>
+                    </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          <SelectInputComponent
+                            options={[{ name: "gateway-endpoint", value: "gateway-endpoint" }, { name: 'entity-route', value: 'entity-route' }, { name: 'entity-endpoint', value: 'entity-endpoint' }, { name: 'documentation-endpoint', value: 'documentation-endpoint' }]}
+                            name={"type"} id={"typeInput"}
+                            nameOverride={"Type"}
+                            data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
+                            required={true} />
                         </div>
-                      )}
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <GenericInputComponent
+                            nameOverride={"Path"}
+                            name={"path"}
+                            data={endpoint && endpoint.path && endpoint.path}
+                            type={"text"}
+                            id={"pathInput"}
+                            required={true}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="form-group">
+                          {
+                            applications !== null && applications.length > 0 ? (
+                              <>
+                                {endpoint !== null &&
+                                endpoint.application !== undefined &&
+                                endpoint.application !== null ? (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      data={endpoint.application.name}
+                                      name={"application"} id={"applicationInput"} nameOverride={"Applications"}
+                                      value={"/admin/applications/"} />
+                                  )
+                                  : (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      name={"application"} id={"applicationInput"} nameOverride={"Applications"}
+                                      value={"/admin/applications/"} />
+                                  )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                options={[{ name: "Please create a Application.", value: null }]}
+                                name={"application"} id={"applicationInput"} nameOverride={"Applications"}/>
+                            )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                );
-              }}
-        />
-      </form ></>
+                )}
+              </div>
+            </div>
+          );
+        }}
+      />
+    </form ></>
   );
 }
 export default EndpointForm

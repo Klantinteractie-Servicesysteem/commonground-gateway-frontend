@@ -26,11 +26,12 @@ interface IApplication {
   domains: Array<string>,
 }
 
-
 interface ApplicationFormProps {
-  id: string
+  id: string,
 }
+
 export const ApplicationForm:React.FC<ApplicationFormProps> = ({ id }) => {
+
   const [context, setContext] = React.useState(null);
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
@@ -139,85 +140,85 @@ export const ApplicationForm:React.FC<ApplicationFormProps> = ({ id }) => {
       }
       <form id="applicationForm" onSubmit={saveApplication}>
         <Card title={title}
-              cardHeader={function () {
-                return (<>
-                  <Link className="utrecht-link" to={"/applications"}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                      <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                    </button>
-                  </Link>
-                  <button
-                    className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                    type="submit"
-                  >
-                    <i className="fas fa-save mr-2"/>Save
-                  </button>
-                </>)
-              }}
-              cardBody={function () {
-                return (
-                  <div className="row">
-                    <div className="col-12">
-                      {showSpinner === true ? (
-                        <Spinner/>
-                      ) : (
-                        <div>
-                          <div className="row">
-                            <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                     data={application && application.name && application.name}
-                                                     nameOverride={"Name"} required/>
-                            </div>
-                            <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                     data={application && application.description && application.description}
-                                                     nameOverride={"Description"}/>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"public"} id={"publicInput"}
-                                                     data={application && application.public && application.public}
-                                                     nameOverride={"Public"}/>
-                            </div>
-                            <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
-                                                     data={application && application.secret && application.secret}
-                                                     nameOverride={"Secret"}/>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-6">
-                              <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"}
-                                                     data={application && application.resource && application.resource}
-                                                     nameOverride={"Resource"}/>
-                            </div>
-                          </div>
-
-                          <Accordion
-                            id="applicationAccordion"
-                            items={[
-                              {
-                                title: "Domains *",
-                                id: "domainsAccordion",
-                                render: function () {
-                                  return (
-                                    <ElementCreationNew
-                                      id="domains"
-                                      label="Domains"
-                                      data={application?.domains}
-                                    />
-                                  );
-                                },
-                              }
-                            ]}
-                          />
+          cardHeader={function () {
+            return (<>
+              <Link className="utrecht-link" to={"/applications"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                </button>
+              </Link>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                type="submit"
+              >
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </>)
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner/>
+                  ) : (
+                    <div>
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                 data={application && application.name && application.name}
+                                                 nameOverride={"Name"} required/>
                         </div>
-                      )}
+                        <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                 data={application && application.description && application.description}
+                                                 nameOverride={"Description"}/>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"public"} id={"publicInput"}
+                                                 data={application && application.public && application.public}
+                                                 nameOverride={"Public"}/>
+                        </div>
+                        <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
+                                                 data={application && application.secret && application.secret}
+                                                 nameOverride={"Secret"}/>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"}
+                                                 data={application && application.resource && application.resource}
+                                                 nameOverride={"Resource"}/>
+                        </div>
+                      </div>
+
+                      <Accordion
+                        id="applicationAccordion"
+                        items={[
+                          {
+                            title: "Domains *",
+                            id: "domainsAccordion",
+                            render: function () {
+                              return (
+                                <ElementCreationNew
+                                  id="domains"
+                                  label="Domains"
+                                  data={application?.domains}
+                                />
+                              );
+                            },
+                          }
+                        ]}
+                      />
                     </div>
-                  </div>
-                )
-              }}
+                  )}
+                </div>
+              </div>
+            )
+          }}
         />
       </form>
     </div>
