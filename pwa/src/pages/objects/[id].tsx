@@ -2,7 +2,7 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import DataTable from "../../components/object_entities/dataTable";
-import EntityForm from "../../components/entities/entityForm";
+import ObjectForm from "../../components/objects/objectForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
@@ -19,7 +19,7 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={"Entity"} subtext={"Create or modify your entity"}>
+    <Layout title={"Object"} subtext={"Create or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -51,7 +51,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br/>
-                <EntityForm id={props.params.id}/>
+                <ObjectForm id={props.params.id}/>
               </div>
               <div
                 className="tab-pane"

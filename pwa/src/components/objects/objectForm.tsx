@@ -19,13 +19,12 @@ import {
 } from "../utility/inputHandler";
 
 
-export default function EntityForm({id}) {
+export default function ObjectForm({id}) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const [entity, setEntity] = React.useState<any>(null);
+  const [object, setObject] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [soaps, setSoaps] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -34,13 +33,13 @@ export default function EntityForm({id}) {
       });
     } else if (isLoggedIn()) {
       if (id !== 'new') {
-        getEntity();
+        getObject();
       }
       getSources();
     }
   }, [context]);
 
-  const getEntity = () => {
+  const getObject = () => {
     setShowSpinner(true);
     fetch(`${context.adminUrl}/entities/${id}`, {
       credentials: "include",
@@ -49,7 +48,7 @@ export default function EntityForm({id}) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setEntity(data);
+        setObject(data);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -80,7 +79,7 @@ export default function EntityForm({id}) {
       });
   };
 
-  const saveEntity = (event) => {
+  const saveObject = (event) => {
     event.preventDefault();
     setShowSpinner(true);
 
@@ -140,7 +139,7 @@ export default function EntityForm({id}) {
       return;
     }
 
-    let url = `${context.adminUrl}/entities`;
+    let url = `${context.adminUrl}/objects`;
     let method = "POST";
     if (id !== "new") {
       url = `${url}/${id}`;
@@ -156,7 +155,7 @@ export default function EntityForm({id}) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setEntity(data);
+        setObject(data);
         method === 'POST' && navigate(`/entities`)
       })
       .catch((error) => {
@@ -176,12 +175,12 @@ export default function EntityForm({id}) {
           }}/>
         </FlashMessage>
       }
-      <form id="dataForm" onSubmit={saveEntity}>
+      <form id="dataForm" onSubmit={saveObject}>
         <Card title="Values"
               cardHeader={function () {
                 return (
                   <div>
-                    <Link className="utrecht-link" to={"/entities"}>
+                    <Link className="utrecht-link" to={"/objects"}>
                       <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                         <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                       </button>
@@ -204,12 +203,12 @@ export default function EntityForm({id}) {
                         <div>
                           <div className="row">
                             <div className="col-6">
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={entity && entity.name && entity.name}
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={object && object.name && object.name}
                                                        nameOverride={"Name"} required/>
                             </div>
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                       data={entity && entity.description && entity.description} nameOverride={"Description"}/>
+                                                       data={object && object.description && object.description} nameOverride={"Description"}/>
                             </div>
                           </div>
                           <div className="row">
@@ -220,7 +219,7 @@ export default function EntityForm({id}) {
                                     name: 'User',
                                     value: 'user'
                                   }, {name: 'User group', value: 'userGroup'}]}
-                                  data={entity && entity.function ? entity.function : null}
+                                  data={object && object.function ? object.function : null}
                                   name={"function"}
                                   id={"functionInput"}
                                   nameOverride={"Function"}
@@ -231,12 +230,12 @@ export default function EntityForm({id}) {
                           <div className="row">
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"endpoint"} id={"endpointInput"}
-                                                       data={entity && entity.endpoint && entity.endpoint}
+                                                       data={object && object.endpoint && object.endpoint}
                                                        nameOverride={"Endpoint"}/>
                             </div>
                             <div className="col-6">
                                 <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                       data={entity && entity.route && entity.route} nameOverride={"Route"}/>
+                                                       data={object && object.route && object.route} nameOverride={"Route"}/>
                             </div>
                           </div>
                           <div className="row">
@@ -245,12 +244,12 @@ export default function EntityForm({id}) {
                                 {
                                   sources !== null && sources.length > 0 ? (
                                     <>
-                                      {entity !== null &&
-                                      entity.gateway !== undefined &&
-                                      entity.gateway !== null ? (
+                                      {object !== null &&
+                                      object.gateway !== undefined &&
+                                      object.gateway !== null ? (
                                           <SelectInputComponent
                                             options={sources}
-                                            data={entity.gateway.name}
+                                            data={object.gateway.name}
                                             name={"gateway"} id={"gatewayInput"} nameOverride={"Source"}
                                             value={"/admin/gateways/"}/>
                                         )
@@ -277,7 +276,7 @@ export default function EntityForm({id}) {
                               <div className="form-check">
                                       <Checkbox type={"checkbox"} id={"extendInput"}
                                                 nameLabel={"Extend"} nameAttribute={"extend"}
-                                                data={entity && entity.extend && entity.extend}/>
+                                                data={object && object.extend && object.extend}/>
                               </div>
                             </div>
                           </div>

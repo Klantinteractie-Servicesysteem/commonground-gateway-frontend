@@ -1,16 +1,16 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import EntitiesTable from "../../components/entities/entitiesTable";
+import ObjectsTable from "../../components/objects/objectsTable";
 
 const IndexPage = () => {
   return (
-    <Layout title={"Entities"} subtext={"An overview of your entity objects"}>
-      <title>Gateway - Entities</title>
+    <Layout title={"Object"} subtext={"An overview of your objects"}>
+      <title>Gateway - Objects</title>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <EntitiesTable/>
+              <ObjectsTable/>
             </div>
           </div>
         </div>
