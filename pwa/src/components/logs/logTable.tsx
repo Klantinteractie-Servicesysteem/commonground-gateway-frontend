@@ -175,7 +175,7 @@ export default function LogTable({ id = null }) {
                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type && log.type}</h5>
                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Call id: {log.callId && log.callId}</h5>
                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Reponse time: {log.responseTime && log.responseTime}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Route: {log.routeName && log.routeName}</h5>
+                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path: {log.path && log.path}</h5>
                     <Accordion id="logGeneralAccordion"
                       items={[
                         {
