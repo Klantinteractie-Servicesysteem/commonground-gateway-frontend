@@ -1,18 +1,25 @@
-import { AxiosResponse } from "axios";
-import { axiosClient } from "./../apiService";
+import { AxiosInstance, AxiosResponse } from "axios"
 
-export const getApplications = (): Promise<AxiosResponse> => {
-  return axiosClient.get('/applications')
-}
+export default class Application {
+  private _instance: AxiosInstance
 
-export const getApplication = (id: string): Promise<AxiosResponse> => {
-  return axiosClient.get(`/applications/${id}`)
-}
+  constructor (_instance: AxiosInstance) {
+    this._instance = _instance
+  }
 
-export const createApplication = (data: any): Promise<AxiosResponse> => {
-  return axiosClient.post('/applications', JSON.stringify(data))
-}
+  public getAll = (): Promise<AxiosResponse> => {
+    return this._instance.get('/applications')
+  }
 
-export const updateApplication = (data: any, id: string): Promise<AxiosResponse> => {
-  return axiosClient.put(`/applications/${id}`, JSON.stringify(data))
+  public getOne = (id: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/applications/${id}`)
+  }
+
+  public create = (data: any): Promise<AxiosResponse> => {
+    return this._instance.post('/applications', JSON.stringify(data))
+  }
+
+  public update = (data: any, id: string): Promise<AxiosResponse> => {
+    return this._instance.put(`/applications/${id}`, JSON.stringify(data))
+  }
 }

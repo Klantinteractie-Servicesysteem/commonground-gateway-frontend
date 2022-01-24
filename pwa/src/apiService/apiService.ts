@@ -1,12 +1,23 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Application from './resources/application';
 
-const windowGlobal = typeof window !== 'undefined' && window
+export default class APIService {
+  private _jwtToken: string;
 
-export const axiosClient = axios.create({
-  baseURL: process.env.GATSBY_ADMIN_URL,
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    Authorization: "Bearer " + windowGlobal.localStorage.getItem("jwt"),
+  constructor (_jwtToken: string) {
+    this._jwtToken = _jwtToken
   }
-});
+
+  public get axiosClient (): AxiosInstance {
+    return axios.create({
+      baseURL: process.env.GATSBY_ADMIN_URL,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: "Bearer " + this._jwtToken,
+      }
+    });
+  }
+
+  public get Application (): Application { return new Application(this.axiosClient) }
+}

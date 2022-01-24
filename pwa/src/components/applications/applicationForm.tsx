@@ -13,7 +13,7 @@ import {
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import { createApplication, updateApplication,getApplication } from './../../apiService/resources/application'
+import APIService from "../../apiService/apiService";
 import ElementCreationNew from "../common/elementCreationNew";
 
 interface IApplication {
@@ -33,15 +33,20 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    id && handleSetApplications()
-  }, [id])
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      id && handleSetApplications()
+    }
+  }, [id, API])
 
   const handleSetApplications = () => {
     setShowSpinner(true)
 
-    getApplication(id)
+    API.Application.getOne(id)
       .then((res) => { setApplication(res.data) })
       .catch((err) => { throw new Error ('GET application error: ' + err) })
       .finally(() => { setShowSpinner(false) })
@@ -77,7 +82,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     }
 
     if (!id) { // unset id means we're creating a new entry
-      createApplication(body)
+      API.Application.create(body)
         .then((res) => {
           setApplication(res.data)
           navigate('/applications')
@@ -89,7 +94,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     }
 
     if (id) { // set id means we're updating a existing entry
-      updateApplication(body, id)
+      API.Application.update(body, id)
         .then((res) => {
           setApplication(res.data)
           navigate('/applications')
