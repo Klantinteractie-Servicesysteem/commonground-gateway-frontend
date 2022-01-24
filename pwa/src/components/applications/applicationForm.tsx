@@ -6,15 +6,14 @@ import {
   Alert,
   Accordion
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
-import {Link} from "gatsby";
-import {navigate} from "gatsby-link";
+import { Link } from "gatsby";
+import { navigate } from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
-import {ArrayInputComponent} from "../common/arrayInput";
 import FlashMessage from 'react-flash-message';
+import APIService from "../../apiService/apiService";
 import ElementCreationNew from "../common/elementCreationNew";
 
 interface IApplication {
@@ -26,44 +25,32 @@ interface IApplication {
   domains: Array<string>,
 }
 
-export default function ApplicationForm({id}) {
-  const [context, setContext] = React.useState(null);
+interface ApplicationFormProps {
+  id?: string,
+}
+
+export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
     } else {
-      if (isLoggedIn()) {
-        if (id !== "new") {
-          getApplication();
-        }
-      }
+      id && handleSetApplications()
     }
-  }, [context]);
+  }, [id, API])
 
-  const getApplication = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/applications/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setApplication(data);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+  const handleSetApplications = () => {
+    setShowSpinner(true)
+
+    API.Application.getOne(id)
+      .then((res) => { setApplication(res.data) })
+      .catch((err) => { throw new Error ('GET application error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   const saveApplication = (event) => {
     event.preventDefault();
@@ -94,33 +81,29 @@ export default function ApplicationForm({id}) {
       return;
     }
 
-    let url = `${context.adminUrl}/applications`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!id) { // unset id means we're creating a new entry
+      API.Application.create(body)
+        .then((res) => {
+          setApplication(res.data)
+          navigate('/applications')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Create application error: ' + err)
+        })
     }
 
-    fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setApplication(data);
-        method === 'POST' && navigate(`/applications`)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error(error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+    if (id) { // set id means we're updating a existing entry
+      API.Application.update(body, id)
+        .then((res) => {
+          setApplication(res.data)
+          navigate('/applications')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Update application error: ' + err)
+        })
+    }
   };
 
   return (<div>
@@ -218,3 +201,5 @@ export default function ApplicationForm({id}) {
     </div>
   );
 }
+
+export default ApplicationForm;
