@@ -1,65 +1,36 @@
 import * as React from "react";
-import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import { Table, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
+import APIService from "../../apiService/apiService";
 
 export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
     } else {
-      if (isLoggedIn()) {
-        getAttributes();
-      }
+      handleSetAttributes()
     }
-  }, [context]);
+  }, [API])
 
-  const getAttributes = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/attributes?entity.id=${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setAlert(null);
-          setAlert({ type: 'danger', message: response.statusText });
-          throw new Error(response.statusText);
-        }
+  const handleSetAttributes = () => {
+    setShowSpinner(true)
+    API.Attribute.getAllFromEntity(id)
+      .then((res) => {
+        setAttributes(res.data)
       })
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data["hydra:member"]);
-        }
+      .catch((err) => {
+        throw new Error ('GET attributes from entity error: ' + err)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
-  };
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+  return (
     <Card
       title={"Attributes"}
       cardHeader={function () {
@@ -73,7 +44,7 @@ export default function AttributeTable({ id }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getAttributes}>
+            <a className="utrecht-link" onClick={handleSetAttributes}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -139,6 +110,6 @@ export default function AttributeTable({ id }) {
           </div>
         );
       }}
-    /></>
+    />
   );
 }
