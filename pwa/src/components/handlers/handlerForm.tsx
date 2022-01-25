@@ -17,7 +17,7 @@ import {
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
-import ElementCreationNew from "../common/elementCreationNew"
+import ElementCreationNew from "../common/elementCreationNew";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
@@ -25,6 +25,7 @@ export default function HandlerForm({id, endpointId}) {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
+  const [tableNames, setTableNames] = React.useState<Array<any>>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -36,6 +37,7 @@ export default function HandlerForm({id, endpointId}) {
         getHandler();
       }
       getEntities();
+      getTranslations();
     }
   }, [context]);
 
@@ -80,13 +82,33 @@ export default function HandlerForm({id, endpointId}) {
       });
   };
 
+  const getTranslations = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/table_names`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const convertedArray = data['results'].map((value, idx) => ({id: idx, name: value, value: value}));
+        console.log(convertedArray)
+        setShowSpinner(false);
+        setTableNames(convertedArray)
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
+      });
+  };
 
   const saveHandler = (event) => {
     event.preventDefault();
     setShowSpinner(true);
 
-    let translationIn = retrieveFormArrayAsOArray(event.target, "translationIn");
-    let translationOut = retrieveFormArrayAsOArray(event.target, "translationOut");
     let skeletonIn = retrieveFormArrayAsOArray(event.target, "skeletonIn");
     let skeletonOut = retrieveFormArrayAsOArray(event.target, "skeletonOut");
     let mappingIn = retrieveFormArrayAsObject(event.target, "mappingIn");
@@ -95,6 +117,8 @@ export default function HandlerForm({id, endpointId}) {
 
     // get the inputs and check if set other set null
     let body: {} = {
+      translationIn: event.target.translationIn.value ? event.target.translationIn.value : null,
+      translationOut: event.target.translationOut.value ? event.target.translationOut.value : null,
       name: event.target.name.value,
       description: event.target.description
         ? event.target.description.value : null,
@@ -111,16 +135,12 @@ export default function HandlerForm({id, endpointId}) {
       conditions,
       skeletonIn,
       skeletonOut,
-      translationIn,
-      translationOut,
       mappingIn,
       mappingOut,
     };
 
-
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
-
 
     if (!checkValues([body["name"], body["sequence"]])) {
       setAlert(null);
@@ -137,7 +157,6 @@ export default function HandlerForm({id, endpointId}) {
       method = "PUT";
     }
 
-    console.log(body)
     fetch(url, {
       method: method,
       credentials: "include",
@@ -146,8 +165,6 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("post handler")
-        console.log(data)
         setShowSpinner(false);
         setHandler(data)
         method === 'POST' && navigate(`/endpoints/${endpointId}`)
@@ -224,10 +241,9 @@ export default function HandlerForm({id, endpointId}) {
                                                      nameOverride={"Template"}/>
                             </div>
                             <div className="col-6">
-                              <div className="form-group">
                                 {
                                   entities !== null && entities.length > 0 ? (
-                                    <>
+                                    <div className="form-group">
                                       {handler !== null &&
                                       handler.entity !== undefined &&
                                       handler.entity !== null ? (
@@ -243,10 +259,71 @@ export default function HandlerForm({id, endpointId}) {
                                             name={"entity"} id={"entityInput"} nameOverride={"Entity"}
                                             value={"/admin/entities/"}/>
                                         )}
+                                    </div>
+                                  ) : (
+                                    <SelectInputComponent
+                                      options={[]}
+                                      name={"entity"} id={"entityInput"} nameOverride={"Entity"}
+                                      value={"/admin/entities/"}/>
+                                  )
+                                }
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-6">
+                                {
+                                  tableNames !== null && tableNames.length > 0 ? (
+                                    <div className="form-group">
+                                    {handler !== null &&
+                                      handler.translationIn !== undefined &&
+                                      handler.translationIn !== null ? (
+                                          <SelectInputComponent
+                                            options={tableNames}
+                                            data={handler.translationIn}
+                                            name={"translationIn"} id={"translationInInput"} nameOverride={"Translation In"}
+                                            value={"/admin/translations/"}/>
+                                        )
+                                        : (
+                                            <SelectInputComponent
+                                              options={tableNames}
+                                              name={"translationIn"} id={"translationInInput"} nameOverride={"Translation In"}
+                                              value={"/admin/translations/"}/>
+                                        )}
+                                    </div>
+                                  ) : (
+                                    <SelectInputComponent
+                                      options={[]}
+                                      name={"translationIn"} id={"translationInInput"} nameOverride={"Translation In"}
+                                      value={"/admin/translations/"}/>
+                                  )
+                                }
+                            </div>
+                            <div className="col-6">
+                              <div className="form-group">
+                                {
+                                  tableNames !== null && tableNames.length > 0 ? (
+                                    <>
+                                      {handler !== null &&
+                                      handler.translationOut !== undefined &&
+                                      handler.translationOut !== null ? (
+                                          <SelectInputComponent
+                                            options={tableNames}
+                                            data={handler.translationOut}
+                                            name={"translationOut"} id={"translationOutInput"} nameOverride={"Translation Out"}
+                                            value={"/admin/translations/"}/>
+                                        )
+                                        : (
+                                          <SelectInputComponent
+                                            options={tableNames}
+                                            name={"translationOut"} id={"translationOutInput"} nameOverride={"Translation Out"}
+                                            value={"/admin/translations/"}/>
+                                        )}
                                     </>
                                   ) : (
-                                    <GenericInputComponent type={"text"} name={"entity"} id={"entityInput"}
-                                                           nameOverride={"Entity"}/>
+                                    <SelectInputComponent
+                                      options={[]}
+                                      name={"translationOut"} id={"translationOutInput"} nameOverride={"Translation Out"}
+                                      value={"/admin/translations/"}/>
                                   )
                                 }
                               </div>
@@ -264,32 +341,6 @@ export default function HandlerForm({id, endpointId}) {
                                                id="conditions"
                                                label="Conditions"
                                                data={handler?.conditions}
-                                             />
-                                           )
-                                         }
-                                       },
-                                       {
-                                         title: "Translation In",
-                                         id: "translationInAccordion",
-                                         render: function () {
-                                           return (
-                                             <ElementCreationNew
-                                               id={"translationIn"}
-                                               label={"Translation In"}
-                                               data={handler?.translationIn}
-                                             />
-                                           )
-                                         }
-                                       },
-                                       {
-                                         title: "TranslationOut",
-                                         id: "translationOutAccordion",
-                                         render: function () {
-                                           return (
-                                             <ElementCreationNew
-                                               id="translationOut"
-                                               label="Translation Out"
-                                               data={handler?.translationOut}
                                              />
                                            )
                                          }
