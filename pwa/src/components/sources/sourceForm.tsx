@@ -13,47 +13,33 @@ import {
   Spinner,
   SelectInputComponent
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew"
+import APIService from "../../apiService/apiService";
+import { navigate } from "gatsby-link";
 
 export default function SourceForm({id}) {
-  const [context, setContext] = React.useState(null);
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    const getSource = () => {
-      setShowSpinner(true);
-      fetch(`${context.adminUrl}/gateways/${id}`, {
-        credentials: "include",
-        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("get source")
-          console.log(data)
-          setShowSpinner(false);
-          setSource(data);
-        })
-        .catch((error) => {
-          setShowSpinner(false);
-          console.error("Error:", error);
-          setAlert(null);
-          setAlert({type: 'danger', message: error.message});
-        });
-    };
-
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn && id !== 'new') {
-      getSource();
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      id && handleSetSource()
     }
-  }, [context, id]);
+  }, [id, API])
 
+  const handleSetSource = () => {
+    setShowSpinner(true)
+
+    API.Source.getOne(id)
+      .then((res) => { setSource(res.data) })
+      .catch((err) => { throw new Error ('GET gateway error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   const saveSource = (event) => {
     event.preventDefault();
@@ -98,30 +84,29 @@ export default function SourceForm({id}) {
       return;
     }
 
-    let url = `${context.adminUrl}/gateways`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!id) { // unset id means we're creating a new entry
+      API.Source.create(body)
+        .then((res) => {
+          setSource(res.data)
+          navigate('/sources')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Create source error: ' + err)
+        })
     }
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        setShowSpinner(false);
-        setSource(data)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+
+    if (id) { // set id means we're updating a existing entry
+      API.Source.update(body, id)
+        .then((res) => {
+          setSource(res.data)
+          navigate('/sources')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Update source error: ' + err)
+        })
+    }
   };
 
   return (<>
