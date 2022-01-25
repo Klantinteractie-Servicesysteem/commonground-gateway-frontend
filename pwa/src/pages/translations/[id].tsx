@@ -2,7 +2,7 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationForm from "../../components/translations/translationForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-// import TranslationTable from "../../components/translations/translationTable";
+import TranslationTable from "../../components/translations/translationTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -21,12 +21,19 @@ const IndexPage = (props) => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
+              {props.params.id !== "new" ? (
                 <Tabs
                   items={[
                     { name: "Add", id: "overview", active: true },
                     { name: "Translations", id: "translations"}
                   ]}
                 />
+              ) : (
+                <Tabs
+                  items={[{name: "Overview", id: "overview", active: true}]}
+                />
+              )}
+
             </div>
             <div className="tab-content">
               <div
@@ -46,7 +53,7 @@ const IndexPage = (props) => {
               >
                 <br />
 
-               {/*<TranslationTable id={props.params.id}/>*/}
+               <TranslationTable id={props.params.id}/>
               </div>
             </div>
           </div>

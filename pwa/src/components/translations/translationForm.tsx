@@ -39,10 +39,6 @@ export default function TranslationForm({ id}) {
 
     let url = `${context.adminUrl}/translations`;
     let method = "POST";
-    // if (id !== "new") {
-    //   url = `${url}/${id}`;
-    //   method = "PUT";
-    // }
 
     fetch(url, {
       method: method,
