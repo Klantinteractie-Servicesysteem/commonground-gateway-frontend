@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import Application from './resources/application';
 import Gateway from './resources/gateway';
+import Entity from './resources/entity';
 
 export default class APIService {
   private _jwtToken: string;
@@ -22,4 +23,5 @@ export default class APIService {
 
   public get Application (): Application { return new Application(this.axiosClient) }
   public get Gateway (): Gateway { return new Gateway(this.axiosClient) }
+  public get Entity (): Entity { return new Entity(this.axiosClient) }
 }
