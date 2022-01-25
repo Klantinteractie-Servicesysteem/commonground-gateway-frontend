@@ -36,7 +36,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({id, entity}) => {
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Attribute" : "Edit Application"
+  const title: string = (id === "new") ? "Create Attribute" : "Edit Attribute"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
