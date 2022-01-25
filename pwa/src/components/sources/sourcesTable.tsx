@@ -4,27 +4,23 @@ import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 
 export default function SourcesTable() {
-  const [gateways, setGateways] = React.useState(null);
+  const [sources, setSources] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [API, setAPI] = React.useState<APIService>(null)
-
-  React.useEffect(() => {
-    console.log({...{gateways}})
-  }, [gateways])
 
   React.useEffect(() => {
     if (!API) {
       setAPI(new APIService(sessionStorage.getItem('jwt')))
     } else {
-      handleSetGateways()
+      handleSetSources()
     }
   }, [API])
 
-  const handleSetGateways = () => {
+  const handleSetSources = () => {
     setShowSpinner(true)
-    API.Gateway.getAll()
+    API.Source.getAll()
       .then((res) => {
-        setGateways(res.data)
+        setSources(res.data)
       })
       .catch((err) => {
         throw new Error ('GET Applications error: ' + err)
@@ -43,7 +39,7 @@ export default function SourcesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={handleSetGateways}>
+            <a className="utrecht-link" onClick={handleSetSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -62,7 +58,7 @@ export default function SourcesTable() {
               {showSpinner === true ? (
                 <Spinner />
               ) : (
-                gateways ? (
+                sources ? (
                   <Table columns={[{
                     headerName: "Name",
                     field: "name"
@@ -80,7 +76,7 @@ export default function SourcesTable() {
                         </Link>
                       );
                     },
-                  },]} rows={gateways} />
+                  },]} rows={sources} />
                 ) : (
                   <Table columns={[{
                     headerName: "Name",

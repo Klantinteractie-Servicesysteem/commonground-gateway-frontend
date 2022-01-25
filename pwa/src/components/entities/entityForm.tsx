@@ -34,9 +34,9 @@ export default function EntityForm({id}) {
   const handleSetSources = () => {
     setShowSpinner(true)
 
-    API.Gateway.getAll()
+    API.Source.getAll()
       .then((res) => { setSources(res.data) })
-      .catch((err) => { throw new Error ('GET gateways error: ' + err) })
+      .catch((err) => { throw new Error ('GET sources error: ' + err) })
       .finally(() => { setShowSpinner(false) })
   }
 
@@ -45,7 +45,7 @@ export default function EntityForm({id}) {
 
     API.Entity.getOne(id)
       .then((res) => { setEntity(res.data) })
-      .catch((err) => { throw new Error ('GET gateway error: ' + err) })
+      .catch((err) => { throw new Error ('GET source error: ' + err) })
       .finally(() => { setShowSpinner(false) })
   }
 

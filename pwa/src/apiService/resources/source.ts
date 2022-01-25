@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios"
 
-export default class Gateway {
+export default class Source {
   private _instance: AxiosInstance
 
   constructor (_instance: AxiosInstance) {
