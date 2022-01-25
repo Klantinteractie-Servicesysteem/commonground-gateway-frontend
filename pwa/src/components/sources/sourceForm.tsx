@@ -13,47 +13,33 @@ import {
   Spinner,
   SelectInputComponent
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew"
+import APIService from "../../apiService/apiService";
+import { navigate } from "gatsby-link";
 
 export default function SourceForm({id}) {
-  const [context, setContext] = React.useState(null);
-  const [source, setSource] = React.useState(null);
+  const [gateway, setGateway] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    const getSource = () => {
-      setShowSpinner(true);
-      fetch(`${context.adminUrl}/gateways/${id}`, {
-        credentials: "include",
-        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("get source")
-          console.log(data)
-          setShowSpinner(false);
-          setSource(data);
-        })
-        .catch((error) => {
-          setShowSpinner(false);
-          console.error("Error:", error);
-          setAlert(null);
-          setAlert({type: 'danger', message: error.message});
-        });
-    };
-
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn && id !== 'new') {
-      getSource();
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      id && handleSetGateway()
     }
-  }, [context, id]);
+  }, [id, API])
 
+  const handleSetGateway = () => {
+    setShowSpinner(true)
+
+    API.Gateway.getOne(id)
+      .then((res) => { setGateway(res.data) })
+      .catch((err) => { throw new Error ('GET gateway error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   const saveSource = (event) => {
     event.preventDefault();
@@ -98,30 +84,29 @@ export default function SourceForm({id}) {
       return;
     }
 
-    let url = `${context.adminUrl}/gateways`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!id) { // unset id means we're creating a new entry
+      API.Gateway.create(body)
+        .then((res) => {
+          setGateway(res.data)
+          navigate('/sources')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Create application error: ' + err)
+        })
     }
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        setShowSpinner(false);
-        setSource(data)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+
+    if (id) { // set id means we're updating a existing entry
+      API.Gateway.update(body, id)
+        .then((res) => {
+          setGateway(res.data)
+          navigate('/sources')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Update application error: ' + err)
+        })
+    }
   };
 
   return (<>
@@ -161,8 +146,8 @@ export default function SourceForm({id}) {
                         <>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.name !== null ? (
-                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={source.name}
+                              {gateway !== null && gateway.name !== null ? (
+                                <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={gateway.name}
                                                        nameOverride={"Name"}/>
                               ) : (
                                 <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
@@ -170,9 +155,9 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.location !== null ? (
+                              {gateway !== null && gateway.location !== null ? (
                                 <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
-                                                       data={source.location}
+                                                       data={gateway.location}
                                                        nameOverride={"Location (url)"}/>
                               ) : (
                                 <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
@@ -182,13 +167,13 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.type !== null ? (
+                              {gateway !== null && gateway.type !== null ? (
                                   <SelectInputComponent
                                     options={[{name: "json", value: "json"}, {name: "xml", value: "xml"}, {
                                       name: "soaps",
                                       value: "soaps"
                                     }, {name: "ftp", value: "ftp"}, {name: "sftp", value: "sftp"}]}
-                                    name={"type"} id={"typeInput"} nameOverride={"Type"} data={source.type}
+                                    name={"type"} id={"typeInput"} nameOverride={"Type"} data={gateway.type}
                                     required={true}/>
                                 ) :
                                 (
@@ -203,12 +188,12 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.accept !== null ? (
+                              {gateway !== null && gateway.accept !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Accept (accept header used for this source)"}
                                                        name={"accept"}
                                                        id={"acceptInput"}
-                                                       data={source.accept}
+                                                       data={gateway.accept}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -219,11 +204,11 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.locale !== null ? (
+                              {gateway !== null && gateway.locale !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Locale"} name={"locale"}
                                                        id={"localeInput"}
-                                                       data={source.locale}
+                                                       data={gateway.locale}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -235,14 +220,14 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-12">
-                              {source !== null && source.auth !== null ? (
+                              {gateway !== null && gateway.auth !== null ? (
                                   <SelectInputComponent
                                     options={[{name: "apikey", value: "apikey"}, {
                                       name: "jwt",
                                       value: "jwt"
                                     }, {name: "username-password", value: "username-password"}]}
                                     name={"auth"} id={"authInput"} nameOverride={"Auth"} required={true}
-                                    data={source.auth}
+                                    data={gateway.auth}
                                   />
                                 ) :
                                 (
@@ -257,11 +242,11 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.jwt !== null ? (
+                              {gateway !== null && gateway.jwt !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Jwt"} name={"jwt"}
                                                        id={"jwtInput"}
-                                                       data={source.jwt}
+                                                       data={gateway.jwt}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -271,11 +256,11 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.jwtId !== null ? (
+                              {gateway !== null && gateway.jwtId !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"JwtId"} name={"jwtId"}
                                                        id={"jwtIdInput"}
-                                                       data={source.jwtId}
+                                                       data={gateway.jwtId}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -287,11 +272,11 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.secret !== null ? (
+                              {gateway !== null && gateway.secret !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Secret"} name={"secret"}
                                                        id={"secretInput"}
-                                                       data={source.secret}
+                                                       data={gateway.secret}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -301,11 +286,11 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.apikey !== null ? (
+                              {gateway !== null && gateway.apikey !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Apikey"} name={"apikey"}
                                                        id={"apikeyInput"}
-                                                       data={source.apikey}
+                                                       data={gateway.apikey}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -317,11 +302,11 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.documentation !== null ? (
+                              {gateway !== null && gateway.documentation !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Documentation"} name={"documentation"}
                                                        id={"documentationInput"}
-                                                       data={source.documentation}
+                                                       data={gateway.documentation}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -331,11 +316,11 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.authorizationHeader !== null ? (
+                              {gateway !== null && gateway.authorizationHeader !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"AuthorizationHeader"} name={"authorizationHeader"}
                                                        id={"authorizationHeaderInput"}
-                                                       data={source.authorizationHeader}
+                                                       data={gateway.authorizationHeader}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -347,11 +332,11 @@ export default function SourceForm({id}) {
                           </div>
                           <div className="row">
                             <div className="col-6">
-                              {source !== null && source.username !== null ? (
+                              {gateway !== null && gateway.username !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Username"} name={"username"}
                                                        id={"usernameInput"}
-                                                       data={source.username}
+                                                       data={gateway.username}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -361,11 +346,11 @@ export default function SourceForm({id}) {
                               )}
                             </div>
                             <div className="col-6">
-                              {source !== null && source.password !== null ? (
+                              {gateway !== null && gateway.password !== null ? (
                                 <GenericInputComponent type={"text"}
                                                        nameOverride={"Password"} name={"password"}
                                                        id={"passwordInput"}
-                                                       data={source.password}
+                                                       data={gateway.password}
                                 />
                               ) : (
                                 <GenericInputComponent type={"text"}
@@ -381,7 +366,7 @@ export default function SourceForm({id}) {
                               title: "Headers",
                               id: "headersAccordion",
                               render: function () {
-                                return <ElementCreationNew id="headers" label="Headers" data={source?.headers}
+                                return <ElementCreationNew id="headers" label="Headers" data={gateway?.headers}
                                 />
                               }
                             },
@@ -389,14 +374,14 @@ export default function SourceForm({id}) {
                                 title: "OAS",
                                 id: "oasAccordion",
                                 render: function () {
-                                  return <ElementCreationNew id="oas" label="OAS" data={source?.oas}/>
+                                  return <ElementCreationNew id="oas" label="OAS" data={gateway?.oas}/>
                                 }
                               },
                               {
                                 title: "Paths",
                                 id: "pathsAccordion",
                                 render: function () {
-                                  return <ElementCreationNew id="paths" label="Paths" data={source?.paths}/>
+                                  return <ElementCreationNew id="paths" label="Paths" data={gateway?.paths}/>
                                 }
                               },
                               {
@@ -404,7 +389,7 @@ export default function SourceForm({id}) {
                                 id: "translationConfigAccordion",
                                 render: function () {
                                   return <ElementCreationNew id="translationConfig" label="Translation Config"
-                                                             data={source?.translationConfig}/>
+                                                             data={gateway?.translationConfig}/>
                                 }
 
                               }]}
