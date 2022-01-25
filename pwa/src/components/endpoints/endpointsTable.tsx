@@ -47,7 +47,8 @@ export default function EndpointsTable() {
     {
       alert !== null &&
       <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        <Alert alertClass={alert.type} body={function () {
+          return (<>{alert.message}</>) }} />
       </FlashMessage>
     }
     <Card
@@ -70,7 +71,7 @@ export default function EndpointsTable() {
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>

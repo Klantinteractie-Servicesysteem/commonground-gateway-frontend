@@ -19,14 +19,14 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}
     if (!data) return
 
     const loadedValues: IValue[] = data?.map((value) => {
-      return { id: generateId(), value: value}
+      return {id: generateId(), value: value}
     })
 
     setValues([...loadedValues])
   }, [data])
 
   const handleAdd = () => {
-    setValues([...values, { id: generateId(), value: value }])
+    setValues([...values, {id: generateId(), value: value}])
     setValue("")
   }
 
@@ -61,8 +61,8 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}
                       onClick={handleDelete}
                       className="utrecht-button utrecht-button-sm btn-danger"
                     >
-                        Delete
-                      </button>
+                      Delete
+                    </button>
                   </div>
                 </div>
               </li>
@@ -72,7 +72,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}
       }
 
       <div className="row">
-        <h5>Add {label}</h5>
+        <h5>Create{label}</h5>
         <div className="col-10">
           <input
             type="text"
@@ -83,7 +83,8 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data}
           />
         </div>
         <div className="col-2">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add</button>
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+          </button>
         </div>
       </div>
     </div>

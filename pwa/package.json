@@ -15,11 +15,12 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@conductionnl/nl-design-system": "^1.0.108",
+    "@conductionnl/nl-design-system": "^1.0.112",
     "@nl-design-system-unstable/theme-switcher": "1.0.0-alpha.6",
     "@utrecht/design-tokens": "1.0.0-alpha.51",
     "@utrecht/web-component-library-react": "1.0.0-alpha.57",
     "@utrecht/web-component-library-stencil": "1.0.0-alpha.57",
+    "axios": "^0.25.0",
     "bootstrap": "^4.5.3",
     "dotenv": "^10.0.0",
     "gatsby": "^4.1.6",

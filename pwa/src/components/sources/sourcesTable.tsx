@@ -61,18 +61,9 @@ export default function SourcesTable() {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <a
-              // href={`${context.adminUrl}/export/gateways`}
-              target="_blank"
-              className=""
-            >
-              <button className="utrecht-link button-no-style">
-                <span className="mr-2">Export Sources</span>
-              </button>
-            </a>
             <Link to="/sources/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success"><i
-                className="fas fa-plus mr-2" />Add
+                className="fas fa-plus mr-2" />Create
               </button>
             </Link>
           </>

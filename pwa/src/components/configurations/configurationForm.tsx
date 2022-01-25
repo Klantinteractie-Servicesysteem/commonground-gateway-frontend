@@ -10,13 +10,12 @@ export default function ConfigurationForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [configuration, setConfiguration] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [title, setTitle] = React.useState("Application");
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_API_URL,
+        frontendUrl: process.env.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -34,7 +33,7 @@ export default function ConfigurationForm({ id }) {
         }
       }
     }
-  }, [context]);
+  }, [context, id]);
 
   const saveConfiguration = () => {
     setShowSpinner(true);
@@ -67,7 +66,6 @@ export default function ConfigurationForm({ id }) {
         console.log("Saved source:", data);
         setConfiguration(data);
         setShowSpinner(false);
-        setTitle(configuration.name);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -84,7 +82,7 @@ export default function ConfigurationForm({ id }) {
           return (
             <>
               <Link className="utrecht-link" to={"/configurations"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
                 </button>
