@@ -21,12 +21,18 @@ import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 
-export default function AttributeForm({attributeId, entityId}) {
+interface AttributeFormProps {
+  attributeId: string,
+  entityId: string,
+}
+
+export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entityId }) => {
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const [API, setAPI] = React.useState<APIService>(null)
+  const [API, setAPI] = React.useState<APIService>(null);
+  const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
 
   React.useEffect(() => {
     if (!API) {
@@ -174,7 +180,7 @@ export default function AttributeForm({attributeId, entityId}) {
         </FlashMessage>
       }
       <form id="attributeForm" onSubmit={saveAttribute}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (<>
                   <Link className="utrecht-link" to={`/entities/${entityId}`}>
@@ -579,3 +585,5 @@ export default function AttributeForm({attributeId, entityId}) {
     </div>
   );
 }
+
+export default AttributeForm
