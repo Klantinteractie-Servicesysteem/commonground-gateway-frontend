@@ -3,92 +3,55 @@ import {
   GenericInputComponent,
   Checkbox,
   SelectInputComponent,
-  Accordion,
   Card,
   Alert
 }
   from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
-import {
-  checkValues,
-  removeEmptyObjectValues, retrieveFormArrayAsOArray,
-} from "../utility/inputHandler";
+import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
+import APIService from "../../apiService/apiService";
 
 
 export default function EntityForm({id}) {
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [soaps, setSoaps] = React.useState<any>(null);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      if (id !== 'new') {
-        getEntity();
-      }
-      getSources();
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      handleSetSources()
+      id && handleSetEntity()
     }
-  }, [context]);
+  }, [id, API])
 
-  const getEntity = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/entities/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setEntity(data);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+  const handleSetSources = () => {
+    setShowSpinner(true)
 
-  const getSources = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setSources(data["hydra:member"]);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+    API.Gateway.getAll()
+      .then((res) => { setSources(res.data) })
+      .catch((err) => { throw new Error ('GET gateways error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
+
+  const handleSetEntity = () => {
+    setShowSpinner(true)
+
+    API.Entity.getOne(id)
+      .then((res) => { setEntity(res.data) })
+      .catch((err) => { throw new Error ('GET gateway error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   const saveEntity = (event) => {
     event.preventDefault();
     setShowSpinner(true);
-
-    let transformations = retrieveFormArrayAsOArray(event.target, "transformations");
-    let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
-    let usedProperties = retrieveFormArrayAsOArray(event.target, "usedProperties");
-    let availableProperties = retrieveFormArrayAsOArray(event.target, "availableProperties");
-    let collectionConfig = retrieveFormArrayAsOArray(event.target, "collectionConfig");
 
     let body: {} = {
       name: event.target.name.value,
@@ -102,37 +65,6 @@ export default function EntityForm({id}) {
       function: event.target.function.value ? event.target.function.value : null,
     };
 
-    // check arrays
-    if (transformations.length !== 0) {
-      body["transformations"] = transformations;
-    } else {
-      body["transformations"] = [];
-    }
-
-    if (translationConfig.length !== 0) {
-      body["translationConfig"] = translationConfig;
-    } else {
-      body["translationConfig"] = [];
-    }
-
-    if (usedProperties.length !== 0) {
-      body["usedProperties"] = usedProperties;
-    } else {
-      body["usedProperties"] = [];
-    }
-
-    if (availableProperties.length !== 0) {
-      body["availableProperties"] = availableProperties;
-    } else {
-      body["availableProperties"] = [];
-    }
-
-    if (collectionConfig.length !== 0) {
-      body["collectionConfig"] = collectionConfig;
-    } else {
-      body["collectionConfig"] = [];
-    }
-
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
@@ -140,31 +72,29 @@ export default function EntityForm({id}) {
       return;
     }
 
-    let url = `${context.adminUrl}/entities`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!id) { // unset id means we're creating a new entry
+      API.Entity.create(body)
+        .then((res) => {
+          setEntity(res.data)
+          navigate('/entities')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Create entity error: ' + err)
+        })
     }
 
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setEntity(data);
-        method === 'POST' && navigate(`/entities`)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error(error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+    if (id) { // set id means we're updating a existing entry
+      API.Entity.update(body, id)
+        .then((res) => {
+          setEntity(res.data)
+          navigate('/entities')
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Update entity error: ' + err)
+        })
+    }
   }
 
   return (<>
@@ -281,7 +211,6 @@ export default function EntityForm({id}) {
                               </div>
                             </div>
                           </div>
-                          {/* @TODO Accordion met properties */}
                         </div>
                       )}
                     </div>
