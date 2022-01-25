@@ -36,7 +36,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [API, setAPI] = React.useState<APIService>(null)
   const title:string = (id === "new") ? "Create Application" : "Edit Application"
 
-
   React.useEffect(() => {
     if (!API) {
       setAPI(new APIService(sessionStorage.getItem('jwt')))
@@ -72,7 +71,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         ? event.target.resource.value : null,
       domains,
     };
-
 
     body = removeEmptyObjectValues(body);
 
