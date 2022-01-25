@@ -5,12 +5,9 @@ import {
   Alert
 }
   from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
-import {bootstrap} from "gatsby/dist/bootstrap";
 
 export default function TranslationForm({ id}) {
   const [context, setContext] = React.useState(null);
