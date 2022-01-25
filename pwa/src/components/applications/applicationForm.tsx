@@ -34,7 +34,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [API, setAPI] = React.useState<APIService>(null)
-  const title:string = (id === "new") ? "Create Application" : "Edit Application"
+  const title: string = id ? "Edit Application" : "Create Application";
 
   React.useEffect(() => {
     if (!API) {
