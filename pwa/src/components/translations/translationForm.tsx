@@ -10,8 +10,9 @@ import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
+import {bootstrap} from "gatsby/dist/bootstrap";
 
-export default function TranslationForm({ id }) {
+export default function TranslationForm({ id}) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
@@ -22,43 +23,15 @@ export default function TranslationForm({ id }) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,
       });
-    } else if (isLoggedIn()) {
-      if (id !== 'new') {
-        getTranslation();
-      }
     }
   }, [context]);
-
-  const getTranslation = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/translations/${id}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data.id !== undefined) {
-          setTranslation(data);
-        } else if (data['hydra:description'] !== undefined) {
-          setAlert(null);
-          setAlert({ type: 'danger', message: data['hydra:description'] });
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
-  };
 
   const saveTranslation = (event) => {
     event.preventDefault();
     setShowSpinner(true);
 
     let body = {
-      translationTable: event.target.translationTable ? event.target.translationTable.value : null,
+      translationTable: id,
       language: event.target.language ? event.target.language.value : null,
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
@@ -66,10 +39,10 @@ export default function TranslationForm({ id }) {
 
     let url = `${context.adminUrl}/translations`;
     let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
-    }
+    // if (id !== "new") {
+    //   url = `${url}/${id}`;
+    //   method = "PUT";
+    // }
 
     fetch(url, {
       method: method,
@@ -81,7 +54,6 @@ export default function TranslationForm({ id }) {
       .then((data) => {
         setShowSpinner(false);
         setTranslation(data);
-        method === 'POST' && navigate(`/translations`)
       })
       .catch((error) => {
         setShowSpinner(false);
