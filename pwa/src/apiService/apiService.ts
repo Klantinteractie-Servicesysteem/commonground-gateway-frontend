@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import Application from './resources/application';
+import Attribute from './resources/attribute';
 import Source from './resources/source';
 import Entity from './resources/entity';
 
@@ -22,6 +23,7 @@ export default class APIService {
   }
 
   public get Application (): Application { return new Application(this.axiosClient) }
+  public get Attribute (): Attribute { return new Attribute(this.axiosClient) }
   public get Source (): Source { return new Source(this.axiosClient) }
   public get Entity (): Entity { return new Entity(this.axiosClient) }
 }
