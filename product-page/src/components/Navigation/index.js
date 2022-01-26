@@ -3,7 +3,7 @@ import { Link, useStaticQuery, graphql } from 'gatsby'
 import { getCurrentLangKey, getUrlForLang } from 'ptz-i18n'
 
 import { StyledNav, StyledTitleLink, StyledTitle, StyledList, StyledListItem } from './index.styles'
-import DemodamLogo from '../DemodamLogo'
+import Logo from '../Logo'
 import GithubLogo from '../GithubLogo'
 import SlackLogo from '../SlackLogo'
 import LanguageSelector from '../LanguageSelector'
@@ -44,7 +44,7 @@ const Navigation = ({ location }) => {
   return (
     <StyledNav>
       <StyledTitleLink to={homeLink}>
-        <DemodamLogo />
+        <Logo />
         <StyledTitle>
 
         </StyledTitle>
