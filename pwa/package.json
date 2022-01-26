@@ -15,7 +15,7 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@conductionnl/nl-design-system": "^1.0.112",
+    "@conductionnl/nl-design-system": "^1.0.115",
     "@nl-design-system-unstable/theme-switcher": "1.0.0-alpha.6",
     "@utrecht/design-tokens": "1.0.0-alpha.51",
     "@utrecht/web-component-library-react": "1.0.0-alpha.57",
@@ -30,6 +30,7 @@
     "react-dom": "^17.0.1",
     "react-flash-message": "^1.0.8",
     "react-helmet": "^6.1.0",
+    "react-movable": "^3.0.2",
     "typescript": "^4.4.4"
   },
   "devDependencies": {
