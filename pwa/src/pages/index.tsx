@@ -3,7 +3,7 @@ import Layout from "../components/common/layout";
 import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
-import LogTable from "../components/logs/logTable";
+import LogTable from "../components/logs/logTable/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
 import {
