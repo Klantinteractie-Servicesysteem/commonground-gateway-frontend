@@ -1,0 +1,19 @@
+.logTable-statusCode {
+    font-size: '10px' !important;
+} 
+
+.logTable-statusCode--red {
+    color: red;
+}
+
+.logTable-statusCode--green {
+    color: limegreen;
+}
+
+.logTable-table {
+    width: 100%;
+}
+
+.logTable-table tr th {
+    width: 30%;
+}
