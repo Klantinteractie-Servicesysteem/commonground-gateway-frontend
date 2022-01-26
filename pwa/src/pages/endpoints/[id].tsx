@@ -3,7 +3,7 @@ import Layout from "../../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlerTable from "../../components/handlers/handlerTable";
-import LogTable from "../../components/logs/logTable";
+import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -72,7 +72,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable id={props.params.id} query={'?endpoint.id='}/>
+                <LogTable id={props.params.id} query={'endpoint.id'}/>
               </div>
             </div>
           </div>
