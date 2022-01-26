@@ -3,7 +3,7 @@ import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conduction
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 
-export default function LogTable({ id = null }) {
+export default function LogTable({ id = null, query = null }) {
   const [context, setContext] = React.useState(null);
   const [logs, setLogs] = React.useState([{ id: '12-34', type: 'test' }]);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -21,10 +21,14 @@ export default function LogTable({ id = null }) {
 
   const getLogs = () => {
     setShowSpinner(true);
+
     let url = '/logs?order[dateCreated]=desc';
-    if (id !== null) {
-      url = `/logs?entity.id=${id}&order[dateCreated]=desc`
+    if (id !== null && query !== null) {
+      url = `/logs${query}${id}&order[dateCreated]=desc`;
+    } else if (id !== null) {
+      url = `/logs?entity.id=${id}&order[dateCreated]=desc`;
     }
+
     fetch(context.adminUrl + url, {
       headers: {
         "Content-Type": "application/json",
