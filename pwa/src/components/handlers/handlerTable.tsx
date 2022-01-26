@@ -30,18 +30,10 @@ export default function HandlerTable({ id }) {
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setHandlers(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setHandlers(data["hydra:member"]);
         }
       })
@@ -51,6 +43,7 @@ export default function HandlerTable({ id }) {
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
+
   };
 
   return (<>
@@ -108,7 +101,7 @@ export default function HandlerTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/handlers/${item.id}`}>
+                          <Link to={`/handlers/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
