@@ -4,7 +4,7 @@ module.exports = {
     description: `De gateway admin ui is a tool to configurate your gateway and view that configuration.`,
     author: `Conduction`,
     repositoryUrl: `https://github.com/ConductionNL/commonground-gateway-frontend`,
-    slackUrl: null,
+    slackUrl: ``,
     languages: ['en' ,'nl'],
     defaultLanguage: 'nl'
   },
