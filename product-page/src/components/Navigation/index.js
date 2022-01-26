@@ -62,9 +62,9 @@ const Navigation = ({ location }) => {
           <a href="https://github.com/ConductionNL/Proto-component-commonground" target="_blank" rel="noopener noreferrer" aria-label="Bekijk project op Github">
             <GithubLogo width="26px" height="24px" />
           </a>
-          <a href="https://samenorganiseren.slack.com" target="_blank" rel="noopener noreferrer" aria-label="Wordt lid van het Signalen kanaal op de Common Ground Slack">
+          {/* <a href="" target="_blank" rel="noopener noreferrer" aria-label="Wordt lid van het ... kanaal op Slack">
             <SlackLogo width="26px" />
-          </a>
+          </a> */}
         </StyledListItem>
         <StyledListItem>
           <LanguageSelector languages={languageSelector} />
