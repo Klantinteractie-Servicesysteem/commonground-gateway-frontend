@@ -10,12 +10,13 @@ export default function ConfigurationForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [configuration, setConfiguration] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const title: string = (id === "new") ? "Create Configuration" : "Edit Configuration"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_API_URL,
+        frontendUrl: process.env.GATSBY_FRONTEND_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -75,7 +76,7 @@ export default function ConfigurationForm({ id }) {
   return (
     <form id="dataForm" onSubmit={saveConfiguration}>
       <Card
-        title="Values"
+        title={title}
         back="/entities"
         save={true}
         cardHeader={function () {

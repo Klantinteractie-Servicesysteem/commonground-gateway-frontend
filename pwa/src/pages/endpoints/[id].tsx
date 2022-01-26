@@ -10,13 +10,13 @@ const IndexPage = (props) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
 
   return (
-    <Layout title={"Endpoints"} subtext={"Add or modify your endpoint"}>
+    <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
       <main>
         <div className="row">
           <div className="col-12">

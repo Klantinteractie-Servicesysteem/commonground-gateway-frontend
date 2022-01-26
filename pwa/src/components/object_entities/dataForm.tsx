@@ -6,16 +6,21 @@ import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
 import {Link} from "gatsby";
 import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
-import {ArrayInputComponent} from "../common/arrayInput";
+import ElementCreationNew from "../common/elementCreationNew"
 
-export default function ObjectEntityForm({id, entityId}) {
+interface ObjectEntityFormProps {
+  id: string,
+  entityId: string,
+}
+export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId }) => {
+
   const [context, setContext] = React.useState(null);
   const [objectEntity, setObjectEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [applications, setApplications] = React.useState(null);
   const [objectValues, setObjectValues] = React.useState(null);
-
+  const title:string = (id === "new") ? "Create Object entities" : "Edit Object entities"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -107,7 +112,7 @@ export default function ObjectEntityForm({id, entityId}) {
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
     let externalResult = retrieveFormArrayAsOArray(event.target, "externalResult");
 
-    let body = {
+    let body: {} = {
       uri: event.target.uri.value,
       externalId: event.target.externalId ? event.target.externalId.value : null,
       application: event.target.application.value
@@ -122,12 +127,15 @@ export default function ObjectEntityForm({id, entityId}) {
         ? event.target.objectValues.value
         : null,
       subresourceOf: event.target.subresourceOf.value ? event.target.subresourceOf.value : null,
+      errors,
+      promises,
+      externalResult,
     };
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body.uri])) {
+    if (!checkValues([body["uri"]])) {
       return;
     }
 
@@ -161,12 +169,12 @@ export default function ObjectEntityForm({id, entityId}) {
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
       <Card
-        title="Values"
+        title={title}
         cardHeader={function () {
           return (
             <>
               <Link className="utrecht-link" to={"/sources"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2"/>
                   Back
                 </button>
@@ -346,10 +354,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"errors"}
-                                  label={"Errors"}
-                                  data={objectEntity && objectEntity.errors ? objectEntity.errors : null}
+                                <ElementCreationNew
+                                  id="errors"
+                                  label="Errors"
+                                  data={objectEntity?.errors}
                                 />
                               </>
                             );
@@ -361,10 +369,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"promises"}
-                                  label={"Promises"}
-                                  data={objectEntity && objectEntity.promises ? objectEntity.promises : null}
+                                <ElementCreationNew
+                                  id="promises"
+                                  label="Promises"
+                                  data={objectEntity?.promises}
                                 />
                               </>
                             );
@@ -376,10 +384,10 @@ export default function ObjectEntityForm({id, entityId}) {
                           render: function () {
                             return (
                               <>
-                                <ArrayInputComponent
-                                  id={"externalResult"}
-                                  label={"External Result"}
-                                  data={objectEntity && objectEntity.externalResult ? objectEntity.externalResult : null}
+                                <ElementCreationNew
+                                  id="externalResult"
+                                  label="External Result"
+                                  data={objectEntity?.externalResult}
                                 />
                               </>
                             );
@@ -397,3 +405,4 @@ export default function ObjectEntityForm({id, entityId}) {
     </form>
   );
 }
+  export default ObjectEntityForm

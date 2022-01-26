@@ -7,7 +7,6 @@ import {
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
-import {ArrayInputComponent} from "../common/arrayInput";
 import {
   GenericInputComponent,
   Checkbox,
@@ -17,68 +16,52 @@ import {
   Card,
   Alert,
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
+import APIService from "../../apiService/apiService";
 
-export default function AttributeForm({id, entity}) {
-  const [context, setContext] = React.useState(null);
+interface AttributeFormProps {
+  attributeId: string,
+  entityId: string,
+}
+
+export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entityId }) => {
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
+  const [API, setAPI] = React.useState<APIService>(null);
+  const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      if (id !== 'new') {
-        getAttribute();
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      if (attributeId) {
+        handleSetAttributes()
+        handleSetAttribute()
       }
-      getAttributes();
     }
-  }, [context]);
+  }, [attributeId, API])
 
-  const getAttribute = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/attributes/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setAttribute(data);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+  const handleSetAttribute = () => {
+    setShowSpinner(true)
 
-  const getAttributes = () => {
-    fetch(`${context.adminUrl}/attributes`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setAttributes(data['hydra:member']);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+    API.Attribute.getOne(attributeId)
+      .then((res) => { setAttribute(res.data) })
+      .catch((err) => { throw new Error ('GET attribute error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
+
+  const handleSetAttributes = () => {
+    setShowSpinner(true)
+
+    API.Attribute.getAllFromEntity(entityId)
+      .then((res) => { setAttributes(res.data) })
+      .catch((err) => { throw new Error ('GET attributes error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
   const saveAttribute = (event) => {
     event.preventDefault();
@@ -88,12 +71,12 @@ export default function AttributeForm({id, entity}) {
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
     let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
     let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
-    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbidenIf");
+    let forbiddenIf = retrieveFormArrayAsOArray(event.target, "forbiddenIf");
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
     let body: {} = {
-      entity: `/admin/entities/${entity}`,
+      entity: `/admin/entities/${entityId}`,
       name: event.target.name.value,
       description: event.target.description.value
         ? event.target.description.value : null,
@@ -162,31 +145,29 @@ export default function AttributeForm({id, entity}) {
       return;
     }
 
-    let url = `${context.adminUrl}/attributes`
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!attributeId) { // unset id means we're creating a new entry
+      API.Attribute.create(body)
+        .then((res) => {
+          setAttribute(res.data)
+          navigate(`/entities/${entityId}`)
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Create application error: ' + err)
+        })
     }
 
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setAttribute(data);
-        method === 'POST' && navigate(`/entities/${entity}`)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log(error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+    if (attributeId) { // set id means we're updating a existing entry
+      API.Attribute.update(body, attributeId)
+        .then((res) => {
+          setAttribute(res.data)
+          navigate(`/entities/${entityId}`)
+        })
+        .catch((err) => {
+          setAlert({ type: 'danger', message: err.message });
+          throw new Error ('Update application error: ' + err)
+        })
+    }
   };
 
   return (<div>
@@ -199,11 +180,11 @@ export default function AttributeForm({id, entity}) {
         </FlashMessage>
       }
       <form id="attributeForm" onSubmit={saveAttribute}>
-        <Card title="Values"
+        <Card title={title}
               cardHeader={function () {
                 return (<>
-                  <Link className="utrecht-link" to={`/entities/${entity}`}>
-                    <button className="utrecht-button utrecht-button-sm btn-sm btn-danger mr-2">
+                  <Link className="utrecht-link" to={`/entities/${entityId}`}>
+                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                       <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                     </button>
                   </Link>
@@ -604,3 +585,5 @@ export default function AttributeForm({id, entity}) {
     </div>
   );
 }
+
+export default AttributeForm
