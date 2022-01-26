@@ -112,21 +112,9 @@ const IndexPage = () => {
             <Tabs
               items={[
                 {
-                  name: "Overview",
-                  id: "overview",
-                  active: true,
-                },
-                {
-                  name: "Incoming calls",
-                  id: "incomingcalls",
-                },
-                {
-                  name: "Outgoing calls",
-                  id: "outgoingcalls",
-                },
-                {
-                  name: "Logs (new)",
+                  name: "Logs",
                   id: "logs",
+                  active: true,
                 },
               ]}
             />
@@ -135,39 +123,6 @@ const IndexPage = () => {
           <div className="tab-content">
             <div
               className="tab-pane active"
-              id="overview"
-              role="tabpanel"
-              aria-labelledby="main-tab"
-            >
-              <br />
-              <button
-                className="utrecht-button"
-                type="button"
-                onClick={handleExport}
-              >
-                Export Configuration
-              </button>
-            </div>
-            <div
-              className="tab-pane"
-              id="incomingcalls"
-              role="tabpanel"
-              aria-labelledby="incomingcalls-tab"
-            >
-              <br />
-              <RequestTable />
-            </div>
-            <div
-              className="tab-pane "
-              id="outgoingcalls"
-              role="tabpanel"
-              aria-labelledby="outgoingcalls-tab"
-            >
-              <br />
-              <ResponseTable />
-            </div>
-            <div
-              className="tab-pane "
               id="logs"
               role="tabpanel"
               aria-labelledby="logs-tab"
