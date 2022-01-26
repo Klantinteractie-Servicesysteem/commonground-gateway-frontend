@@ -13,7 +13,7 @@ export default function UsersTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        apiUrl: process.env.GATSBY_API_URL,
       });
     } else if (isLoggedIn()) {
       getUsers();
@@ -42,6 +42,7 @@ export default function UsersTable() {
         console.error("Error:", error);
       });
   };
+
 
   return (
     <Card

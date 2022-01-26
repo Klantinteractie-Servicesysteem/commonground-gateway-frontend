@@ -3,17 +3,18 @@ import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
-import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
 
 const IndexPage = (props) => {
+  const id: string = props.params.id === "new" ? null : props.params.id
   const [context, setContext] = React.useState(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
@@ -27,19 +28,19 @@ const IndexPage = (props) => {
               {props.params.id !== "new" ? (
                 <Tabs
                   items={[
-                    { name: "Overview", id: "overview", active: true },
+                    {name: "Overview", id: "overview", active: true},
                     {
                       name: "Attributes",
                       id: "attributes",
                     },
-                    { name: "Data", id: "data" },
-                    { name: "Incoming calls", id: "request" },
-                    { name: "Outgoing calls", id: "response" },
+                    {name: "Data", id: "data"},
+                    {name: "Incoming calls", id: "request"},
+                    {name: "Outgoing calls", id: "response"},
                   ]}
                 />
               ) : (
                 <Tabs
-                  items={[{ name: "Overview", id: "overview", active: true }]}
+                  items={[{name: "Overview", id: "overview", active: true}]}
                 />
               )}
             </div>
@@ -50,8 +51,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="overview-tab"
               >
-                <br />
-                <EntityForm id={props.params.id} />
+                <br/>
+                <EntityForm {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -59,8 +60,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="attributes-tab"
               >
-                <br />
-                <AttributeTable id={props.params.id} />
+                <br/>
+                <AttributeTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -68,8 +69,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="data-tab"
               >
-                <br />
-                <DataTable id={props.params.id} />
+                <br/>
+                <DataTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -77,8 +78,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="response-tab"
               >
-                <br />
-                <ResponseTable id={props.params.id} />
+                <br/>
+                <ResponseTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -86,8 +87,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="request-tab"
               >
-                <br />
-                <RequestTable id={props.params.id} />
+                <br/>
+                <RequestTable {...{id}}/>
               </div>
             </div>
           </div>

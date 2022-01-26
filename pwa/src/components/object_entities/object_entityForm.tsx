@@ -5,16 +5,21 @@ import { isLoggedIn } from "../../services/auth";
 import { Card } from "@conductionnl/nl-design-system/lib/Card/src/card";
 import { Link } from "gatsby";
 
-export default function ObjectEntityForm({ id }) {
+interface ObjectEntityFormProps {
+  id: string,
+}
+
+export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id }) => {
   const [context, setContext] = React.useState(null);
   const [objectEntity, setObjectEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const title:string = (id === "new") ? "Create Object entities" : "Edit Object entities"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
-        frontendUrl: window.GATSBY_FRONTEND_URL,
+        frontendUrl: process.env.GATSBY_FRONTEND_URL,
+        apiUrl: process.env.GATSBY_API_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -76,7 +81,7 @@ export default function ObjectEntityForm({ id }) {
     // This removes empty values from the body
     body = removeEmptyValues(body);
 
-    if (!checkInputs([body.name])) {
+    if (!checkInputs([body["name"]])) {
       setShowSpinner(false);
       return;
     }
@@ -109,7 +114,7 @@ export default function ObjectEntityForm({ id }) {
   return (
     <form id="dataForm" onSubmit={saveObjectEntity}>
       <Card
-        title="Values"
+        title={title}
         cardHeader={function () {
           return (
             <>
@@ -148,7 +153,6 @@ export default function ObjectEntityForm({ id }) {
                               id={"uriInput"}
                               data={objectEntity.uri}
                               nameOverride={"Uri *"}
-                              required={"true"}
                             />
                           ) : (
                             <GenericInputComponent
@@ -156,7 +160,6 @@ export default function ObjectEntityForm({ id }) {
                               name={"uri"}
                               id={"uriInput"}
                               nameOverride={"Uri"}
-                              required={"true"}
                             />
                           )}
                         </div>
@@ -263,3 +266,4 @@ export default function ObjectEntityForm({ id }) {
     </form>
   );
 }
+export default ObjectEntityForm
