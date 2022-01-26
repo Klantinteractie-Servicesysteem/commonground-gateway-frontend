@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, navigate} from "gatsby";
+import {Link} from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
@@ -19,19 +19,14 @@ import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 
-interface HandlerFormProps {
-  id: string,
-  endpointId: string,
-}
-export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
-
+export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const [translations, setTranslations] = React.useState<any>(null);
+  const title:string = (id === "new") ? "Create Handler" : "Edit Handler";
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -114,48 +109,20 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
       });
   };
 
-  const getTranslations = (query) => {
-    fetch(`${context.adminUrl}/translations${query}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setTranslations(data["hydra:member"])
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-
-    return translations;
-  };
-
   const saveHandler = (event) => {
     event.preventDefault();
     setShowSpinner(true);
 
-    let skeletonIn = retrieveFormArrayAsOArray(event.target, "skeletonIn");
-    let skeletonOut = retrieveFormArrayAsOArray(event.target, "skeletonOut");
-    let mappingIn = retrieveFormArrayAsObject(event.target, "mappingIn");
-    let mappingOut = retrieveFormArrayAsObject(event.target, "mappingOut");
-    let conditions = retrieveFormArrayAsOArray(event.target, "conditions");
-
-    let translationInQuery = `?translationTable=${event.target.translationIn.value}`;
-    let translationOutQuery = `?translationTable=${event.target.translationOut.value}`;
-    let translationIn = getTranslations(translationInQuery);
-    let translationOut = getTranslations(translationOutQuery);
-
-    let translationInArray = translationIn.map((item) => (`/admin/translations/${item.id}`));
-    let translationOutArray = translationOut.map((item) => (`/admin/translations/${item.id}`));
+    let skeletonIn: any[] = retrieveFormArrayAsOArray(event.target, "skeletonIn");
+    let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
+    let mappingIn: {} = retrieveFormArrayAsObject(event.target, "mappingIn");
+    let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
+    let conditions: any[] = retrieveFormArrayAsOArray(event.target, "conditions");
+    let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
+    let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
     // get the inputs and check if set other set null
     let body: {} = {
-      translationIn: translationInArray ? translationInArray : null,
-      translationOut: translationOutArray ? translationOutArray  : null,
       name: event.target.name.value,
       description: event.target.description
         ? event.target.description.value : null,
@@ -174,6 +141,8 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
       skeletonOut,
       mappingIn,
       mappingOut,
+      translationsIn,
+      translationsOut
     };
     
     // This removes empty values from the body
@@ -202,7 +171,6 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
       .then((data) => {
         setShowSpinner(false);
         setHandler(data)
-        method === 'POST' && navigate(`/endpoints/${endpointId}`)
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -223,85 +191,37 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
       }
       <form id="handlerForm" onSubmit={saveHandler}>
         <Card title={title}
-          cardHeader={function () {
-            return (<>
-              <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                </button>
-              </Link>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                <i className="fas fa-save mr-2"/>Save
-              </button>
-            </>)
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    <>
-                      <div className="row">
-                        <div className="col-6">
-
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                 data={handler && handler.name && handler.name}
-                                                 nameOverride={"Name"} required/>
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                 data={handler && handler.description && handler.description}
-                                                 nameOverride={"Description"}/>
-                        </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent type={"number"} name={"sequence"} id={"sequenceInput"}
-                                                 data={handler && handler.sequence && handler.sequence}
-                                                 nameOverride={"Sequence"}/>
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"templateType"} id={"templateTypeInput"}
-                                                 data={handler && handler.templateType && handler.templateType}
-                                                 nameOverride={"Template Type"}/>
-                        </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"template"} id={"templateInput"}
-                                                 data={handler && handler.template && handler.template}
-                                                 nameOverride={"Template"}/>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            {
-                              entities !== null && entities.length > 0 ? (
-                                <>
-                                  {handler !== null &&
-                                  handler.entity !== undefined &&
-                                  handler.entity !== null ? (
-                                      <SelectInputComponent
-                                        options={entities}
-                                        data={handler.entity}
-                                        name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                        value={"/admin/entities/"}/>
-                                    )
-                                    : (
-                                      <SelectInputComponent
-                                        options={entities}
-                                        name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                        value={"/admin/entities/"}/>
-                                    )}
-                                </>
-                              ) : (
-                                <GenericInputComponent type={"text"} name={"entity"} id={"entityInput"}
-                                                       nameOverride={"Entity"}/>
-                              )
-                            }
+              cardHeader={function () {
+                return (<>
+                  <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
+                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                      <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                    </button>
+                  </Link>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                    <i className="fas fa-save mr-2"/>Save
+                  </button>
+                </>)
+              }}
+              cardBody={function () {
+                return (
+                  <div className="row">
+                    <div className="col-12">
+                      {showSpinner === true ? (
+                        <Spinner/>
+                      ) : (
+                        <>
+                          <div className="row">
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
+                                                     data={handler && handler.name && handler.name}
+                                                     nameOverride={"Name"} required/>
+                            </div>
+                            <div className="col-6">
+                              <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
+                                                     data={handler && handler.description && handler.description}
+                                                     nameOverride={"Description"}/>
+                            </div>
                           </div>
                           <br/>
                           <div className="row">
@@ -352,69 +272,6 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
                               }
                             </div>
                           </div>
-                          <div className="row">
-                            <div className="col-6">
-                              {
-                                tableNames !== null && tableNames.length > 0 ? (
-                                  <div className="form-group">
-                                    {handler !== null &&
-                                    handler.translationIn !== undefined &&
-                                    handler.translationIn !== null ? (
-                                        <SelectInputComponent
-                                          options={tableNames}
-                                          data={handler.translationIn}
-                                          name={"translationIn"} id={"translationInInput"} nameOverride={"Translation In"}
-                                        />
-                                      )
-                                      : (
-                                        <SelectInputComponent
-                                          options={tableNames}
-                                          name={"translationIn"} id={"translationInInput"}
-                                          nameOverride={"Translation In"}
-                                        />
-                                      )}
-                                  </div>
-                                ) : (
-                                  <SelectInputComponent
-                                    options={[]}
-                                    name={"translationIn"} id={"translationInInput"} nameOverride={"Translation In"}/>
-                                )
-                              }
-                            </div>
-                            <div className="col-6">
-                              <div className="form-group">
-                                {
-                                  tableNames !== null && tableNames.length > 0 ? (
-                                    <>
-                                      {handler !== null &&
-                                      handler.translationOut !== undefined &&
-                                      handler.translationOut !== null ? (
-                                          <SelectInputComponent
-                                            options={tableNames}
-                                            data={handler.translationOut}
-                                            name={"translationOut"} id={"translationOutInput"}
-                                            nameOverride={"Translation Out"}
-                                          />
-                                        )
-                                        : (
-                                          <SelectInputComponent
-                                            options={tableNames}
-                                            name={"translationOut"} id={"translationOutInput"}
-                                            nameOverride={"Translation Out"}
-                                          />
-                                        )}
-                                    </>
-                                  ) : (
-                                    <SelectInputComponent
-                                      options={[]}
-                                      name={"translationOut"} id={"translationOutInput"}
-                                      nameOverride={"Translation Out"}
-                                    />
-                                  )
-                                }
-                              </div>
-                            </div>
-                          </div>
 
                           <Accordion id="handlerAccordion"
                                      items={[
@@ -427,6 +284,38 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
                                                id="conditions"
                                                label="Conditions"
                                                data={handler?.conditions}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "Translations In",
+                                         id: "translationsInAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               id="translationsIn"
+                                               label="Translations In"
+                                               data={handler?.translationsIn}
+                                               select
+                                               selectName={"translationIn"}
+                                               options={tableNames}
+                                             />
+                                           )
+                                         }
+                                       },
+                                       {
+                                         title: "Translations Out",
+                                         id: "translationsOutAccordion",
+                                         render: function () {
+                                           return (
+                                             <ElementCreationNew
+                                               id="translationsOut"
+                                               label="Translations Out"
+                                               data={handler?.translationsOut}
+                                               select
+                                               selectName={"translationOut"}
+                                               options={tableNames}
                                              />
                                            )
                                          }
@@ -501,5 +390,3 @@ export const HandlerForm:React.FC<HandlerFormProps> = ({id, endpointId }) => {
     </>
   );
 }
-export default HandlerForm
-
