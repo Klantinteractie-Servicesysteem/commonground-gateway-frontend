@@ -3,6 +3,7 @@ import Layout from "../../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlerTable from "../../components/handlers/handlerTable";
+import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -29,11 +30,19 @@ const IndexPage = (props) => {
                       name: "Handlers",
                       id: "handlers",
                     },
+                    {
+                      name: "Logs",
+                      id: "logs",
+                    }
                   ]}
                 />
               ) : (
                 <Tabs
-                  items={[{ name: "Overview", id: "overview", active: true }]}
+                  items={[{ name: "Overview", id: "overview", active: true },
+                    {
+                      name: "Logs",
+                      id: "logs",
+                    }]}
                 />
               )}
             </div>
@@ -55,6 +64,15 @@ const IndexPage = (props) => {
               >
                 <br />
                 <HandlerTable id={props.params.id} />
+              </div>
+              <div
+                className="tab-pane"
+                id="logs"
+                role="tabpanel"
+                aria-labelledby="logs-tab"
+              >
+                <br />
+                <LogTable id={props.params.id} query={'endpoint.id'}/>
               </div>
             </div>
           </div>

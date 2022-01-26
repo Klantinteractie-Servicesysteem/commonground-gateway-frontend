@@ -7,10 +7,11 @@ import logsArray from '../../../dummy_data/logs';
 import JsonCode from '../../common/jsonCode';
 
 interface LogTableProps {
-  id: string | null
+  id?: string | null;
+  query?: string | null;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
+export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) => {
   const [context, setContext] = React.useState(null);
   const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -29,7 +30,9 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
   const getLogs = () => {
     setShowSpinner(true);
     let url = '/logs?order[dateCreated]=desc';
-    if (id !== null) {
+    if (id !== null && query !== null) {
+      url = `/logs?${query}=${id}&order[dateCreated]=desc`
+    } else if (id !== null) {
       url = `/logs?entity.id=${id}&order[dateCreated]=desc`
     }
     fetch(context.adminUrl + url, {
