@@ -22,7 +22,7 @@ import authorizationImage from '../images/undraw_two_factor_authentication_namy.
 
 const IndexPage = ({location}) => (
   <Layout>
-    <SEO title="Proto component commonground"/>
+    <SEO title="Gateway admin ui"/>
     <Background backgroundColor="#4376FC">
       <Container>
         <Navigation as="nav" location={location}/>
@@ -37,7 +37,7 @@ const IndexPage = ({location}) => (
       </Container>
     </Background>
     <Container>
-      <Section id="over-demodam">
+      <Section id="over-gateway-ui">
         <Flex>
           <Box>
             <h2>Inleiding</h2>
