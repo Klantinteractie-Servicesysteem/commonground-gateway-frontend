@@ -9,7 +9,11 @@ import { Link } from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 
-export default function TranslationForm({ id}) {
+interface TranslationFormProps {
+  id: string,
+}
+
+export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
@@ -146,4 +150,4 @@ export default function TranslationForm({ id}) {
       </form></>
   );
 }
-  export default TranslationForm
+export default TranslationForm
