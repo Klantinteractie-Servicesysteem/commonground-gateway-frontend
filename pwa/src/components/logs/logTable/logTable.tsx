@@ -189,25 +189,25 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                     role="tabpanel"
                     aria-labelledby="logGeneral-tab"
                   >
-                    <table style={{ width: "100%" }} className="mt-3">
+                    <table className="mt-3 logTable-table">
                       <tr>
-                        <th style={{ width: "30%" }}>Type</th>
+                        <th >Type</th>
                         <td>{log?.type === 'in' ? 'Incoming' : 'Outcoming'}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Call ID</th>
+                        <th>Call ID</th>
                         <td>{log?.callId}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Response time</th>
+                        <th>Response time</th>
                         <td>{log?.responseTime.toString() + ' seconds'}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Route</th>
+                        <th>Route</th>
                         <td>{log?.routeName}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Status</th>
+                        <th>Status</th>
                         <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
                       </tr>
                     </table>
