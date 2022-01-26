@@ -5,7 +5,7 @@ import {Link} from "gatsby";
 import FlashMessage from 'react-flash-message';
 
 export default function TranslationTable({id}) {
-  const [translations, setTranslations] = React.useState<Record<any, any>>(null);
+  const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
@@ -31,7 +31,7 @@ export default function TranslationTable({id}) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setTranslations(data)
+        setTranslations(data["hydra:member"])
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -101,7 +101,7 @@ export default function TranslationTable({id}) {
                         field: "language",
                       }
                     ]}
-                    rows={[translations]}
+                    rows={translations}
                   />
                 ) : (
                   <Table
