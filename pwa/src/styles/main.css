@@ -229,7 +229,6 @@ a:hover {
     border: none !important;
     background: inherit !important;
 }
-
-span > svg{
+.svg-inline--fa  {
     margin-left: 5px;
 }
