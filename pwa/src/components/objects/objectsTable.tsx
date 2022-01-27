@@ -22,7 +22,7 @@ export default function ObjectsTable() {
 
   const getObjects = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/Objecten`, {
+    fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -69,7 +69,7 @@ export default function ObjectsTable() {
                 <i className="fas fa-sync-alt mr-1"/>
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to="/entities/new">
+              <Link to="/Objects/new">
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2"/>
                   Create
