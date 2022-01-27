@@ -1,11 +1,19 @@
 import * as React from "react";
+import './logTable.css';
 import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
+import logsArray from '../../../dummy_data/logs';
+import JsonCode from '../../common/jsonCode';
 
-export default function LogTable({ id = null }) {
+interface LogTableProps {
+  id?: string | null;
+  query?: string | null;
+}
+
+export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) => {
   const [context, setContext] = React.useState(null);
-  const [logs, setLogs] = React.useState([{ id: '12-34', type: 'test' }]);
+  const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
 
@@ -22,7 +30,9 @@ export default function LogTable({ id = null }) {
   const getLogs = () => {
     setShowSpinner(true);
     let url = '/logs?order[dateCreated]=desc';
-    if (id !== null) {
+    if (id !== null && query !== null) {
+      url = `/logs?${query}=${id}&order[dateCreated]=desc`
+    } else if (id !== null) {
       url = `/logs?entity.id=${id}&order[dateCreated]=desc`
     }
     fetch(context.adminUrl + url, {
@@ -48,7 +58,7 @@ export default function LogTable({ id = null }) {
   };
 
   return (
-    <>
+    <div className="logTable">
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -87,18 +97,28 @@ export default function LogTable({ id = null }) {
                         {
                           headerName: "Type",
                           field: "type",
+                          renderCell: (item) => {
+                            return (
+                              <span>{item.type === 'in' ? 'Incoming' : 'Outcoming'}</span>
+                            );
+                          },
                         },
                         {
                           headerName: "Method",
                           field: "requestMethod",
                         },
                         {
-                          headerName: "Status",
-                          field: "responseStatus",
+                          headerName: "Response time (seconds)",
+                          field: "responseTime",
                         },
                         {
-                          headerName: "Response time",
-                          field: "responseTime",
+                          headerName: "Status",
+                          field: "responseStatusCode",
+                          renderCell: (item) => {
+                            return (
+                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
+                            );
+                          },
                         },
                         {
                           field: "id",
@@ -172,10 +192,29 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logGeneral-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Type: {log.type && log.type}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Call id: {log.callId && log.callId}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Reponse time: {log.responseTime && log.responseTime}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path: {log.route && log.route}</h5>
+                    <table className="mt-3 logTable-table">
+                      <tr>
+                        <th >Type</th>
+                        <td>{log?.type === 'in' ? 'Incoming' : 'Outcoming'}</td>
+                      </tr>
+                      <tr>
+                        <th>Call ID</th>
+                        <td>{log?.callId}</td>
+                      </tr>
+                      <tr>
+                        <th>Response time</th>
+                        <td>{log?.responseTime.toString() + ' seconds'}</td>
+                      </tr>
+                      <tr>
+                        <th>Route</th>
+                        <td>{log?.routeName}</td>
+                      </tr>
+                      <tr>
+                        <th>Status</th>
+                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
+                      </tr>
+                    </table>
+
                     <Accordion id="logGeneralAccordion"
                       items={[
                         {
@@ -195,10 +234,20 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logRequest-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Method: {log.requestMethod && log.requestMethod}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Path info: {log.requestPathInfo && log.requestPathInfo}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Languages: {log.requestLanguages && log.requestLanguages}</h5>
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">Status: {log.requestStatus && log.requestStatus} {log.requestStatusCode && log.requestStatusCode}</h5>
+                    <table style={{ width: "100%" }} className="mt-3">
+                      <tr>
+                        <th style={{ width: "30%" }}>Method</th>
+                        <td>{log?.requestMethod}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Path info</th>
+                        <td>{log?.requestPathInfo}</td>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "30%" }}>Languages</th>
+                        <td>{log?.requestLanguages}</td>
+                      </tr>
+                    </table>
                     <Accordion id="logRequestAccordion"
                       items={[
                         {
@@ -220,11 +269,15 @@ export default function LogTable({ id = null }) {
                           }
                         },
                         {
-                          title: "Context",
-                          id: "logRequestContext",
+                          title: "Content",
+                          id: "logRequestContent",
                           render: function () {
                             return (<>
-                              {log.requestContext ? JSON.stringify(log.requestContext) : <p className="utrecht-paragraph">No context found</p>}
+                              {log.requestContent
+                                ?
+                                <JsonCode body={log.requestContent} />
+                                :
+                                <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
@@ -236,7 +289,6 @@ export default function LogTable({ id = null }) {
                     role="tabpanel"
                     aria-labelledby="logResponse-tab"
                   >
-                    <h5 className="utrecht-heading-5 utrecht-heading-5--distanced mt-3">Status: {log.responseStatus && log.responseStatus} {log.responseStatusCode && log.responseStatusCode}</h5>
 
                     <Accordion id="logResponseAccordion"
                       items={[
@@ -254,7 +306,10 @@ export default function LogTable({ id = null }) {
                           id: "logResponseContent",
                           render: function () {
                             return (<>
-                              {log.responseContent ? JSON.stringify(log.responseContent) : <p className="utrecht-paragraph">No content found</p>}
+                              {log.responseContent ?
+                                <JsonCode body={log.responseContent} />
+                                :
+                                <p className="utrecht-paragraph">No content found</p>}
                             </>)
                           }
                         }]}
@@ -265,6 +320,19 @@ export default function LogTable({ id = null }) {
             }}
           />
         ))}
-    </>
+    </div>
   );
 }
+
+interface StatusCodeProps {
+  code: number,
+  message: string | null
+}
+
+const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
+  return (
+    <span>{message} {code} <i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i></span>
+  );
+}
+
+export default LogTable;
