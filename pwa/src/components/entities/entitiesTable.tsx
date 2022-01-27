@@ -97,7 +97,7 @@ export default function EntitiesTable() {
                       },
                       {
                         headerName: "Path",
-                        field: "path",
+                        field: "route",
                       },
                       {
                         headerName: "Source",
@@ -136,7 +136,7 @@ export default function EntitiesTable() {
                       },
                       {
                         headerName: "Path",
-                        field: "path",
+                        field: "route",
                       },
                       {
                         headerName: "Source",
