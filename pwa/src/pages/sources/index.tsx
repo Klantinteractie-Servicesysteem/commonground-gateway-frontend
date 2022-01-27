@@ -2,9 +2,9 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import SourcesTable from "../../components/sources/sourcesTable";
 
-const IndexPage = () => {
+const IndexPage = ({pageContext}) => {
   return (
-    <Layout title={"Sources"} subtext={"An overview of your Source objects"}>
+    <Layout title={"Sources"} subtext={"An overview of your Source objects"} pageContext={pageContext} >
       <main>
         <div className="row">
           <div className="col-12">

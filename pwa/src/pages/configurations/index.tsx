@@ -2,9 +2,9 @@ import * as React from "react"
 import Layout from "../../components/common/layout";
 import ConfigurationsTable from "../../components/configurations/configurationsTable";
 
-const IndexPage = () => {
+const IndexPage = ({pageContext}) => {
   return (
-    <Layout title={"Configurations"} subtext={"An overview of your configurations"}>
+    <Layout title={"Configurations"} subtext={"An overview of your configurations"} pageContext={pageContext} >
       <main>
         <div className="row">
           <div className="col-12">

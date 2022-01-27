@@ -11,7 +11,7 @@ import {
 } from "../components/utility/DocumentDownload";
 import FlashMessage from 'react-flash-message';
 
-const IndexPage = () => {
+const IndexPage = ({pageContext}) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
@@ -99,6 +99,7 @@ const IndexPage = () => {
           ? `Welcome ${getUser().username}, to the gateway admin dashboard`
           : `Welcome to the gateway admin dashboard`
       }
+      pageContext={pageContext}
     >
       {
         alert !== null &&

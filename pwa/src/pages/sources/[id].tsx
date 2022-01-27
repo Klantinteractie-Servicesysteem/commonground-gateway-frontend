@@ -6,7 +6,7 @@ const IndexPage = (props) => {
   const id: string = props.params.id === "new" ? null : props.params.id
 
   return (
-    <Layout title={"Source"} subtext={"Edit your source here"}>
+    <Layout title={"Source"} subtext={"Edit your source here"} pageContext={props.pageContext}>
       <main>
         <div className="row">
           <div className="col-12">

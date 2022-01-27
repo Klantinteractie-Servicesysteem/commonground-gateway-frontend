@@ -2,9 +2,9 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationsTable from "../../components/translations/translationsTable";
 
-const IndexPage = () => {
+const IndexPage = ({pageContext}) => {
   return (
-    <Layout title={"Translations"} subtext={"An overview of your translation objects"}>
+    <Layout title={"Translations"} subtext={"An overview of your translation objects"} pageContext={pageContext} >
       <title>Gateway - Translations</title>
       <main>
         <div className="row">
