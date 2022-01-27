@@ -2,19 +2,14 @@ import * as React from "react";
 import { Table, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 export default function AttributeTable({ id }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [API, setAPI] = React.useState<APIService>(null)
+  const API: APIService = React.useContext(APIContext)
 
-  React.useEffect(() => {
-    if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
-    } else {
-      handleSetAttributes()
-    }
-  }, [API])
+  React.useEffect(() => { handleSetAttributes() }, [API])
 
   const handleSetAttributes = () => {
     setShowSpinner(true)
