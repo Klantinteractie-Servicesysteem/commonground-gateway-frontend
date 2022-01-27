@@ -32,7 +32,7 @@ export default function EntitiesTable() {
 
   return (
     <Card
-      title={"Entities"}
+      title={"Objects"}
       cardHeader={function () {
         return (
           <>
