@@ -10,6 +10,7 @@ export default function ConfigurationForm({ id }) {
   const [context, setContext] = React.useState(null);
   const [configuration, setConfiguration] = useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const title: string = (id === "new") ? "Create Configuration" : "Edit Configuration"
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -75,7 +76,7 @@ export default function ConfigurationForm({ id }) {
   return (
     <form id="dataForm" onSubmit={saveConfiguration}>
       <Card
-        title="Values"
+        title={title}
         back="/entities"
         save={true}
         cardHeader={function () {

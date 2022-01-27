@@ -1,54 +1,36 @@
 import * as React from "react";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import { getCall } from "../utility/fetch";
-import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
-import FlashMessage from 'react-flash-message';
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
+import APIService from "../../apiService/apiService";
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const [API, setAPI] = React.useState<APIService>(null)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    } else if (isLoggedIn()) {
-      getSources();
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem('jwt')))
+    } else {
+      handleSetSources()
     }
-  }, [context]);
+  }, [API])
 
-  const getSources = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/gateways`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
-          setSources(data["hydra:member"]);
-        }
-        setShowSpinner(false);
+  const handleSetSources = () => {
+    setShowSpinner(true)
+    API.Source.getAll()
+      .then((res) => {
+        setSources(res.data)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
-  };
+      .catch((err) => {
+        throw new Error ('GET Applications error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+  return (
     <Card title={"Sources"}
       cardHeader={function () {
         return (
@@ -57,7 +39,7 @@ export default function SourcesTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getSources}>
+            <a className="utrecht-link" onClick={handleSetSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -109,6 +91,6 @@ export default function SourcesTable() {
           </div>
         )
       }}
-    /></>
+    />
   );
 }

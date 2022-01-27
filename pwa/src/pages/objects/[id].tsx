@@ -2,12 +2,13 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import DataTable from "../../components/object_entities/dataTable";
-import ObjectForm from "../../components/objects/objectForm";
+import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
 
 const IndexPage = (props) => {
+  const id: string = props.params.id === "new" ? null : props.params.id
   const [context, setContext] = React.useState(null);
 
   React.useEffect(() => {
@@ -19,7 +20,7 @@ const IndexPage = (props) => {
   }, [context]);
 
   return (
-    <Layout title={"Object"} subtext={"Create or modify your entity"}>
+    <Layout title={"Entity"} subtext={"Create or modify your entity"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -51,7 +52,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br/>
-                <ObjectForm id={props.params.id}/>
+                <EntityForm {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -60,7 +61,7 @@ const IndexPage = (props) => {
                 aria-labelledby="attributes-tab"
               >
                 <br/>
-                <AttributeTable id={props.params.id}/>
+                <AttributeTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -69,7 +70,7 @@ const IndexPage = (props) => {
                 aria-labelledby="data-tab"
               >
                 <br/>
-                <DataTable id={props.params.id}/>
+                <DataTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -78,7 +79,7 @@ const IndexPage = (props) => {
                 aria-labelledby="response-tab"
               >
                 <br/>
-                <ResponseTable id={props.params.id}/>
+                <ResponseTable {...{id}}/>
               </div>
               <div
                 className="tab-pane"
@@ -87,7 +88,7 @@ const IndexPage = (props) => {
                 aria-labelledby="request-tab"
               >
                 <br/>
-                <RequestTable id={props.params.id}/>
+                <RequestTable {...{id}}/>
               </div>
             </div>
           </div>
