@@ -37,7 +37,9 @@ const IndexPage = () => {
     fetch(`${context.apiUrl}/users/login`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
