@@ -39,7 +39,7 @@ export default function ConfigurationsExportButton() {
       onClick={handleExport}
       disabled={loading}
     >
-      {loading ? "Perparing your download..." : "Export Configuration"}
+      {loading ? "Perparing your download...": "Export Configuration"}
     </button>
   );
 }
