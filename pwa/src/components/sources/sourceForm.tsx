@@ -160,7 +160,7 @@ export const SourceForm:React.FC<SourceFormProps> = ({ id }) => {
                             <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
                                                    data={source.location}
                                                    nameOverride={"Location (url)"}
-                                                   infoTooltip={{content: <h3>Enter the source location here</h3>}}/>
+                                                   infoTooltip={{content: <p>Enter the source location here</p>}}/>
                           ) : (
                             <GenericInputComponent type={"text"} name={"location"} id={"locationInput"}
                                                    nameOverride={"Location (url)"}/>
