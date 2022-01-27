@@ -2,24 +2,16 @@
 
 ## Prerequisites:
 
-- understanding of HTTP requests with [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/fetch) and [Axios](https://www.npmjs.com/package/axios)
-- React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
-
-## What is the API service?
-
-The API service is a way to organize HTTP requests logic needed to create, read, update and delete entries in data collection.
+-   understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if you want to read more about it, check out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog post.
+-   React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
 
 ## Getting started
 
-The following documentation is suited for developers with experience with the Common Ground methods of designing Progressive Web Applications and especially React Components from [Conduction](conduction.nl).
-
-## Previous situation
-
-In the previous situation, HTTP requests were made through the React built-in `fetch` methods, which required no imports in the components that used them, but using fetch equals a lot of redundant code (like using tokens as arguments on numerous occasions). Besides making the code less readable, it's also error-prone. Axios has a lot of advantages and if you want to read more about it, check out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog post. The main take here is you don't need a new instance in every `fetch` code block don't have to specify the URL and headers every time. This implementation will improve performance as well.
+The following documentation is suited for developers with React experience with designing Progressive Web Applications. The apiService is a way to organize HTTP requests logic needed to create, read, update and delete entries in data collections.
 
 ### Key Differences
 
-- Axios needs to be imported
+-   Axios needs to be imported
 
 ```javascript
     npm install axios
@@ -50,12 +42,10 @@ It exports this variable as a `Provider` for other components to import and use 
 The Provider component needs to be imported in a top component, like `<App />` or often the `<Layout />` component (another wrapper component). In this case, call upon the `APIService` like:
 
 ```javascript
-const API = new APIService(sessionStorage.getItem("jwt"));
+const API: APIService = new APIService(sessionStorage.getItem("jwt"));
 ```
 
-> this example is in JavaScript
-
-The wrapping is enough to make this data globally accessible in your application when you add `API` as value props (`value={API}`) to the `APIProvider` component. The Provider in our application is the `apiContext` exported as `<APIProvider />` component.
+The wrapping is enough to make this data accessible in your application when you add `API` as value props (`value={API}`) to the `APIProvider` component. The Provider in our application is the `apiContext` exported as `<APIProvider />` component.
 
 # How to implement the API service
 
@@ -69,9 +59,26 @@ import APIService from "../../apiService/apiService";
 Then in the component:
 
 ```javascript
-const API = React.useContext(APIContext);
+const API: APIService = React.useContext(APIContext);
 ```
 
 This `const `references the variable(context) in the wrapped, top component where we instantiated the API service. It's the `value` prop we sent along with the provider component. The difference here is that we **don't** have to make a new instance. We use the same instance everywhere in the application.
 
 Now, if we want to use it all, invoke `API`, and you will see the available `resources`. Select a resource, and automatically, you will see the available methods (see quick list below) for you to use in your functions and use the known methods like `then()`, `catch()` and `finally()`.
+
+```javascript
+const API: APIService = React.useContext(APIContext);
+
+API.Attribute.getAll()
+    .then((res) => {
+        // do something
+    })
+    .catch((err) => {
+        throw new Error("GET attribute error: " + err);
+    })
+    .finally
+    // confirmation log or toggling state
+    ();
+```
+
+> This is an example of everything implemented
