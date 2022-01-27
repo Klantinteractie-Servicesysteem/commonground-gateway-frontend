@@ -13,6 +13,7 @@ import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface EntityFormProps {
   id: string,
@@ -22,17 +23,13 @@ export const EntityForm:React.FC<EntityFormProps> = ({ id }) => {
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [API, setAPI] = React.useState<APIService>(null)
+  const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Object" : "Create Object";
 
   React.useEffect(() => {
-    if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
-    } else {
-      handleSetSources()
-      id && handleSetEntity()
-    }
-  }, [id, API])
+    handleSetSources()
+    id && handleSetEntity()
+  }, [API])
 
   const handleSetSources = () => {
     setShowSpinner(true)
