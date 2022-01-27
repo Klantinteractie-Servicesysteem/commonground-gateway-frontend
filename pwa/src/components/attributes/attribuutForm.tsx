@@ -20,6 +20,7 @@ import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface AttributeFormProps {
   attributeId: string,
@@ -31,19 +32,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const [API, setAPI] = React.useState<APIService>(null);
+  const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
 
   React.useEffect(() => {
-    if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
-    } else {
-      if (attributeId) {
-        handleSetAttributes()
-        handleSetAttribute()
-      }
+    if (attributeId) {
+      handleSetAttributes()
+      handleSetAttribute()
     }
-  }, [attributeId, API])
+  }, [API])
 
   const handleSetAttribute = () => {
     setShowSpinner(true)
