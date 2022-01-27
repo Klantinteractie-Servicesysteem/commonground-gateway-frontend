@@ -4,6 +4,8 @@ import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from "./header";
+import { APIProvider } from "../../apiService/apiContext";
+import APIService from "../../apiService/apiService";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -14,21 +16,28 @@ import Header from "./header";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
+  const [API, setAPI] = React.useState<APIService>(null)
+
+  React.useEffect(() => {
+    !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
+  }, [API])
+
   return (
-    <>
-      <Helmet>
-        <title>Gateway Admin Dashboard</title>
-      </Helmet>
-      <div className="utrecht-document conduction-theme">
-        <div className="utrecht-page">
-          <MainMenu />
-          <div className="utrecht-page__content">
-            <Header title={title} subText={subtext} />
-            <div className="container py-4">{children}</div>
+    API &&
+      <APIProvider value={API}>
+        <Helmet>
+          <title>Gateway Admin Dashboard</title>
+        </Helmet>
+        <div className="utrecht-document conduction-theme">
+          <div className="utrecht-page">
+            <MainMenu />
+            <div className="utrecht-page__content">
+              <Header title={title} subText={subtext} />
+              <div className="container py-4">{children}</div>
+            </div>
+            <Footer />
           </div>
-          <Footer />
         </div>
-      </div>
-    </>
+      </APIProvider>
   );
 }

@@ -3,7 +3,7 @@ import Layout from "../components/common/layout";
 import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
-import LogTable from "../components/logs/logTable";
+import LogTable from "../components/logs/logTable/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
 import {
@@ -73,6 +73,23 @@ const IndexPage = () => {
       });
   };
 
+  const handleExport = () => {
+    fetch(`${context.adminUrl}/export/all`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    }).then((response) => {
+      response.text().then(function (text) {
+        download("export.yaml", text, "text/yaml");
+      });
+    }).catch((error) => {
+      console.log('Error:', error)
+      setAlert(null);
+      setAlert({ type: 'danger', message: error.message });
+    });
+  };
+
   return (
 
     <Layout
@@ -95,21 +112,9 @@ const IndexPage = () => {
             <Tabs
               items={[
                 {
-                  name: "Overview",
-                  id: "overview",
-                  active: true,
-                },
-                {
-                  name: "Incoming calls",
-                  id: "incomingcalls",
-                },
-                {
-                  name: "Outgoing calls",
-                  id: "outgoingcalls",
-                },
-                {
-                  name: "Logs (new)",
+                  name: "Logs",
                   id: "logs",
+                  active: true,
                 },
               ]}
             />
@@ -118,31 +123,6 @@ const IndexPage = () => {
           <div className="tab-content">
             <div
               className="tab-pane active"
-              id="overview"
-              role="tabpanel"
-              aria-labelledby="main-tab"
-            >
-            </div>
-            <div
-              className="tab-pane"
-              id="incomingcalls"
-              role="tabpanel"
-              aria-labelledby="incomingcalls-tab"
-            >
-              <br />
-              <RequestTable />
-            </div>
-            <div
-              className="tab-pane "
-              id="outgoingcalls"
-              role="tabpanel"
-              aria-labelledby="outgoingcalls-tab"
-            >
-              <br />
-              <ResponseTable />
-            </div>
-            <div
-              className="tab-pane "
               id="logs"
               role="tabpanel"
               aria-labelledby="logs-tab"
