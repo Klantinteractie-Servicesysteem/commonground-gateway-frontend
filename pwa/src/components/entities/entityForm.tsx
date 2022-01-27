@@ -29,7 +29,7 @@ export const EntityForm:React.FC<EntityFormProps> = ({ id }) => {
   React.useEffect(() => {
     handleSetSources()
     id && handleSetEntity()
-  }, [API])
+  }, [API, id])
 
   const handleSetSources = () => {
     setShowSpinner(true)

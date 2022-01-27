@@ -37,7 +37,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
-  React.useEffect(() => { id && handleSetApplications() }, [API])
+  React.useEffect(() => { id && handleSetApplications() }, [API, id])
 
   const handleSetApplications = () => {
     setShowSpinner(true)

@@ -30,7 +30,7 @@ export const SourceForm:React.FC<SourceFormProps> = ({ id }) => {
   const API: APIService = React.useContext(APIContext)
   const title:string = id ? "Edit Source" : "Create Source";
 
-  React.useEffect(() => { id && handleSetSource() }, [API])
+  React.useEffect(() => { id && handleSetSource() }, [API, id])
 
   const handleSetSource = () => {
     setShowSpinner(true)
