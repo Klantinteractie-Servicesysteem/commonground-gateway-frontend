@@ -17,6 +17,7 @@ import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import { navigate } from "gatsby-link";
+import APIContext from "../../apiService/apiContext";
 
 interface SourceFormProps {
   id: string,
@@ -26,16 +27,10 @@ export const SourceForm:React.FC<SourceFormProps> = ({ id }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
-  const [API, setAPI] = React.useState<APIService>(null);
+  const API: APIService = React.useContext(APIContext)
   const title:string = id ? "Edit Source" : "Create Source";
 
-  React.useEffect(() => {
-    if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
-    } else {
-      id && handleSetSource()
-    }
-  }, [id, API])
+  React.useEffect(() => { id && handleSetSource() }, [API, id])
 
   const handleSetSource = () => {
     setShowSpinner(true)

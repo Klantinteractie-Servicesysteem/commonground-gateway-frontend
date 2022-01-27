@@ -13,8 +13,9 @@ import {
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import APIService from "../../apiService/apiService";
 import ElementCreationNew from "../common/elementCreationNew";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface IApplication {
   name: string,
@@ -33,16 +34,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [API, setAPI] = React.useState<APIService>(null)
+  const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
-  React.useEffect(() => {
-    if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
-    } else {
-      id && handleSetApplications()
-    }
-  }, [id, API])
+  React.useEffect(() => { id && handleSetApplications() }, [API, id])
 
   const handleSetApplications = () => {
     setShowSpinner(true)
