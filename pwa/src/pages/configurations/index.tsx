@@ -1,6 +1,7 @@
+import { Card } from "@conductionnl/nl-design-system";
 import * as React from "react"
 import Layout from "../../components/common/layout";
-import ConfigurationsTable from "../../components/configurations/configurationsTable";
+import ConfigurationsExportButton from "../../components/configurations_export_button/ConfigurationsExportButton";
 
 const IndexPage = () => {
   return (
@@ -9,7 +10,19 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <ConfigurationsTable/>
+              <Card
+                title={"Configurations"}
+                cardHeader={() => <></>}
+                cardBody={function () {
+                  return (
+                    <div className="row">
+                      <div className="col-12">
+                        <ConfigurationsExportButton/>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
             </div>
           </div>
         </div>
