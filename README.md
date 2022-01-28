@@ -36,9 +36,9 @@ After your dev environment has successfully set up your dev environment, navigat
 
 ## Publishing your prototype to the internet.
 
-The Gatsby version of the application has built-in support for GitHub pages, meaning you can build your application into a static website and publish it as a GitHub page. The skeleton repository comes with a build-in GitHub action for publishing itself as a GitHub page. Your prototype will be automatically published to GitHub pages when pushed to the repository.
+The Gatsby version of the application has built-in support for GitHub pages, meaning you can build your application into a static website and publish it as a GitHub page. The repository comes with a built-in GitHub action for publishing itself as a GitHub page. Your prototype will be automatically published to GitHub pages when pushed to the repository.
 
-You need to activate GitHub pages on your repository for this to work. Go to your repository's settings, go to pages, select `gh-pages` as a source, and save (if you do not see a `gh-pages` branch, you can create one by pushing to main).
+You need to activate GitHub pages on your repository for this deployment to work. Go to your repository's settings, go to pages, select `gh-pages` as a source, and save (if you do not see a `gh-pages` branch, you can create one by pushing to main).
 
 After saving, wait for GitHub to publish your project and provide you with a link you can share for your demo. Keep in mind that all pushes to main will result in updates to your online demo environment from this point on.
 
