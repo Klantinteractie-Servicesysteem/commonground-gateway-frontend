@@ -1,108 +1,78 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {GenericInputComponent, Accordion, SelectInputComponent} from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
-import {Card} from "@conductionnl/nl-design-system/lib/Card/src/card";
+import {GenericInputComponent, Accordion, SelectInputComponent, Alert, Card} from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import FlashMessage from 'react-flash-message';
+import validator from 'validator';
 
 interface ObjectEntityFormProps {
-  id: string,
+  entity_objectId: string,
   entityId: string,
 }
-export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId }) => {
-
-  const [context, setContext] = React.useState(null);
-  const [objectEntity, setObjectEntity] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
-  const [applications, setApplications] = React.useState(null);
+export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_objectId, entityId }) => {
+  const [entity_object, setEntity_object] = React.useState<any>(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
+  const [applications, setApplications] = React.useState<any>(null);
   const [objectValues, setObjectValues] = React.useState(null);
-  const title:string = (id === "new") ? "Create Object entities" : "Edit Object entities"
+  const API: APIService = React.useContext(APIContext)
+  const title:string = entity_objectId ? "Edit Entity objects" : "Create Entity objects";
+
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else {
-      if (isLoggedIn()) {
-        if (id !== 'new') {
-          getObjectEntity();
-        }
-        getApplications();
-        getObjectValues();
-      }
-    }
-  }, [context]);
+    entity_objectId && handleSetEntity_object()
+    handleSetApplications()
+  }, [API, entity_objectId])
 
-  const getObjectEntity = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/object_entities/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data.id !== undefined) {
-          setObjectEntity(data);
-        } else if (data['hydra:description'] !== undefined) {
-          setAlert(null);
-          setAlert({type: 'danger', message: data['hydra:description']});
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+  const handleSetEntity_object = () => {
+    setShowSpinner(true)
 
-  const getApplications = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/applications`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setApplications(data["hydra:member"]);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+    API.Entity_objects.getOne(entity_objectId)
+      .then((res) => { setEntity_object(res.data) })
+      .catch((err) => { throw new Error ('GET entity object error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
+  }
 
-  const getObjectValues = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/values`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setObjectValues(data["hydra:member"]);
-        }
+  const handleSetApplications = () => {
+    setShowSpinner(true)
+
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(res.data)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+      .catch((err) => {
+        throw new Error('GET applications error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
+
+  // const getObjectValues = () => {
+  //   setShowSpinner(true);
+  //   fetch(`${context.adminUrl}/values`, {
+  //     credentials: "include",
+  //     headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setShowSpinner(false);
+  //       if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+  //         setObjectValues(data["hydra:member"]);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setShowSpinner(false);
+  //       console.error("Error:", error);
+  //       setAlert(null);
+  //       setAlert({type: 'danger', message: error.message});
+  //     });
+  // };
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
@@ -136,44 +106,59 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["uri"]])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
+      return;
+    } else if (!validator.isURL(body["uri"])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Uri is invalid'});
+      setShowSpinner(false);
       return;
     }
 
-    let url = `${context.adminUrl}/object_entities`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!entity_objectId) { // unset id means we're creating a new entry
+      API.Entity_objects.create(body)
+        .then((res) => {
+          setEntity_object(res.data)
+          navigate(`/entities/${entityId}`)
+        })
+        .catch((err) => {
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Create Entity object error: ' + err)
+        })
     }
 
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setObjectEntity(data);
-        method === 'POST' && navigate(`/entities/${entityId}`)
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
+    if (entity_objectId) { // set id means we're updating a existing entry
+      API.Entity_objects.update(body, entity_objectId)
+        .then((res) => {
+          setEntity_object(res.data)
+          navigate(`/entities/${entityId}`)
+        })
+        .catch((err) => {
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Update Entity object error: ' + err)
+        })
+    }
   };
 
   return (
+    <div>
+    {
+      alert !== null &&
+    <FlashMessage duration={5000}>
+      <Alert alertClass={alert.type} body={function () {
+        return (<>{alert.message}</>)
+      }}/>
+    </FlashMessage>
+}
     <form id="dataForm" onSubmit={saveObjectEntity}>
       <Card
         title={title}
         cardHeader={function () {
           return (
             <>
-              <Link className="utrecht-link" to={"/sources"}>
+              <Link className="utrecht-link" to={`/entities/${entityId}`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2"/>
                   Back
@@ -204,7 +189,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                             type={"text"}
                             name={"uri"}
                             id={"uriInput"}
-                            data={objectEntity && objectEntity.uri && objectEntity.uri}
+                            data={entity_object && entity_object.uri && entity_object.uri}
                             nameOverride={"Uri"}
                             required={true}
                           />
@@ -216,7 +201,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                             type={"text"}
                             name={"externalId"}
                             id={"externalIdInput"}
-                            data={objectEntity && objectEntity.externalId && objectEntity.externalId}
+                            data={entity_object && entity_object.externalId && entity_object.externalId}
                             nameOverride={"External Id"}
                           />
                         </div>
@@ -229,12 +214,12 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                           {
                             applications !== null && applications.length > 0 ? (
                               <>
-                                {objectEntity !== null &&
-                                objectEntity.application !== undefined &&
-                                objectEntity.application !== null ? (
+                                {entity_object !== null &&
+                                entity_object.application !== undefined &&
+                                entity_object.application !== null ? (
                                     <SelectInputComponent
                                       options={applications}
-                                      data={objectEntity.application.name}
+                                      data={entity_object.application.name}
                                       name={"application"} id={"applicationInput"} nameOverride={"Application"}
                                       value={"/admin/applications/"}/>
                                   )
@@ -258,7 +243,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                           type={"text"}
                           name={"organization"}
                           id={"organizationInput"}
-                          data={objectEntity && objectEntity.organization && objectEntity.organization}
+                          data={entity_object && entity_object.organization && entity_object.organization}
                           nameOverride={"Organization"}
                         />
                       </div>
@@ -270,32 +255,21 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                           type={"text"}
                           name={"owner"}
                           id={"ownerInput"}
-                          data={objectEntity && objectEntity.owner && objectEntity.owner}
+                          data={entity_object && entity_object.owner && entity_object.owner}
                           nameOverride={"Owner"}
                         />
                       </div>
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"entity"}
-                          id={"entityInput"}
-                          data={objectEntity && objectEntity.entity && objectEntity.entity}
-                          nameOverride={"Entity"}
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
                       <div className="col-6">
                         <div className="form-group">
                           {
                             objectValues !== null && objectValues.length > 0 ? (
                               <>
-                                {objectEntity !== null &&
-                                objectEntity.objectValues !== undefined &&
-                                objectEntity.objectValues !== null ? (
+                                {entity_object !== null &&
+                                entity_object.objectValues !== undefined &&
+                                entity_object.objectValues !== null ? (
                                     <SelectInputComponent
                                       options={objectValues}
-                                      data={objectEntity.objectValues.name}
+                                      data={entity_object.objectValues.name}
                                       name={"objectValues"} id={"objectValuesInput"} nameOverride={"Object Values"}
                                       value={"/admin/values/"}/>
                                   )
@@ -314,17 +288,20 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                             )}
                         </div>
                       </div>
+                    </div>
+                    <br />
+                    <div className="row">
                       <div className="col-6">
                         <div className="form-group">
                           {
                             objectValues !== null && objectValues.length > 0 ? (
                               <>
-                                {objectEntity !== null &&
-                                objectEntity.subresourceOf !== undefined &&
-                                objectEntity.subresourceOf !== null ? (
+                                {entity_object !== null &&
+                                entity_object.subresourceOf !== undefined &&
+                                entity_object.subresourceOf !== null ? (
                                     <SelectInputComponent
                                       options={objectValues}
-                                      data={objectEntity.subresourceOf.name}
+                                      data={entity_object.subresourceOf.name}
                                       name={"subresourceOf"} id={"subresourceOfInput"} nameOverride={"Subresource Of"}
                                       value={"/admin/values/"}/>
                                   )
@@ -357,7 +334,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                                 <ElementCreationNew
                                   id="errors"
                                   label="Errors"
-                                  data={objectEntity?.errors}
+                                  data={entity_object?.errors}
                                 />
                               </>
                             );
@@ -372,7 +349,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                                 <ElementCreationNew
                                   id="promises"
                                   label="Promises"
-                                  data={objectEntity?.promises}
+                                  data={entity_object?.promises}
                                 />
                               </>
                             );
@@ -387,7 +364,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
                                 <ElementCreationNew
                                   id="externalResult"
                                   label="External Result"
-                                  data={objectEntity?.externalResult}
+                                  data={entity_object?.externalResult}
                                 />
                               </>
                             );
@@ -403,6 +380,7 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ id, entityId 
         }}
       />
     </form>
+    </div>
   );
 }
   export default ObjectEntityForm
