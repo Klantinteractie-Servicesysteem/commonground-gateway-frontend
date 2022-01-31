@@ -43,7 +43,7 @@ export default function EntitiesTable() {
               <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/objects/new">
+            <Link to="/entities/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2"/>
                 Create
@@ -85,7 +85,7 @@ export default function EntitiesTable() {
                       headerName: "Edit ",
                       renderCell: (item) => {
                         return (
-                          <Link to={`/objects/${item.id}`}>
+                          <Link to={`/entities/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>
                               Edit
