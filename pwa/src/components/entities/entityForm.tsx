@@ -167,7 +167,7 @@ export const EntityForm:React.FC<EntityFormProps> = ({ id }) => {
                         </div>
                         <div className="col-6">
                             <GenericInputComponent type={"text"} name={"route"} id={"routeInput"}
-                                                   data={entity && entity.route && entity.route} nameOverride={"Route"}/>
+                                                   data={entity && entity.route && entity.route} nameOverride={"Path"}/>
                         </div>
                       </div>
                       <div className="row">
@@ -223,4 +223,3 @@ export const EntityForm:React.FC<EntityFormProps> = ({ id }) => {
   );
 }
   export default EntityForm
-
