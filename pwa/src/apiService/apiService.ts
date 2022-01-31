@@ -3,6 +3,7 @@ import Application from './resources/application';
 import Attribute from './resources/attribute';
 import Source from './resources/source';
 import Entity from './resources/entity';
+import Entity_objects from "./resources/entity_objects";
 
 export default class APIService {
   private _jwtToken: string;
@@ -26,4 +27,5 @@ export default class APIService {
   public get Attribute (): Attribute { return new Attribute(this.axiosClient) }
   public get Source (): Source { return new Source(this.axiosClient) }
   public get Entity (): Entity { return new Entity(this.axiosClient) }
+  public get Entity_objects (): Entity_objects { return new Entity_objects(this.axiosClient) }
 }
