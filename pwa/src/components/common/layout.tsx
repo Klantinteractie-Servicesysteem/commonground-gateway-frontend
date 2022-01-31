@@ -1,5 +1,5 @@
 import * as React from "react";
-import Footer from "./footer";
+import Footer from './../footer/footer'
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
