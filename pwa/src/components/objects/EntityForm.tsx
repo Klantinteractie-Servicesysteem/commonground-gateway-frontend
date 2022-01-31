@@ -19,7 +19,7 @@ interface EntityFormProps {
   id: string,
 }
 
-export const ObjectForm: React.FC<EntityFormProps> = ({id}) => {
+export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
@@ -242,5 +242,5 @@ export const ObjectForm: React.FC<EntityFormProps> = ({id}) => {
     </>
   );
 }
-export default ObjectForm
+export default EntityForm
 
