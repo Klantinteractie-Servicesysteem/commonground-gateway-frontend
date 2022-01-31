@@ -180,7 +180,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         <Card title={title}
               cardHeader={function () {
                 return (<>
-                  <Link className="utrecht-link" to={`/entities/${entityId}`}>
+                  <Link className="utrecht-link" to={`/objects/${entityId}`}>
                     <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                       <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                     </button>
