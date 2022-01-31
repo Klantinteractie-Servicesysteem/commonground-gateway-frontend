@@ -10,11 +10,6 @@
     height: auto;
 }
 
-.utrecht-page-footer {
-    margin-top: auto;
-
-}
-
 .utrecht-button {
     padding: .65rem 1.4rem;
     font-size: 14px;
@@ -137,11 +132,6 @@ a:hover {
     border: 1px solid #ced4da !important;
     border-radius: .25rem !important;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
-}
-
-/* Footer has no border-top var yes */
-.utrecht-page-footer {
-    border-top: 1px solid #eee;
 }
 
 /* Logo height */
