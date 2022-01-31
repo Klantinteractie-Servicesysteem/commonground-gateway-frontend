@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import EntitiesTable from "../../components/entities/entitiesTable";
+import ObjectsTable from "../../components/objects/objectsTable";
 
 const IndexPage = () => {
   return (
@@ -10,7 +10,7 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <EntitiesTable/>
+              <ObjectsTable/>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import DataTable from "../../components/object_entities/dataTable";
-import EntityForm from "../../components/entities/entityForm";
+import ObjectForm from "../../components/objects/objectForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
@@ -52,7 +52,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br/>
-                <EntityForm {...{id}}/>
+                <ObjectForm {...{id}}/>
               </div>
               <div
                 className="tab-pane"
