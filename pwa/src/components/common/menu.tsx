@@ -44,7 +44,7 @@ export default function MainMenu() {
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
-                    <Link to={"/objects"} className="utrecht-topnav__link">
+                    <Link to={"/entities"} className="utrecht-topnav__link">
                       Objects
                     </Link>
                   </li>
