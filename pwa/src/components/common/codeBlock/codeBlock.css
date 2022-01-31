@@ -1,0 +1,12 @@
+.codeblock-pre-color-xml {
+    color: green;
+}
+
+.codeblock-pre-color-json {
+    color: orange;
+}
+
+.codeblock-style {
+    background-color: 'black';
+    overflow-wrap: 'break-word';
+}

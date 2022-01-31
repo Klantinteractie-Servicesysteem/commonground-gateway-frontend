@@ -1,10 +1,11 @@
 import * as React from "react";
 import './logTable.css';
 import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
+
 import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
 import logsArray from '../../../dummy_data/logs';
-import CodeBlock from '../../common/codeBlock';
+import CodeBlock from '../../common/codeBlock/codeBlock';
 import { navigate, Link } from 'gatsby';
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
