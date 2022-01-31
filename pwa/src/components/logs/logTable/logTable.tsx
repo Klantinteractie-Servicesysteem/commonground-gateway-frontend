@@ -95,6 +95,15 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                     <Table
                       columns={[
                         {
+                          headerName: "Status",
+                          field: "responseStatusCode",
+                          renderCell: (item) => {
+                            return (
+                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
+                            );
+                          },
+                        },
+                        {
                           headerName: "Type",
                           field: "type",
                           renderCell: (item) => {
@@ -112,15 +121,6 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                           field: "responseTime",
                         },
                         {
-                          headerName: "Status",
-                          field: "responseStatusCode",
-                          renderCell: (item) => {
-                            return (
-                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
-                            );
-                          },
-                        },
-                        {
                           field: "id",
                           headerName: " ",
                           renderCell: (item) => {
@@ -135,7 +135,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                                     ""
                                   )}`}
                                 >
-                                  More info
+                                  View log
                                 </button>
                               </div>
                             );
@@ -194,6 +194,10 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                   >
                     <table className="mt-3 logTable-table">
                       <tr>
+                        <th>Status</th>
+                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
+                      </tr>
+                      <tr>
                         <th >Type</th>
                         <td>{log?.type === 'in' ? 'Incoming' : 'Outcoming'}</td>
                       </tr>
@@ -211,7 +215,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                       </tr>
                       <tr>
                         <th>Status</th>
-                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
+                        <td>
                       </tr>
                     </table>
 
@@ -331,7 +335,7 @@ interface StatusCodeProps {
 
 const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
   return (
-    <span>{message} {code} <i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i></span>
+    <span><i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i> {code} {'(' + message + ')'}  </span>
   );
 }
 
