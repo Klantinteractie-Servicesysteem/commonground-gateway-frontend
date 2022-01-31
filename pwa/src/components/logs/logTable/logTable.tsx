@@ -1,7 +1,6 @@
 import * as React from "react";
 import './logTable.css';
-import { Table, Modal, Spinner, Card, Alert, Tabs } from "@conductionnl/nl-design-system/lib";
-import { Accordion } from './accordion';
+import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
 import logsArray from '../../../dummy_data/logs';
