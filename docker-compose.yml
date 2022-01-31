@@ -25,6 +25,9 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - APP_REPRO=example
+      - APP_ENV = prod
+      - APP_DEBUG=0
+      - APP_CACHE=true
     ports:
       - "82:80"
 
