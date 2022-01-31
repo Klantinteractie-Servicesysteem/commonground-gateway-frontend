@@ -1,7 +1,7 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import DataTable from "../../components/object_entities/dataTable";
+import {DataTable} from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";
@@ -9,15 +9,6 @@ import RequestTable from "../../components/logs/requestTable";
 
 const IndexPage = (props) => {
   const id: string = props.params.id === "new" ? null : props.params.id
-  const [context, setContext] = React.useState(null);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    }
-  }, [context]);
 
   return (
     <Layout title={"Object"} subtext={"Create or modify your entity"}>

@@ -1,65 +1,35 @@
 import * as React from "react";
-import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
-export default function DataTable({ id }) {
-  const [data, setData] = React.useState(null);
-  const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+interface Entity_objectsTableProps {
+  id: string,
+}
 
+export const DataTable:React.FC<Entity_objectsTableProps> = ({ id }) => {
+  const [entity_objects, setEntity_objects] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getData();
-    }
-  }, [context]);
+  React.useEffect(() => { id && handleSetEntity_objects() }, [API, id])
 
-  const getData = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/object_entities/?entity.id=${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setAlert(null);
-          setAlert({ type: 'danger', message: response.statusText });
-          throw new Error(response.statusText);
-        }
+  const handleSetEntity_objects = () => {
+    setShowSpinner(true)
+    API.Entity_objects.getAllFromEntity(id)
+      .then((res) => {
+        setEntity_objects(res.data)
       })
-      .then((data) => {
-        setShowSpinner(false);
-        // console.log('Object entities:', data);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setData(data["hydra:member"]);
-        }
+      .catch((err) => {
+        throw new Error ('GET objects from entity error: ' + err)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
-  };
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
   return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
     <Card
       title={"Object entities"}
       cardHeader={function () {
@@ -73,7 +43,7 @@ export default function DataTable({ id }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getData}>
+            <a className="utrecht-link" onClick={handleSetEntity_objects}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -92,7 +62,7 @@ export default function DataTable({ id }) {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : data ? (
+              ) : entity_objects ? (
                 <Table
                   columns={[
                     {
@@ -118,7 +88,7 @@ export default function DataTable({ id }) {
                       },
                     },
                   ]}
-                  rows={data}
+                  rows={entity_objects}
                 />
               ) : (
                 <Table
@@ -132,7 +102,7 @@ export default function DataTable({ id }) {
                       field: "owner",
                     },
                   ]}
-                  rows={[{uri: 'No results found'}]}
+                  rows={[]}
                 />
               )}
             </div>
