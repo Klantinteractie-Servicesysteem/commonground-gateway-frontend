@@ -1,44 +1,47 @@
 import * as React from "react";
 import './footer.css';
-import { Link } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  layoutClassName?: string
+}
+
+const Footer: React.FC<FooterProps> = ({layoutClassName}) => {
   return (
-    <footer className="footer">
+    <footer className={`footer ${layoutClassName}`}>
       <div className="container">
         <ul className="footer-list">
           <li>
-            <Link to="https://conductionnl.github.io/commonground-gateway/" target="_blank">
+            <a href="https://conductionnl.github.io/commonground-gateway/" target="_blank">
               About
-            </Link>
+            </a>
           </li>
 
           <li>
-            <Link to="https://commonground-gateway.readthedocs.io/en/latest" target="_blank">
+            <a href="https://commonground-gateway.readthedocs.io/en/latest" target="_blank">
               Docs
-            </Link>
+            </a>
           </li>
 
           <li>
-            <Link to="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md" target="_blank">
+            <a href="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md" target="_blank">
               License
-            </Link>
+            </a>
           </li>
 
           <li>
-            <Link to="https://github.com/ConductionNL/commonground-gateway/" target="_blank">
+            <a href="https://github.com/ConductionNL/commonground-gateway/" target="_blank">
               Code
-            </Link>
+            </a>
           </li>
         </ul>
 
         <ul className="footer-list">
           <li>
-            <Link to="https://conduction.nl" target="_blank">
+            <a href="https://conduction.nl" target="_blank">
               Code with <FontAwesomeIcon className="footer-list-itemIcon--red" icon={faHeart} /> by Conduction
-            </Link>
+            </a>
           </li>
         </ul>
       </div>
