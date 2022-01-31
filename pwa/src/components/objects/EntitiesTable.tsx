@@ -4,7 +4,7 @@ import {Link} from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-export default function ObjectsTable() {
+export default function EntitiesTable() {
   const [entities, setEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
