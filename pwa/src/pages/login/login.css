@@ -1,0 +1,69 @@
+:root {
+    --footer-height: 54px;
+}
+
+.login {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1269db;
+}
+
+.login > .login-container {
+    top: calc(var(--footer-height) * 2 * -1);
+    position: relative;
+    max-width: 700px;
+}
+
+.login > .login-container > .login-form {
+    display: flex;
+    padding: 32px;
+    margin-top: 32px;
+    border-radius: 10px;
+    flex-direction: column;
+    background-color: white;
+}
+
+.login > .login-container > .login-form > .login-form-error {
+    color: red;
+}
+
+.login > .login-container > .login-form > *:not(:first-child) {
+    margin-top: 16px;
+}
+
+.login > .login-container > .login-form > button,
+.login > .login-container > .login-form > input {
+    height: 52px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0, .2);
+}
+
+.login > .login-container > .login-form > input {
+    background-color: #fefefe;
+}
+
+.login > .login-container > .login-form > button {
+    color: white;
+    background-color: #1269db;
+}
+
+.login > .login-container > .login-form > button[disabled],
+.login > .login-container > .login-form > button:hover {
+    opacity: .8;
+}
+
+.login h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.login > .login-footer {
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+}
