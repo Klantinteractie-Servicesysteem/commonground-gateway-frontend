@@ -4,7 +4,7 @@ import {Link} from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-export default function EntitiesTable() {
+export default function ObjectsTable() {
   const [entities, setEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
@@ -43,7 +43,7 @@ export default function EntitiesTable() {
               <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/entities/new">
+            <Link to="/objects/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2"/>
                 Create
@@ -85,7 +85,7 @@ export default function EntitiesTable() {
                       headerName: "Edit ",
                       renderCell: (item) => {
                         return (
-                          <Link to={`/entities/${item.id}`}>
+                          <Link to={`/objects/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>
                               Edit
