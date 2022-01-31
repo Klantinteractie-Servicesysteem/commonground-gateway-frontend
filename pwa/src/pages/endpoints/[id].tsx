@@ -38,11 +38,7 @@ const IndexPage = (props) => {
                 />
               ) : (
                 <Tabs
-                  items={[{ name: "Overview", id: "overview", active: true },
-                    {
-                      name: "Logs",
-                      id: "logs",
-                    }]}
+                  items={[{ name: "Overview", id: "overview", active: true }]}
                 />
               )}
             </div>
