@@ -19,7 +19,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
-  const [objectValues, setObjectValues] = React.useState(null);
   const API: APIService = React.useContext(APIContext)
   const title:string = entity_objectId ? "Edit Entity objects" : "Create Entity objects";
 
