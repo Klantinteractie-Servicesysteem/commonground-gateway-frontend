@@ -1,0 +1,29 @@
+.footer {
+    padding: 16px 0;
+    margin-top: auto;
+    background-color: white;
+    border-top: 1px solid #eee;
+}
+
+.footer > :first-child {
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer .footer-list {
+    margin: 0;
+    display: inline;
+    list-style-type: none;
+}
+
+.footer .footer-list > li {
+    display: inline;
+}
+
+.footer .footer-list > li:not(:last-child) {
+    margin-right: 16px;
+}
+
+.footer-list-itemIcon--red {
+    color: red;
+}
