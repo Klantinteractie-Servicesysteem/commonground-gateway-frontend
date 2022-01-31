@@ -1,6 +1,8 @@
 import * as React from "react";
 import './footer.css';
 import { Link } from "gatsby";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Footer: React.FC = () => {
   return (
@@ -35,7 +37,7 @@ const Footer: React.FC = () => {
         <ul className="footer-list">
           <li>
             <Link to="https://conduction.nl" target="_blank">
-              Code with love by Conduction
+              Code with <FontAwesomeIcon className="footer-list-itemIcon--red" icon={faHeart} /> by Conduction
             </Link>
           </li>
         </ul>
