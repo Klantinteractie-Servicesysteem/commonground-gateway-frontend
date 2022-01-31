@@ -6,6 +6,8 @@ import FlashMessage from 'react-flash-message';
 import logsArray from '../../../dummy_data/logs';
 import CodeBlock from '../../common/codeBlock';
 import { navigate, Link } from 'gatsby';
+import APIService from "../../../apiService/apiService";
+import APIContext from "../../../apiService/apiContext";
 
 interface LogTableProps {
   id?: string | null;
@@ -13,49 +15,20 @@ interface LogTableProps {
 }
 
 export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) => {
-  const [context, setContext] = React.useState(null);
   const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getLogs();
-    }
-  }, [context]);
+  React.useEffect(() => { handleSetLogs() }, [API, id]);
 
-  const getLogs = () => {
-    setShowSpinner(true);
-    let url = '/logs?order[dateCreated]=desc';
-    if (id !== null && query !== null) {
-      url = `/logs?${query}=${id}&order[dateCreated]=desc`
-    } else if (id !== null) {
-      url = `/logs?entity.id=${id}&order[dateCreated]=desc`
-    }
-    fetch(context.adminUrl + url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        console.log(data);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setLogs(data["hydra:member"]);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
+  const handleSetLogs = () => {
+    setShowSpinner(true)
+
+    API.Log.getAllFromEntity(id)
+      .then((res) => { setLogs(res.data) })
+      .catch((err) => { throw new Error ('GET logs error: ' + err) })
+      .finally(() => { setShowSpinner(false) })
   };
 
   return (
@@ -79,7 +52,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) =
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <a className="utrecht-link" onClick={getLogs}>
+              <a className="utrecht-link" onClick={handleSetLogs}>
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
