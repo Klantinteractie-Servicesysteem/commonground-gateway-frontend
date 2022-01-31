@@ -53,27 +53,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
       })
   }
 
-  // const getObjectValues = () => {
-  //   setShowSpinner(true);
-  //   fetch(`${context.adminUrl}/values`, {
-  //     credentials: "include",
-  //     headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setShowSpinner(false);
-  //       if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-  //         setObjectValues(data["hydra:member"]);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setShowSpinner(false);
-  //       console.error("Error:", error);
-  //       setAlert(null);
-  //       setAlert({type: 'danger', message: error.message});
-  //     });
-  // };
-
   const saveObjectEntity = (event) => {
     event.preventDefault();
     setShowSpinner(true);
@@ -93,10 +72,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
         : null,
       owner: event.target.owner.value ? event.target.owner.value : null,
       entity: `/admin/entities/${entityId}`,
-      objectValues: event.target.objectValues.value
-        ? event.target.objectValues.value
-        : null,
-      subresourceOf: event.target.subresourceOf.value ? event.target.subresourceOf.value : null,
       errors,
       promises,
       externalResult,
@@ -258,67 +233,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
                           data={entity_object && entity_object.owner && entity_object.owner}
                           nameOverride={"Owner"}
                         />
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectValues !== null && objectValues.length > 0 ? (
-                              <>
-                                {entity_object !== null &&
-                                entity_object.objectValues !== undefined &&
-                                entity_object.objectValues !== null ? (
-                                    <SelectInputComponent
-                                      options={objectValues}
-                                      data={entity_object.objectValues.name}
-                                      name={"objectValues"} id={"objectValuesInput"} nameOverride={"Object Values"}
-                                      value={"/admin/values/"}/>
-                                  )
-                                  : (
-                                    <SelectInputComponent
-                                      options={objectValues}
-                                      name={"objectValues"} id={"objectValuesInput"} nameOverride={"Object Values"}
-                                      value={"/admin/values/"}/>
-                                  )}
-                              </>
-                            ) : (
-                              <SelectInputComponent
-                                options={[{name: "Please create Object Values.", value: null}]}
-                                name={"objectValues"} id={"objectValuesInput"} nameOverride={"Object Values"}
-                              />
-                            )}
-                        </div>
-                      </div>
-                    </div>
-                    <br />
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          {
-                            objectValues !== null && objectValues.length > 0 ? (
-                              <>
-                                {entity_object !== null &&
-                                entity_object.subresourceOf !== undefined &&
-                                entity_object.subresourceOf !== null ? (
-                                    <SelectInputComponent
-                                      options={objectValues}
-                                      data={entity_object.subresourceOf.name}
-                                      name={"subresourceOf"} id={"subresourceOfInput"} nameOverride={"Subresource Of"}
-                                      value={"/admin/values/"}/>
-                                  )
-                                  : (
-                                    <SelectInputComponent
-                                      options={objectValues}
-                                      name={"subresourceOf"} id={"subresourceOfInput"} nameOverride={"Subresource Of"}
-                                      value={"/admin/values/"}/>
-                                  )}
-                              </>
-                            ) : (
-                              <SelectInputComponent
-                                options={[{name: "Please create Object Values.", value: null}]}
-                                name={"subresourceOf"} id={"subresourceOfInput"} nameOverride={"Subresource Of"}
-                              />
-                            )}
-                        </div>
                       </div>
                     </div>
 
