@@ -93,7 +93,7 @@ export default function UsersTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/users/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/users/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

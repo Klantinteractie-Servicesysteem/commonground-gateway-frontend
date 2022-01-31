@@ -66,7 +66,7 @@ export default function SourcesTable() {
                     headerName: " ",
                     renderCell: (item: { id: string }) => {
                       return (
-                        <Link to={`/sources/${item.id}`}>
+                        <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
                           <button className="utrecht-button btn-sm btn-success"><i className="fas fa-edit pr-1" />Edit</button>
                         </Link>
                       );
