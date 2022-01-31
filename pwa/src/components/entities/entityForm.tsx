@@ -92,11 +92,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
       API.Entity.create(body)
         .then((res) => {
           setEntity(res.data)
-          navigate('/objects')
+          navigate('/entities')
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Create object error: ' + err)
+          throw new Error('Create entity error: ' + err)
         })
     }
 
@@ -104,11 +104,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
       API.Entity.update(body, id)
         .then((res) => {
           setEntity(res.data)
-          navigate('/objects')
+          navigate('/entities')
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Update object error: ' + err)
+          throw new Error('Update entity error: ' + err)
         })
     }
   }
@@ -128,7 +128,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
               cardHeader={function () {
                 return (
                   <div>
-                    <Link className="utrecht-link" to={"/objects"}>
+                    <Link className="utrecht-link" to={"/entities"}>
                       <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                         <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                       </button>
