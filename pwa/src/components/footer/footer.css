@@ -23,3 +23,7 @@
 .footer .footer-list > li:not(:last-child) {
     margin-right: 16px;
 }
+
+.footer-list-itemIcon--red {
+    color: red;
+}
