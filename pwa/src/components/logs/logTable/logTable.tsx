@@ -1,17 +1,19 @@
 import * as React from "react";
 import './logTable.css';
-import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
+import { Table, Modal, Spinner, Card, Alert, Tabs } from "@conductionnl/nl-design-system/lib";
+import { Accordion } from './accordion';
 import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
 import logsArray from '../../../dummy_data/logs';
-import JsonCode from '../../common/jsonCode';
+import CodeBlock from '../../common/codeBlock';
+import { navigate, Link } from 'gatsby';
 
 interface LogTableProps {
   id?: string | null;
   query?: string | null;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) => {
+export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) => {
   const [context, setContext] = React.useState(null);
   const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -214,8 +216,15 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                         <td>{log?.routeName}</td>
                       </tr>
                       <tr>
-                        <th>Status</th>
+                        <th>Endpoint</th>
                         <td>
+                          <Link to={'/endpoints/' + log?.id} type="button" data-bs-dismiss="modal" aria-label="Close"
+                            onClick={() => {
+                              navigate('/endpoints/' + log?.id);
+                            }}
+                          >{log?.endpoint?.name}
+                          </Link>
+                        </td>
                       </tr>
                     </table>
 
@@ -238,17 +247,17 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                     role="tabpanel"
                     aria-labelledby="logRequest-tab"
                   >
-                    <table style={{ width: "100%" }} className="mt-3">
+                    <table className="mt-3 logTable-table">
                       <tr>
-                        <th style={{ width: "30%" }}>Method</th>
+                        <th>Method</th>
                         <td>{log?.requestMethod}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Path info</th>
+                        <th>Path info</th>
                         <td>{log?.requestPathInfo}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Languages</th>
+                        <th>Languages</th>
                         <td>{log?.requestLanguages}</td>
                       </tr>
                     </table>
@@ -279,11 +288,12 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                             return (<>
                               {log.requestContent
                                 ?
-                                <JsonCode body={log.requestContent} />
+                                <CodeBlock body={log.requestContent} />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
-                          }
+                          },
+                          backgroundColor: 'black'
                         }]}
                     />
                   </div>
@@ -311,11 +321,12 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                           render: function () {
                             return (<>
                               {log.responseContent ?
-                                <JsonCode body={log.responseContent} />
+                                <CodeBlock body={log.responseContent} />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
-                          }
+                          },
+                          backgroundColor: 'black'
                         }]}
                     />
                   </div>

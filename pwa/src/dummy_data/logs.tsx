@@ -11,5 +11,9 @@ export default [
         requestPathInfo: '/api/weer',
         requestLanguages: "content type?",
         responseContent: "{'test': 'abc'}",
-        requestContent: "{'test': 'abc'}"
+        requestContent: "{'test': 'abc'}",
+        endpoint: {
+            id: '123',
+            name: 'Fake endpoint'
+        }
     }];
