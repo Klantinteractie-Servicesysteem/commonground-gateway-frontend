@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import EntitiesTable from "../../components/objects/EntitiesTable";
+import EntitiesTable from "../../components/entities/EntitiesTable";
 
 const IndexPage = () => {
   return (
