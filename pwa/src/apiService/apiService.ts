@@ -39,8 +39,8 @@ export default class APIService {
   public get Attribute (): Attribute { return new Attribute(this.adminClient) }
   public get Source (): Source { return new Source(this.adminClient) }
   public get Entity (): Entity { return new Entity(this.adminClient) }
+  public get Log (): Log { return new Log(this.adminClient) }
 
   // Services
   public get Login (): Login { return new Login(this.apiClient) }
-  public get Log (): Log { return new Log(this.axiosClient) }
 }
