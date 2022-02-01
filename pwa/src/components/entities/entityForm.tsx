@@ -90,25 +90,29 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
     if (!entityId) { // unset id means we're creating a new entry
       API.Entity.create(body)
-        .then((res) => {
-          setEntity(res.data)
+        .then(() => {
           navigate('/entities')
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Create entity error: ' + err)
         })
+        .finally(() => {
+          setShowSpinner(false);
+        })
     }
 
     if (entityId) { // set id means we're updating a existing entry
       API.Entity.update(body, entityId)
         .then((res) => {
-          setEntity(res.data)
-          navigate('/entities')
+          setEntity(res.data);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Update entity error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
   }
