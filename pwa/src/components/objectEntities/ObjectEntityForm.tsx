@@ -93,22 +93,16 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     }
 
     if (!objectEntityId) { // unset id means we're creating a new entry
-      API.Application.create(body)
-        .then((res) => {
-          setApplication(res.data)
-          navigate('/applications')
-        })
-        .catch((err) => {
-          setAlert({ type: 'danger', message: err.message });
-          throw new Error ('Create application error: ' + err)
-        })
       API.ObjectEntity.create(body)
-        .then((res))
-      navigate(`/entities/${entityId}`)
-
+        .then(() => {
+          navigate(`/entities/${entityId}`)
+        })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('CREATE object entity error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false)
         })
     }
 
@@ -120,6 +114,9 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('UPDATE object entity error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false)
         })
     }
   }
@@ -168,7 +165,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                         <div className="col-6">
                           <div className="form-group">
                             <GenericInputComponent
-                              type="url"
+                              type={"url"}
                               name={"uri"}
                               id={"uriInput"}
                               data={objectEntity && objectEntity.uri && objectEntity.uri}
