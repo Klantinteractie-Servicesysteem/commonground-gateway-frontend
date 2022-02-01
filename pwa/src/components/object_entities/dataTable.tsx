@@ -78,7 +78,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/object_entities/${item.id}/${entityId}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
