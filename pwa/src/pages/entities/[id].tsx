@@ -1,7 +1,7 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import {DataTable} from "../../components/object_entities/dataTable";
+import DataTable from "../../components/object_entities/dataTable";
 import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ResponseTable from "../../components/logs/responseTable";

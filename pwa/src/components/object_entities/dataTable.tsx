@@ -8,7 +8,7 @@ interface EntityObjectsTableProps {
   entityId: string,
 }
 
-export const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
+const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
   const [entity_objects, setEntity_objects] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -112,3 +112,5 @@ export const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
     /></>
   );
 }
+
+export default DataTable
