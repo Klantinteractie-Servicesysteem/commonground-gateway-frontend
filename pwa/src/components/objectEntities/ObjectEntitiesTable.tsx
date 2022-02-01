@@ -1,65 +1,35 @@
 import * as React from "react";
-import { Table, Card, Alert, Spinner } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
-export default function DataTable({ id }) {
-  const [data, setData] = React.useState(null);
-  const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+interface ObjectEntitiesTableProps {
+  entityId: string,
+}
 
+const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
+  const [objectEntities, setObjectEntities] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getData();
-    }
-  }, [context]);
+  React.useEffect(() => { entityId && handleSetObjectEntities() }, [API, entityId])
 
-  const getData = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/object_entities/?entity.id=${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setAlert(null);
-          setAlert({ type: 'danger', message: response.statusText });
-          throw new Error(response.statusText);
-        }
+  const handleSetObjectEntities = () => {
+    setShowSpinner(true)
+    API.ObjectEntity.getAllFromEntity(entityId)
+      .then((res) => {
+        setObjectEntities(res.data)
       })
-      .then((data) => {
-        setShowSpinner(false);
-        // console.log('Object entities:', data);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setData(data["hydra:member"]);
-        }
+      .catch((err) => {
+        throw new Error ('GET object entities error: ' + err)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
-  };
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
   return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
     <Card
       title={"Object entities"}
       cardHeader={function () {
@@ -73,11 +43,11 @@ export default function DataTable({ id }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getData}>
+            <a className="utrecht-link" onClick={handleSetObjectEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/object_entities/new/${id}`}>
+            <Link to={`/object_entities/new/${entityId}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -92,7 +62,7 @@ export default function DataTable({ id }) {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : data ? (
+              ) : objectEntities ? (
                 <Table
                   columns={[
                     {
@@ -108,7 +78,7 @@ export default function DataTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/object_entities/${item.id}/${id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${entityId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -118,7 +88,7 @@ export default function DataTable({ id }) {
                       },
                     },
                   ]}
-                  rows={data}
+                  rows={objectEntities}
                 />
               ) : (
                 <Table
@@ -132,7 +102,7 @@ export default function DataTable({ id }) {
                       field: "owner",
                     },
                   ]}
-                  rows={[{uri: 'No results found'}]}
+                  rows={[]}
                 />
               )}
             </div>
@@ -142,3 +112,5 @@ export default function DataTable({ id }) {
     /></>
   );
 }
+
+export default ObjectEntitiesTable
