@@ -2,16 +2,16 @@ import * as React from "react";
 import './codeBlock.css';
 
 interface CodeBlockProps {
-  body: any,
+  code: any,
   type?: string | null
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ body = null, type = 'json' }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code = null, type = 'json' }) => {
 
   return (
     <pre className="codeblock-pre">
       <code id="responseContent" className={"language-" + (type && type + ' ' + 'codeblock-pre-color-' + type)}>
-        {body}
+        {code}
       </code>
     </pre>
   );

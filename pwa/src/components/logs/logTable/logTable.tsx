@@ -266,7 +266,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) =
                             return (<>
                               {log.requestContent
                                 ?
-                                <CodeBlock body={log.requestContent} />
+                                <CodeBlock code={log.requestContent} />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
@@ -299,7 +299,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) =
                           render: function () {
                             return (<>
                               {log.responseContent ?
-                                <CodeBlock body={log.responseContent} />
+                                <CodeBlock code={log.responseContent} />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
