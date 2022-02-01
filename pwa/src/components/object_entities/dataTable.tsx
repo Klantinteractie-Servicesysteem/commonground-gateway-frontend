@@ -5,19 +5,19 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 interface EntityObjectsTableProps {
-  id: string,
+  entityId: string,
 }
 
-export const DataTable:React.FC<EntityObjectsTableProps> = ({ id }) => {
+export const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
   const [entity_objects, setEntity_objects] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { id && handleSetEntity_objects() }, [API, id])
+  React.useEffect(() => { entityId && handleSetEntity_objects() }, [API, entityId])
 
   const handleSetEntity_objects = () => {
     setShowSpinner(true)
-    API.Entity_objects.getAllFromEntity(id)
+    API.Entity_objects.getAllFromEntity(entityId)
       .then((res) => {
         setEntity_objects(res.data)
       })
@@ -47,7 +47,7 @@ export const DataTable:React.FC<EntityObjectsTableProps> = ({ id }) => {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/object_entities/new/${id}`}>
+            <Link to={`/object_entities/new/${entityId}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -78,7 +78,7 @@ export const DataTable:React.FC<EntityObjectsTableProps> = ({ id }) => {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/object_entities/${item.id}/${id}`}>
+                          <Link to={`/object_entities/${item.id}/${entityId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
