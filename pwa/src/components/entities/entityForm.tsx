@@ -100,7 +100,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
     if (id) { // set id means we're updating a existing entry
       API.Entity.update(body, id)
         .then((res) => {
-          setEntity(res.data)
+          setEntity(res.data);
+          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});

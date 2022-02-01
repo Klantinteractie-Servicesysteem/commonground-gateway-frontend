@@ -166,7 +166,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
     if (attributeId) { // set id means we're updating a existing entry
       API.Attribute.update(body, attributeId)
         .then((res) => {
-          setAttribute(res.data)
+          setAttribute(res.data);
+          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});

@@ -104,7 +104,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     if (id) { // set id means we're updating a existing entry
       API.Source.update(body, id)
         .then((res) => {
-          setSource(res.data)
+          setSource(res.data);
+          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});

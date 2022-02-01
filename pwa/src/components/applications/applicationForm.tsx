@@ -96,7 +96,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (id) { // set id means we're updating a existing entry
       API.Application.update(body, id)
         .then((res) => {
-          setApplication(res.data)
+          setApplication(res.data);
+          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
