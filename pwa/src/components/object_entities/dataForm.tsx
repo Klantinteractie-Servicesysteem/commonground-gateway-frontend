@@ -94,7 +94,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
     if (!entity_objectId) { // unset id means we're creating a new entry
       API.Entity_objects.create(body)
         .then((res) => {
-          setEntity_object(res.data)
           navigate(`/entities/${entityId}`)
         })
         .catch((err) => {
@@ -107,7 +106,6 @@ export const ObjectEntityForm:React.FC<ObjectEntityFormProps> = ({ entity_object
       API.Entity_objects.update(body, entity_objectId)
         .then((res) => {
           setEntity_object(res.data)
-          navigate(`/entities/${entityId}`)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
