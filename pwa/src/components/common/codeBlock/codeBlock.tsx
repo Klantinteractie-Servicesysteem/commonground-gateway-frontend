@@ -9,8 +9,8 @@ interface CodeBlockProps {
 export const CodeBlock: React.FC<CodeBlockProps> = ({ code = null, type = 'json' }) => {
 
   return (
-    <pre className="codeblock-pre">
-      <code id="responseContent" className={"language-" + (type && type + ' ' + 'codeblock-pre-color-' + type)}>
+    <pre className="codeBlock">
+      <code id="responseContent" className={"language-" + (type && type + ' ' + 'codeBlock-pre-color-' + type)}>
         {code}
       </code>
     </pre>
