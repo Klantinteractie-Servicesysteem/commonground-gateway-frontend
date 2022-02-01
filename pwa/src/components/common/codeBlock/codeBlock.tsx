@@ -10,7 +10,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code = null, type = 'json'
 
   return (
     <pre className="codeBlock">
-      <code id="responseContent" className={"language-" + (type && type + ' ' + 'codeBlock-pre-color-' + type)}>
+      <code id={"codeBlock--" + type} className={"language-" + (type && type + ' ' + 'codeBlock-code--' + type)}>
         {code}
       </code>
     </pre>

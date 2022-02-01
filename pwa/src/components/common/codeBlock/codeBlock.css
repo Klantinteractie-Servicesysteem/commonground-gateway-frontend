@@ -1,8 +1,8 @@
-.codeBlock-pre-color-xml {
+.codeBlock-code--xml {
     color: green;
 }
 
-.codeBlock-pre-color-json {
+.codeBlock-code--json {
     color: orange;
 }
 
