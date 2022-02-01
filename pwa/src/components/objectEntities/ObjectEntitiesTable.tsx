@@ -78,7 +78,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${entityId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
