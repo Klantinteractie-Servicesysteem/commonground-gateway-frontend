@@ -3,7 +3,7 @@ import Layout from "../../../components/common/layout";
 import ObjectEntityForm from "../../../components/object_entities/dataForm";
 
 const IndexPage = (props) => {
-  const entity_objectId: string = props.params.id === "new" ? null : props.params.id
+  const entityObjectId: string = props.params.id === "new" ? null : props.params.id
   const entityId: string = props.params.entity === "new" ? null : props.params.entity
 
   return (
@@ -11,7 +11,7 @@ const IndexPage = (props) => {
       <main>
         <div className="row">
           <div className="col-12">
-            <ObjectEntityForm {...{entity_objectId, entityId}} />
+            <ObjectEntityForm {...{entityObjectId, entityId}} />
           </div>
         </div>
       </main>
