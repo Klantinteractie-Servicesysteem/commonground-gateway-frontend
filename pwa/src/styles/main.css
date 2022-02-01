@@ -23,6 +23,14 @@
     border: 1px solid transparent;
 }
 
+.utrecht-button:disabled {
+    opacity: .8;
+}
+
+.utrecht-button:disabled:hover {
+    cursor: not-allowed;
+}
+
 .utrecht-card {
     border-radius: 5px !important;
     background-color: #ffffff !important;
