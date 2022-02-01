@@ -13,9 +13,9 @@ export const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { entityId && handleSetEntity_objects() }, [API, entityId])
+  React.useEffect(() => { entityId && handleSetEntityObjects() }, [API, entityId])
 
-  const handleSetEntity_objects = () => {
+  const handleSetEntityObjects = () => {
     setShowSpinner(true)
     API.Entity_objects.getAllFromEntity(entityId)
       .then((res) => {
@@ -43,7 +43,7 @@ export const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={handleSetEntity_objects}>
+            <a className="utrecht-link" onClick={handleSetEntityObjects}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
