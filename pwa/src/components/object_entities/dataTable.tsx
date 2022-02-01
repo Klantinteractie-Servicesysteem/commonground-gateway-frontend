@@ -4,11 +4,11 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-interface Entity_objectsTableProps {
+interface EntityObjectsTableProps {
   id: string,
 }
 
-export const DataTable:React.FC<Entity_objectsTableProps> = ({ id }) => {
+export const DataTable:React.FC<EntityObjectsTableProps> = ({ id }) => {
   const [entity_objects, setEntity_objects] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
