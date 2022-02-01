@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios"
 
-export default class Endpoints {
+export default class Endpoint {
   private _instance: AxiosInstance
 
   constructor (_instance: AxiosInstance) {
