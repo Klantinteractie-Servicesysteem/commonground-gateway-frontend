@@ -7,13 +7,14 @@ import CodeBlock from '../../common/codeBlock/codeBlock';
 import { navigate, Link } from 'gatsby';
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface LogTableProps {
   id?: string | null;
-  query?: string | null;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) => {
+export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
   const [logs, setLogs] = React.useState(logsArray);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
@@ -323,8 +324,12 @@ interface StatusCodeProps {
 }
 
 const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
+
+  let statusColor: string;
+  code > 199 && code < 300 ? statusColor = 'green' : statusColor = 'red';
+
   return (
-    <span><i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i> {code} {'(' + message + ')'}  </span>
+    <span><FontAwesomeIcon className={`logTable-statusCode--${statusColor}`} icon={faCircle} />{`${code} (${message})`}</span>
   );
 }
 
