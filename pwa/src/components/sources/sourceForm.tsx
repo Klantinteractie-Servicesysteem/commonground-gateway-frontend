@@ -18,6 +18,7 @@ import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
+import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
   id: string,
@@ -380,7 +381,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                               title: "Headers",
                               id: "headersAccordion",
                               render: function () {
-                                return <ElementCreationNew id="headers" label="Headers" data={source?.headers}
+                                return <MultiDimensionalArrayInput
+                                  id="headers" label="Headers"
+                                  data={source && source.headers ? [{
+                                    key: 'headers',
+                                    value: source.headers
+                                  }] : null}
                                 />
                               }
                             },
@@ -398,14 +404,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                                   return <ElementCreationNew id="paths" label="Paths" data={source?.paths}/>
                                 }
                               },
-                              {
-                                title: "Translation config",
-                                id: "translationConfigAccordion",
-                                render: function () {
-                                  return <ElementCreationNew id="translationConfig" label="Translation Config"
-                                                             data={source?.translationConfig}/>
-                                }
-                              }
                             ]}
                           />
                         </>
