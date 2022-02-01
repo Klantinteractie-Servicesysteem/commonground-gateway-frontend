@@ -1,14 +1,14 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
-import DataTable from "../../components/object_entities/dataTable";
+import ObjectEntitiesTable from "../../components/objectEntities/ObjectEntitiesTable";
 import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import ResponseTable from "../../components/logs/responseTable";
-import RequestTable from "../../components/logs/requestTable";
+import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const entityId: string = props.params.id === "new" ? null : props.params.id
+  const entityId: string = props.params.id === "new" ? null : props.params.id;
+  const id: string = entityId;
 
   return (
     <Layout title={"Object"} subtext={"Create or modify your object"}>
@@ -25,8 +25,7 @@ const IndexPage = (props) => {
                       id: "attributes",
                     },
                     {name: "Data", id: "data"},
-                    {name: "Incoming calls", id: "request"},
-                    {name: "Outgoing calls", id: "response"},
+                    {name: "Logs", id: "logs"}
                   ]}
                 />
               ) : (
@@ -61,25 +60,16 @@ const IndexPage = (props) => {
                 aria-labelledby="data-tab"
               >
                 <br/>
-                <DataTable {...{entityId}}/>
+                <ObjectEntitiesTable {...{entityId}}/>
               </div>
               <div
                 className="tab-pane"
-                id="response"
+                id="logs"
                 role="tabpanel"
-                aria-labelledby="response-tab"
+                aria-labelledby="logs-tab"
               >
                 <br/>
-                <ResponseTable {...{entityId}}/>
-              </div>
-              <div
-                className="tab-pane"
-                id="request"
-                role="tabpanel"
-                aria-labelledby="request-tab"
-              >
-                <br/>
-                <RequestTable {...{entityId}}/>
+                <LogTable {...{id}}/>
               </div>
             </div>
           </div>
