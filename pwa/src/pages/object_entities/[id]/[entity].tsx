@@ -1,9 +1,9 @@
 import * as React from "react"
 import Layout from "../../../components/common/layout";
-import ObjectEntityForm from "../../../components/object_entities/dataForm";
+import ObjectEntityForm from "../../../components/objectEntities/ObjectEntityForm";
 
 const IndexPage = (props) => {
-  const entityObjectId: string = props.params.id === "new" ? null : props.params.id
+  const objectEntityId: string = props.params.id === "new" ? null : props.params.id
   const entityId: string = props.params.entity === "new" ? null : props.params.entity
 
   return (
@@ -11,7 +11,7 @@ const IndexPage = (props) => {
       <main>
         <div className="row">
           <div className="col-12">
-            <ObjectEntityForm {...{entityObjectId, entityId}} />
+            <ObjectEntityForm {...{objectEntityId, entityId}} />
           </div>
         </div>
       </main>

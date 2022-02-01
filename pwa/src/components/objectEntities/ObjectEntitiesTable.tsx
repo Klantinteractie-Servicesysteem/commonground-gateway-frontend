@@ -4,25 +4,25 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-interface EntityObjectsTableProps {
+interface ObjectEntitiesTableProps {
   entityId: string,
 }
 
-const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
-  const [entityObject, setEntityObject] = React.useState(null);
+const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
+  const [objectEntities, setObjectEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { entityId && handleSetEntityObjects() }, [API, entityId])
+  React.useEffect(() => { entityId && handleSetObjectEntities() }, [API, entityId])
 
-  const handleSetEntityObjects = () => {
+  const handleSetObjectEntities = () => {
     setShowSpinner(true)
-    API.Entity_objects.getAllFromEntity(entityId)
+    API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        setEntityObject(res.data)
+        setObjectEntities(res.data)
       })
       .catch((err) => {
-        throw new Error ('GET objects from entity error: ' + err)
+        throw new Error ('GET object entities error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
@@ -43,7 +43,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={handleSetEntityObjects}>
+            <a className="utrecht-link" onClick={handleSetObjectEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -62,7 +62,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : entityObject ? (
+              ) : objectEntities ? (
                 <Table
                   columns={[
                     {
@@ -88,7 +88,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
                       },
                     },
                   ]}
-                  rows={entityObject}
+                  rows={objectEntities}
                 />
               ) : (
                 <Table
@@ -113,4 +113,4 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
   );
 }
 
-export default DataTable
+export default ObjectEntitiesTable

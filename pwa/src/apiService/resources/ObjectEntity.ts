@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios"
 
-export default class Entity_objects {
+export default class ObjectEntity {
   private _instance: AxiosInstance
 
   constructor (_instance: AxiosInstance) {
