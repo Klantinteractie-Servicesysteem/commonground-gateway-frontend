@@ -1,8 +1,6 @@
 import * as React from "react";
 import './logTable.css';
 import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
-
-import { isLoggedIn } from "../../../services/auth";
 import FlashMessage from 'react-flash-message';
 import logsArray from '../../../dummy_data/logs';
 import CodeBlock from '../../common/codeBlock/codeBlock';
@@ -26,10 +24,17 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query = null }) =
   const handleSetLogs = () => {
     setShowSpinner(true)
 
-    API.Log.getAllFromEntity(id)
-      .then((res) => { setLogs(res.data) })
-      .catch((err) => { throw new Error ('GET logs error: ' + err) })
-      .finally(() => { setShowSpinner(false) })
+    if (id !== null) {
+      API.Log.getAllFromEntity(id)
+        .then((res) => { setLogs(res.data) })
+        .catch((err) => { throw new Error('GET logs for entity error: ' + err) })
+        .finally(() => { setShowSpinner(false) });
+    } else {
+      API.Log.getAll()
+        .then((res) => { setLogs(res.data) })
+        .catch((err) => { throw new Error('GET logs error: ' + err) })
+        .finally(() => { setShowSpinner(false) });
+    }
   };
 
   return (
