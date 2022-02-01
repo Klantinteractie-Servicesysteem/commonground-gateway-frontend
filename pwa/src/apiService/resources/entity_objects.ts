@@ -7,10 +7,6 @@ export default class Entity_objects {
     this._instance = _instance
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get(`/object_entities`)
-  }
-
   public getOne = (id: string): Promise<AxiosResponse> => {
     return this._instance.get(`/object_entities/${id}`)
   }
