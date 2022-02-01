@@ -3,7 +3,7 @@ import { Table, Card, Spinner, Modal, Alert, Tabs, Accordion } from "@conduction
 import { isLoggedIn } from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 
-export default function ResponseTable({ id = null }) {
+export default function ResponseTable({ entityId = null }) {
   const [context, setContext] = React.useState(null);
   const [responses, setResponse] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -22,8 +22,8 @@ export default function ResponseTable({ id = null }) {
   const getResponses = () => {
     setShowSpinner(true);
     let url = '/response_logs?order[dateCreated]=desc';
-    if (id !== null) {
-      url = `/response_logs?entity.id=${id}&order[dateCreated]=desc`;
+    if (entityId !== null) {
+      url = `/response_logs?entity.id=${entityId}&order[dateCreated]=desc`;
     }
     fetch(context.adminUrl + url, {
       headers: {

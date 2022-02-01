@@ -16,21 +16,21 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 interface EntityFormProps {
-  id: string,
+  entityId: string,
 }
 
-export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
+export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext)
-  const title: string = id ? "Edit Object" : "Create Object";
+  const title: string = entityId ? "Edit Object" : "Create Object";
 
   React.useEffect(() => {
     handleSetSources()
-    id && handleSetEntity()
-  }, [API, id])
+    entityId && handleSetEntity()
+  }, [API, entityId])
 
   const handleSetSources = () => {
     setShowSpinner(true)
@@ -50,7 +50,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
   const handleSetEntity = () => {
     setShowSpinner(true)
 
-    API.Entity.getOne(id)
+    API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data)
       })
@@ -88,7 +88,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!entityId) { // unset id means we're creating a new entry
       API.Entity.create(body)
         .then((res) => {
           setEntity(res.data)
@@ -100,8 +100,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({id}) => {
         })
     }
 
-    if (id) { // set id means we're updating a existing entry
-      API.Entity.update(body, id)
+    if (entityId) { // set id means we're updating a existing entry
+      API.Entity.update(body, entityId)
         .then((res) => {
           setEntity(res.data)
           navigate('/entities')

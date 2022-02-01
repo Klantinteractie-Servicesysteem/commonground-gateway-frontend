@@ -4,7 +4,7 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-export default function AttributeTable({ id }) {
+export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
@@ -13,7 +13,7 @@ export default function AttributeTable({ id }) {
 
   const handleSetAttributes = () => {
     setShowSpinner(true)
-    API.Attribute.getAllFromEntity(id)
+    API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
         setAttributes(res.data)
       })
@@ -43,7 +43,7 @@ export default function AttributeTable({ id }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${id}`}>
+            <Link to={`/attributes/new/${entityId}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -74,7 +74,7 @@ export default function AttributeTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/attributes/${item.id}/${id}`}>
+                          <Link to={`/attributes/${item.id}/${entityId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

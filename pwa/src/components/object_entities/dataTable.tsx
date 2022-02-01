@@ -9,7 +9,7 @@ interface EntityObjectsTableProps {
 }
 
 const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
-  const [entity_objects, setEntity_objects] = React.useState(null);
+  const [entityObject, setEntityObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
@@ -19,7 +19,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
     setShowSpinner(true)
     API.Entity_objects.getAllFromEntity(entityId)
       .then((res) => {
-        setEntity_objects(res.data)
+        setEntityObject(res.data)
       })
       .catch((err) => {
         throw new Error ('GET objects from entity error: ' + err)
@@ -62,7 +62,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : entity_objects ? (
+              ) : entityObject ? (
                 <Table
                   columns={[
                     {
@@ -88,7 +88,7 @@ const DataTable:React.FC<EntityObjectsTableProps> = ({ entityId }) => {
                       },
                     },
                   ]}
-                  rows={entity_objects}
+                  rows={entityObject}
                 />
               ) : (
                 <Table

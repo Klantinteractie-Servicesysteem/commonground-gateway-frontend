@@ -8,7 +8,7 @@ import ResponseTable from "../../components/logs/responseTable";
 import RequestTable from "../../components/logs/requestTable";
 
 const IndexPage = (props) => {
-  const id: string = props.params.id === "new" ? null : props.params.id
+  const entityId: string = props.params.id === "new" ? null : props.params.id
 
   return (
     <Layout title={"Object"} subtext={"Create or modify your object"}>
@@ -43,7 +43,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br/>
-                <EntityForm {...{id}}/>
+                <EntityForm {...{entityId}}/>
               </div>
               <div
                 className="tab-pane"
@@ -52,7 +52,7 @@ const IndexPage = (props) => {
                 aria-labelledby="attributes-tab"
               >
                 <br/>
-                <AttributeTable {...{id}}/>
+                <AttributeTable {...{entityId}}/>
               </div>
               <div
                 className="tab-pane"
@@ -61,7 +61,7 @@ const IndexPage = (props) => {
                 aria-labelledby="data-tab"
               >
                 <br/>
-                <DataTable {...{id}}/>
+                <DataTable {...{entityId}}/>
               </div>
               <div
                 className="tab-pane"
@@ -70,7 +70,7 @@ const IndexPage = (props) => {
                 aria-labelledby="response-tab"
               >
                 <br/>
-                <ResponseTable {...{id}}/>
+                <ResponseTable {...{entityId}}/>
               </div>
               <div
                 className="tab-pane"
@@ -79,7 +79,7 @@ const IndexPage = (props) => {
                 aria-labelledby="request-tab"
               >
                 <br/>
-                <RequestTable {...{id}}/>
+                <RequestTable {...{entityId}}/>
               </div>
             </div>
           </div>
