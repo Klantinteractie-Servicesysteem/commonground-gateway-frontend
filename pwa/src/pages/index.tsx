@@ -1,10 +1,20 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs } from "@conductionnl/nl-design-system/lib";
+import { Tabs, Modal } from "@conductionnl/nl-design-system/lib";
 import LogTable from "../components/logs/logTable/logTable";
 import { getUser, isLoggedIn } from "../services/auth";
 
 const IndexPage = () => {
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      let button = document.getElementById('welcomeModalButton');
+      if (button != null) {
+        button.click();
+      }
+    }
+  }, [])
+
   return (
 
     <Layout
@@ -42,6 +52,21 @@ const IndexPage = () => {
           </div>
         </>
       )}
+      <button
+        type="button"
+        className="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target={`#welkomModal`}
+        style={{ display: 'none' }}
+        id="welcomeModalButton"
+      >
+        More info
+      </button>
+      <Modal title={'Welkom'} id='welkomModal' body={() => {
+        return <>
+          Welkom op de gateway ui!
+        </>
+      }} />
     </Layout >
   );
 };
