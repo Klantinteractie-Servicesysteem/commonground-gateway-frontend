@@ -86,10 +86,15 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
 
     if (!id) { // unset id means we're creating a new entry
       API.Application.create(body)
-      navigate('/applications')
+        .then(() => {
+          navigate('/applications')
+        })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Create application error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
 
@@ -97,11 +102,13 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
       API.Application.update(body, id)
         .then((res) => {
           setApplication(res.data);
-          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Update application error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
   };

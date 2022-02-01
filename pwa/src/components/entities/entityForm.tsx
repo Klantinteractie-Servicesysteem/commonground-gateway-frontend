@@ -90,10 +90,15 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
     if (!entityId) { // unset id means we're creating a new entry
       API.Entity.create(body)
-      navigate('/entities')
+        .then(() => {
+          navigate('/entities')
+        })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Create entity error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
 
@@ -101,11 +106,13 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
       API.Entity.update(body, entityId)
         .then((res) => {
           setEntity(res.data);
-          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Update entity error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
   }

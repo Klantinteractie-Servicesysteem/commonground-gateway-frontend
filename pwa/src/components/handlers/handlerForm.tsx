@@ -170,16 +170,17 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setHandler(data)
         method === 'POST' && navigate(`/endpoints/${endpointId}`)
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
-      });
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      })
   };
 
   return (<>

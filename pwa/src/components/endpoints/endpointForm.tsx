@@ -113,16 +113,17 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
-      });
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      })
   };
 
   return (<>

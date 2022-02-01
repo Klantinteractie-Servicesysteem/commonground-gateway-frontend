@@ -94,10 +94,15 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
     if (!id) { // unset id means we're creating a new entry
       API.Source.create(body)
-      navigate('/sources')
+        .then(() => {
+          navigate('/sources');
+        })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Create source error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
 
@@ -105,11 +110,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
       API.Source.update(body, id)
         .then((res) => {
           setSource(res.data);
-          setShowSpinner(false);
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
           throw new Error('Update source error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
   };

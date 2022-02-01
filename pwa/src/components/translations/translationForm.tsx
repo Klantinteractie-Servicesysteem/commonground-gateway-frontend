@@ -51,16 +51,17 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setTranslation(data);
         method === 'POST' && navigate("/translations")
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
-      });
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      })
   }
 
   return (<>
