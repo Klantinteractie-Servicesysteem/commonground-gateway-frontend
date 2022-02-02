@@ -14,7 +14,6 @@ export default function ApplicationsTable() {
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [API, setAPI] = React.useState<APIService>(null);
-  const [overlay, setOverlay] = React.useState(false);
 
   React.useEffect(() => {
     if (!API) {

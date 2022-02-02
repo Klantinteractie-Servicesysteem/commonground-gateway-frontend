@@ -2,7 +2,6 @@ import * as React from "react";
 import "./infoOverlay.css";
 
 export enum VerticallyCentered {
-  centered = "modal-dialog-centered",
   scrollable = "modal-dialog-centered modal-dialog-scrollable",
 }
 
@@ -32,7 +31,6 @@ export const InfoOverlay: React.FC<InfoOverlayProps> = ({
   id,
   body,
   footer,
-  centered,
   size,
 }) => {
   return (
