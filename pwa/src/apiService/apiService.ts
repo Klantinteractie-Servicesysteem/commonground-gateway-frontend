@@ -3,6 +3,7 @@ import Application from './resources/application';
 import Attribute from './resources/attribute';
 import Source from './resources/source';
 import Entity from './resources/entity';
+import ObjectEntity from "./resources/ObjectEntity";
 import Login from './services/login';
 
 export default class APIService {
@@ -38,6 +39,7 @@ export default class APIService {
   public get Attribute (): Attribute { return new Attribute(this.adminClient) }
   public get Source (): Source { return new Source(this.adminClient) }
   public get Entity (): Entity { return new Entity(this.adminClient) }
+  public get ObjectEntity (): ObjectEntity { return new ObjectEntity(this.adminClient) }
 
   // Services
   public get Login (): Login { return new Login(this.apiClient) }

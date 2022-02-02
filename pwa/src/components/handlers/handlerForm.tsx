@@ -18,6 +18,7 @@ import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
+import {navigate} from "gatsby-link";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
@@ -144,7 +145,7 @@ export default function HandlerForm({id, endpointId}) {
       translationsIn,
       translationsOut
     };
-    
+
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
@@ -169,15 +170,17 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setHandler(data)
+        method === 'POST' && navigate(`/endpoints/${endpointId}`)
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
-      });
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      })
   };
 
   return (<>
