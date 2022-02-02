@@ -5,13 +5,14 @@ import LogTable from "../components/logs/logTable/logTable";
 import { getUser, isLoggedIn } from "../services/auth";
 import APIService from "../apiService/apiService";
 import APIContext from "../apiService/apiContext";
+import { Link } from 'gatsby';
 
 const IndexPage = () => {
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      let appCount = ApplicationsCount();
+      let appCount = 0;
       let button = document.getElementById('welcomeModalButton');
       if (button != null && appCount == 0) {
         button.click();
@@ -20,7 +21,7 @@ const IndexPage = () => {
   }, [API])
 
   const ApplicationsCount = () => {
-    API.Application.getAll()
+    API.Source.getAll()
       .then((res) => { return res.data.count() })
       .catch((err) => { throw new Error('GET applications error: ' + err) })
   };
@@ -72,9 +73,10 @@ const IndexPage = () => {
       >
         More info
       </button>
-      <Modal title={'Welcome'} id='welcomeModal' body={() => {
+      <Modal title={'Hello!'} id='welcomeModal' body={() => {
         return <>
-          <p>Welcome to the gateway user-interface!</p>
+          <p>Welcome to the gateway user-interface.</p>
+          <p>It seems you haven't created a application yet, would you like to <Link to='/applications/new'> create a application </Link> first or you can close this modal if you want to find things out yourself. </p>
         </>
       }} />
     </Layout >
