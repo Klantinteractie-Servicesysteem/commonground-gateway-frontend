@@ -6,7 +6,7 @@ interface CodeBlockProps {
   type?: 'json' | 'xml' | null
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ code = null, type = 'json' }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code, type = 'json' }) => {
 
   return (
     <pre className="codeBlock">
