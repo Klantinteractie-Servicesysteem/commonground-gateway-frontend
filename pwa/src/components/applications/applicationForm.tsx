@@ -34,6 +34,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
@@ -58,7 +59,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
 
   const saveApplication = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setSaveSpinner(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
 
@@ -80,7 +81,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["domains"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setSaveSpinner(false);
       return;
     }
 
@@ -94,7 +95,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Create application error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setSaveSpinner(false);
         })
     }
 
@@ -108,7 +109,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Update application error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setSaveSpinner(false);
         })
     }
   };
@@ -147,6 +148,13 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <div>
+                          {saveSpinner === true ? (
+                            <div className="overlay">
+                              <div className="overlay-content">
+                                <Spinner />
+                              </div>
+                            </div>
+                          ) : ( <div></div>)}
                           <div className="row">
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}

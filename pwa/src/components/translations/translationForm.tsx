@@ -17,6 +17,7 @@ interface TranslationFormProps {
 export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
   const title:string = (id === "new") ? "Create Translation" : "Edit Translation"
@@ -31,7 +32,7 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
 
   const saveTranslation = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setSaveSpinner(true);
 
     let body = {
       translationTable: id,
@@ -52,6 +53,7 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
       .then((response) => response.json())
       .then((data) => {
         setTranslation(data);
+
         method === 'POST' && navigate("/translations")
       })
       .catch((error) => {
@@ -60,7 +62,7 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
         setAlert({ type: 'danger', message: error.message });
       })
       .finally(() => {
-        setShowSpinner(false);
+        setSaveSpinner(false);
       })
   }
 
@@ -97,6 +99,13 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
                     <Spinner />
                   ) : (
                     <>
+                      {saveSpinner === true ? (
+                        <div className="overlay">
+                          <div className="overlay-content">
+                            <Spinner />
+                          </div>
+                        </div>
+                      ) : ( <div></div>)}
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">

@@ -26,6 +26,7 @@ interface SourceFormProps {
 export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
@@ -51,7 +52,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
   const saveSource = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setSaveSpinner(true);
 
     let headers = retrieveFormArrayAsOArray(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
@@ -88,7 +89,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setSaveSpinner(false);
       return;
     }
 
@@ -102,7 +103,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setSaveSpinner(false);
         })
     }
 
@@ -116,7 +117,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setSaveSpinner(false);
         })
     }
   };
@@ -157,6 +158,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <>
+                          {saveSpinner === true ? (
+                            <div className="overlay">
+                              <div className="overlay-content">
+                                <Spinner />
+                              </div>
+                            </div>
+                          ) : ( <div></div>)}
                           <div className="row">
                             <div className="col-6">
                               {source !== null && source.name !== null ? (

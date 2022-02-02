@@ -19,6 +19,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const title:string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
@@ -45,6 +46,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
       .then((data) => {
         setShowSpinner(false);
         setEndpoint(data);
+
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -78,7 +80,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
 
   const saveEndpoint = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setSaveSpinner(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -92,7 +94,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
     if (!checkValues([body["name"], body["type"], body["path"]])) {
       setAlert(null);
       setAlert({ type: 'danger', message: 'Required fields are empty' });
-      setShowSpinner(false);
+      setSaveSpinner(false);
       return;
     }
 
@@ -113,16 +115,19 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        setSaveSpinner(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
+
+        setSaveSpinner(false);
         console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       })
       .finally(() => {
-        setShowSpinner(false);
+        setSaveSpinner(false);
       })
   };
 
@@ -157,9 +162,16 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner />
+                        <Spinner />
                 ) : (
                   <div>
+                    {saveSpinner === true ? (
+                      <div className="overlay">
+                        <div className="overlay-content">
+                          <Spinner />
+                        </div>
+                      </div>
+                    ) : ( <div></div>)}
                     <div className="row">
                       <div className="col-6">
                           <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint && endpoint.name && endpoint.name}
@@ -170,6 +182,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
                                                  data={endpoint && endpoint.description && endpoint.description} nameOverride={"Description"} />
                       </div>
                     </div>
+
                     <br/>
                     <div className="row">
                       <div className="col-6">
@@ -232,7 +245,8 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
           );
         }}
       />
-    </form ></>
+    </form >
+    </>
   );
 }
 export default EndpointForm
