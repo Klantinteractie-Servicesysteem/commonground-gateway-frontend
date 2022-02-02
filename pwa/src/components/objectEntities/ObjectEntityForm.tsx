@@ -163,8 +163,8 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                   ) : (
                     <>
                       {saveSpinner === true ? (
-                        <div className="overlay">
-                          <div className="overlay-content">
+                        <div className="spinner-overlay">
+                          <div className="spinner-overlay-content">
                             <Spinner />
                           </div>
                         </div>

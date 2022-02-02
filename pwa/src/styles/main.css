@@ -220,7 +220,7 @@ a:hover {
     background: inherit !important;
 }
 
-.overlay {
+.spinner-overlay {
     height: 100%;
     width: 100%;
     display: block;
@@ -232,7 +232,7 @@ a:hover {
     background-color: rgba(0,0,0, .3);
 }
 
-.overlay-content {
+.spinner-overlay-content {
     position: relative;
     top: 25%;
     width: 100%;

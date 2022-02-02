@@ -216,8 +216,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                       ) : (
                         <div>
                           {saveSpinner === true ? (
-                            <div className="overlay">
-                              <div className="overlay-content">
+                            <div className="spinner-overlay">
+                              <div className="spinner-overlay-content">
                                 <Spinner />
                               </div>
                             </div>
