@@ -329,7 +329,7 @@ const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
   code > 199 && code < 300 ? statusColor = 'green' : statusColor = 'red';
 
   return (
-    <span><FontAwesomeIcon className={`logTable-statusCode--${statusColor}`} icon={faCircle} />{`${code} (${message})`}</span>
+    <span><FontAwesomeIcon className={`logTable-statusCode--${statusColor} mr-2`} icon={faCircle} />{`${code} (${message})`}</span>
   );
 }
 
