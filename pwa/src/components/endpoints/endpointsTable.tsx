@@ -99,7 +99,7 @@ export default function EndpointsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/endpoints/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
