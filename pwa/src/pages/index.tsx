@@ -3,17 +3,27 @@ import Layout from "../components/common/layout";
 import { Tabs, Modal } from "@conductionnl/nl-design-system/lib";
 import LogTable from "../components/logs/logTable/logTable";
 import { getUser, isLoggedIn } from "../services/auth";
+import APIService from "../apiService/apiService";
+import APIContext from "../apiService/apiContext";
 
 const IndexPage = () => {
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
+      let appCount = ApplicationsCount();
       let button = document.getElementById('welcomeModalButton');
-      if (button != null) {
+      if (button != null && appCount == 0) {
         button.click();
       }
     }
-  }, [])
+  }, [API])
+
+  const ApplicationsCount = () => {
+    API.Application.getAll()
+      .then((res) => { return res.data.count() })
+      .catch((err) => { throw new Error('GET applications error: ' + err) })
+  };
 
   return (
 
@@ -56,15 +66,15 @@ const IndexPage = () => {
         type="button"
         className="btn btn-primary"
         data-bs-toggle="modal"
-        data-bs-target={`#welkomModal`}
+        data-bs-target={`#welcomeModal`}
         style={{ display: 'none' }}
         id="welcomeModalButton"
       >
         More info
       </button>
-      <Modal title={'Welkom'} id='welkomModal' body={() => {
+      <Modal title={'Welcome'} id='welcomeModal' body={() => {
         return <>
-          Welkom op de gateway ui!
+          <p>Welcome to the gateway user-interface!</p>
         </>
       }} />
     </Layout >
