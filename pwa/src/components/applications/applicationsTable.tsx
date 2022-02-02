@@ -56,7 +56,7 @@ export default function ApplicationsTable() {
             </button>
 
             <InfoOverlay
-              title={"Help"}
+              title={"Help Overlay"}
               id="helpModal"
               body={() => {
                 return (
@@ -68,24 +68,6 @@ export default function ApplicationsTable() {
                 );
               }}
             />
-
-            {/* WORKING
-            <button
-              className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="test"
-              // onClick={handleSetOverlay}
-            >
-              <i className="fas fa-question mr-1" />
-              <span className="mr-2">Help</span>
-            </button>
-            <InfoOverlay
-              body={() => {
-                <h1>"Links go here"</h1>;
-              }}
-              title={"HELP"}
-              id={"test"}
-            /> */}
 
             <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
