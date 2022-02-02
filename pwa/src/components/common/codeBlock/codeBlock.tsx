@@ -3,7 +3,7 @@ import './codeBlock.css';
 
 interface CodeBlockProps {
   code: any,
-  type?: string | null
+  type?: 'json' | 'xml' | null
 }
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({ code = null, type = 'json' }) => {
