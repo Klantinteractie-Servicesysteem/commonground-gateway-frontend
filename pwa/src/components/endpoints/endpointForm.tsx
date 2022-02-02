@@ -46,7 +46,6 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
       .then((data) => {
         setShowSpinner(false);
         setEndpoint(data);
-
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -120,7 +119,6 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
-
         setSaveSpinner(false);
         console.error(error);
         setAlert(null);
@@ -162,7 +160,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                        <Spinner />
+                  <Spinner />
                 ) : (
                   <div>
                     {saveSpinner === true ? (
@@ -182,7 +180,6 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
                                                  data={endpoint && endpoint.description && endpoint.description} nameOverride={"Description"} />
                       </div>
                     </div>
-
                     <br/>
                     <div className="row">
                       <div className="col-6">
@@ -245,8 +242,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
           );
         }}
       />
-    </form >
-    </>
+    </form ></>
   );
 }
 export default EndpointForm

@@ -53,7 +53,6 @@ export const TranslationForm:React.FC<TranslationFormProps> = ({ id }) => {
       .then((response) => response.json())
       .then((data) => {
         setTranslation(data);
-
         method === 'POST' && navigate("/translations")
       })
       .catch((error) => {
