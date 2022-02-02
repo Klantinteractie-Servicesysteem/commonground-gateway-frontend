@@ -1,34 +1,42 @@
 import * as React from "react";
-import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
+import {
+  Card,
+  Table,
+  Spinner,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
+
+import { InfoOverlay } from "../../components/common/infoOverlay/infoOverlay";
 
 export default function ApplicationsTable() {
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [API, setAPI] = React.useState<APIService>(null)
+  const [API, setAPI] = React.useState<APIService>(null);
+  const [overlay, setOverlay] = React.useState(false);
 
   React.useEffect(() => {
     if (!API) {
-      setAPI(new APIService(sessionStorage.getItem('jwt')))
+      setAPI(new APIService(sessionStorage.getItem("jwt")));
     } else {
-      handleSetApplications()
+      handleSetApplications();
     }
-  }, [API])
+  }, [API]);
 
   const handleSetApplications = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Application.getAll()
       .then((res) => {
-        setApplications(res.data)
+        setApplications(res.data);
       })
-      .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
-      })
+      // .catch((err) => {
+      //   throw new Error("GET Applications error: " + err);
+      // })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
 
   return (
     <Card
@@ -37,13 +45,48 @@ export default function ApplicationsTable() {
         return (
           <>
             <button
+              type="button"
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target={`#helpModal`}
+              id="welcomeModalButton"
             >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+
+            <InfoOverlay
+              title={"Help"}
+              id="helpModal"
+              body={() => {
+                return (
+                  <>
+                    <ul>
+                      <li>Link to docs</li>
+                    </ul>
+                  </>
+                );
+              }}
+            />
+
+            {/* WORKING
+            <button
+              className="utrecht-link button-no-style"
+              data-toggle="modal"
+              data-target="test"
+              // onClick={handleSetOverlay}
+            >
+              <i className="fas fa-question mr-1" />
+              <span className="mr-2">Help</span>
+            </button>
+            <InfoOverlay
+              body={() => {
+                <h1>"Links go here"</h1>;
+              }}
+              title={"HELP"}
+              id={"test"}
+            /> */}
+
             <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
@@ -103,7 +146,7 @@ export default function ApplicationsTable() {
                       field: "description",
                     },
                   ]}
-                  rows={[{name: "No results found", description: " "}]}
+                  rows={[{ name: "No results found", description: " " }]}
                 />
               )}
             </div>

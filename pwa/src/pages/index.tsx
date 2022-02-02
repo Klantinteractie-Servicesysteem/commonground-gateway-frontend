@@ -1,15 +1,20 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs, GenericInputComponent, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
+import {
+  Tabs,
+  GenericInputComponent,
+  Spinner,
+  Alert,
+} from "@conductionnl/nl-design-system/lib";
 import ResponseTable from "../components/logs/responseTable";
 import RequestTable from "../components/logs/requestTable";
 import LogTable from "../components/logs/logTable/logTable";
 import { setUser, getUser, isLoggedIn } from "../services/auth";
 import { navigate } from "gatsby-link";
-import {
-  download,
-} from "../components/utility/DocumentDownload";
-import FlashMessage from 'react-flash-message';
+import { download } from "../components/utility/DocumentDownload";
+import FlashMessage from "react-flash-message";
+
+//
 
 const IndexPage = () => {
   const [context, setContext] = React.useState(null);
@@ -21,7 +26,7 @@ const IndexPage = () => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         apiUrl: process.env.GATSBY_API_URL,
-        adminUrl:process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
         frontendUrl: process.env.GATSBY_FRONTEND_URL,
       });
     }
@@ -53,9 +58,9 @@ const IndexPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.type === 'error') {
+        if (data.type === "error") {
           setAlert(null);
-          setAlert({ type: 'danger', message: data.message });
+          setAlert({ type: "danger", message: data.message });
         }
         setShowSpinner(false);
         let result = {
@@ -64,12 +69,13 @@ const IndexPage = () => {
         setUser(result);
         sessionStorage.setItem("jwt", data.jwtToken);
         sessionStorage.setItem("user", JSON.stringify(result));
-        navigate('/')
-      }).catch((error) => {
+        navigate("/");
+      })
+      .catch((error) => {
         setShowSpinner(false);
         console.log(error);
         setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({ type: "danger", message: error.message });
       });
   };
 
@@ -79,19 +85,20 @@ const IndexPage = () => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
-    }).then((response) => {
-      response.text().then(function (text) {
-        download("export.yaml", text, "text/yaml");
+    })
+      .then((response) => {
+        response.text().then(function (text) {
+          download("export.yaml", text, "text/yaml");
+        });
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+        setAlert(null);
+        setAlert({ type: "danger", message: error.message });
       });
-    }).catch((error) => {
-      console.log('Error:', error)
-      setAlert(null);
-      setAlert({ type: 'danger', message: error.message });
-    });
   };
 
   return (
-
     <Layout
       title={"Dashboard"}
       subtext={
@@ -100,12 +107,16 @@ const IndexPage = () => {
           : `Welcome to the gateway admin dashboard`
       }
     >
-      {
-        alert !== null &&
+      {alert !== null && (
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+          <Alert
+            alertClass={alert.type}
+            body={function () {
+              return <>{alert.message}</>;
+            }}
+          />
         </FlashMessage>
-      }
+      )}
       {isLoggedIn() && context !== null ? (
         <>
           <div className="page-top-item">
@@ -134,46 +145,51 @@ const IndexPage = () => {
         </>
       ) : (
         <form id="dataForm" onSubmit={login}>
-          {
-            showSpinner === true ?
-              <Spinner /> :
-              <>
-                <div className="row">
-                  <div className="col-4">
-                    <div className="form-group">
-                      <GenericInputComponent
-                        type={"text"}
-                        name={"username"}
-                        id={"usernameInput"}
-                        nameOverride={"Username"}
-                        required={true} />
-                    </div>
+          {showSpinner === true ? (
+            <Spinner />
+          ) : (
+            <>
+              <div className="row">
+                <div className="col-4">
+                  <div className="form-group">
+                    <GenericInputComponent
+                      type={"text"}
+                      name={"username"}
+                      id={"usernameInput"}
+                      nameOverride={"Username"}
+                      required={true}
+                    />
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-4">
-                    <div className="form-group">
-                      <GenericInputComponent
-                        type={"password"}
-                        name={"password"}
-                        id={"passwordInput"}
-                        nameOverride={"Password"}
-                        required={true}
-                        togglePassword={true}
-                        eyeLeft="92%"
-                        eyeTop="-27px" />
-                      <button type="submit" className="utrecht-link utrecht-button utrecht-button-sm btn-sm btn-primary">
-                        <i className="fas fa-sign-in-alt mr-2" />
-                        Login
-                      </button>
-                    </div>
+              </div>
+              <div className="row">
+                <div className="col-4">
+                  <div className="form-group">
+                    <GenericInputComponent
+                      type={"password"}
+                      name={"password"}
+                      id={"passwordInput"}
+                      nameOverride={"Password"}
+                      required={true}
+                      togglePassword={true}
+                      eyeLeft="92%"
+                      eyeTop="-27px"
+                    />
+                    <button
+                      type="submit"
+                      className="utrecht-link utrecht-button utrecht-button-sm btn-sm btn-primary"
+                    >
+                      <i className="fas fa-sign-in-alt mr-2" />
+                      Login
+                    </button>
                   </div>
                 </div>
-              </>
-          }
-        </form >
+              </div>
+            </>
+          )}
+        </form>
       )}
-    </Layout >
+    </Layout>
   );
 };
 

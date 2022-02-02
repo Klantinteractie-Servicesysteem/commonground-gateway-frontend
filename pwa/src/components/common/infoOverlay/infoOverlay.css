@@ -1,0 +1,19 @@
+.custom {
+    display: inline-block;
+    position: fixed;
+    width: 395px;
+    min-height: 100%;
+    right: 0;
+    top: 0;
+    transition-delay: 1000ms;
+    border-radius: 0;
+}
+
+/* .custom {
+    display: inline-block;
+    position: fixed;
+    width: 395px;
+    min-height: 100%;
+    right: 0;
+    top: 0;
+} */
