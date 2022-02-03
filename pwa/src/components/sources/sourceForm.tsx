@@ -18,6 +18,7 @@ import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface SourceFormProps {
   id: string,
@@ -26,7 +27,7 @@ interface SourceFormProps {
 export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
@@ -52,7 +53,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
   const saveSource = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let headers = retrieveFormArrayAsOArray(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
@@ -89,7 +90,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setSaveSpinner(false);
+      setOverlaySpinner(false);
       return;
     }
 
@@ -103,7 +104,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
 
@@ -117,7 +118,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
   };
@@ -158,13 +159,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <>
-                          {saveSpinner === true ? (
-                            <div className="spinner-overlay">
-                              <div className="spinner-overlay-content">
-                                <Spinner />
-                              </div>
-                            </div>
-                          ) : ( <div></div>)}
+                          {overlaySpinner && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               {source !== null && source.name !== null ? (

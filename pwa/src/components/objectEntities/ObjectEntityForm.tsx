@@ -8,6 +8,7 @@ import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import FlashMessage from 'react-flash-message';
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface ObjectEntityFormProps {
   objectEntityId: string,
@@ -18,7 +19,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
@@ -61,7 +62,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let errors = retrieveFormArrayAsOArray(event.target, "errors");
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
@@ -89,7 +90,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     if (!checkValues([body["uri"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setSaveSpinner(false);
+      setOverlaySpinner(false);
       return;
     }
 
@@ -103,7 +104,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           throw new Error('CREATE object entity error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false)
+          setOverlaySpinner(false)
         })
     }
 
@@ -117,7 +118,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           throw new Error('UPDATE object entity error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false)
+          setOverlaySpinner(false)
         })
     }
   }
@@ -162,13 +163,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                     <Spinner/>
                   ) : (
                     <>
-                      {saveSpinner === true ? (
-                        <div className="spinner-overlay">
-                          <div className="spinner-overlay-content">
-                            <Spinner />
-                          </div>
-                        </div>
-                      ) : ( <div></div>)}
+                      {overlaySpinner && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">

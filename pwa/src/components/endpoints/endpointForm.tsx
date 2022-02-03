@@ -8,6 +8,7 @@ import {
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface EndpointFormProps {
   id: string,
@@ -19,7 +20,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const title:string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
@@ -79,7 +80,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
 
   const saveEndpoint = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -93,7 +94,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
     if (!checkValues([body["name"], body["type"], body["path"]])) {
       setAlert(null);
       setAlert({ type: 'danger', message: 'Required fields are empty' });
-      setSaveSpinner(false);
+      setOverlaySpinner(false);
       return;
     }
 
@@ -114,18 +115,18 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setSaveSpinner(false);
+        setOverlaySpinner(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
-        setSaveSpinner(false);
+        setOverlaySpinner(false);
         console.error(error);
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       })
       .finally(() => {
-        setSaveSpinner(false);
+        setOverlaySpinner(false);
       })
   };
 
@@ -163,13 +164,7 @@ export const EndpointForm:React.FC<EndpointFormProps> = ({ id }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {saveSpinner === true ? (
-                      <div className="spinner-overlay">
-                        <div className="spinner-overlay-content">
-                          <Spinner />
-                        </div>
-                      </div>
-                    ) : ( <div></div>)}
+                    {overlaySpinner && <LoadingOverlay /> }
                     <div className="row">
                       <div className="col-6">
                           <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} data={endpoint && endpoint.name && endpoint.name}

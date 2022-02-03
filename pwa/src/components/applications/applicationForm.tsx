@@ -16,6 +16,7 @@ import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
 interface IApplication {
   name: string,
@@ -34,7 +35,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
@@ -59,7 +60,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
 
   const saveApplication = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
 
@@ -81,7 +82,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["domains"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setSaveSpinner(false);
+      setOverlaySpinner(false);
       return;
     }
 
@@ -95,7 +96,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Create application error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
 
@@ -109,7 +110,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Update application error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
   };
@@ -148,13 +149,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <div>
-                          {saveSpinner === true ? (
-                            <div className="spinner-overlay">
-                              <div className="spinner-overlay-content">
-                                <Spinner />
-                              </div>
-                            </div>
-                          ) : ( <div></div>)}
+                          {overlaySpinner && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}

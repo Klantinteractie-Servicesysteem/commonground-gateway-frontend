@@ -14,6 +14,7 @@ import FlashMessage from 'react-flash-message';
 import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface EntityFormProps {
   entityId: string,
@@ -24,7 +25,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object" : "Create Object";
 
@@ -65,7 +66,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
   const saveEntity = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -99,7 +100,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           throw new Error('Create entity error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
 
@@ -113,7 +114,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           throw new Error('Update entity error: ' + err)
         })
         .finally(() => {
-          setSaveSpinner(false);
+          setOverlaySpinner(false);
         })
     }
   }
@@ -155,13 +156,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         <Spinner/>
                       ) : (
                         <div>
-                          {saveSpinner === true ? (
-                            <div className="spinner-overlay">
-                              <div className="spinner-overlay-content">
-                                <Spinner />
-                              </div>
-                            </div>
-                          ) : ( <div></div>)}
+                          {overlaySpinner && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}

@@ -19,12 +19,13 @@ import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [saveSpinner, setSaveSpinner] = React.useState<boolean>(false);
+  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
@@ -113,7 +114,7 @@ export default function HandlerForm({id, endpointId}) {
 
   const saveHandler = (event) => {
     event.preventDefault();
-    setSaveSpinner(true);
+    setOverlaySpinner(true);
 
     let skeletonIn: any[] = retrieveFormArrayAsOArray(event.target, "skeletonIn");
     let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
@@ -152,7 +153,7 @@ export default function HandlerForm({id, endpointId}) {
     if (!checkValues([body["name"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setSaveSpinner(false);
+      setOverlaySpinner(false);
       return;
     }
 
@@ -180,7 +181,7 @@ export default function HandlerForm({id, endpointId}) {
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setSaveSpinner(false);
+        setOverlaySpinner(false);
       })
   };
 
@@ -215,13 +216,7 @@ export default function HandlerForm({id, endpointId}) {
                         <Spinner/>
                       ) : (
                         <>
-                          {saveSpinner === true ? (
-                            <div className="spinner-overlay">
-                              <div className="spinner-overlay-content">
-                                <Spinner />
-                              </div>
-                            </div>
-                          ) : ( <div></div>)}
+                          {overlaySpinner && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
