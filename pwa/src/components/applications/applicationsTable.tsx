@@ -1,17 +1,21 @@
 import * as React from "react";
-import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 export default function ApplicationsTable() {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { handleSetApplications() }, [API]);
+  React.useEffect(() => {
+    handleSetApplications()
+    handleSetDocumentation()
+  }, [API]);
 
-  const handleSetApplications = () => {
+  const handleSetApplications = (): void => {
     setShowSpinner(true);
     API.Application.getAll()
       .then((res) => {
@@ -25,6 +29,16 @@ export default function ApplicationsTable() {
       });
   };
 
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content)
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      })
+  }
+
   return (
     <Card
       title={"Applications"}
@@ -33,9 +47,10 @@ export default function ApplicationsTable() {
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#helpModal"
             >
+              <Modal title="Documentation" id="helpModal" body={() => <div dangerouslySetInnerHTML={{__html: documentation}} />} />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
