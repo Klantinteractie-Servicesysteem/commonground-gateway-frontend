@@ -10,10 +10,8 @@ const WelcomeModal: React.FC = () => {
   const buttonRef = React.useRef(null);
 
   React.useEffect(() => {
-    // Check route
-    if (window.location.href.split("/").at(-1) !== 'applications' || (window.location.href.split("/").at(-1) !== 'new' && window.location.href.split("/").at(-2) !== 'applications')) {
-      renderOptionalWelcomeModal()
-    }
+    // Check route 
+    !window.location.pathname.includes('applications') && renderOptionalWelcomeModal();
   }, [API, buttonRef])
 
   const renderOptionalWelcomeModal = (): void => {
