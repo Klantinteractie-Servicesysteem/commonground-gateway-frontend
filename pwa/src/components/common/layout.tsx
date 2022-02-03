@@ -22,16 +22,6 @@ export default function Layout({ children, title = "", subtext = "" }) {
 
   React.useEffect(() => {
     !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
-
-    if (API) {
-      API.Documentation.get()
-        .then((res) => {
-          console.log(res.data.content);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
   }, [API]);
 
   return (
