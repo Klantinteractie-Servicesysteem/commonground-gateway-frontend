@@ -230,4 +230,3 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
 }
 
 export default ApplicationForm
-

@@ -180,20 +180,20 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         <div className="col-6">
                           <div className="form-group">
                             <SelectInputComponent
-                              options={[{name: 'Organization', value: 'organization'}, {
-                                name: 'User',
-                                value: 'user'
-                              }, {name: 'User group', value: 'userGroup'}]}
+                              options={[{name: 'Organization', value: 'organization'},
+                                {name: 'User', value: 'user'},
+                                {name: 'User group', value: 'userGroup'}
+                              ]}
                               data={entity && entity.function ? entity.function : null}
                               name={"function"}
                               id={"functionInput"}
                               nameOverride={"Function"}
-                              required/>
+                              required
+                            />
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
                         <div className="col-6">
+                          <div className="form-group">
                           <GenericInputComponent
                             type={"text"}
                             name={"endpoint"}
@@ -202,7 +202,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                             nameOverride={"Endpoint"}
                           />
                         </div>
+                        </div>
+                      </div>
+                      <div className="row">
                         <div className="col-6">
+                          <div className="form-group">
                           <GenericInputComponent
                             type={"text"}
                             name={"route"}
@@ -210,8 +214,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                             data={entity && entity.route && entity.route}
                             nameOverride={"Route"}/>
                         </div>
-                      </div>
-                      <div className="row">
+                          </div>
                         <div className="col-6">
                           <div className="form-group">
                             {
