@@ -1,5 +1,5 @@
 import * as React from "react";
-import Footer from './../footer/footer'
+import Footer from "./../footer/footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
@@ -18,17 +18,26 @@ import Login from "../../pages/login";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
-  const [API, setAPI] = React.useState<APIService>(null)
+  const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
-  }, [API])
+    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
+
+    if (API) {
+      API.Documentation.get()
+        .then((res) => {
+          console.log(res.data.content);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [API]);
 
   return (
-    API &&
+    API && (
       <APIProvider value={API}>
-
-        {isLoggedIn() ?
+        {isLoggedIn() ? (
           <>
             <Helmet>
               <title>Gateway Admin Dashboard</title>
@@ -43,9 +52,11 @@ export default function Layout({ children, title = "", subtext = "" }) {
                 <Footer />
               </div>
             </div>
-          </> : <Login />
-        }
-
+          </>
+        ) : (
+          <Login />
+        )}
       </APIProvider>
+    )
   );
 }

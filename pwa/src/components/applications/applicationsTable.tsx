@@ -1,29 +1,34 @@
 import * as React from "react";
 import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 
 export default function ApplicationsTable() {
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+  const [API, setAPI] = React.useState<APIService>(null);
 
-  React.useEffect(() => { handleSetApplications() }, [API])
+  React.useEffect(() => {
+    if (!API) {
+      setAPI(new APIService(sessionStorage.getItem("jwt")));
+    } else {
+      handleSetApplications();
+    }
+  }, [API]);
 
   const handleSetApplications = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Application.getAll()
       .then((res) => {
-        setApplications(res.data)
+        setApplications(res.data);
       })
       .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
+        throw new Error("GET Applications error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
 
   return (
     <Card
@@ -74,7 +79,7 @@ export default function ApplicationsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/applications/${item.id}`}>
+                          <Link to={`/applications/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -98,7 +103,7 @@ export default function ApplicationsTable() {
                       field: "description",
                     },
                   ]}
-                  rows={[{name: "No results found", description: " "}]}
+                  rows={[{ name: "No results found", description: " " }]}
                 />
               )}
             </div>
