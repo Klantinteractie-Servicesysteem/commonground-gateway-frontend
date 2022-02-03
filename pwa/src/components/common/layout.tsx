@@ -28,7 +28,6 @@ export default function Layout({ children, title = "", subtext = "" }) {
   return (
     API &&
     <APIProvider value={API}>
-
       {isLoggedIn() ?
         <>
           <Helmet>
@@ -47,7 +46,6 @@ export default function Layout({ children, title = "", subtext = "" }) {
           <WelcomeModal />
         </> : <Login />
       }
-
     </APIProvider>
   );
 }
