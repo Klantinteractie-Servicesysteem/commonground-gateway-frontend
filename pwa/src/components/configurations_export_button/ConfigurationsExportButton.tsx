@@ -1,5 +1,5 @@
 import * as React from "react";
-import {download} from "../utility/DocumentDownload";
+import { download } from "../utility/DocumentDownload";
 
 export default function ConfigurationsExportButton() {
   const [context, setContext] = React.useState(null);
@@ -8,13 +8,13 @@ export default function ConfigurationsExportButton() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
 
   const handleExport = () => {
-    setLoading(true)
+    setLoading(true);
     fetch(`${context.adminUrl}/export/all`, {
       headers: {
         "Content-Type": "application/json",
@@ -27,9 +27,11 @@ export default function ConfigurationsExportButton() {
         });
       })
       .catch((error) => {
-        throw new Error (error)
+        throw new Error(error);
       })
-      .finally(() => { setLoading(false) })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -39,7 +41,7 @@ export default function ConfigurationsExportButton() {
       onClick={handleExport}
       disabled={loading}
     >
-      {loading ? "Perparing your download...": "Export Configuration"}
+      {loading ? "Preparing your download..." : "Export Configuration"}
     </button>
   );
 }

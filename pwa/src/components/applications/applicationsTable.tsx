@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
+import {
+  Card,
+  Table,
+  Spinner,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -11,8 +16,8 @@ export default function ApplicationsTable() {
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetApplications()
-    handleSetDocumentation()
+    handleSetApplications();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetApplications = (): void => {
@@ -32,12 +37,12 @@ export default function ApplicationsTable() {
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
-        setDocumentation(res.data.content)
+        setDocumentation(res.data.content);
       })
       .catch((err) => {
         throw new Error("GET Documentation error: " + err);
-      })
-  }
+      });
+  };
 
   return (
     <Card
@@ -50,7 +55,13 @@ export default function ApplicationsTable() {
               data-bs-toggle="modal"
               data-bs-target="#helpModal"
             >
-              <Modal title="Documentation" id="helpModal" body={() => <div dangerouslySetInnerHTML={{__html: documentation}} />} />
+              <Modal
+                title="Application Documentation"
+                id="helpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
