@@ -1,11 +1,8 @@
 import * as React from "react";
 import Layout from "../components/common/layout";
-import { Tabs, Modal } from "@conductionnl/nl-design-system/lib";
+import { Tabs } from "@conductionnl/nl-design-system/lib";
 import LogTable from "../components/logs/logTable/logTable";
 import { getUser, isLoggedIn } from "../services/auth";
-import APIService from "../apiService/apiService";
-import APIContext from "../apiService/apiContext";
-import { Link, navigate } from 'gatsby';
 
 const IndexPage = () => {
 
