@@ -8,6 +8,7 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
+import WelcomeModal from "../welcomeModal/welcomeModal";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -26,26 +27,27 @@ export default function Layout({ children, title = "", subtext = "" }) {
 
   return (
     API &&
-      <APIProvider value={API}>
+    <APIProvider value={API}>
 
-        {isLoggedIn() ?
-          <>
-            <Helmet>
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <Header title={title} subText={subtext} />
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
+      {isLoggedIn() ?
+        <>
+          <Helmet>
+            <title>Gateway Admin Dashboard</title>
+          </Helmet>
+          <div className="utrecht-document conduction-theme">
+            <div className="utrecht-page">
+              <MainMenu />
+              <div className="utrecht-page__content">
+                <Header title={title} subText={subtext} />
+                <div className="container py-4">{children}</div>
               </div>
+              <Footer />
             </div>
-          </> : <Login />
-        }
+          </div>
+          <WelcomeModal />
+        </> : <Login />
+      }
 
-      </APIProvider>
+    </APIProvider>
   );
 }
