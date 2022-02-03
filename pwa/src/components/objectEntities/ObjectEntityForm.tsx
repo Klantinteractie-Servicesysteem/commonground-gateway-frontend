@@ -199,20 +199,23 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                       <SelectInputComponent
                                         options={applications}
                                         data={objectEntity.application.name}
-                                        name={"application"} id={"applicationInput"} nameOverride={"Application"}
+                                        name={"application"} id={"applicationInput"}
+                                        nameOverride={"Application"}
                                         value={"/admin/applications/"}/>
                                     )
                                     : (
                                       <SelectInputComponent
                                         options={applications}
-                                        name={"application"} id={"applicationInput"} nameOverride={"Application"}
+                                        name={"application"} id={"applicationInput"}
+                                        nameOverride={"Application"}
                                         value={"/admin/applications/"}/>
                                     )}
                                 </>
                               ) : (
                                 <SelectInputComponent
                                   options={[{name: "Please create a Application.", value: null}]}
-                                  name={"application"} id={"applicationInput"} nameOverride={"Application"}
+                                  name={"application"} id={"applicationInput"}
+                                  nameOverride={"Application"}
                                 />
                               )}
                           </div>
