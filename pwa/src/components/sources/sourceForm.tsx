@@ -226,8 +226,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             />
                           )}
                         </div>
-                      </div>
-                      <div className="row">
                         <div className="col-6">
                           {source !== null && source.accept !== null ? (
                             <GenericInputComponent
@@ -246,6 +244,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             />
                           )}
                         </div>
+                      </div>
+                      <div className="row">
                         <div className="col-6">
                           {source !== null && source.locale !== null ? (
                             <GenericInputComponent
@@ -264,9 +264,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             />
                           )}
                         </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
+                        <div className="col-6">
                           {source !== null && source.auth !== null ? (
                               <SelectInputComponent
                                 options={[
@@ -481,19 +479,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                                   id="paths"
                                   label="Paths"
                                   data={source?.paths}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Translation config",
-                            id: "translationConfigAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="translationConfig"
-                                  label="Translation Config"
-                                  data={source?.translationConfig}
                                 />
                               )
                             }
