@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import {navigate} from "gatsby";
+import { navigate } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { Modal } from "@conductionnl/nl-design-system";
@@ -10,14 +10,15 @@ const WelcomeModal: React.FC = () => {
   const buttonRef = React.useRef(null);
 
   React.useEffect(() => {
-    renderOptionalWelcomeModal()
-  }, [API])
+    // Check route
+    if (window.location.href.split("/").at(-1) !== 'applications' || (window.location.href.split("/").at(-1) !== 'new' && window.location.href.split("/").at(-2) !== 'applications')) {
+      renderOptionalWelcomeModal()
+    }
+  }, [API, buttonRef])
 
   const renderOptionalWelcomeModal = (): void => {
     API.Application.getAll()
-      .then((res) => {
-        res.data.length === 4 && buttonRef.current.click()
-      })
+      .then((res) => { buttonRef.current !== null && (res.data.length === 0 && buttonRef.current.click()); })
       .catch((err) => { throw new Error('GET applications error: ' + err) })
   }
 
@@ -31,7 +32,7 @@ const WelcomeModal: React.FC = () => {
             data-bs-dismiss="modal"
             aria-label="Close"
             onClick={() => { navigate('/applications/new') }}>
-              {` create an application `}
+            {` create an application `}
           </a>
           first or you can close this modal if you want to find things out yourself. </p>
       </>
