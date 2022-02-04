@@ -8,6 +8,7 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
+import WelcomeModal from "../welcomeModal/welcomeModal";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -27,7 +28,6 @@ export default function Layout({ children, title = "", subtext = "" }) {
   return (
     API &&
       <APIProvider value={API}>
-
         {isLoggedIn() ?
           <>
             <Helmet>
@@ -43,9 +43,9 @@ export default function Layout({ children, title = "", subtext = "" }) {
                 <Footer />
               </div>
             </div>
+            <WelcomeModal />
           </> : <Login />
         }
-
       </APIProvider>
   );
 }
