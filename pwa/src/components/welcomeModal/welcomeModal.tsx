@@ -16,7 +16,11 @@ const WelcomeModal: React.FC = () => {
 
   const renderOptionalWelcomeModal = (): void => {
     API.Application.getAll()
-      .then((res) => { buttonRef.current !== null && (res.data.length === 0 && buttonRef.current.click()); })
+      .then((res) => {
+        if (buttonRef.current && res.data.length === 0) {
+          buttonRef.current.click();
+        }
+      })
       .catch((err) => { throw new Error('GET applications error: ' + err) })
   }
 
@@ -24,15 +28,15 @@ const WelcomeModal: React.FC = () => {
     return (
       <>
         <p>Welcome to the gateway user-interface.</p>
-        <p>It seems you haven't created a application yet, would you like to
+        <p>It seems you haven't created a application yet. <br/>
           <a
             className="utrecht--link"
             data-bs-dismiss="modal"
             aria-label="Close"
             onClick={() => { navigate('/applications/new') }}>
-            {` create an application `}
+            {` Click here to create an application `}
           </a>
-          first or you can close this modal if you want to find things out yourself. </p>
+          to get started. </p>
       </>
     )
   };
