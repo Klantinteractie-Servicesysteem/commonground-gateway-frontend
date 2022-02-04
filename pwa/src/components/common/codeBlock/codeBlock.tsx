@@ -3,14 +3,14 @@ import './codeBlock.css';
 
 interface CodeBlockProps {
   code: any,
-  type?: 'json' | 'xml' | null
+  language: 'json' | 'xml' 
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ code, type = 'json' }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
 
   return (
     <pre className="codeBlock">
-      <code id={"codeBlock--" + type} className={"language-" + (type && type + ' ' + 'codeBlock-code--' + type)}>
+      <code className={`codeBlock-code--${language}`}>
         {code}
       </code>
     </pre>
