@@ -6,6 +6,7 @@ import Entity from './resources/entity';
 import ObjectEntity from "./resources/ObjectEntity";
 import Login from './services/login';
 import Log from './resources/log';
+import Translation from './resources/translation';
 
 export default class APIService {
   private _jwtToken: string;
@@ -42,6 +43,7 @@ export default class APIService {
   public get Entity (): Entity { return new Entity(this.adminClient) }
   public get ObjectEntity (): ObjectEntity { return new ObjectEntity(this.adminClient) }
   public get Log (): Log { return new Log(this.adminClient) }
+  public get Translation (): Translation { return new Translation(this.adminClient) }
 
   // Services
   public get Login (): Login { return new Login(this.apiClient) }
