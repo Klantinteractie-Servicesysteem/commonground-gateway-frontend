@@ -1,8 +1,7 @@
 import * as React from "react";
 import './logTable.css';
-import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
-import FlashMessage from 'react-flash-message';
-import logsArray from '../../../dummy_data/logs';
+import { Table, Modal, Spinner, Card, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
+import log from '../../../dummy_data/logs';
 import CodeBlock from '../../common/codeBlock/codeBlock';
 import { navigate, Link } from 'gatsby';
 import APIService from "../../../apiService/apiService";
@@ -11,28 +10,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface LogTableProps {
-  id?: string | null;
+  entityId?: string;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
-  const [logs, setLogs] = React.useState(logsArray);
+export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
+  const [logs, setLogs] = React.useState([log]);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { handleSetLogs() }, [API, id]);
+  React.useEffect(() => { handleSetLogs() }, [API, entityId]);
 
   const handleSetLogs = () => {
     setShowSpinner(true)
 
-    if (id !== null) {
-      API.Log.getAllFromEntity(id)
+    if (entityId) {
+      API.Log.getAllFromEntity(entityId)
         .then((res) => { setLogs(res.data) })
         .catch((err) => { throw new Error('GET logs for entity error: ' + err) })
         .finally(() => { setShowSpinner(false) });
-    } else {
+    }
+    if (!entityId) {
       API.Log.getAll()
-        .then((res) => { setLogs(res.data) })
+        .then((res) => {
+          res?.data.length > 0 ? setLogs(res.data) : setLogs([log])
+        })
         .catch((err) => { throw new Error('GET logs error: ' + err) })
         .finally(() => { setShowSpinner(false) });
     }
@@ -40,12 +41,6 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
 
   return (
     <div className="logTable">
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-        </FlashMessage>
-      }
       <Card
         title="Call logs"
         cardHeader={function () {
@@ -267,7 +262,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                             return (<>
                               {log.requestContent
                                 ?
-                                <CodeBlock code={log.requestContent} />
+                                <CodeBlock code={log.requestContent} language="json" />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
@@ -300,7 +295,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null }) => {
                           render: function () {
                             return (<>
                               {log.responseContent ?
-                                <CodeBlock code={log.responseContent} />
+                                <CodeBlock code={log.responseContent} language="json" />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
