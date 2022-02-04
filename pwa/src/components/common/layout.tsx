@@ -8,6 +8,7 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
+import WelcomeModal from "../welcomeModal/welcomeModal";
 import favicon from "../../images/conduction_logo_blauw.svg";
 
 /**
@@ -46,8 +47,9 @@ export default function Layout({ children, title = "", subtext = "" }) {
                 <Footer />
               </div>
             </div>
+            <WelcomeModal />
           </> : <Login />
         }
-    </APIProvider>
+      </APIProvider>
   );
 }
