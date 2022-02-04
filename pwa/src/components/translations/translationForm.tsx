@@ -61,26 +61,6 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
           setLoadingOverlay(false);
         });
     }
-
-    // fetch(url, {
-    //   method: method,
-    //   credentials: "include",
-    //   headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt') },
-    //   body: JSON.stringify(body),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setTranslation(data);
-    //     method === 'POST' && navigate("/translations")
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setAlert(null);
-    //     setAlert({ type: 'danger', message: error.message });
-    //   })
-    //   .finally(() => {
-    //     setLoadingOverlay(false);
-    //   })
   }
 
   return (
