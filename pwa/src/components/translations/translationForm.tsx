@@ -18,7 +18,7 @@ interface TranslationFormProps {
 export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
@@ -33,7 +33,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
 
   const saveTranslation = (event) => {
     event.preventDefault();
-    setOverlaySpinner(true);
+    setLoadingOverlay(true);
 
     let body = {
       translationTable: id,
@@ -62,7 +62,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setOverlaySpinner(false);
+        setLoadingOverlay(false);
       })
   }
 
@@ -103,7 +103,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <>
-                      {overlaySpinner && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">

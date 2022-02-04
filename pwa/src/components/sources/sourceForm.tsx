@@ -27,7 +27,7 @@ interface SourceFormProps {
 export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
@@ -53,7 +53,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
   const saveSource = (event) => {
     event.preventDefault();
-    setOverlaySpinner(true);
+    setLoadingOverlay(true);
 
     let headers = retrieveFormArrayAsOArray(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
@@ -90,7 +90,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setOverlaySpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
@@ -104,7 +104,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
 
@@ -118,7 +118,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
   };
@@ -159,7 +159,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <>
-                          {overlaySpinner && <LoadingOverlay /> }
+                          {loadingOverlay && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               {source !== null && source.name !== null ? (

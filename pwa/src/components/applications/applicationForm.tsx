@@ -35,7 +35,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
@@ -60,7 +60,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
 
   const saveApplication = (event) => {
     event.preventDefault();
-    setOverlaySpinner(true);
+    setLoadingOverlay(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
 
@@ -82,7 +82,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (!checkValues([body["name"], body["domains"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setOverlaySpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
@@ -96,7 +96,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Create application error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
 
@@ -110,7 +110,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           throw new Error('Update application error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
   };
@@ -151,7 +151,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                          {overlaySpinner && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent

@@ -27,7 +27,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
@@ -87,7 +87,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
   const saveEndpoint = (event) => {
     event.preventDefault();
-    setOverlaySpinner(true);
+    setLoadingOverlay(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -122,18 +122,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setOverlaySpinner(false);
+        setLoadingOverlay(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
-        setOverlaySpinner(false);
+        setLoadingOverlay(false);
         console.error(error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setOverlaySpinner(false);
+        setLoadingOverlay(false);
       })
   };
 
@@ -175,7 +175,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                    {overlaySpinner && <LoadingOverlay /> }
+                    {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent

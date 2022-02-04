@@ -25,7 +25,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [overlaySpinner, setOverlaySpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object" : "Create Object";
 
@@ -66,7 +66,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
   const saveEntity = (event) => {
     event.preventDefault();
-    setOverlaySpinner(true);
+    setLoadingOverlay(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -100,7 +100,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           throw new Error('Create entity error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
 
@@ -114,7 +114,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           throw new Error('Update entity error: ' + err)
         })
         .finally(() => {
-          setOverlaySpinner(false);
+          setLoadingOverlay(false);
         })
     }
   }
@@ -158,7 +158,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                          {overlaySpinner && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
