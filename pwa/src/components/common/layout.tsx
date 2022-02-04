@@ -27,25 +27,25 @@ export default function Layout({ children, title = "", subtext = "" }) {
 
   return (
     API &&
-    <APIProvider value={API}>
-      {isLoggedIn() ?
-        <>
-          <Helmet>
-            <title>Gateway Admin Dashboard</title>
-          </Helmet>
-          <div className="utrecht-document conduction-theme">
-            <div className="utrecht-page">
-              <MainMenu />
-              <div className="utrecht-page__content">
-                <Header title={title} subText={subtext} />
-                <div className="container py-4">{children}</div>
+      <APIProvider value={API}>
+        {isLoggedIn() ?
+          <>
+            <Helmet>
+              <title>Gateway Admin Dashboard</title>
+            </Helmet>
+            <div className="utrecht-document conduction-theme">
+              <div className="utrecht-page">
+                <MainMenu />
+                <div className="utrecht-page__content">
+                  <Header title={title} subText={subtext} />
+                  <div className="container py-4">{children}</div>
+                </div>
+                <Footer />
               </div>
-              <Footer />
             </div>
-          </div>
-          <WelcomeModal />
-        </> : <Login />
-      }
-    </APIProvider>
+            <WelcomeModal />
+          </> : <Login />
+        }
+      </APIProvider>
   );
 }
