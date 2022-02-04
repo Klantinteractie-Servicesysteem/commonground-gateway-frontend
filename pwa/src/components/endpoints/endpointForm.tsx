@@ -89,7 +89,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       API.Endpoint.create(body)
         .then((res) => {
           setEndpoint(res.data)
-          navigate('/endpoints')
+          navigate('/endpoints/${id}')
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -101,7 +101,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       API.Endpoint.update(body, id)
         .then((res) => {
           setEndpoint(res.data)
-          navigate('/endpoints')
+          navigate('/endpoints/${id}')
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
