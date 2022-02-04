@@ -321,7 +321,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             <div className="col-6">
                               {source !== null && source.documentation !== null ? (
                                 <GenericInputComponent type={"text"}
-                                                       nameOverride={"Documentation"} name={"documentation"}
+                                                       nameOverride={"Documentation(url)"} name={"documentation"}
                                                        id={"documentationInput"}
                                                        data={source.documentation}
                                 />
