@@ -9,6 +9,7 @@ import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface TranslationFormProps {
   id: string,
@@ -17,6 +18,7 @@ interface TranslationFormProps {
 export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
@@ -31,7 +33,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
 
   const saveTranslation = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let body = {
       translationTable: id,
@@ -60,7 +62,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setShowSpinner(false);
+        setLoadingOverlay(false);
       })
   }
 
@@ -101,6 +103,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <>
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">

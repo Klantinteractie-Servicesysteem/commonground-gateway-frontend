@@ -15,6 +15,7 @@ import {
   removeEmptyObjectValues,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface EndpointFormProps {
   id: string,
@@ -26,6 +27,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
@@ -85,7 +87,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
   const saveEndpoint = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let body: {} = {
       name: event.target.name.value,
@@ -120,16 +122,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        setLoadingOverlay(false);
         setEndpoint(data)
         method === 'POST' && navigate("/endpoints")
       })
       .catch((error) => {
+        setLoadingOverlay(false);
         console.error(error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setShowSpinner(false);
+        setLoadingOverlay(false);
       })
   };
 
@@ -171,6 +175,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
+                    {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent

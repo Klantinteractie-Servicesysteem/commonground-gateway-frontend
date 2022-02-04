@@ -21,6 +21,7 @@ import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface AttributeFormProps {
   attributeId: string,
@@ -31,6 +32,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
@@ -74,7 +76,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
 
   const saveAttribute = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
@@ -150,7 +152,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
     if (!checkValues([body["name"], body["type"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
@@ -164,7 +166,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
           throw new Error('Create application error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setLoadingOverlay(false);
         })
     }
 
@@ -178,7 +180,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
           throw new Error('Update application error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setLoadingOverlay(false);
         })
     }
   };
@@ -216,6 +218,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                     <Spinner/>
                   ) : (
                     <div>
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
