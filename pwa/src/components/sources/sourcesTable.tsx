@@ -27,7 +27,7 @@ export default function SourcesTable() {
         setSources(res.data);
       })
       .catch((err) => {
-        throw new Error("GET Applications error: " + err);
+        throw new Error("GET Sources error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);

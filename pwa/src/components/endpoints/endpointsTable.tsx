@@ -57,8 +57,6 @@ export default function EndpointsTable() {
   };
 
   React.useEffect(() => {
-    // na apiService refactor
-    // handleSetApplications();
     handleSetDocumentation();
   }, [API]);
 

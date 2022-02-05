@@ -220,7 +220,7 @@ a:hover {
     background: inherit !important;
 }
 
-#helpModal {
+.modal {
     text-align: left;
     color: black;
 }

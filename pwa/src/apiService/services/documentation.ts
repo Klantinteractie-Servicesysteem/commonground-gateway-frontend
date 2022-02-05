@@ -7,10 +7,10 @@ export default class Documentation {
     this._instance = _instance;
   }
 
-  //add querystring for specific pages.
+  // section not via /# , but %23??
   public get = (): Promise<AxiosResponse> => {
     return this._instance.get(
-      "?url=https://commonground-gateway.readthedocs.io/en/latest/"
+      "?url=https://commonground-gateway.readthedocs.io/en/latest/features/%23sources"
     );
   };
 }

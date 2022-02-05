@@ -4,7 +4,6 @@ import Attribute from "./resources/attribute";
 import Source from "./resources/source";
 import Entity from "./resources/entity";
 import ObjectEntity from "./resources/ObjectEntity";
-
 import Login from "./services/login";
 import Documentation from "./services/documentation";
 export default class APIService {
@@ -37,7 +36,7 @@ export default class APIService {
 
   public get documentationClient(): AxiosInstance {
     return axios.create({
-      baseURL: "https://readthedocs.org/api/v3/embed",
+      baseURL: process.env.GATSBY_READ_THE_DOCS_URL,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

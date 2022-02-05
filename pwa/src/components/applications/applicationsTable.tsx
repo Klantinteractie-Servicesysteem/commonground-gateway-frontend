@@ -35,7 +35,7 @@ export default function ApplicationsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get() //add querystring param
+    API.Documentation.get()
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -100,7 +100,10 @@ export default function ApplicationsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/applications/${item.id}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/applications/${item.id}`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

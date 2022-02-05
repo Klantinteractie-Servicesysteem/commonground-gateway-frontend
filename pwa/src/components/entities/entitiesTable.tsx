@@ -27,7 +27,7 @@ export default function EntitiesTable() {
         setEntities(res.data);
       })
       .catch((err) => {
-        throw new Error("GET Applications error: " + err);
+        throw new Error("GET Entities error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
