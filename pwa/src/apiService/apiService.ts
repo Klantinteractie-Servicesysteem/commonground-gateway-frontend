@@ -4,9 +4,10 @@ import Attribute from "./resources/attribute";
 import Source from "./resources/source";
 import Entity from "./resources/entity";
 import ObjectEntity from "./resources/ObjectEntity";
-
+import Log from './resources/log';
 import Login from "./services/login";
 import Documentation from "./services/documentation";
+
 export default class APIService {
   private _jwtToken: string;
 
@@ -60,6 +61,9 @@ export default class APIService {
   }
   public get ObjectEntity(): ObjectEntity {
     return new ObjectEntity(this.adminClient);
+  }
+  public get Log (): Log { 
+    return new Log(this.adminClient);
   }
 
   // Services
