@@ -27,7 +27,7 @@ interface AttributeFormProps {
   entityId: string,
 }
 
-export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entityId }) => {
+export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entityId}) => {
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -46,18 +46,30 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     setShowSpinner(true)
 
     API.Attribute.getOne(attributeId)
-      .then((res) => { setAttribute(res.data) })
-      .catch((err) => { throw new Error ('GET attribute error: ' + err) })
-      .finally(() => { setShowSpinner(false) })
+      .then((res) => {
+        setAttribute(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET attribute error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
   }
 
   const handleSetAttributes = () => {
     setShowSpinner(true)
 
     API.Attribute.getAllFromEntity(entityId)
-      .then((res) => { setAttributes(res.data) })
-      .catch((err) => { throw new Error ('GET attributes error: ' + err) })
-      .finally(() => { setShowSpinner(false) })
+      .then((res) => {
+        setAttributes(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET attributes error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
   }
 
   const saveAttribute = (event) => {
@@ -144,25 +156,29 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     if (!attributeId) { // unset id means we're creating a new entry
       API.Attribute.create(body)
-        .then((res) => {
-          setAttribute(res.data)
+        .then(() => {
           navigate(`/entities/${entityId}`)
         })
         .catch((err) => {
-          setAlert({ type: 'danger', message: err.message });
-          throw new Error ('Create application error: ' + err)
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Create application error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
 
     if (attributeId) { // set id means we're updating a existing entry
       API.Attribute.update(body, attributeId)
         .then((res) => {
-          setAttribute(res.data)
-          navigate(`/entities/${entityId}`)
+          setAttribute(res.data);
         })
         .catch((err) => {
-          setAlert({ type: 'danger', message: err.message });
-          throw new Error ('Update application error: ' + err)
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Update application error: ' + err)
+        })
+        .finally(() => {
+          setShowSpinner(false);
         })
     }
   };
@@ -180,7 +196,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         <Card title={title}
               cardHeader={function () {
                 return (<>
-                  <Link className="utrecht-link" to={`/objects/${entityId}`}>
+                  <Link className="utrecht-link" to={`/entities/${entityId}`}>
                     <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                       <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                     </button>

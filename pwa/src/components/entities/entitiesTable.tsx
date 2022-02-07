@@ -85,7 +85,7 @@ export default function EntitiesTable() {
                       headerName: "Edit ",
                       renderCell: (item) => {
                         return (
-                          <Link to={`/entities/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>
                               Edit
