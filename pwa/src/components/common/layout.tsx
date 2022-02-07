@@ -8,6 +8,8 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
+import AlertService from "./alert";
+import {AlertContextWrapper, NotificationsContext} from "../../context/alertContext";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -24,11 +26,16 @@ export default function Layout({ children, title = "", subtext = "" }) {
     !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
   }, [API])
 
+  // const [notifications, setNotifications] = React.useState<AlertService>(null);
+  // React.useEffect(() => {
+  //   !notifications && setNotifications(new AlertService())
+  // }, [notifications])
+
   return (
     API &&
-      <APIProvider value={API}>
-
-        {isLoggedIn() ?
+    <APIProvider value={API}>
+      {/*<AlertContextWrapper />*/}
+      {isLoggedIn() ?
           <>
             <Helmet>
               <title>Gateway Admin Dashboard</title>
@@ -45,7 +52,6 @@ export default function Layout({ children, title = "", subtext = "" }) {
             </div>
           </> : <Login />
         }
-
       </APIProvider>
   );
 }

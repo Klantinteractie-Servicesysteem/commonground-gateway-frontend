@@ -1,13 +1,13 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {GenericInputComponent, Accordion, SelectInputComponent, Alert, Card} from "@conductionnl/nl-design-system/lib";
+import {Accordion, Alert, Card, GenericInputComponent, SelectInputComponent} from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import FlashMessage from 'react-flash-message';
+import {NOTIFICATION, useNotifications} from "../../context/alertContext";
 
 interface ObjectEntityFormProps {
   objectEntityId: string,
@@ -22,14 +22,18 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const API: APIService = React.useContext(APIContext);
   const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
 
-
   React.useEffect(() => {
     objectEntityId && handleSetEntity_object()
     handleSetApplications()
-  }, [API, objectEntityId])
+    useNotifications({message: 'Object entity created', type: NOTIFICATION.SUCCESS} )
+
+  }, [API, objectEntityId, alert])
 
   const handleSetEntity_object = () => {
     setShowSpinner(true)
+
+    // Alert.alertMessage({ message: 'Object entity created', type: NOTIFICATION.SUCCESS })
+    // setNotification({ message: form.message, variant: form.variant })
 
     API.ObjectEntity.getOne(objectEntityId)
       .then((res) => {
@@ -98,7 +102,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           navigate(`/entities/${entityId}`)
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
           throw new Error('CREATE object entity error: ' + err)
         })
         .finally(() => {
@@ -123,14 +126,14 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
 
   return (
     <div>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      }
+      {/*{*/}
+      {/*  alert !== null &&*/}
+      {/*  <FlashMessage duration={5000}>*/}
+      {/*    <Alert alertClass={alert.type} body={function () {*/}
+      {/*      return (<>{alert.message}</>)*/}
+      {/*    }}/>*/}
+      {/*  </FlashMessage>*/}
+      {/*}*/}
       <form id="dataForm" onSubmit={saveObjectEntity}>
         <Card
           title={title}
