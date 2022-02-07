@@ -158,6 +158,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!applications}
                 >
                   <i className="fas fa-save mr-2"/>Save
                 </button>
