@@ -24,6 +24,10 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
   React.useEffect(() => { id !== 'new' && getTranslation(id) }, [API]);
 
   const getTranslation = (id: string) => {
+    // Hotfix
+    if (id.length !== 36) {
+      return;
+    }
     setShowSpinner(true);
     API.Translation.getOne(id)
       .then((res) => { setTranslation(res.data) })
@@ -46,7 +50,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
       API.Translation.create(body)
         .then((res) => { setTranslation(res.data); console.log(res) })
         .catch((err) => { throw new Error('GET translation error: ' + err) })
-        .finally(() => { 
+        .finally(() => {
           setShowSpinner(false);
           setLoadingOverlay(false);
         });
