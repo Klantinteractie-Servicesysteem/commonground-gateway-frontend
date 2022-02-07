@@ -18,6 +18,7 @@ import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 
 interface SourceFormProps {
@@ -27,7 +28,7 @@ interface SourceFormProps {
 export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  // const [alert, setAlert] = React.useState(null);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
   const [_, setAlert] = React.useContext(AlertContext)
@@ -53,7 +54,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
   const saveSource = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let headers = retrieveFormArrayAsOArray(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
@@ -88,9 +89,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
+      setLoadingOverlay(false);
       // setAlert(null);
       // setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
       return;
     }
 
@@ -104,7 +105,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setLoadingOverlay(false);
         })
     }
 
@@ -119,7 +120,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false);
+          setLoadingOverlay(false);
         })
     }
   };
@@ -160,6 +161,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         <Spinner/>
                       ) : (
                         <>
+                          {loadingOverlay && <LoadingOverlay /> }
                           <div className="row">
                             <div className="col-6">
                               {source !== null && source.name !== null ? (
@@ -321,7 +323,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             <div className="col-6">
                               {source !== null && source.documentation !== null ? (
                                 <GenericInputComponent type={"text"}
-                                                       nameOverride={"Documentation"} name={"documentation"}
+                                                       nameOverride={"Documentation(url)"} name={"documentation"}
                                                        id={"documentationInput"}
                                                        data={source.documentation}
                                 />

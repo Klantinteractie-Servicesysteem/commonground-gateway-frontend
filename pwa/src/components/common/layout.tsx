@@ -9,6 +9,8 @@ import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
 import { AlertContext, AlertProvider, AlertProps } from "../../context/alertContext";
+import WelcomeModal from "../welcomeModal/welcomeModal";
+import favicon from "../../images/conduction_logo_blauw.svg";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -46,6 +48,7 @@ export default function Layout({ children, title = "", subtext = "" }) {
                   <Footer />
                 </div>
               </div>
+            <WelcomeModal />
             </> : <Login />
           }
         </AlertProvider>

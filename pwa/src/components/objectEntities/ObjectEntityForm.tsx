@@ -7,7 +7,8 @@ import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {NOTIFICATION, useNotifications} from "../../context/alertContext";
+import FlashMessage from 'react-flash-message';
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface ObjectEntityFormProps {
   objectEntityId: string,
@@ -18,6 +19,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
@@ -48,8 +50,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   }
 
   const handleSetApplications = () => {
-    setShowSpinner(true)
-
     API.Application.getAll()
       .then((res) => {
         setApplications(res.data)
@@ -57,14 +57,11 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
       .catch((err) => {
         throw new Error('GET applications error: ' + err)
       })
-      .finally(() => {
-        setShowSpinner(false)
-      })
   }
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let errors = retrieveFormArrayAsOArray(event.target, "errors");
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
@@ -92,7 +89,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     if (!checkValues([body["uri"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
@@ -105,7 +102,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           throw new Error('CREATE object entity error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false)
+          setLoadingOverlay(false)
         })
     }
 
@@ -119,7 +116,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           throw new Error('UPDATE object entity error: ' + err)
         })
         .finally(() => {
-          setShowSpinner(false)
+          setLoadingOverlay(false)
         })
     }
   }
@@ -149,6 +146,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!applications}
                 >
                   <i className="fas fa-save mr-2"/>
                   Save
@@ -164,6 +162,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                     <Spinner/>
                   ) : (
                     <>
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -202,21 +201,26 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                       <SelectInputComponent
                                         options={applications}
                                         data={objectEntity.application.name}
-                                        name={"application"} id={"applicationInput"} nameOverride={"Application"}
+                                        name={"application"} id={"applicationInput"}
+                                        nameOverride={"Application"}
                                         value={"/admin/applications/"}/>
                                     )
                                     : (
                                       <SelectInputComponent
                                         options={applications}
-                                        name={"application"} id={"applicationInput"} nameOverride={"Application"}
+                                        name={"application"} id={"applicationInput"}
+                                        nameOverride={"Application"}
                                         value={"/admin/applications/"}/>
                                     )}
                                 </>
                               ) : (
                                 <SelectInputComponent
-                                  options={[{name: "Please create a Application.", value: null}]}
-                                  name={"application"} id={"applicationInput"} nameOverride={"Application"}
-                                />
+                                  data="Please wait, gettings applications from the Gateway..."
+                                  options={[{
+                                    name: "Please wait, gettings applications from the Gateway...",
+                                    value: "Please wait, gettings applications from the Gateway..."
+                                  }]}
+                                  name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
                               )}
                           </div>
                         </div>
