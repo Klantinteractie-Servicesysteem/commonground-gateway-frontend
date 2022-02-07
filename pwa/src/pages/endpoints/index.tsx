@@ -9,7 +9,9 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <EndpointsTable />
+            <div className="page-top-item">
+              <EndpointsTable/>
+            </div>
           </div>
         </div>
       </main>

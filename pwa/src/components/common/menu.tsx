@@ -1,7 +1,5 @@
 import * as React from "react";
 import { Link } from "gatsby";
-// import Modal from "./modal";
-import Modal from "@conductionnl/nl-design-system/lib/Modal/src/modal";
 import { isLoggedIn, logout } from "../../services/auth";
 import { navigate } from "gatsby-link";
 
@@ -24,13 +22,13 @@ export default function MainMenu() {
             <ul className="utrecht-topnav__list">
               <li>
                 <div className="d-flex align-items-center h-100 justify-content-center">
-                  <a href="https://conduction.nl" target="_blank">
+                  <Link to="/" >
                     <img
                       className="logo"
-                      alt=""
+                      alt="Conduction logo"
                       src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGFhZ18xIiBkYXRhLW5hbWU9IkxhYWcgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzAwIDMwMCI+PHBhdGggZD0iTTE0OS43MiwyOCwzOCw5Mi41djEyOUwxNDkuNzIsMjg2bDExMS43Mi02NC41VjkyLjVaTTIzMywyMDUuMDZsLTgzLjI1LDQ4LjA3TDY2LjQ3LDIwNS4wNlYxMDguOTRsODMuMjUtNDguMDdMMjMzLDEwOC45NFoiIHN0eWxlPSJmaWxsOiNmZmYiLz48cG9seWdvbiBwb2ludHM9IjE0OS40NCAxMjQuNTIgMTc1LjYxIDEzOS42MiAyMDYuMDUgMTIyLjA0IDE0OS40NCA4OS4zNiA5MC44NyAxMjMuMTggOTAuODcgMTkwLjgyIDE0OS40NCAyMjQuNjQgMjA2LjA1IDE5MS45NiAxNzUuNjEgMTc0LjM4IDE0OS40NCAxODkuNDggMTIxLjMyIDE3My4yNCAxMjEuMzIgMTQwLjc2IDE0OS40NCAxMjQuNTIiIHN0eWxlPSJmaWxsOiNmZmYiLz48L3N2Zz4="
                     />
-                  </a>
+                  </Link>
                 </div>
               </li>
               <li className="utrecht-topnav__item">
@@ -47,7 +45,7 @@ export default function MainMenu() {
                   </li>
                   <li className="utrecht-topnav__item">
                     <Link to={"/entities"} className="utrecht-topnav__link">
-                      Entities
+                      Objects
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
@@ -61,8 +59,8 @@ export default function MainMenu() {
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
-                    <Link to={"/soap"} className="utrecht-topnav__link">
-                      SOAP
+                    <Link to={"/configurations"} className="utrecht-topnav__link">
+                      Configurations
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">

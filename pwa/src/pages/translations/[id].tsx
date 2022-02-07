@@ -2,8 +2,7 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationForm from "../../components/translations/translationForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import ResponseTable from "../../components/logs/responseTable";
-import RequestTable from "../../components/logs/requestTable";
+import TranslationTable from "../../components/translations/translationTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
@@ -11,13 +10,13 @@ const IndexPage = (props) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
 
   return (
-    <Layout title={"Translation"} subtext={"Add or modify your translation"}>
+    <Layout title={"Translation"} subtext={"Create or modify your translation"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -25,14 +24,16 @@ const IndexPage = (props) => {
               {props.params.id !== "new" ? (
                 <Tabs
                   items={[
-                    { name: "Overview", id: "overview", active: true }
+                    { name: "Add", id: "overview", active: true },
+                    { name: "Translations", id: "translations"}
                   ]}
                 />
               ) : (
                 <Tabs
-                  items={[{ name: "Overview", id: "overview", active: true }]}
+                  items={[{name: "Overview", id: "overview", active: true}]}
                 />
               )}
+
             </div>
             <div className="tab-content">
               <div
@@ -43,6 +44,16 @@ const IndexPage = (props) => {
               >
                 <br />
                 <TranslationForm id={props.params.id} />
+              </div>
+              <div
+                className="tab-pane"
+                id="translations"
+                role="tabpanel"
+                aria-labelledby="translations-tab"
+              >
+                <br />
+
+               <TranslationTable id={props.params.id}/>
               </div>
             </div>
           </div>

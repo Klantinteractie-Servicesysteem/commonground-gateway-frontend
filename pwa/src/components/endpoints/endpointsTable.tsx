@@ -4,7 +4,6 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-
 export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
   const [endpoints, setEndpoints] = React.useState(null);
@@ -14,7 +13,7 @@ export default function EndpointsTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       getEndpoints(context);
@@ -48,7 +47,8 @@ export default function EndpointsTable() {
     {
       alert !== null &&
       <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
+        <Alert alertClass={alert.type} body={function () {
+          return (<>{alert.message}</>) }} />
       </FlashMessage>
     }
     <Card
@@ -71,7 +71,7 @@ export default function EndpointsTable() {
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>
@@ -99,7 +99,7 @@ export default function EndpointsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/endpoints/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

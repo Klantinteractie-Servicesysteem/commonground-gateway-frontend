@@ -1,42 +1,29 @@
 import * as React from "react";
 import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import APIContext from "../../apiService/apiContext";
+import APIService from "../../apiService/apiService";
 
 export default function ApplicationsTable() {
-  const [context, setContext] = React.useState(null);
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const API: APIService = React.useContext(APIContext)
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getApplications(context);
-    }
-  }, [context]);
+  React.useEffect(() => { handleSetApplications() }, [API])
 
-  const getApplications = (context) => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/applications`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setApplications(data["hydra:member"]);
-        setShowSpinner(false);
-        console.log(data);
+  const handleSetApplications = () => {
+    setShowSpinner(true)
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(res.data)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-      });
-  };
+      .catch((err) => {
+        throw new Error ('GET Applications error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
   return (
     <Card
@@ -52,14 +39,14 @@ export default function ApplicationsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getApplications}>
+            <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
             <Link to="/applications/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>
@@ -87,7 +74,7 @@ export default function ApplicationsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/applications/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/applications/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

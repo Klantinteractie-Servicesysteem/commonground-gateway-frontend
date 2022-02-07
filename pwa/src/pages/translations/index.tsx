@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
-import TranslationsTable from "../../components/translations/translationsTable";
+import TableNamesTable from "../../components/translations/tableNamesTable";
 
 const IndexPage = () => {
   return (
@@ -10,13 +10,13 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <TranslationsTable />
+              <TableNamesTable/>
             </div>
           </div>
         </div>
       </main>
     </Layout>
-  );
-};
+  )
+}
 
 export default IndexPage;

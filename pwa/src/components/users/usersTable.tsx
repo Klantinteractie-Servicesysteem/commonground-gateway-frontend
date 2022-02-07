@@ -13,7 +13,7 @@ export default function UsersTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: window.GATSBY_API_URL,
+        apiUrl: process.env.GATSBY_API_URL,
       });
     } else if (isLoggedIn()) {
       getUsers();
@@ -43,6 +43,7 @@ export default function UsersTable() {
       });
   };
 
+
   return (
     <Card
       title={"Users"}
@@ -64,7 +65,7 @@ export default function UsersTable() {
             <Link to="/applications/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>
@@ -92,7 +93,7 @@ export default function UsersTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/users/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/users/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

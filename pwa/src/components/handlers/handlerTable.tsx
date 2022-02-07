@@ -13,7 +13,7 @@ export default function HandlerTable({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: window.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else {
       if (isLoggedIn()) {
@@ -30,18 +30,10 @@ export default function HandlerTable({ id }) {
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          setShowSpinner(false);
-          setHandlers(null);
-          throw new Error(response.statusText);
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'] > 0) {
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setHandlers(data["hydra:member"]);
         }
       })
@@ -51,6 +43,7 @@ export default function HandlerTable({ id }) {
         setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
+
   };
 
   return (<>
@@ -80,7 +73,7 @@ export default function HandlerTable({ id }) {
             <Link to={`/handlers/new/${id}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Add
+                Create
               </button>
             </Link>
           </>
@@ -100,15 +93,15 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/handlers/${item.id}`}>
+                          <Link to={`/handlers/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -128,8 +121,8 @@ export default function HandlerTable({ id }) {
                       field: "name",
                     },
                     {
-                      headerName: "Endpoint",
-                      field: "endpoint",
+                      headerName: "Description",
+                      field: "description",
                     },
                   ]}
                   rows={[]}

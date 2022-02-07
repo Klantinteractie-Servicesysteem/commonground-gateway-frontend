@@ -1,0 +1,12 @@
+.codeBlock-code--xml {
+    color: green;
+}
+
+.codeBlock-code--json {
+    color: orange;
+}
+
+.codeBlock {
+    background-color: 'black';
+    overflow-wrap: 'break-word';
+}
