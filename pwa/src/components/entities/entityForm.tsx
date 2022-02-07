@@ -35,17 +35,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   }, [API, entityId])
 
   const handleSetSources = () => {
-    setShowSpinner(true)
-
     API.Source.getAll()
       .then((res) => {
         setSources(res.data)
       })
       .catch((err) => {
         throw new Error('GET sources error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
       })
   }
 
@@ -144,6 +139,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!sources}
                 >
                   <i className="fas fa-save mr-2"/>Save
                 </button>
@@ -242,13 +238,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                                 </>
                               ) : (
                                 <SelectInputComponent
+                                  data="Please wait, gettings sources from the Gateway..."
                                   options={[{
-                                    name: "Please create a Source before creating an Entity",
-                                    value: null
+                                    name: "Please wait, gettings sources from the Gateway...",
+                                    value: "Please wait, gettings sources from the Gateway..."
                                   }]}
-                                  name={"gateway"}
-                                  id={"gatewayInput"}
-                                  nameOverride={"Source"}/>
+                                  name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled />
                               )}
                           </div>
                         </div>

@@ -219,3 +219,11 @@ a:hover {
     border: none !important;
     background: inherit !important;
 }
+
+.utrecht-button:disabled {
+    opacity: .8;
+}
+
+.utrecht-button:disabled:hover {
+    cursor: not-allowed;
+}
