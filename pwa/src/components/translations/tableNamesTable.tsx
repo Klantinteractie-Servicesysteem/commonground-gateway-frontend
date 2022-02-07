@@ -69,7 +69,7 @@ export default function TableNamesTable() {
                 <i className="fas fa-sync-alt mr-1"/>
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to="/translations/new">
+              <Link to="/translation-tables/translations/new">
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2"/>
                   Create
@@ -96,10 +96,9 @@ export default function TableNamesTable() {
                         headerName: " ",
                         renderCell: (tables: { name: string }) => {
                           return (
-                            <Link className="utrecht-link d-flex justify-content-end" to={`/translations/${tables.name}`}>
-                              <button className="utrecht-button btn-sm btn-success">
-                                <i className="fas fa-edit pr-1" />
-                                Edit
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${tables.name}`}>
+                              <button className="utrecht-button btn-sm btn-primary">
+                                View table
                               </button>
                             </Link>
                           );
