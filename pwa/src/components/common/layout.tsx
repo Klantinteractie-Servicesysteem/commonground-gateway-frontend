@@ -8,8 +8,7 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
-import AlertService from "./alert";
-import {AlertContextWrapper, NotificationsContext} from "../../context/alertContext";
+import { AlertContext, AlertProvider, AlertProps } from "../../context/alertContext";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -21,37 +20,46 @@ import {AlertContextWrapper, NotificationsContext} from "../../context/alertCont
  */
 export default function Layout({ children, title = "", subtext = "" }) {
   const [API, setAPI] = React.useState<APIService>(null)
+  const [alert, setAlert] = React.useState<AlertProps>(null);
 
   React.useEffect(() => {
     !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
   }, [API])
 
-  // const [notifications, setNotifications] = React.useState<AlertService>(null);
-  // React.useEffect(() => {
-  //   !notifications && setNotifications(new AlertService())
-  // }, [notifications])
-
   return (
     API &&
     <APIProvider value={API}>
-      {/*<AlertContextWrapper />*/}
-      {isLoggedIn() ?
-          <>
-            <Helmet>
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <Header title={title} subText={subtext} />
-                  <div className="container py-4">{children}</div>
+      <AlertProvider value={[alert, setAlert]}>
+        {isLoggedIn() ?
+            <>
+              <Alert />
+              <Helmet>
+                <title>Gateway Admin Dashboard</title>
+              </Helmet>
+              <div className="utrecht-document conduction-theme">
+                <div className="utrecht-page">
+                  <MainMenu />
+                  <div className="utrecht-page__content">
+                    <Header title={title} subText={subtext} />
+                    <div className="container py-4">{children}</div>
+                  </div>
+                  <Footer />
                 </div>
-                <Footer />
               </div>
-            </div>
-          </> : <Login />
-        }
+            </> : <Login />
+          }
+        </AlertProvider>
       </APIProvider>
   );
+}
+
+const Alert = () => {
+  const [alert, setAlert] = React.useContext(AlertContext)
+
+  // na ±5 seconde moet setAlert(null) draaien
+  // dit component moet losgetrokken worden (dus niet in layout)
+
+  if (!alert) return <></>
+
+  return <div>{alert.message} {alert.type}</div> // hier moet de alert komen
 }

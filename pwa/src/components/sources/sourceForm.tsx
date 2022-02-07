@@ -18,6 +18,7 @@ import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
 
 interface SourceFormProps {
   id: string,
@@ -26,9 +27,10 @@ interface SourceFormProps {
 export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  // const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
     id && handleSetSource()
@@ -86,8 +88,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
-      setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
+      // setAlert(null);
+      // setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
       return;
     }
@@ -98,7 +100,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
           navigate('/sources');
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
+          // setAlert({type: 'danger', message: err.message});
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
@@ -110,9 +112,10 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
       API.Source.update(body, id)
         .then((res) => {
           setSource(res.data);
+          setAlert({message: 'Saved source', type: 'success'})
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
+          // setAlert({type: 'danger', message: err.message});
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
@@ -123,14 +126,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
 
   return (<>
-      {
+      {/* {
         alert !== null &&
         <FlashMessage duration={5000}>
           <Alert alertClass={alert.type} body={function () {
             return (<>{alert.message}</>)
           }}/>
         </FlashMessage>
-      }
+      } */}
       <form id="dataForm" onSubmit={saveSource}>
         <Card title={title}
               cardHeader={function () {
