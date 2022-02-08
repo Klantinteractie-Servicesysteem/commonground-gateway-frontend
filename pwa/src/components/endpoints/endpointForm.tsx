@@ -16,7 +16,7 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { TextareaGroup } from "../common/textarea";
+import { TextareaGroup } from "../common/textareaGroup";
 
 interface EndpointFormProps {
   id: string,
@@ -188,35 +188,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                           />
                         </div>
                         <div className="col-6">
-                          <SelectInputComponent
-                            options={[
-                              {name: "gateway-endpoint", value: "gateway-endpoint"},
-                              {name: 'entity-route', value: 'entity-route'},
-                              {name: 'entity-endpoint', value: 'entity-endpoint'},
-                              {name: 'documentation-endpoint', value: 'documentation-endpoint'}
-                            ]}
-                            name={"type"}
-                            id={"typeInput"}
-                            nameOverride={"Type"}
-                            data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
+                          <GenericInputComponent
+                            nameOverride={"Path"}
+                            name={"path"}
+                            data={endpoint && endpoint.path && endpoint.path}
+                            type={"text"}
+                            id={"pathInput"}
                             required={true}
                           />
                         </div>
                       </div>
                       <br/>
                       <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              nameOverride={"Path"}
-                              name={"path"}
-                              data={endpoint && endpoint.path && endpoint.path}
-                              type={"text"}
-                              id={"pathInput"}
-                              required={true}
-                            />
-                          </div>
-                        </div>
                         <div className="col-6">
                           <div className="form-group">
                             {
