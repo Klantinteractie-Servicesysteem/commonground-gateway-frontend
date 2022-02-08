@@ -16,7 +16,7 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import {TextareaComponent} from "../common/textareaComponent";
+import { TextareaGroup } from "../common/textarea";
 
 interface EndpointFormProps {
   id: string,
@@ -254,12 +254,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                       <div className="row">
                         <div className="col-12">
                           <div className="form-group">
-                            <TextareaComponent
-                              type={"text"}
+                            <TextareaGroup
                               name={"description"}
                               id={"descriptionInput"}
-                              data={endpoint && endpoint.description && endpoint.description}
-                              nameOverride={"Description"}
+                              defaultValue={endpoint?.description}
                             />
                           </div>
                         </div>
