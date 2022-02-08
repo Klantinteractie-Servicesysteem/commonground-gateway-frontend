@@ -49,7 +49,7 @@ export default function Layout({ children, title = "", subtext = "" }) {
                   <Footer />
                 </div>
               </div>
-            {/*<WelcomeModal />*/}
+            <WelcomeModal />
             </> : <Login />
           }
         </AlertProvider>

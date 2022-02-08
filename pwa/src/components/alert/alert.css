@@ -1,0 +1,38 @@
+.conduction-alert {
+    position: fixed;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 5px;
+    color: #ffffff;
+    padding: 32px;
+    top: 100px;
+    left: 50%;
+    z-index: 10;
+    transform: translateX(-50%);
+}
+
+.conduction-alert.conduction-alert-success {
+    background-color: #00B74A;
+}
+
+.conduction-alert.conduction-alert-danger {
+    background-color: #F93154;
+}
+
+.conduction-alert-closeContainer {
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 100ms ease-in-out;
+}
+
+.conduction-alert-closeContainer:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, .3);
+}

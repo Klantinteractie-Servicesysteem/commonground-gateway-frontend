@@ -1,24 +1,28 @@
 import * as React from "react";
-import {AlertContext} from "../../context/alertContext";
-import FlashMessage from 'react-flash-message';
-import {
-  Alert,
-} from "@conductionnl/nl-design-system/lib";
+import "./alert.css";
+import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const AlertComponent = () => {
   const [alert, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
-    console.log(alert)
+    alert && setTimeout(() => setAlert(null), 5000);
   }, [alert])
-  if (!alert) return <></>
 
   return (
-    <FlashMessage duration={5000}>
-      <Alert alertClass={alert.type} body={function () {
-        return (<>{alert.message}</>)
-      }} />
-    </FlashMessage>
+    alert ? (
+
+      <div className={`conduction-alert conduction-alert-${alert.type}`}>
+        {alert.message}
+
+        <div className="conduction-alert-closeContainer" onClick={() => setAlert(null)}>
+          <FontAwesomeIcon className="conduction-alert-close" icon={faTimes} />
+        </div>
+      </div>
+
+    ) : <></>
   )
 }
 
