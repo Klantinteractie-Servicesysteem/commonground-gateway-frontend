@@ -16,6 +16,7 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {TextareaComponent} from "../common/textareaComponent";
 
 interface EndpointFormProps {
   id: string,
@@ -175,7 +176,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                    {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -187,33 +188,23 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={endpoint && endpoint.description && endpoint.description}
-                            nameOverride={"Description"}
+                          <SelectInputComponent
+                            options={[
+                              {name: "gateway-endpoint", value: "gateway-endpoint"},
+                              {name: 'entity-route', value: 'entity-route'},
+                              {name: 'entity-endpoint', value: 'entity-endpoint'},
+                              {name: 'documentation-endpoint', value: 'documentation-endpoint'}
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
+                            required={true}
                           />
                         </div>
                       </div>
                       <br/>
                       <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <SelectInputComponent
-                              options={[
-                                {name: "gateway-endpoint", value: "gateway-endpoint"},
-                                {name: 'entity-route', value: 'entity-route'},
-                                {name: 'entity-endpoint', value: 'entity-endpoint'},
-                                {name: 'documentation-endpoint', value: 'documentation-endpoint'}
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
-                              required={true}/>
-                          </div>
-                        </div>
                         <div className="col-6">
                           <div className="form-group">
                             <GenericInputComponent
@@ -226,9 +217,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                             />
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
+                        <div className="col-6">
                           <div className="form-group">
                             {
                               applications !== null && applications.length > 0 ? (
@@ -259,6 +248,19 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                                   id={"applicationInput"}
                                   nameOverride={"Applications"}/>
                               )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="form-group">
+                            <TextareaComponent
+                              type={"text"}
+                              name={"description"}
+                              id={"descriptionInput"}
+                              data={endpoint && endpoint.description && endpoint.description}
+                              nameOverride={"Description"}
+                            />
                           </div>
                         </div>
                       </div>
