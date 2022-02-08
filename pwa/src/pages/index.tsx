@@ -1,20 +1,18 @@
 import * as React from "react";
-import Layout from "../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib";
 import LogTable from "../components/logs/logTable/logTable";
 import { getUser, isLoggedIn } from "../services/auth";
+import {HeaderContext} from "../context/headerContext";
 
 const IndexPage = () => {
+  const [header, setHeader] = React.useContext(HeaderContext);
+
+  // React.useEffect(() => {
+  //   setHeader({title: 'Dashboard', subText: isLoggedIn() ? `Welcome ${getUser().username}, to the gateway admin dashboard` : `Welcome to the gateway admin dashboard`})
+  // }, [header])
 
   return (
-    <Layout
-      title={"Dashboard"}
-      subtext={
-        isLoggedIn()
-          ? `Welcome ${getUser().username}, to the gateway admin dashboard`
-          : `Welcome to the gateway admin dashboard`
-      }>
-      {isLoggedIn() && (
+      isLoggedIn() && (
         <>
           <div className="page-top-item">
             <Tabs
@@ -38,8 +36,7 @@ const IndexPage = () => {
             </div>
           </div>
         </>
-      )}
-    </Layout >
+      )
   );
 };
 
