@@ -5,23 +5,16 @@ import {HeaderContext} from "../../context/headerContext";
 const IndexPage = () => {
   const [header, setHeader] = React.useContext(HeaderContext);
 
-  // React.useEffect(() => {
-  // setHeader({title: 'Applications', subText: 'An overview of your applications objects'})
-  // }, [header])
-
   return (
-    <>
-      <title>Gateway - Entities</title>
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <div className="page-top-item">
-              <ApplicationsTable/>
-            </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <div className="page-top-item">
+            <ApplicationsTable/>
           </div>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   )
 }
 

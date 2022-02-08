@@ -19,6 +19,7 @@ import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
@@ -29,8 +30,10 @@ export default function HandlerForm({id, endpointId}) {
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = (id === "new") ? "Create Handler" : "Edit Handler";
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    id !== 'new' ? setHeader({title: `${id}`, subText: 'Edit your handler here'}) : setHeader({title: `Create`, subText: 'Create your handler here'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,
