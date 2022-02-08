@@ -8,6 +8,8 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
+import WelcomeModal from "../welcomeModal/welcomeModal";
+import favicon from "../../images/conduction_logo_blauw.svg";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -27,10 +29,12 @@ export default function Layout({ children, title = "", subtext = "" }) {
   return (
     API &&
       <APIProvider value={API}>
-
         {isLoggedIn() ?
           <>
-            <Helmet>
+            <Helmet
+              link={[
+                { rel: 'shortcut icon', type: 'image/png', href: favicon }
+              ]}>
               <title>Gateway Admin Dashboard</title>
             </Helmet>
             <div className="utrecht-document conduction-theme">
@@ -43,9 +47,9 @@ export default function Layout({ children, title = "", subtext = "" }) {
                 <Footer />
               </div>
             </div>
+            <WelcomeModal />
           </> : <Login />
         }
-
       </APIProvider>
   );
 }

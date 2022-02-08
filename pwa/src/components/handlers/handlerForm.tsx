@@ -12,18 +12,20 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert, Checkbox,
+  Alert,
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
@@ -112,7 +114,7 @@ export default function HandlerForm({id, endpointId}) {
 
   const saveHandler = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let skeletonIn: any[] = retrieveFormArrayAsOArray(event.target, "skeletonIn");
     let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
@@ -128,7 +130,8 @@ export default function HandlerForm({id, endpointId}) {
       description: event.target.description
         ? event.target.description.value : null,
       sequence: event.target.sequence.value
-        ? parseInt(event.target.sequence.value) : null,
+        ? parseInt(event.target.sequence.value)
+        : null,
       endpoint: `/admin/endpoints/${endpointId}`,
       entity: event.target.entity.value
         ? event.target.entity.value : null,
@@ -147,11 +150,10 @@ export default function HandlerForm({id, endpointId}) {
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
-
     if (!checkValues([body["name"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
@@ -179,11 +181,12 @@ export default function HandlerForm({id, endpointId}) {
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
-        setShowSpinner(false);
+        setLoadingOverlay(false);
       })
   };
 
-  return (<>
+  return (
+    <>
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -196,16 +199,17 @@ export default function HandlerForm({id, endpointId}) {
         <Card
           title={title}
           cardHeader={function () {
-            return (<>
-              <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+            return (
+              <>
+                <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  </button>
+                </Link>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                  <i className="fas fa-save mr-2"/>Save
                 </button>
-              </Link>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                <i className="fas fa-save mr-2"/>Save
-              </button>
-            </>)
+              </>)
           }}
           cardBody={function () {
             return (
@@ -215,6 +219,7 @@ export default function HandlerForm({id, endpointId}) {
                     <Spinner/>
                   ) : (
                     <>
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -222,7 +227,8 @@ export default function HandlerForm({id, endpointId}) {
                             name={"name"}
                             id={"nameInput"}
                             data={handler && handler.name && handler.name}
-                            nameOverride={"Name"} required
+                            nameOverride={"Name"}
+                            required
                           />
                         </div>
                         <div className="col-6">
@@ -243,8 +249,22 @@ export default function HandlerForm({id, endpointId}) {
                             name={"sequence"}
                             id={"sequenceInput"}
                             data={handler && handler.sequence && handler.sequence}
-                            nameOverride={"Sequence"} required/>
+                            nameOverride={"Sequence"}
+                            required
+                          />
                         </div>
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"templateType"}
+                            id={"templateTypeInput"}
+                            data={handler && handler.templateType && handler.templateType}
+                            nameOverride={"Template Type"}
+                          />
+                        </div>
+                      </div>
+                      <br/>
+                      <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
@@ -254,9 +274,6 @@ export default function HandlerForm({id, endpointId}) {
                             nameOverride={"Template"}
                           />
                         </div>
-                      </div>
-                      <br/>
-                      <div className="row">
                         <div className="col-6">
                           {
                             entities !== null && entities.length > 0 ? (
@@ -267,55 +284,25 @@ export default function HandlerForm({id, endpointId}) {
                                     <SelectInputComponent
                                       options={entities}
                                       data={handler.entity}
-                                      name={"entity"} id={"entityInput"}
-                                      nameOverride={"Entity"}
+                                      name={"entity"} id={"entityInput"} nameOverride={"Entity"}
                                       value={"/admin/entities/"}/>
                                   )
                                   : (
                                     <SelectInputComponent
                                       options={entities}
-                                      name={"entity"} id={"entityInput"}
-                                      nameOverride={"Entity"}
+                                      name={"entity"} id={"entityInput"} nameOverride={"Entity"}
                                       value={"/admin/entities/"}/>
                                   )}
                               </div>
                             ) : (
                               <SelectInputComponent
                                 options={[]}
-                                name={"entity"} id={"entityInput"}
-                                nameOverride={"Entity"}
+                                name={"entity"} id={"entityInput"} nameOverride={"Entity"}
                                 value={"/admin/entities/"}/>
                             )
                           }
                         </div>
-                        <div className="col-6">
-                          {handler !== null && handler.type !== null ? (
-                            <SelectInputComponent
-                              options={[
-                                {name: "twig", value: "twig"},
-                                {name: "markdown", value: "markdown"},
-                                {name: "restructuredText", value: "restructuredText"},
-                              ]}
-                              name={"templateType"}
-                              id={"templateTypeInput"}
-                              nameOverride={"Template Type"}
-                              data={handler.templateType}
-                            />
-                          ) : (
-                            <SelectInputComponent
-                              options={[
-                                {name: "twig", value: "twig"},
-                                {name: "markdown", value: "markdown"},
-                                {name: "restructuredText", value: "restructuredText"},
-                              ]}
-                              name={"type"}
-                              id={"templateTypeInput"}
-                              nameOverride={"Template Type"}
-                            />
-                          )}
-                        </div>
                       </div>
-
                       <Accordion
                         id="handlerAccordion"
                         items={[
@@ -422,8 +409,7 @@ export default function HandlerForm({id, endpointId}) {
                               )
                             }
                           }
-                        ]}
-                      />
+                        ]}/>
                     </>
                   )}
                 </div>

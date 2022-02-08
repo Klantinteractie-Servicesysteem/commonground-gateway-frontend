@@ -2,10 +2,16 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["dom"],
+    "lib": [
+      "dom"
+    ],
     "jsx": "preserve",
     "moduleResolution": "node",
     "allowJs": true,
     "outDir": "./build",
-  }
+  },
+  "include": [
+    "src/custom.d.ts",
+    "src/components"
+  ] 
 }

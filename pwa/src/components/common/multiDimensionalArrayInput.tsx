@@ -59,7 +59,7 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
       </div>
       <br />
       <div className="separator-solid" />
-      <h5>Add {props.label ?? props.id}</h5>
+      <h5>Create {props.label ?? props.id}</h5>
       <div className="d-flex">
         <div>
           <div className="form-group">
