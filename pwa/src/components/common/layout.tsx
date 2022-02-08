@@ -8,9 +8,10 @@ import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
-import { AlertContext, AlertProvider, AlertProps } from "../../context/alertContext";
+import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import favicon from "../../images/conduction_logo_blauw.svg";
+import Alert from "../alert/alert";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -48,21 +49,10 @@ export default function Layout({ children, title = "", subtext = "" }) {
                   <Footer />
                 </div>
               </div>
-            <WelcomeModal />
+            {/*<WelcomeModal />*/}
             </> : <Login />
           }
         </AlertProvider>
       </APIProvider>
   );
-}
-
-const Alert = () => {
-  const [alert, setAlert] = React.useContext(AlertContext)
-
-  // na ±5 seconde moet setAlert(null) draaien
-  // dit component moet losgetrokken worden (dus niet in layout)
-
-  if (!alert) return <></>
-
-  return <div>{alert.message} {alert.type}</div> // hier moet de alert komen
 }
