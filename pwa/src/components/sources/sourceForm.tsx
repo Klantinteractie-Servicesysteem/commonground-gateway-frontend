@@ -393,7 +393,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                           ) : (
                             <GenericInputComponent
                               type={"text"}
-                              nameOverride={"Documentation"}
+                              nameOverride={"Documentation(url)"}
                               name={"documentation"}
                               id={"documentationInput"}
                             />
