@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Card, Table, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
-import { Link } from "gatsby";
+import {Table, Card, Spinner} from "@conductionnl/nl-design-system/lib";
+import {Link} from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
@@ -9,16 +9,18 @@ export default function EndpointsTable() {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
 
-  React.useEffect(() => { handleSetEndpoints() }, [API])
+  React.useEffect(() => {
+    handleSetEndpoints()
+  }, [API])
 
   const handleSetEndpoints = () => {
     setShowSpinner(true)
-    API.Application.getAll()
+    API.Endpoint.getAll()
       .then((res) => {
         setEndpoints(res.data)
       })
       .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
+        throw new Error('GET Entities error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
@@ -36,16 +38,16 @@ export default function EndpointsTable() {
               data-toggle="modal"
               data-target="helpModal"
             >
-              <i className="fas fa-question mr-1" />
+              <i className="fas fa-question mr-1"/>
               <span className="mr-2">Help</span>
             </button>
             <a className="utrecht-link" onClick={handleSetEndpoints}>
-              <i className="fas fa-sync-alt mr-1" />
+              <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
+                <i className="fas fa-plus mr-2"/>
                 Create
               </button>
             </Link>
@@ -57,7 +59,7 @@ export default function EndpointsTable() {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner />
+                <Spinner/>
               ) : endpoints ? (
                 <Table
                   columns={[
@@ -74,9 +76,12 @@ export default function EndpointsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/endpoints/${item.id}`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
+                              <i className="fas fa-edit pr-1"/>
                               Edit
                             </button>
                           </Link>
@@ -98,7 +103,12 @@ export default function EndpointsTable() {
                       field: "description",
                     },
                   ]}
-                  rows={[{ name: "No results found", description: " " }]}
+                  rows={[
+                    {
+                      name: "No results found",
+                      description: " ",
+                    }
+                  ]}
                 />
               )}
             </div>
@@ -106,5 +116,5 @@ export default function EndpointsTable() {
         );
       }}
     />
-  );
+  )
 }

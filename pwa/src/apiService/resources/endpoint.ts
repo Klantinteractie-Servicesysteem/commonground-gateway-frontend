@@ -6,7 +6,9 @@ export default class Endpoint {
   constructor (_instance: AxiosInstance) {
     this._instance = _instance
   }
-
+  public getAll = (): Promise<AxiosResponse> => {
+    return this._instance.get('/attributes')
+  }
   public getOne = (id: string): Promise<AxiosResponse> => {
     return this._instance.get(`/endpoints/${id}`)
   }
