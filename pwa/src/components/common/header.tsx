@@ -1,25 +1,29 @@
 import * as React from "react";
+import {HeaderContext} from "../../context/headerContext";
 
+const Header = () => {
+  const [header, _] = React.useContext(HeaderContext)
 
+  React.useEffect(() => {
 
-/**
- * This components renders a header.
- *
- * @returns TSX of the generated Header.
- */
-export default function Header({title, subText}) {
+  }, [header])
+
   return (
-    <>
-      <header className="utrecht-page-header">
+    header ? (
+      <>
+        <header className="utrecht-page-header">
         <div className="container">
           <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">
-            {title}
+            {header.title}
           </h1>
           <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-            {subText}
+            {header.subText}
           </h5>
         </div>
-      </header>
-    </>
+        </header>
+      </>
+      ) : <></>
   );
 }
+
+export default Header

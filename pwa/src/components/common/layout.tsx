@@ -3,7 +3,6 @@ import Footer from './../footer/footer'
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
-import Header from "./header";
 import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { isLoggedIn } from "../../services/auth";
@@ -12,18 +11,18 @@ import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import favicon from "../../images/conduction_logo_blauw.svg";
 import Alert from "../alert/alert";
-
+import {HeaderProps, HeaderProvider} from "../../context/headerContext";
+import Header from "./header";
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
  *
  * @param {object} children Content that is rendered as body.
- * @param {string|null} title Title for the page.
- * @param {string|null} subText Subtext for the site.
- * @returns TSX of the generated Layout.
+ * @returns JSX of the generated Layout.
  */
-export default function Layout({ children, title = "", subtext = "" }) {
+export default function Layout({ children}) {
   const [API, setAPI] = React.useState<APIService>(null)
   const [alert, setAlert] = React.useState<AlertProps>(null);
+  const [header, setHeader] = React.useState<HeaderProps>(null);
 
   React.useEffect(() => {
     !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
@@ -33,6 +32,7 @@ export default function Layout({ children, title = "", subtext = "" }) {
     API &&
     <APIProvider value={API}>
       <AlertProvider value={[alert, setAlert]}>
+        <HeaderProvider value={[header, setHeader]}>
         {isLoggedIn() ?
             <>
               <Alert />
@@ -43,7 +43,9 @@ export default function Layout({ children, title = "", subtext = "" }) {
                 <div className="utrecht-page">
                   <MainMenu />
                   <div className="utrecht-page__content">
-                    <Header title={title} subText={subtext} />
+                    <header className="utrecht-page-header">
+                      <Header />
+                    </header>
                     <div className="container py-4">{children}</div>
                   </div>
                   <Footer />
@@ -52,7 +54,8 @@ export default function Layout({ children, title = "", subtext = "" }) {
             <WelcomeModal />
             </> : <Login />
           }
-        </AlertProvider>
+        </HeaderProvider>
+      </AlertProvider>
       </APIProvider>
   );
 }
