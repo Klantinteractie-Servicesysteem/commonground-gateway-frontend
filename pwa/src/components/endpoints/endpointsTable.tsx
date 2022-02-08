@@ -3,14 +3,17 @@ import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
   const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader({title: 'Endpoints', subText: 'An overview of your endpoints objects'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,

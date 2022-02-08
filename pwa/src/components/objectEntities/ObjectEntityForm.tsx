@@ -9,6 +9,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface ObjectEntityFormProps {
   objectEntityId: string,
@@ -23,8 +24,10 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const API: APIService = React.useContext(APIContext);
   const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    objectEntityId ? setHeader({title: `${objectEntityId}`, subText: 'Edit your object entity here'}) : setHeader({title: `Create`, subText: 'Create your object entity here'})
     objectEntityId && handleSetEntity_object()
     handleSetApplications()
   }, [API, objectEntityId])

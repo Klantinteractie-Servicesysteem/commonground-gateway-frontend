@@ -16,6 +16,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface IApplication {
   name: string,
@@ -37,8 +38,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    id ? setHeader({title: `${id}`, subText: 'Edit your application here'}) : setHeader({title: `Create`, subText: 'Create your application here'})
     id && handleSetApplications()
   }, [API, id])
 

@@ -1,16 +1,9 @@
 import * as React from "react";
 import { Tabs } from "@conductionnl/nl-design-system/lib";
 import LogTable from "../components/logs/logTable/logTable";
-import { getUser, isLoggedIn } from "../services/auth";
-import {HeaderContext} from "../context/headerContext";
+import { isLoggedIn } from "../services/auth";
 
 const IndexPage = () => {
-  const [header, setHeader] = React.useContext(HeaderContext);
-
-  // React.useEffect(() => {
-  //   setHeader({title: 'Dashboard', subText: isLoggedIn() ? `Welcome ${getUser().username}, to the gateway admin dashboard` : `Welcome to the gateway admin dashboard`})
-  // }, [header])
-
   return (
       isLoggedIn() && (
         <>

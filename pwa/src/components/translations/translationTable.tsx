@@ -3,14 +3,17 @@ import {Table, Card, Spinner} from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
 import {Link} from "gatsby";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function TranslationTable({id}) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader({title: 'Translations', subText: 'An overview of your translations objects'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,

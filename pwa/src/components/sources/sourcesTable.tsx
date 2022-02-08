@@ -4,14 +4,18 @@ import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { handleSetSources() }, [API])
+  React.useEffect(() => {
+    setHeader({title: 'Sources', subText: 'An overview of your source objects'})
+    handleSetSources() }, [API])
 
   const handleSetSources = () => {
     setShowSpinner(true)

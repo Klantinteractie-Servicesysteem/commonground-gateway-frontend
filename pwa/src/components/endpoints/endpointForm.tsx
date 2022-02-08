@@ -14,13 +14,13 @@ import {
 } from "../utility/inputHandler";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface EndpointFormProps {
   id: string,
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
-
   const [context, setContext] = React.useState(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
@@ -28,8 +28,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    id !== 'new' ? setHeader({title: `${id}`, subText: 'Edit your endpoint here'}) : setHeader({title: `Create`, subText: 'Create your endpoint here'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,

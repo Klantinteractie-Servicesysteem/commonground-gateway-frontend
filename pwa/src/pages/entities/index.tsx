@@ -1,10 +1,9 @@
 import * as React from "react";
-import Layout from "../../components/common/layout";
 import EntitiesTable from "../../components/entities/entitiesTable";
 
 const IndexPage = () => {
   return (
-    <Layout title={"Object"} subtext={"An overview of your objects"}>
+    <>
       <title>Gateway - Objects</title>
       <main>
         <div className="row">
@@ -15,7 +14,7 @@ const IndexPage = () => {
           </div>
         </div>
       </main>
-    </Layout>
+    </>
   )
 }
 

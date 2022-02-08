@@ -4,14 +4,20 @@ import { Link } from "gatsby";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function ApplicationsTable() {
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { handleSetApplications() }, [API])
+  React.useEffect(() => {
+    handleSetApplications()
+    setHeader({title: 'Applications', subText: 'An overview of your applications objects'})
+  }, [API])
+
 
   const handleSetApplications = () => {
     setShowSpinner(true)

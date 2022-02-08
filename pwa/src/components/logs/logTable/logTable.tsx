@@ -9,6 +9,8 @@ import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import {AlertContext} from "../../../context/alertContext";
+import {HeaderContext} from "../../../context/headerContext";
+import {getUser, isLoggedIn} from "../../../services/auth";
 
 interface LogTableProps {
   entityId?: string;
@@ -19,8 +21,12 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { handleSetLogs() }, [API, entityId]);
+  React.useEffect(() => {
+    handleSetLogs()
+      setHeader({title: 'Dashboard', subText: isLoggedIn() ? `Welcome ${getUser().username}, to the gateway admin dashboard` : `Welcome to the gateway admin dashboard`})
+  }, [API, entityId]);
 
   const handleSetLogs = () => {
     setShowSpinner(true)

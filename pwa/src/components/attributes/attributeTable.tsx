@@ -4,14 +4,19 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { handleSetAttributes() }, [API])
+  React.useEffect(() => {
+    handleSetAttributes()
+    setHeader({title: 'Attributes', subText: 'An overview of your attributes objects'})
+  }, [API])
 
   const handleSetAttributes = () => {
     setShowSpinner(true)

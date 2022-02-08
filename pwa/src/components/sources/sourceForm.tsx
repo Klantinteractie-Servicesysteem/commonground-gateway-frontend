@@ -18,6 +18,7 @@ import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface SourceFormProps {
   id: string,
@@ -30,8 +31,10 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    id ? setHeader({title: `${id}`, subText: 'Edit your source here'}) : setHeader({title: `Create`, subText: 'Create your source here'})
     id && handleSetSource()
   }, [API, id])
 

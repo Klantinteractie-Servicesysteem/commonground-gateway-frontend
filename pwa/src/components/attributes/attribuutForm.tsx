@@ -21,6 +21,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface AttributeFormProps {
   attributeId: string,
@@ -35,8 +36,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    attributeId ? setHeader({title: `${attributeId}`, subText: 'Edit your attribute here'}) : setHeader({title: `Create`, subText: 'Create your attribute here'})
     if (attributeId) {
       handleSetAttributes()
       handleSetAttribute()

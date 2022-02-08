@@ -1,11 +1,17 @@
 import * as React from "react"
-import Layout from "../../components/common/layout";
 import ApplicationsTable from "../../components/applications/applicationsTable";
+import {HeaderContext} from "../../context/headerContext";
 
 const IndexPage = () => {
+  const [header, setHeader] = React.useContext(HeaderContext);
+
+  // React.useEffect(() => {
+  // setHeader({title: 'Applications', subText: 'An overview of your applications objects'})
+  // }, [header])
+
   return (
-    // <Layout title={"Applications"} subtext={"An overview of your applications objects"}>
-    //   <ttle>Gateway - Entities</title>
+    <>
+      <title>Gateway - Entities</title>
       <main>
         <div className="row">
           <div className="col-12">
@@ -15,7 +21,7 @@ const IndexPage = () => {
           </div>
         </div>
       </main>
-    // </Layout>
+    </>
   )
 }
 

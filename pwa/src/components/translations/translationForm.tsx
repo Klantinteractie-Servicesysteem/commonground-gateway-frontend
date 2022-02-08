@@ -9,6 +9,7 @@ import Spinner from "../common/spinner";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface TranslationFormProps {
   id: string,
@@ -21,8 +22,10 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
   const [_, setAlert] = React.useContext(AlertContext)
+  const [header, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    id !== 'new' ? setHeader({title: `${id}`, subText: 'Edit your translation here'}) : setHeader({title: `Create`, subText: 'Create your translation here'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL,
@@ -53,8 +56,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
       .then((response) => response.json())
       .then((data) => {
         setTranslation(data);
-        method === 'POST' && navigate("/translations") && setAlert({type: 'danger', message: 'Saved translation'})
-        setAlert({type: 'danger', message: 'Updated translation'})
+        method === 'POST' && navigate("/translations")
+        setAlert({type: 'success', message: 'Saved translation'})
       })
       .catch((error) => {
         console.error(error);

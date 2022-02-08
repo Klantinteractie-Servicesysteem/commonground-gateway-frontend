@@ -1,5 +1,4 @@
 import * as React from "react";
-import Layout from "../../../components/common/layout";
 import AttributeForm from "../../../components/attributes/attribuutForm";
 
 const IndexPage = (props) => {
@@ -7,15 +6,13 @@ const IndexPage = (props) => {
   const entityId: string = props.params.entity === "new" ? null : props.params.entity
 
   return (
-    <Layout title={"Properties"} subtext={"Create or edit your properties"}>
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <AttributeForm {...{attributeId, entityId}} />
-          </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <AttributeForm {...{attributeId, entityId}} />
         </div>
-      </main>
-    </Layout>
+      </div>
+    </main>
   )
 }
 
