@@ -58,7 +58,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
     let headers = retrieveFormArrayAsOArray(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
-    let translationConfig = retrieveFormArrayAsOArray(event.target, "translationConfig");
 
     let body: {} = {
       name: event.target.name.value,
@@ -81,7 +80,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
       headers,
       oas,
       paths,
-      translationConfig
     };
 
 
