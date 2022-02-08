@@ -6,8 +6,8 @@ import {
   Alert,
   Accordion
 } from "@conductionnl/nl-design-system/lib";
-import { Link } from "gatsby";
-import { navigate } from "gatsby-link";
+import {Link} from "gatsby";
+import {navigate} from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
@@ -16,6 +16,7 @@ import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
 interface IApplication {
   name: string,
@@ -30,27 +31,36 @@ interface ApplicationFormProps {
   id?: string,
 }
 
-export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
+export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
 
-  React.useEffect(() => { id && handleSetApplications() }, [API, id])
+  React.useEffect(() => {
+    id && handleSetApplications()
+  }, [API, id])
 
   const handleSetApplications = () => {
     setShowSpinner(true)
 
     API.Application.getOne(id)
-      .then((res) => { setApplication(res.data) })
-      .catch((err) => { throw new Error ('GET application error: ' + err) })
-      .finally(() => { setShowSpinner(false) })
+      .then((res) => {
+        setApplication(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET application error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
   }
 
   const saveApplication = (event) => {
     event.preventDefault();
-    setShowSpinner(true);
+    setLoadingOverlay(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
 
@@ -72,36 +82,41 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     if (!checkValues([body["name"], body["domains"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setLoadingOverlay(false);
       return;
     }
 
     if (!id) { // unset id means we're creating a new entry
       API.Application.create(body)
-        .then((res) => {
-          setApplication(res.data)
+        .then(() => {
           navigate('/applications')
         })
         .catch((err) => {
-          setAlert({ type: 'danger', message: err.message });
-          throw new Error ('Create application error: ' + err)
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Create application error: ' + err)
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
         })
     }
 
     if (id) { // set id means we're updating a existing entry
       API.Application.update(body, id)
         .then((res) => {
-          setApplication(res.data)
-          navigate('/applications')
+          setApplication(res.data);
         })
         .catch((err) => {
-          setAlert({ type: 'danger', message: err.message });
-          throw new Error ('Update application error: ' + err)
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Update application error: ' + err)
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
         })
     }
   };
 
-  return (<div>
+  return (
+    <div>
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -111,7 +126,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         </FlashMessage>
       }
       <form id="applicationForm" onSubmit={saveApplication}>
-        <Card title={title}
+        <Card
+          title={title}
           cardHeader={function () {
             return (<>
               <Link className="utrecht-link" to={"/applications"}>
@@ -135,55 +151,74 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                     <Spinner/>
                   ) : (
                     <div>
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"}
-                                                 data={application && application.name && application.name}
-                                                 nameOverride={"Name"} required/>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            data={application && application.name && application.name}
+                            nameOverride={"Name"}
+                            required
+                          />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"description"} id={"descriptionInput"}
-                                                 data={application && application.description && application.description}
-                                                 nameOverride={"Description"}/>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"description"}
+                            id={"descriptionInput"}
+                            data={application && application.description && application.description}
+                            nameOverride={"Description"}
+                          />
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"public"} id={"publicInput"}
-                                                 data={application && application.public && application.public}
-                                                 nameOverride={"Public"}/>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"public"}
+                            id={"publicInput"}
+                            data={application && application.public && application.public}
+                            nameOverride={"Public"}
+                          />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"secret"} id={"secretInput"}
-                                                 data={application && application.secret && application.secret}
-                                                 nameOverride={"Secret"}/>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"secret"}
+                            id={"secretInput"}
+                            data={application && application.secret && application.secret}
+                            nameOverride={"Secret"}
+                          />
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          <GenericInputComponent type={"text"} name={"resource"} id={"resourceInput"}
-                                                 data={application && application.resource && application.resource}
-                                                 nameOverride={"Resource"}/>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"resource"}
+                            id={"resourceInput"}
+                            data={application && application.resource && application.resource}
+                            nameOverride={"Resource"}
+                          />
                         </div>
                       </div>
-
                       <Accordion
                         id="applicationAccordion"
-                        items={[
-                          {
-                            title: "Domains *",
-                            id: "domainsAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="domains"
-                                  label="Domains"
-                                  data={application?.domains}
-                                />
-                              );
-                            },
-                          }
-                        ]}
+                        items={[{
+                          title: "Domains *",
+                          id: "domainsAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="domains"
+                                label="Domains"
+                                data={application?.domains}
+                              />
+                            );
+                          },
+                        }]}
                       />
                     </div>
                   )}

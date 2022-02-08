@@ -1,14 +1,17 @@
 import * as React from "react"
 import Layout from "../../../components/common/layout";
-import ObjectEntityForm from "../../../components/object_entities/dataForm";
+import ObjectEntityForm from "../../../components/objectEntities/ObjectEntityForm";
 
-const IndexPage = ({id, entityId}) => {
+const IndexPage = (props) => {
+  const objectEntityId: string = props.params.id === "new" ? null : props.params.id
+  const entityId: string = props.params.entity === "new" ? null : props.params.entity
+
   return (
-    <Layout title='Object entity' subtext="Edit your object entity here">
+    <Layout title='Object entity' subtext="Create or edit your object entities">
       <main>
         <div className="row">
           <div className="col-12">
-            <ObjectEntityForm id={id} entityId={entityId}/>
+            <ObjectEntityForm {...{objectEntityId, entityId}} />
           </div>
         </div>
       </main>

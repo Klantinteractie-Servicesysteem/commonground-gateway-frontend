@@ -40,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({layoutClassName}) => {
         <ul className="footer-list">
           <li>
             <a href="https://conduction.nl" target="_blank">
-              Code with <FontAwesomeIcon className="footer-list-itemIcon--red" icon={faHeart} /> by Conduction
+              Coded with <FontAwesomeIcon className="footer-list-itemIcon--red" icon={faHeart} /> by Conduction
             </a>
           </li>
         </ul>

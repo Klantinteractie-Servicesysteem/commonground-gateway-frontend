@@ -96,7 +96,7 @@ export default function TableNamesTable() {
                         headerName: " ",
                         renderCell: (tables: { name: string }) => {
                           return (
-                            <Link to={`/translations/${tables.name}`}>
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/translations/${tables.name}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <i className="fas fa-edit pr-1" />
                                 Edit

@@ -1,33 +1,37 @@
 import * as React from "react";
-import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
-export default function ApplicationsTable() {
-  const [applications, setApplications] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+interface ObjectEntitiesTableProps {
+  entityId: string,
+}
 
-  React.useEffect(() => { handleSetApplications() }, [API])
+const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
+  const [objectEntities, setObjectEntities] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const API: APIService = React.useContext(APIContext);
 
-  const handleSetApplications = () => {
+  React.useEffect(() => { entityId && handleSetObjectEntities() }, [API, entityId])
+
+  const handleSetObjectEntities = () => {
     setShowSpinner(true)
-    API.Application.getAll()
+    API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        setApplications(res.data)
+        setObjectEntities(res.data)
       })
       .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
+        throw new Error ('GET object entities error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
       })
   }
 
-  return (
+  return (<>
     <Card
-      title={"Applications"}
+      title={"Object entities"}
       cardHeader={function () {
         return (
           <>
@@ -39,11 +43,11 @@ export default function ApplicationsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={handleSetApplications}>
+            <a className="utrecht-link" onClick={handleSetObjectEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/applications/new">
+            <Link to={`/object_entities/new/${entityId}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -58,23 +62,23 @@ export default function ApplicationsTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : applications ? (
+              ) : objectEntities ? (
                 <Table
                   columns={[
                     {
-                      headerName: "Name",
-                      field: "name",
+                      headerName: "Uri",
+                      field: "uri",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Owner",
+                      field: "owner",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/applications/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${entityId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -84,27 +88,29 @@ export default function ApplicationsTable() {
                       },
                     },
                   ]}
-                  rows={applications}
+                  rows={objectEntities}
                 />
               ) : (
                 <Table
                   columns={[
                     {
-                      headerName: "Name",
-                      field: "name",
+                      headerName: "Uri",
+                      field: "uri",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Owner",
+                      field: "owner",
                     },
                   ]}
-                  rows={[{name: "No results found", description: " "}]}
+                  rows={[]}
                 />
               )}
             </div>
           </div>
         );
       }}
-    />
+    /></>
   );
 }
+
+export default ObjectEntitiesTable
