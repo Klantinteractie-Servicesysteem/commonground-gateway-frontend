@@ -4,10 +4,6 @@ import {HeaderContext} from "../../context/headerContext";
 const Header = () => {
   const [header, _] = React.useContext(HeaderContext)
 
-  React.useEffect(() => {
-
-  }, [header])
-
   return (
     header ? (
       <>
