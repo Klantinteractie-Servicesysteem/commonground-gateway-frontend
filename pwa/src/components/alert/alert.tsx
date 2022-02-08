@@ -8,6 +8,9 @@ import {
 const AlertComponent = () => {
   const [alert, setAlert] = React.useContext(AlertContext)
 
+  React.useEffect(() => {
+    console.log(alert)
+  }, [alert])
   if (!alert) return <></>
 
   return (

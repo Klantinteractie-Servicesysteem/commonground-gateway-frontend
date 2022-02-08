@@ -4,8 +4,8 @@ import ApplicationsTable from "../../components/applications/applicationsTable";
 
 const IndexPage = () => {
   return (
-    <Layout title={"Applications"} subtext={"An overview of your applications objects"}>
-      <title>Gateway - Entities</title>
+    // <Layout title={"Applications"} subtext={"An overview of your applications objects"}>
+    //   <ttle>Gateway - Entities</title>
       <main>
         <div className="row">
           <div className="col-12">
@@ -15,7 +15,7 @@ const IndexPage = () => {
           </div>
         </div>
       </main>
-    </Layout>
+    // </Layout>
   )
 }
 
