@@ -12,24 +12,23 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
-import FlashMessage from 'react-flash-message';
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {AlertContext} from "../../context/alertContext";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = (id === "new") ? "Create Handler" : "Edit Handler";
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -62,7 +61,6 @@ export default function HandlerForm({id, endpointId}) {
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
-        setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
   };
@@ -85,7 +83,6 @@ export default function HandlerForm({id, endpointId}) {
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
-        setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
   };
@@ -107,7 +104,6 @@ export default function HandlerForm({id, endpointId}) {
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
-        setAlert(null);
         setAlert({type: 'danger', message: error.message});
       });
   };
@@ -151,7 +147,6 @@ export default function HandlerForm({id, endpointId}) {
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
-      setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setLoadingOverlay(false);
       return;
@@ -173,11 +168,14 @@ export default function HandlerForm({id, endpointId}) {
       .then((response) => response.json())
       .then((data) => {
         setHandler(data)
-        method === 'POST' && navigate(`/endpoints/${endpointId}`)
+        method === 'POST' && navigate(`/endpoints/${endpointId}`) && setAlert({
+          message: 'Saved handler',
+          type: 'success'
+        })
+        setAlert({message: 'Updated handler', type: 'success'})
       })
       .catch((error) => {
         console.log("Error:", error);
-        setAlert(null);
         setAlert({type: 'danger', message: error.message});
       })
       .finally(() => {
@@ -186,238 +184,228 @@ export default function HandlerForm({id, endpointId}) {
   };
 
   return (
-    <>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      }
-      <form id="handlerForm" onSubmit={saveHandler}>
-        <Card
-          title={title}
-          cardHeader={function () {
-            return (
-              <>
-                <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                  </button>
-                </Link>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                  <i className="fas fa-save mr-2"/>Save
+    <form id="handlerForm" onSubmit={saveHandler}>
+      <Card
+        title={title}
+        cardHeader={function () {
+          return (
+            <>
+              <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                 </button>
-              </>)
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    <>
-                      {loadingOverlay && <LoadingOverlay /> }
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={handler && handler.name && handler.name}
-                            nameOverride={"Name"}
-                            required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={handler && handler.description && handler.description}
-                            nameOverride={"Description"}
-                          />
-                        </div>
+              </Link>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </>)
+        }}
+        cardBody={function () {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner/>
+                ) : (
+                  <>
+                    {loadingOverlay && <LoadingOverlay/>}
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={handler && handler.name && handler.name}
+                          nameOverride={"Name"}
+                          required
+                        />
                       </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"number"}
-                            name={"sequence"}
-                            id={"sequenceInput"}
-                            data={handler && handler.sequence && handler.sequence}
-                            nameOverride={"Sequence"}
-                            required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"templateType"}
-                            id={"templateTypeInput"}
-                            data={handler && handler.templateType && handler.templateType}
-                            nameOverride={"Template Type"}
-                          />
-                        </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"description"}
+                          id={"descriptionInput"}
+                          data={handler && handler.description && handler.description}
+                          nameOverride={"Description"}
+                        />
                       </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"template"}
-                            id={"templateInput"}
-                            data={handler && handler.template && handler.template}
-                            nameOverride={"Template"}
-                          />
-                        </div>
-                        <div className="col-6">
-                          {
-                            entities !== null && entities.length > 0 ? (
-                              <div className="form-group">
-                                {handler !== null &&
-                                handler.entity !== undefined &&
-                                handler.entity !== null ? (
-                                    <SelectInputComponent
-                                      options={entities}
-                                      data={handler.entity}
-                                      name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                      value={"/admin/entities/"}/>
-                                  )
-                                  : (
-                                    <SelectInputComponent
-                                      options={entities}
-                                      name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                      value={"/admin/entities/"}/>
-                                  )}
-                              </div>
-                            ) : (
-                              <SelectInputComponent
-                                options={[]}
-                                name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                value={"/admin/entities/"}/>
+                    </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"number"}
+                          name={"sequence"}
+                          id={"sequenceInput"}
+                          data={handler && handler.sequence && handler.sequence}
+                          nameOverride={"Sequence"}
+                          required
+                        />
+                      </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"templateType"}
+                          id={"templateTypeInput"}
+                          data={handler && handler.templateType && handler.templateType}
+                          nameOverride={"Template Type"}
+                        />
+                      </div>
+                    </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"template"}
+                          id={"templateInput"}
+                          data={handler && handler.template && handler.template}
+                          nameOverride={"Template"}
+                        />
+                      </div>
+                      <div className="col-6">
+                        {
+                          entities !== null && entities.length > 0 ? (
+                            <div className="form-group">
+                              {handler !== null &&
+                              handler.entity !== undefined &&
+                              handler.entity !== null ? (
+                                  <SelectInputComponent
+                                    options={entities}
+                                    data={handler.entity}
+                                    name={"entity"} id={"entityInput"} nameOverride={"Entity"}
+                                    value={"/admin/entities/"}/>
+                                )
+                                : (
+                                  <SelectInputComponent
+                                    options={entities}
+                                    name={"entity"} id={"entityInput"} nameOverride={"Entity"}
+                                    value={"/admin/entities/"}/>
+                                )}
+                            </div>
+                          ) : (
+                            <SelectInputComponent
+                              options={[]}
+                              name={"entity"} id={"entityInput"} nameOverride={"Entity"}
+                              value={"/admin/entities/"}/>
+                          )
+                        }
+                      </div>
+                    </div>
+                    <Accordion
+                      id="handlerAccordion"
+                      items={[
+                        {
+                          title: "Conditions *",
+                          id: "conditionsAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="conditions"
+                                label="Conditions"
+                                data={handler?.conditions}
+                              />
                             )
                           }
-                        </div>
-                      </div>
-                      <Accordion
-                        id="handlerAccordion"
-                        items={[
-                          {
-                            title: "Conditions *",
-                            id: "conditionsAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="conditions"
-                                  label="Conditions"
-                                  data={handler?.conditions}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Translations In",
-                            id: "translationsInAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="translationsIn"
-                                  label="Translations In"
-                                  data={handler?.translationsIn}
-                                  select
-                                  selectName={"translationIn"}
-                                  options={tableNames}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Translations Out",
-                            id: "translationsOutAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="translationsOut"
-                                  label="Translations Out"
-                                  data={handler?.translationsOut}
-                                  select
-                                  selectName={"translationOut"}
-                                  options={tableNames}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Mapping In",
-                            id: "mappingInAccordion",
-                            render: function () {
-                              return (
-                                <MultiDimensionalArrayInput
-                                  id={"mappingIn"}
-                                  label={"Mapping In"}
-                                  data={handler && handler.mappingIn ? [{
-                                    key: 'mappingIn',
-                                    value: handler.mappingIn
-                                  }] : null}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Mapping Out",
-                            id: "mappingOutAccordion",
-                            render: function () {
-                              return (
-                                <MultiDimensionalArrayInput
-                                  id={"mappingOut"}
-                                  label={"Mapping Out"}
-                                  data={handler && handler.mappingOut ? [{
-                                    key: 'mappingOut',
-                                    value: `${handler.mappingOut}`
-                                  }] : null}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Skeleton In",
-                            id: "skeletonInAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="skeletonIn"
-                                  label="Skeleton In"
-                                  data={handler?.skeletonIn}
-                                />
-                              )
-                            }
-                          },
-                          {
-                            title: "Skeleton Out",
-                            id: "skeletonOutAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="skeletonOut"
-                                  label="Skeleton Out"
-                                  data={handler?.skeletonOut}
-                                />
-                              )
-                            }
+                        },
+                        {
+                          title: "Translations In",
+                          id: "translationsInAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="translationsIn"
+                                label="Translations In"
+                                data={handler?.translationsIn}
+                                select
+                                selectName={"translationIn"}
+                                options={tableNames}
+                              />
+                            )
                           }
-                        ]}/>
-                    </>
-                  )}
-                </div>
+                        },
+                        {
+                          title: "Translations Out",
+                          id: "translationsOutAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="translationsOut"
+                                label="Translations Out"
+                                data={handler?.translationsOut}
+                                select
+                                selectName={"translationOut"}
+                                options={tableNames}
+                              />
+                            )
+                          }
+                        },
+                        {
+                          title: "Mapping In",
+                          id: "mappingInAccordion",
+                          render: function () {
+                            return (
+                              <MultiDimensionalArrayInput
+                                id={"mappingIn"}
+                                label={"Mapping In"}
+                                data={handler && handler.mappingIn ? [{
+                                  key: 'mappingIn',
+                                  value: handler.mappingIn
+                                }] : null}
+                              />
+                            )
+                          }
+                        },
+                        {
+                          title: "Mapping Out",
+                          id: "mappingOutAccordion",
+                          render: function () {
+                            return (
+                              <MultiDimensionalArrayInput
+                                id={"mappingOut"}
+                                label={"Mapping Out"}
+                                data={handler && handler.mappingOut ? [{
+                                  key: 'mappingOut',
+                                  value: `${handler.mappingOut}`
+                                }] : null}
+                              />
+                            )
+                          }
+                        },
+                        {
+                          title: "Skeleton In",
+                          id: "skeletonInAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="skeletonIn"
+                                label="Skeleton In"
+                                data={handler?.skeletonIn}
+                              />
+                            )
+                          }
+                        },
+                        {
+                          title: "Skeleton Out",
+                          id: "skeletonOutAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="skeletonOut"
+                                label="Skeleton Out"
+                                data={handler?.skeletonOut}
+                              />
+                            )
+                          }
+                        }
+                      ]}/>
+                  </>
+                )}
               </div>
-            );
-          }}
-        />
-      </form>
-    </>
+            </div>
+          );
+        }}
+      />
+    </form>
   );
 }

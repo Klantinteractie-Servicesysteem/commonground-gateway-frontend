@@ -3,18 +3,17 @@ import {
   GenericInputComponent,
   Checkbox,
   SelectInputComponent,
-  Card,
-  Alert
+  Card
 }
   from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
 import Spinner from "../common/spinner";
-import FlashMessage from 'react-flash-message';
 import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {AlertContext} from "../../context/alertContext";
 
 interface EntityFormProps {
   entityId: string,
@@ -22,12 +21,12 @@ interface EntityFormProps {
 
 export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object" : "Create Object";
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
     handleSetSources()
@@ -40,7 +39,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
         setSources(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error('GET sources error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
       })
   }
 
@@ -52,7 +55,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
         setEntity(res.data)
       })
       .catch((err) => {
-        throw new Error('GET source error: ' + err)
+        setAlert({message: err, type: 'danger'})
+        throw new Error('GET entity error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
@@ -82,6 +86,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"]])) {
+      setLoadingOverlay(false);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
       return;
     }
 
@@ -89,6 +95,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
       API.Entity.create(body)
         .then(() => {
           navigate('/entities')
+          setAlert({message: 'Saved entity', type: 'success'})
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -103,6 +110,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
       API.Entity.update(body, entityId)
         .then((res) => {
           setEntity(res.data);
+          setAlert({message: 'Updated entity', type: 'success'})
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -116,158 +124,148 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
 
   return (
-    <>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      }
-      <form id="dataForm" onSubmit={saveEntity}>
-        <Card
-          title={title}
-          cardHeader={function () {
-            return (
-              <div>
-                <Link className="utrecht-link" to={"/entities"}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                  </button>
-                </Link>
-                <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                  type="submit"
-                  disabled={!sources}
-                >
-                  <i className="fas fa-save mr-2"/>Save
+    <form id="dataForm" onSubmit={saveEntity}>
+      <Card
+        title={title}
+        cardHeader={function () {
+          return (
+            <div>
+              <Link className="utrecht-link" to={"/entities"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                 </button>
-              </div>
-            )
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    <div>
-                      {loadingOverlay && <LoadingOverlay /> }
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={entity && entity.name && entity.name}
-                            nameOverride={"Name"} required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={entity && entity.description && entity.description}
-                            nameOverride={"Description"}
-                          />
-                        </div>
+              </Link>
+              <button
+                className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                type="submit"
+                disabled={!sources}
+              >
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </div>
+          )
+        }}
+        cardBody={function () {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner/>
+                ) : (
+                  <div>
+                    {loadingOverlay && <LoadingOverlay/>}
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={entity && entity.name && entity.name}
+                          nameOverride={"Name"} required
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <SelectInputComponent
-                              options={[{name: 'Organization', value: 'organization'}, {
-                                name: 'User',
-                                value: 'user'
-                              }, {name: 'User group', value: 'userGroup'}]}
-                              data={entity && entity.function ? entity.function : null}
-                              name={"function"}
-                              id={"functionInput"}
-                              nameOverride={"Function"}
-                              required/>
-                          </div>
-                        </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"description"}
+                          id={"descriptionInput"}
+                          data={entity && entity.description && entity.description}
+                          nameOverride={"Description"}
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"endpoint"}
-                            id={"endpointInput"}
-                            data={entity && entity.endpoint && entity.endpoint}
-                            nameOverride={"Endpoint"}
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"route"}
-                            id={"routeInput"}
-                            data={entity && entity.route && entity.route}
-                            nameOverride={"Route"}/>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            {
-                              sources !== null && sources.length > 0 ? (
-                                <>
-                                  {entity !== null &&
-                                  entity.gateway !== undefined &&
-                                  entity.gateway !== null ? (
-                                      <SelectInputComponent
-                                        options={sources}
-                                        data={entity.gateway.name}
-                                        name={"gateway"}
-                                        id={"gatewayInput"}
-                                        nameOverride={"Source"}
-                                        value={"/admin/gateways/"}/>
-                                    )
-                                    : (
-                                      <SelectInputComponent
-                                        options={sources}
-                                        name={"gateway"}
-                                        id={"gatewayInput"}
-                                        nameOverride={"Source"}
-                                        value={"/admin/gateways/"}/>
-                                    )}
-                                </>
-                              ) : (
-                                <SelectInputComponent
-                                  data="Please wait, gettings sources from the Gateway..."
-                                  options={[{
-                                    name: "Please wait, gettings sources from the Gateway...",
-                                    value: "Please wait, gettings sources from the Gateway..."
-                                  }]}
-                                  name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled />
-                              )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-check">
-                            <Checkbox
-                              type={"checkbox"}
-                              id={"extendInput"}
-                              nameLabel={"Extend"}
-                              nameAttribute={"extend"}
-                              data={entity && entity.extend && entity.extend}/>
-                          </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          <SelectInputComponent
+                            options={[{name: 'Organization', value: 'organization'}, {
+                              name: 'User',
+                              value: 'user'
+                            }, {name: 'User group', value: 'userGroup'}]}
+                            data={entity && entity.function ? entity.function : null}
+                            name={"function"}
+                            id={"functionInput"}
+                            nameOverride={"Function"}
+                            required/>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"endpoint"}
+                          id={"endpointInput"}
+                          data={entity && entity.endpoint && entity.endpoint}
+                          nameOverride={"Endpoint"}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"route"}
+                          id={"routeInput"}
+                          data={entity && entity.route && entity.route}
+                          nameOverride={"Route"}/>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          {
+                            sources !== null && sources.length > 0 ? (
+                              <>
+                                {entity !== null &&
+                                entity.gateway !== undefined &&
+                                entity.gateway !== null ? (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      data={entity.gateway.name}
+                                      name={"gateway"}
+                                      id={"gatewayInput"}
+                                      nameOverride={"Source"}
+                                      value={"/admin/gateways/"}/>
+                                  )
+                                  : (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      name={"gateway"}
+                                      id={"gatewayInput"}
+                                      nameOverride={"Source"}
+                                      value={"/admin/gateways/"}/>
+                                  )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                data="Please wait, gettings sources from the Gateway..."
+                                options={[{
+                                  name: "Please wait, gettings sources from the Gateway...",
+                                  value: "Please wait, gettings sources from the Gateway..."
+                                }]}
+                                name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled/>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="form-check">
+                          <Checkbox
+                            type={"checkbox"}
+                            id={"extendInput"}
+                            nameLabel={"Extend"}
+                            nameAttribute={"extend"}
+                            data={entity && entity.extend && entity.extend}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            )
-          }}/>
-      </form>
-    </>
+            </div>
+          )
+        }}/>
+    </form>
   );
 }
 export default EntityForm

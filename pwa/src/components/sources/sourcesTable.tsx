@@ -3,11 +3,13 @@ import { Link } from "gatsby";
 import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {AlertContext} from "../../context/alertContext";
 
 export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => { handleSetSources() }, [API])
 
@@ -18,7 +20,8 @@ export default function SourcesTable() {
         setSources(res.data)
       })
       .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
+        setAlert({message: err, type: 'danger'})
+        throw new Error ('GET Sources error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)

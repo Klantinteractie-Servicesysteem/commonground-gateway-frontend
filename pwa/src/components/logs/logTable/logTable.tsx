@@ -8,6 +8,7 @@ import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import {AlertContext} from "../../../context/alertContext";
 
 interface LogTableProps {
   entityId?: string;
@@ -17,6 +18,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
   const [logs, setLogs] = React.useState([log]);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => { handleSetLogs() }, [API, entityId]);
 
@@ -34,7 +36,10 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
         .then((res) => {
           res?.data.length > 0 ? setLogs(res.data) : setLogs([log])
         })
-        .catch((err) => { throw new Error('GET logs error: ' + err) })
+        .catch((err) => {
+          setAlert({message: err.message, type: 'danger'})
+          throw new Error('GET logs error: ' + err)
+        })
         .finally(() => { setShowSpinner(false) });
     }
   };

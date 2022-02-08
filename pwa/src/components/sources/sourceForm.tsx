@@ -9,11 +9,9 @@ import {
   GenericInputComponent,
   Accordion,
   Card,
-  Alert,
   Spinner,
   SelectInputComponent
 } from "@conductionnl/nl-design-system/lib";
-import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import {navigate} from "gatsby-link";
@@ -45,6 +43,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
         setSource(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error('GET gateway error: ' + err)
       })
       .finally(() => {
@@ -90,18 +89,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
       setLoadingOverlay(false);
-      // setAlert(null);
-      // setAlert({type: 'danger', message: 'Required fields are empty'});
+      setAlert({type: 'danger', message: 'Required fields are empty'});
       return;
     }
 
     if (!id) { // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
+          setAlert({message: 'Saved source', type: 'success'})
           navigate('/sources');
         })
         .catch((err) => {
-          // setAlert({type: 'danger', message: err.message});
+          setAlert({message: err.message, type: 'danger'})
           throw new Error('Create source error: ' + err)
         })
         .finally(() => {
@@ -113,10 +112,10 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
       API.Source.update(body, id)
         .then((res) => {
           setSource(res.data);
-          setAlert({message: 'Saved source', type: 'success'})
+          setAlert({message: 'Updated source', type: 'success'})
         })
         .catch((err) => {
-          // setAlert({type: 'danger', message: err.message});
+          setAlert({message: err.message, type: 'danger'})
           throw new Error('Update source error: ' + err)
         })
         .finally(() => {
@@ -127,14 +126,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
 
   return (<>
-      {/* {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      } */}
       <form id="dataForm" onSubmit={saveSource}>
         <Card title={title}
               cardHeader={function () {

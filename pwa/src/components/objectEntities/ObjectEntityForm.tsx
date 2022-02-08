@@ -1,14 +1,14 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {Accordion, Alert, Card, GenericInputComponent, SelectInputComponent} from "@conductionnl/nl-design-system/lib";
+import {Accordion, Card, GenericInputComponent, SelectInputComponent} from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {AlertContext} from "../../context/alertContext";
 
 interface ObjectEntityFormProps {
   objectEntityId: string,
@@ -18,30 +18,26 @@ interface ObjectEntityFormProps {
 export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityId, entityId}) => {
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
     objectEntityId && handleSetEntity_object()
     handleSetApplications()
-    useNotifications({message: 'Object entity created', type: NOTIFICATION.SUCCESS} )
-
-  }, [API, objectEntityId, alert])
+  }, [API, objectEntityId])
 
   const handleSetEntity_object = () => {
     setShowSpinner(true)
-
-    // Alert.alertMessage({ message: 'Object entity created', type: NOTIFICATION.SUCCESS })
-    // setNotification({ message: form.message, variant: form.variant })
 
     API.ObjectEntity.getOne(objectEntityId)
       .then((res) => {
         setObjectEntity(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error('GET object entity error: ' + err)
       })
       .finally(() => {
@@ -55,6 +51,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
         setApplications(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error('GET applications error: ' + err)
       })
   }
@@ -87,7 +84,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["uri"]])) {
-      setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setLoadingOverlay(false);
       return;
@@ -97,8 +93,10 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
       API.ObjectEntity.create(body)
         .then(() => {
           navigate(`/entities/${entityId}`)
+          setAlert({message: 'Saved object entity', type: 'success'})
         })
         .catch((err) => {
+          setAlert({message: err.message, type: 'danger'})
           throw new Error('CREATE object entity error: ' + err)
         })
         .finally(() => {
@@ -109,6 +107,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     if (objectEntity) { // set id means we're updating a existing entry
       API.ObjectEntity.update(body, objectEntityId)
         .then((res) => {
+          setAlert({message: 'Updated object entity', type: 'success'})
           setObjectEntity(res.data)
         })
         .catch((err) => {
@@ -122,190 +121,180 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   }
 
   return (
-    <div>
-      {/*{*/}
-      {/*  alert !== null &&*/}
-      {/*  <FlashMessage duration={5000}>*/}
-      {/*    <Alert alertClass={alert.type} body={function () {*/}
-      {/*      return (<>{alert.message}</>)*/}
-      {/*    }}/>*/}
-      {/*  </FlashMessage>*/}
-      {/*}*/}
-      <form id="dataForm" onSubmit={saveObjectEntity}>
-        <Card
-          title={title}
-          cardHeader={function () {
-            return (
-              <>
-                <Link className="utrecht-link" to={`/entities/${entityId}`}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>
-                    Back
-                  </button>
-                </Link>
-                <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                  type="submit"
-                  disabled={!applications}
-                >
-                  <i className="fas fa-save mr-2"/>
-                  Save
+    <form id="dataForm" onSubmit={saveObjectEntity}>
+      <Card
+        title={title}
+        cardHeader={function () {
+          return (
+            <>
+              <Link className="utrecht-link" to={`/entities/${entityId}`}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>
+                  Back
                 </button>
-              </>
-            );
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    <>
-                      {loadingOverlay && <LoadingOverlay /> }
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"url"}
-                              name={"uri"}
-                              id={"uriInput"}
-                              data={objectEntity && objectEntity.uri && objectEntity.uri}
-                              nameOverride={"Uri"}
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"externalId"}
-                              id={"externalIdInput"}
-                              data={objectEntity && objectEntity.externalId && objectEntity.externalId}
-                              nameOverride={"External Id"}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            {
-                              applications !== null && applications.length > 0 ? (
-                                <>
-                                  {objectEntity !== null &&
-                                  objectEntity.application !== undefined &&
-                                  objectEntity.application !== null ? (
-                                      <SelectInputComponent
-                                        options={applications}
-                                        data={objectEntity.application.name}
-                                        name={"application"} id={"applicationInput"}
-                                        nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
-                                    )
-                                    : (
-                                      <SelectInputComponent
-                                        options={applications}
-                                        name={"application"} id={"applicationInput"}
-                                        nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
-                                    )}
-                                </>
-                              ) : (
-                                <SelectInputComponent
-                                  data="Please wait, gettings applications from the Gateway..."
-                                  options={[{
-                                    name: "Please wait, gettings applications from the Gateway...",
-                                    value: "Please wait, gettings applications from the Gateway..."
-                                  }]}
-                                  name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
-                              )}
-                          </div>
-                        </div>
-                        <div className="col-6">
+              </Link>
+              <button
+                className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                type="submit"
+                disabled={!applications}
+              >
+                <i className="fas fa-save mr-2"/>
+                Save
+              </button>
+            </>
+          );
+        }}
+        cardBody={function () {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner/>
+                ) : (
+                  <>
+                    {loadingOverlay && <LoadingOverlay/>}
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
                           <GenericInputComponent
-                            type={"text"}
-                            name={"organization"}
-                            id={"organizationInput"}
-                            data={objectEntity && objectEntity.organization && objectEntity.organization}
-                            nameOverride={"Organization"}
+                            type={"url"}
+                            name={"uri"}
+                            id={"uriInput"}
+                            data={objectEntity && objectEntity.uri && objectEntity.uri}
+                            nameOverride={"Uri"}
+                            required
                           />
                         </div>
                       </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
+                      <div className="col-6">
+                        <div className="form-group">
                           <GenericInputComponent
                             type={"text"}
-                            name={"owner"}
-                            id={"ownerInput"}
-                            data={objectEntity && objectEntity.owner && objectEntity.owner}
-                            nameOverride={"Owner"}
+                            name={"externalId"}
+                            id={"externalIdInput"}
+                            data={objectEntity && objectEntity.externalId && objectEntity.externalId}
+                            nameOverride={"External Id"}
                           />
                         </div>
                       </div>
+                    </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          {
+                            applications !== null && applications.length > 0 ? (
+                              <>
+                                {objectEntity !== null &&
+                                objectEntity.application !== undefined &&
+                                objectEntity.application !== null ? (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      data={objectEntity.application.name}
+                                      name={"application"} id={"applicationInput"}
+                                      nameOverride={"Application"}
+                                      value={"/admin/applications/"}/>
+                                  )
+                                  : (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      name={"application"} id={"applicationInput"}
+                                      nameOverride={"Application"}
+                                      value={"/admin/applications/"}/>
+                                  )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                data="Please wait, gettings applications from the Gateway..."
+                                options={[{
+                                  name: "Please wait, gettings applications from the Gateway...",
+                                  value: "Please wait, gettings applications from the Gateway..."
+                                }]}
+                                name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled/>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"organization"}
+                          id={"organizationInput"}
+                          data={objectEntity && objectEntity.organization && objectEntity.organization}
+                          nameOverride={"Organization"}
+                        />
+                      </div>
+                    </div>
+                    <br/>
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"owner"}
+                          id={"ownerInput"}
+                          data={objectEntity && objectEntity.owner && objectEntity.owner}
+                          nameOverride={"Owner"}
+                        />
+                      </div>
+                    </div>
 
-                      <Accordion
-                        id="objectEntityAccordion"
-                        items={[
-                          {
-                            title: "Errors",
-                            id: "errorsAccordion",
-                            render: function () {
-                              return (
-                                <>
-                                  <ElementCreationNew
-                                    id="errors"
-                                    label="Errors"
-                                    data={objectEntity?.errors}
-                                  />
-                                </>
-                              );
-                            }
-                          },
-                          {
-                            title: "Promises",
-                            id: "promisesAccordion",
-                            render: function () {
-                              return (
-                                <>
-                                  <ElementCreationNew
-                                    id="promises"
-                                    label="Promises"
-                                    data={objectEntity?.promises}
-                                  />
-                                </>
-                              );
-                            }
-                          },
-                          {
-                            title: "External Result",
-                            id: "externalResultAccordion",
-                            render: function () {
-                              return (
-                                <>
-                                  <ElementCreationNew
-                                    id="externalResult"
-                                    label="External Result"
-                                    data={objectEntity?.externalResult}
-                                  />
-                                </>
-                              );
-                            },
+                    <Accordion
+                      id="objectEntityAccordion"
+                      items={[
+                        {
+                          title: "Errors",
+                          id: "errorsAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                <ElementCreationNew
+                                  id="errors"
+                                  label="Errors"
+                                  data={objectEntity?.errors}
+                                />
+                              </>
+                            );
                           }
-                        ]}
-                      />
-                    </>
-                  )}
-                </div>
+                        },
+                        {
+                          title: "Promises",
+                          id: "promisesAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                <ElementCreationNew
+                                  id="promises"
+                                  label="Promises"
+                                  data={objectEntity?.promises}
+                                />
+                              </>
+                            );
+                          }
+                        },
+                        {
+                          title: "External Result",
+                          id: "externalResultAccordion",
+                          render: function () {
+                            return (
+                              <>
+                                <ElementCreationNew
+                                  id="externalResult"
+                                  label="External Result"
+                                  data={objectEntity?.externalResult}
+                                />
+                              </>
+                            );
+                          },
+                        }
+                      ]}
+                    />
+                  </>
+                )}
               </div>
-            );
-          }}
-        />
-      </form>
-    </div>
+            </div>
+          );
+        }}
+      />
+    </form>
   )
 }
 export default ObjectEntityForm

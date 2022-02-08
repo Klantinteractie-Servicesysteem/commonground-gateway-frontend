@@ -3,11 +3,13 @@ import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
+import {AlertContext} from "../../context/alertContext";
 
 export default function ApplicationsTable() {
   const [applications, setApplications] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => { handleSetApplications() }, [API])
 
@@ -18,6 +20,7 @@ export default function ApplicationsTable() {
         setApplications(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error ('GET Applications error: ' + err)
       })
       .finally(() => {

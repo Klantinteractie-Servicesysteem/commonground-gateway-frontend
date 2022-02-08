@@ -3,11 +3,13 @@ import { Table, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {AlertContext} from "../../context/alertContext";
 
 export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => { handleSetAttributes() }, [API])
 
@@ -18,6 +20,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error ('GET attributes from entity error: ' + err)
       })
       .finally(() => {

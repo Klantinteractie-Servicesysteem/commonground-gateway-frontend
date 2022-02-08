@@ -1,14 +1,14 @@
 import * as React from "react";
-import { Card, Table, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
+import {AlertContext} from "../../context/alertContext";
 
 export default function EndpointsTable() {
   const [context, setContext] = React.useState(null);
   const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -38,19 +38,11 @@ export default function EndpointsTable() {
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
-        setAlert(null);
         setAlert({ type: 'danger', message: error.message });
       });
   };
 
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () {
-          return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+  return (
     <Card
       title={"Endpoints"}
       cardHeader={function () {
@@ -130,6 +122,6 @@ export default function EndpointsTable() {
           </div>
         );
       }}
-    /></>
+    />
   );
 }

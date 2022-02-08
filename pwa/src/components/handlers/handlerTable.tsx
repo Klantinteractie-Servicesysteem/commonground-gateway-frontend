@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
-import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
+import {Table, Spinner, Card} from "@conductionnl/nl-design-system/lib";
+import {isLoggedIn} from "../../services/auth";
+import {Link} from "gatsby";
 
-export default function HandlerTable({ id }) {
+export default function HandlerTable({id}) {
   const [handlers, setHandlers] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -40,19 +39,12 @@ export default function HandlerTable({ id }) {
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
+        setAlert({type: 'danger', message: error.message});
       });
 
   };
 
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+  return (
     <Card
       title={"Handlers"}
       cardHeader={function () {
@@ -63,16 +55,16 @@ export default function HandlerTable({ id }) {
               data-toggle="modal"
               data-target="helpModal"
             >
-              <i className="fas fa-question mr-1" />
+              <i className="fas fa-question mr-1"/>
               <span className="mr-2">Help</span>
             </button>
             <a className="utrecht-link" onClick={getHandlers}>
-              <i className="fas fa-sync-alt mr-1" />
+              <i className="fas fa-sync-alt mr-1"/>
               <span className="mr-2">Refresh</span>
             </a>
             <Link to={`/handlers/new/${id}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
+                <i className="fas fa-plus mr-2"/>
                 Create
               </button>
             </Link>
@@ -84,7 +76,7 @@ export default function HandlerTable({ id }) {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner />
+                <Spinner/>
               ) : handlers ? (
                 <Table
                   columns={[
@@ -103,7 +95,7 @@ export default function HandlerTable({ id }) {
                         return (
                           <Link to={`/handlers/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
+                              <i className="fas fa-edit pr-1"/>
                               Edit
                             </button>
                           </Link>
@@ -132,6 +124,6 @@ export default function HandlerTable({ id }) {
           </div>
         );
       }}
-    /></>
+    />
   );
 }

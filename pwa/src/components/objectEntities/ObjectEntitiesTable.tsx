@@ -3,6 +3,7 @@ import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {AlertContext} from "../../context/alertContext";
 
 interface ObjectEntitiesTableProps {
   entityId: string,
@@ -12,6 +13,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext)
 
   React.useEffect(() => { entityId && handleSetObjectEntities() }, [API, entityId])
 
@@ -22,6 +24,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
         setObjectEntities(res.data)
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error ('GET object entities error: ' + err)
       })
       .finally(() => {
@@ -29,7 +32,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
       })
   }
 
-  return (<>
+  return (
     <Card
       title={"Object entities"}
       cardHeader={function () {
@@ -109,7 +112,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
           </div>
         );
       }}
-    /></>
+    />
   );
 }
 
