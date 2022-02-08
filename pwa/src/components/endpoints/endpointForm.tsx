@@ -65,20 +65,17 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   }
 
   const getApplications = () => {
-    setShowSpinner(true);
     fetch(`${context.adminUrl}/applications`, {
       credentials: "include",
       headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setApplications(data['hydra:member']);
         }
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.error("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
@@ -161,6 +158,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!applications}
                 >
                   <i className="fas fa-save mr-2"/>Save
                 </button>
@@ -254,10 +252,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                                 </>
                               ) : (
                                 <SelectInputComponent
-                                  options={[{name: "Please create a Application.", value: null}]}
-                                  name={"application"}
-                                  id={"applicationInput"}
-                                  nameOverride={"Applications"}/>
+                                  data="Please wait, gettings applications from the Gateway..."
+                                  options={[{
+                                    name: "Please wait, gettings applications from the Gateway...",
+                                    value: "Please wait, gettings applications from the Gateway..."
+                                  }]}
+                                name={"application"} id={"applicationInput"} nameOverride={"Applications"} disabled />
                               )}
                           </div>
                         </div>
