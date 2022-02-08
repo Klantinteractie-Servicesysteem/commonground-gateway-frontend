@@ -1,13 +1,11 @@
 import * as React from "react";
 import {
   GenericInputComponent,
-  Spinner,
-  Alert,
   SelectInputComponent,
+  Spinner,
   Card,
-  Accordion
+  Alert,
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
 import {
@@ -15,72 +13,57 @@ import {
   removeEmptyObjectValues,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import LoadingOverlay from '../loadingOverlay/loadingOverlay'
+
 
 interface EndpointFormProps {
   id: string,
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
-
-  const [context, setContext] = React.useState(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const API: APIService = React.useContext(APIContext)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      if (id !== "new") {
-        getEndpoint();
-      }
-      getApplications();
-    }
-  }, [context]);
+    handleSetApplications()
+    id && handleSetEndpoint()
+  }, [API, id])
 
-  const getEndpoint = () => {
-    setShowSpinner(true);
-    fetch(`${context.adminUrl}/endpoints/${id}`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setEndpoint(data);
+  const handleSetEndpoint = () => {
+    setShowSpinner(true)
+
+    API.Endpoint.getOne(id)
+      .then((res) => {
+        setEndpoint(res.data)
       })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-
+      .catch((err) => {
+        throw new Error('GET application error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
   }
+  const handleSetApplications = () => {
+    setShowSpinner(true)
 
-  const getApplications = () => {
-    fetch(`${context.adminUrl}/applications`, {
-      credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setApplications(data['hydra:member']);
-        }
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(res.data)
       })
-      .catch((error) => {
-        console.error("Error:", error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      });
-  };
+      .catch((err) => {
+        throw new Error('GET application error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
   const saveEndpoint = (event) => {
     event.preventDefault();
@@ -88,13 +71,16 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description.value ? event.target.description.value : null,
+      description: event.target.description.value
+        ? event.target.description.value : null,
       type: event.target.type.value,
       path: event.target.path.value,
-      application: event.target.application.value ? event.target.application.value : null,
+      application: event.target.application.value
+        ? event.target.application.value : null,
     };
 
     body = removeEmptyObjectValues(body);
+
     if (!checkValues([body["name"], body["type"], body["path"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
@@ -102,36 +88,33 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       return;
     }
 
-    let url = `${context.adminUrl}/endpoints`;
-    let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!id) { // unset id means we're creating a new entry
+      API.Endpoint.create(body)
+        .then((res) => {
+          navigate(`/endpoints/${res.data.id}`)
+        })
+        .catch((err) => {
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Create application error: ' + err)
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        })
     }
 
-    fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setLoadingOverlay(false);
-        setEndpoint(data)
-        method === 'POST' && navigate("/endpoints")
-      })
-      .catch((error) => {
-        setLoadingOverlay(false);
-        console.error(error);
-        setAlert(null);
-        setAlert({type: 'danger', message: error.message});
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      })
+    if (id) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, id)
+        .then((res) => {
+          setEndpoint(res.data)
+        })
+        .catch((err) => {
+          setAlert({type: 'danger', message: err.message});
+          throw new Error('Update application error: ' + err)
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        })
+    }
   };
 
   return (
@@ -173,7 +156,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                    {loadingOverlay && <LoadingOverlay /> }
+                    {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -209,7 +192,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                               id={"typeInput"}
                               nameOverride={"Type"}
                               data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
-                              required={true}/>
+                              required={true}
+                            />
                           </div>
                         </div>
                         <div className="col-6">
@@ -240,14 +224,16 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                                       name={"application"}
                                       id={"applicationInput"}
                                       nameOverride={"Applications"}
-                                      value={"/admin/applications/"}/>
+                                      value={"/admin/applications/"}
+                                    />
                                   ) : (
                                     <SelectInputComponent
                                       options={applications}
                                       name={"application"}
                                       id={"applicationInput"}
                                       nameOverride={"Applications"}
-                                      value={"/admin/applications/"}/>
+                                      value={"/admin/applications/"}
+                                    />
                                   )}
                                 </>
                               ) : (
@@ -257,7 +243,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                                     name: "Please wait, gettings applications from the Gateway...",
                                     value: "Please wait, gettings applications from the Gateway..."
                                   }]}
-                                name={"application"} id={"applicationInput"} nameOverride={"Applications"} disabled />
+                                name={"application"}
+                                  id={"applicationInput"}
+                                  nameOverride={"Applications"}
+                                  disabled
+                                />
                               )}
                           </div>
                         </div>
