@@ -5,7 +5,9 @@ import {
   Alert,
   SelectInputComponent,
   Card,
+  Accordion
 } from "@conductionnl/nl-design-system/lib";
+import {isLoggedIn} from "../../services/auth";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
 import {
@@ -13,58 +15,72 @@ import {
   removeEmptyObjectValues,
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from '../loadingOverlay/loadingOverlay'
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface EndpointFormProps {
   id: string,
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
-  const [alert, setAlert] = React.useState<Record<string, string>>(null);
+
+  const [context, setContext] = React.useState(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
-  const [applications, setApplication] = React.useState<any>(null);
+  const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext)
-  const title: string = id ? "Edit Endpoint" : "Create Endpoint";
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
+  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
 
   React.useEffect(() => {
-    handleSetApplications()
-    id && handleSetEndpoints()
-  }, [API, id])
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        adminUrl: process.env.GATSBY_ADMIN_URL,
+      });
+    } else if (isLoggedIn()) {
+      if (id !== "new") {
+        getEndpoint();
+      }
+      getApplications();
+    }
+  }, [context]);
 
+  const getEndpoint = () => {
+    setShowSpinner(true);
+    fetch(`${context.adminUrl}/endpoints/${id}`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        setEndpoint(data);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
+      });
 
-  const handleSetEndpoints = () => {
-    setShowSpinner(true)
-
-    API.Endpoint.getOne(id)
-      .then((res) => {
-        setEndpoint(res.data)
-      })
-      .catch((err) => {
-        throw new Error('GET Endpoint error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
-      })
   }
 
-  const handleSetApplications = () => {
-    setShowSpinner(true)
-
-    API.Application.getAll()
-      .then((res) => {
-        setApplication(res.data)
+  const getApplications = () => {
+    fetch(`${context.adminUrl}/applications`, {
+      credentials: "include",
+      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+          setApplications(data['hydra:member']);
+        }
       })
-      .catch((err) => {
-        throw new Error('GET application error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+      .catch((error) => {
+        console.error("Error:", error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
+      });
+  };
 
   const saveEndpoint = (event) => {
     event.preventDefault();
@@ -72,49 +88,54 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description.value
-        ? event.target.description.value : null,
+      description: event.target.description.value ? event.target.description.value : null,
       type: event.target.type.value,
       path: event.target.path.value,
-      application: event.target.application.value
-        ? event.target.application.value : null,
+      application: event.target.application.value ? event.target.application.value : null,
     };
 
     body = removeEmptyObjectValues(body);
-
     if (!checkValues([body["name"], body["type"], body["path"]])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
       return;
     }
 
-
-    if (!id) { // unset id means we're creating a new entry
-      API.Endpoint.create(body)
-        .then((res) => {
-          setEndpoint(res.data)
-          navigate('/endpoints/${id}')
-        })
-        .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Create endpoint error: ' + err)
-        })
+    let url = `${context.adminUrl}/endpoints`;
+    let method = "POST";
+    if (id !== "new") {
+      url = `${url}/${id}`;
+      method = "PUT";
     }
 
-
-    if (id) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, id)
-        .then((res) => {
-          setEndpoint(res.data)
-          navigate('/endpoints/${id}')
-        })
-        .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Update endpoint error: ' + err)
-        })
-    }
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+      body: JSON.stringify(body),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setLoadingOverlay(false);
+        setEndpoint(data)
+        method === 'POST' && navigate("/endpoints")
+      })
+      .catch((error) => {
+        setLoadingOverlay(false);
+        console.error(error);
+        setAlert(null);
+        setAlert({type: 'danger', message: error.message});
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      })
   };
 
   return (
-    <div>
+    <>
       {
         alert !== null &&
         <FlashMessage duration={5000}>
@@ -127,19 +148,22 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
         <Card
           title={title}
           cardHeader={function () {
-            return (<>
-              <Link className="utrecht-link" to={"/endpoints"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+            return (
+              <div>
+                <Link className="utrecht-link" to={"/endpoints"}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  </button>
+                </Link>
+                <button
+                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  type="submit"
+                  disabled={!applications}
+                >
+                  <i className="fas fa-save mr-2"/>Save
                 </button>
-              </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-              >
-                <i className="fas fa-save mr-2"/>Save
-              </button>
-            </>)
+              </div>
+            )
           }}
           cardBody={function () {
             return (
@@ -149,31 +173,28 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
+                    {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"name"}
-                              id={"nameInput"}
-                              data={endpoint && endpoint.name && endpoint.name}
-                              nameOverride={"Name"}
-                            />
-                          </div>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            data={endpoint && endpoint.name && endpoint.name}
+                            nameOverride={"Name"}
+                          />
                         </div>
                         <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"description"}
-                              id={"descriptionInput"}
-                              data={endpoint && endpoint.description && endpoint.description}
-                              nameOverride={"Description"}
-                            />
-                          </div>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"description"}
+                            id={"descriptionInput"}
+                            data={endpoint && endpoint.description && endpoint.description}
+                            nameOverride={"Description"}
+                          />
                         </div>
                       </div>
+                      <br/>
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -207,50 +228,49 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                       <div className="row">
                         <div className="col-12">
                           <div className="form-group">
-                            {applications !== null && applications.length > 0 ? (
-                              <>
-                                {endpoint !== null &&
-                                endpoint.application !== undefined &&
-                                endpoint.application !== null ? (
-                                  <SelectInputComponent
-                                    options={applications}
-                                    data={endpoint.application.name}
-                                    name={"application"}
-                                    id={"applicationInput"}
-                                    nameOverride={"Applications"}
-                                    value={"/admin/applications/"}
-                                  />
-                                ) : (
-                                  <SelectInputComponent
-                                    options={applications}
-                                    name={"application"}
-                                    id={"applicationInput"}
-                                    nameOverride={"Applications"}
-                                    value={"/admin/applications/"}
-                                  />
-                                )}
-                              </>
-                            ) : (
-                              <SelectInputComponent
-                                options={[{name: "Please create a Application.", value: null}]}
-                                name={"application"}
-                                id={"applicationInput"}
-                                nameOverride={"Applications"}
-                              />
-                            )}
+                            {
+                              applications !== null && applications.length > 0 ? (
+                                <>
+                                  {endpoint !== null &&
+                                  endpoint.application !== undefined &&
+                                  endpoint.application !== null ? (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      data={endpoint.application.name}
+                                      name={"application"}
+                                      id={"applicationInput"}
+                                      nameOverride={"Applications"}
+                                      value={"/admin/applications/"}/>
+                                  ) : (
+                                    <SelectInputComponent
+                                      options={applications}
+                                      name={"application"}
+                                      id={"applicationInput"}
+                                      nameOverride={"Applications"}
+                                      value={"/admin/applications/"}/>
+                                  )}
+                                </>
+                              ) : (
+                                <SelectInputComponent
+                                  data="Please wait, gettings applications from the Gateway..."
+                                  options={[{
+                                    name: "Please wait, gettings applications from the Gateway...",
+                                    value: "Please wait, gettings applications from the Gateway..."
+                                  }]}
+                                name={"application"} id={"applicationInput"} nameOverride={"Applications"} disabled />
+                              )}
                           </div>
                         </div>
                       </div>
-                      )
                     </div>
                   )}
                 </div>
               </div>
-            )
+            );
           }}
         />
       </form>
-    </div>
+    </>
   );
 }
 export default EndpointForm

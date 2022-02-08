@@ -1,70 +1,46 @@
 import * as React from "react";
 import './logTable.css';
-import { Table, Modal, Spinner, Card, Alert, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../../services/auth";
-import FlashMessage from 'react-flash-message';
-import logsArray from '../../../dummy_data/logs';
-import JsonCode from '../../common/jsonCode';
+import { Table, Modal, Spinner, Card, Tabs, Accordion } from "@conductionnl/nl-design-system/lib";
+import log from '../../../dummy_data/logs';
+import CodeBlock from '../../common/codeBlock/codeBlock';
+import { navigate, Link } from 'gatsby';
+import APIService from "../../../apiService/apiService";
+import APIContext from "../../../apiService/apiContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface LogTableProps {
-  id?: string | null;
-  query?: string | null;
+  entityId?: string;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) => {
-  const [context, setContext] = React.useState(null);
-  const [logs, setLogs] = React.useState(logsArray);
+export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
+  const [logs, setLogs] = React.useState([log]);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getLogs();
-    }
-  }, [context]);
+  React.useEffect(() => { handleSetLogs() }, [API, entityId]);
 
-  const getLogs = () => {
-    setShowSpinner(true);
-    let url = '/logs?order[dateCreated]=desc';
-    if (id !== null && query !== null) {
-      url = `/logs?${query}=${id}&order[dateCreated]=desc`
-    } else if (id !== null) {
-      url = `/logs?entity.id=${id}&order[dateCreated]=desc`
+  const handleSetLogs = () => {
+    setShowSpinner(true)
+
+    if (entityId) {
+      API.Log.getAllFromEntity(entityId)
+        .then((res) => { setLogs(res.data) })
+        .catch((err) => { throw new Error('GET logs for entity error: ' + err) })
+        .finally(() => { setShowSpinner(false) });
     }
-    fetch(context.adminUrl + url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        console.log(data);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setLogs(data["hydra:member"]);
-        }
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
-      });
+    if (!entityId) {
+      API.Log.getAll()
+        .then((res) => {
+          res?.data.length > 0 ? setLogs(res.data) : setLogs([log])
+        })
+        .catch((err) => { throw new Error('GET logs error: ' + err) })
+        .finally(() => { setShowSpinner(false) });
+    }
   };
 
   return (
     <div className="logTable">
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-        </FlashMessage>
-      }
       <Card
         title="Call logs"
         cardHeader={function () {
@@ -78,7 +54,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <a className="utrecht-link" onClick={getLogs}>
+              <a className="utrecht-link" onClick={handleSetLogs}>
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
@@ -94,6 +70,15 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                   {logs !== null && logs.length > 0 ? (
                     <Table
                       columns={[
+                        {
+                          headerName: "Status",
+                          field: "responseStatusCode",
+                          renderCell: (item) => {
+                            return (
+                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
+                            );
+                          },
+                        },
                         {
                           headerName: "Type",
                           field: "type",
@@ -112,15 +97,6 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                           field: "responseTime",
                         },
                         {
-                          headerName: "Status",
-                          field: "responseStatusCode",
-                          renderCell: (item) => {
-                            return (
-                              <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />
-                            );
-                          },
-                        },
-                        {
                           field: "id",
                           headerName: " ",
                           renderCell: (item) => {
@@ -135,7 +111,7 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                                     ""
                                   )}`}
                                 >
-                                  More info
+                                  View log
                                 </button>
                               </div>
                             );
@@ -194,6 +170,10 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                   >
                     <table className="mt-3 logTable-table">
                       <tr>
+                        <th>Status</th>
+                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
+                      </tr>
+                      <tr>
                         <th >Type</th>
                         <td>{log?.type === 'in' ? 'Incoming' : 'Outcoming'}</td>
                       </tr>
@@ -210,8 +190,15 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                         <td>{log?.routeName}</td>
                       </tr>
                       <tr>
-                        <th>Status</th>
-                        <td><StatusCode code={log?.responseStatusCode} message={log?.responseStatus} /></td>
+                        <th>Endpoint</th>
+                        <td>
+                          <Link to={'/endpoints/' + log?.id} type="button" data-bs-dismiss="modal" aria-label="Close"
+                            onClick={() => {
+                              navigate('/endpoints/' + log?.id);
+                            }}
+                          >{log?.endpoint?.name}
+                          </Link>
+                        </td>
                       </tr>
                     </table>
 
@@ -234,17 +221,17 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                     role="tabpanel"
                     aria-labelledby="logRequest-tab"
                   >
-                    <table style={{ width: "100%" }} className="mt-3">
+                    <table className="mt-3 logTable-table">
                       <tr>
-                        <th style={{ width: "30%" }}>Method</th>
+                        <th>Method</th>
                         <td>{log?.requestMethod}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Path info</th>
+                        <th>Path info</th>
                         <td>{log?.requestPathInfo}</td>
                       </tr>
                       <tr>
-                        <th style={{ width: "30%" }}>Languages</th>
+                        <th>Languages</th>
                         <td>{log?.requestLanguages}</td>
                       </tr>
                     </table>
@@ -275,11 +262,12 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                             return (<>
                               {log.requestContent
                                 ?
-                                <JsonCode body={log.requestContent} />
+                                <CodeBlock code={log.requestContent} language="json" />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
-                          }
+                          },
+                          backgroundColor: 'black'
                         }]}
                     />
                   </div>
@@ -307,11 +295,12 @@ export const LogTable: React.FC<LogTableProps> = ({ id = null, query= null }) =>
                           render: function () {
                             return (<>
                               {log.responseContent ?
-                                <JsonCode body={log.responseContent} />
+                                <CodeBlock code={log.responseContent} language="json" />
                                 :
                                 <p className="utrecht-paragraph">No content found</p>}
                             </>)
-                          }
+                          },
+                          backgroundColor: 'black'
                         }]}
                     />
                   </div>
@@ -330,8 +319,12 @@ interface StatusCodeProps {
 }
 
 const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
+
+  let statusColor: string;
+  code > 199 && code < 300 ? statusColor = 'green' : statusColor = 'red';
+
   return (
-    <span>{message} {code} <i className={"fas fa-circle logTable-statusCode " + (code > 199 && code < 300 ? 'logTable-statusCode--green' : 'logTable-statusCode--red')} ></i></span>
+    <span><FontAwesomeIcon className={`logTable-statusCode--${statusColor} mr-2`} icon={faCircle} />{`${code} (${message})`}</span>
   );
 }
 
