@@ -16,7 +16,7 @@ import {
 } from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { TextareaGroup } from "../common/textareaGroup";
+import {TextareaGroup} from "../common/textareaGroup";
 
 interface EndpointFormProps {
   id: string,
@@ -198,51 +198,45 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                           />
                         </div>
                       </div>
-                      <br/>
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
-                            {
-                              applications !== null && applications.length > 0 ? (
-                                <>
-                                  {endpoint !== null &&
-                                  endpoint.application !== undefined &&
-                                  endpoint.application !== null ? (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      data={endpoint.application.name}
-                                      name={"application"}
-                                      id={"applicationInput"}
-                                      nameOverride={"Applications"}
-                                      value={"/admin/applications/"}/>
-                                  ) : (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      name={"application"}
-                                      id={"applicationInput"}
-                                      nameOverride={"Applications"}
-                                      value={"/admin/applications/"}/>
-                                  )}
-                                </>
-                              ) : (
+                          {applications !== null && applications.length > 0 ? (
+                            <>
+                              {endpoint !== null &&
+                              endpoint.application !== undefined &&
+                              endpoint.application !== null ? (
                                 <SelectInputComponent
-                                  options={[{name: "Please create a Application.", value: null}]}
+                                  options={applications}
+                                  data={endpoint.application.name}
                                   name={"application"}
                                   id={"applicationInput"}
-                                  nameOverride={"Applications"}/>
+                                  nameOverride={"Applications"}
+                                  value={"/admin/applications/"}/>
+                              ) : (
+                                <SelectInputComponent
+                                  options={applications}
+                                  name={"application"}
+                                  id={"applicationInput"}
+                                  nameOverride={"Applications"}
+                                  value={"/admin/applications/"}/>
                               )}
-                          </div>
+                            </>
+                          ) : (
+                            <SelectInputComponent
+                              options={[{name: "Please create a Application.", value: null}]}
+                              name={"application"}
+                              id={"applicationInput"}
+                              nameOverride={"Applications"}/>
+                          )}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-12">
-                          <div className="form-group">
-                            <TextareaGroup
-                              name={"description"}
-                              id={"descriptionInput"}
-                              defaultValue={endpoint?.description}
-                            />
-                          </div>
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={endpoint?.description}
+                          />
                         </div>
                       </div>
                     </div>
