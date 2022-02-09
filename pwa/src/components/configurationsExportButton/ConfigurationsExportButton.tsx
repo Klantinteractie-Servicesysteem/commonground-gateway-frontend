@@ -27,19 +27,23 @@ export default function ConfigurationsExportButton() {
         });
       })
       .catch((error) => {
-        throw new Error (error)
+        throw new Error(error)
       })
-      .finally(() => { setLoading(false) })
+      .finally(() => {
+        setLoading(false)
+      })
   };
 
   return (
-    <button
-      className="utrecht-button"
-      type="button"
-      onClick={handleExport}
-      disabled={loading}
-    >
-      {loading ? "Perparing your download...": "Export Configuration"}
-    </button>
+    <div>
+      <button
+        className="utrecht-button"
+        type="button"
+        onClick={handleExport}
+        disabled={loading}
+      >
+        {loading ? "Perparing your download..." : "Export Configuration"}
+      </button>
+    </div>
   );
 }
