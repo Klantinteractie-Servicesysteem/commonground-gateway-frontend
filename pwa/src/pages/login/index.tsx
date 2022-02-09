@@ -2,7 +2,7 @@ import * as React from "react";
 import "./login.css";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import { setUser } from "./../../services/auth";
+import { setUser } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 
