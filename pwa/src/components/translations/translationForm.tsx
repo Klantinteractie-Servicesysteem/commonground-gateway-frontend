@@ -11,26 +11,28 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 interface TranslationFormProps {
-  id: string,
+  id?: string,
+  tableName?: string
 }
 
-export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
+export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
+  const title: string = (tableName && tableName !== 'new' && !id) ? "Create translation" : (tableName && id) ? "Edit translation" : (tableName && tableName === 'new') ? "Create table" : null
   const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { id !== 'new' && getTranslation(id) }, [API]);
+  React.useEffect(() => {
+    id && getTranslation(id)
+  }, [API]);
 
   const getTranslation = (id: string) => {
-    // Hotfix
-    if (id.length !== 36) {
-      return;
-    }
     setShowSpinner(true);
     API.Translation.getOne(id)
-      .then((res) => { setTranslation(res.data) })
+      .then((res) => {
+        console.log(res.data);
+        setTranslation(res.data)
+      })
       .catch((err) => { throw new Error('GET translation error: ' + err) })
       .finally(() => { setShowSpinner(false) });
   };
@@ -46,7 +48,11 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
     };
 
-    if (!id || id === 'new') {
+    if (tableName && tableName !== 'new') {
+      body.translationTable = tableName
+    }
+
+    if (!id) {
       API.Translation.create(body)
         .then((res) => { setTranslation(res.data); console.log(res) })
         .catch((err) => { throw new Error('GET translation error: ' + err) })
@@ -56,7 +62,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
         });
     }
 
-    if (id !== 'new') {
+    if (id) {
       API.Translation.update(body, id)
         .then((res) => { setTranslation(res.data); console.log(res) })
         .catch((err) => { throw new Error('GET translation error: ' + err) })
@@ -75,7 +81,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
           cardHeader={function () {
             return (
               <div>
-                <Link className="utrecht-link" to={"/translations"}>
+                <Link className="utrecht-link" to={translation?.translationTable ? `/translation-tables/${translation.translationTable}` : (tableName && tableName !== 'new') ? `/translation-tables/${tableName}` : '/translation-tables'}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />Back
                   </button>
@@ -97,31 +103,27 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
                   ) : (
                     <>
                       {loadingOverlay && <LoadingOverlay />}
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translationTable"}
-                              id={"translationTableInput"}
-                              data={translation && translation.translationTable && translation.translationTable}
-                              nameOverride={"Table"}
-                              required />
+                      {
+                        tableName && tableName === 'new' &&
+                        <>
+                          <div className="row">
+                            <div className="col-12">
+                              <div className="form-group">
+                                <GenericInputComponent
+                                  type={"text"}
+                                  name={"translationTable"}
+                                  id={"translationTableInput"}
+                                  data={translation && translation.translationTable && translation.translationTable}
+                                  nameOverride={"Name"}
+                                  required />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"language"}
-                              id={"languageInput"}
-                              data={translation && translation.language && translation.language}
-                              nameOverride={"Language"} />
-                          </div>
-                        </div>
-                      </div>
+                          <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">You need to create at least one translation when creating a new table</h4>
+                        </>
+                      }
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col-4">
                           <div className="form-group">
                             <GenericInputComponent
                               type={"text"}
@@ -132,7 +134,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
                               required />
                           </div>
                         </div>
-                        <div className="col-6">
+                        <div className="col-4">
                           <div className="form-group">
                             <GenericInputComponent
                               type={"text"}
@@ -141,6 +143,16 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
                               data={translation && translation.translateTo && translation.translateTo}
                               nameOverride={"To"}
                               required />
+                          </div>
+                        </div>
+                        <div className="col-4">
+                          <div className="form-group">
+                            <GenericInputComponent
+                              type={"text"}
+                              name={"language"}
+                              id={"languageInput"}
+                              data={translation && translation.language && translation.language}
+                              nameOverride={"Language"} />
                           </div>
                         </div>
                       </div>

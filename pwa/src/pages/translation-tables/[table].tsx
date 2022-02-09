@@ -1,19 +1,23 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationTable from "../../components/translations/translationTable";
+import TranslationForm from "../../components/translations/translationForm";
 
 const IndexPage = (props) => {
-  const id: string = props.params.id === "new" ? null : props.params.id
+  const tableName: string = props.params.id === "new" ? null : props.params.table
 
 
   return (
-    <Layout title={"Translations"} subtext={"An overview of your translation objects"}>
-      <title>Gateway - Translations</title>
+    <Layout title={"Translation table"} subtext={tableName !== "new" ? "An overview of your translation objects" : "Create a new translation table"}>
+      <title>Gateway - {tableName !== "new" ? "Translations" : "Translation table"}</title>
       <main>
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <TranslationTable id={id} />
+              {tableName !== "new" ?
+                <TranslationTable tableName={tableName} /> :
+                <TranslationForm tableName={tableName} />
+              }
             </div>
           </div>
         </div>

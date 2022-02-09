@@ -53,7 +53,7 @@ export default function TableNamesTable() {
         </FlashMessage>
       }
       <Card
-        title={"Translations"}
+        title={"Translation tables"}
         cardHeader={function () {
           return (
             <>
@@ -69,10 +69,10 @@ export default function TableNamesTable() {
                 <i className="fas fa-sync-alt mr-1"/>
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to="/translation-tables/translations/new">
+              <Link to="/translation-tables/new">
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2"/>
-                  Create
+                  Create new
                 </button>
               </Link>
             </>
@@ -98,7 +98,8 @@ export default function TableNamesTable() {
                           return (
                             <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${tables.name}`}>
                               <button className="utrecht-button btn-sm btn-primary">
-                                View table
+                              <i className="fas fa-eye pr-1" />
+                                View
                               </button>
                             </Link>
                           );

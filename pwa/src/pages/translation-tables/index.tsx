@@ -4,8 +4,8 @@ import TableNamesTable from "../../components/translations/tableNamesTable";
 
 const IndexPage = () => {
   return (
-    <Layout title={"Translations"} subtext={"An overview of your translation objects"}>
-      <title>Gateway - Translations</title>
+    <Layout title={"Translation tables"} subtext={"An overview of your translation tables"}>
+      <title>Gateway - Translation tables</title>
       <main>
         <div className="row">
           <div className="col-12">
