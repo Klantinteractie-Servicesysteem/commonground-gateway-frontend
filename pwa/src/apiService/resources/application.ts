@@ -22,4 +22,8 @@ export default class Application {
   public update = (data: any, id: string): Promise<AxiosResponse> => {
     return this._instance.put(`/applications/${id}`, JSON.stringify(data))
   }
+
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/applications/${id}`)
+  }
 }
