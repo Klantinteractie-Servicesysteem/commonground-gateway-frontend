@@ -137,8 +137,7 @@ export default function HandlerForm({id, endpointId}) {
         ? event.target.entity.value : null,
       template: event.target.template.value
         ? event.target.template.value : null,
-      templateType: event.target.templateType.value
-        ? event.target.templateType.value : null,
+      templateType: event.target.templateType.value,
       conditions,
       skeletonIn,
       skeletonOut,
@@ -254,13 +253,31 @@ export default function HandlerForm({id, endpointId}) {
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"templateType"}
-                            id={"templateTypeInput"}
-                            data={handler && handler.templateType && handler.templateType}
-                            nameOverride={"Template Type"}
-                          />
+                          {handler !== null && handler.templateType !== null ? (
+                            <SelectInputComponent
+                              options={[{name: "twig", value: "twig"},
+                                {name: "markdown", value: "markdown"},
+                                {name: "username-password", value: "username-password"}
+                              ]}
+                              name={"templateType"}
+                              id={"templateTypeInput"}
+                              nameOverride={"Template Type"}
+                              required={true}
+                              data={handler.templateType}
+                            />
+                          ) : (
+                            <SelectInputComponent
+                              options={[
+                                {name: "twig", value: "twig"},
+                                {name: "markdown", value: "markdown"},
+                                {name: "restructuredText", value: "restructuredText"}
+                              ]}
+                              name={"templateType"}
+                              id={"templateTypeInput"}
+                              nameOverride={"Template Type"}
+                              required={true}
+                            />
+                          )}
                         </div>
                       </div>
                       <br/>
