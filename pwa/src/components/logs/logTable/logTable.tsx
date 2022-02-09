@@ -20,6 +20,10 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
 
   React.useEffect(() => { handleSetLogs() }, [API, entityId]);
 
+  function millisecondsToSeconds(millis) {
+    return Math.round(millis / 1000);
+  }
+
   const handleSetLogs = () => {
     setShowSpinner(true)
 
@@ -93,8 +97,13 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                           field: "requestMethod",
                         },
                         {
-                          headerName: "Response time (seconds)",
+                          headerName: "Response time",
                           field: "responseTime",
+                          renderCell: () => {
+                            return (
+                              `${log?.responseTime.toString()}ms (${millisecondsToSeconds(log?.responseTime).toString()}s)`
+                            );
+                          },
                         },
                         {
                           field: "id",
@@ -183,7 +192,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                       </tr>
                       <tr>
                         <th>Response time</th>
-                        <td>{log?.responseTime.toString() + ' seconds'}</td>
+                        <td>{millisecondsToSeconds(log?.responseTime).toString() + ' seconds'}</td>
                       </tr>
                       <tr>
                         <th>Route</th>

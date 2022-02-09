@@ -27,7 +27,7 @@ const Log: LogObject = {
   requestMethod: 'POST',
   responseStatus: 'HTTP_CREATED',
   responseStatusCode: 201,
-  responseTime: 8,
+  responseTime: 8567,
   requestPathInfo: '/api/weer',
   requestLanguages: "content type?",
   requestHeaders: [{
