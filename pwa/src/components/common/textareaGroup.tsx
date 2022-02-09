@@ -27,13 +27,13 @@ export const TextareaGroup: React.FC<TextareaGroupProps> = (
 
 
   return (
-    <div className="input-group">
+    <div className="form-group">
       <label htmlFor={id} className="utrecht-form-label">
         {_.upperFirst(label ?? name)}
         {required && " *"}
       </label>
 
-      <textarea className="utrecht-textarea" {...{ id, defaultValue, name, required, disabled }} />
+      <textarea className="utrecht-textarea form-control" {...{ id, defaultValue, name, required, disabled }} />
     </div>
   );
 };
