@@ -163,10 +163,9 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                     <Spinner/>
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
                             <GenericInputComponent
                               type={"url"}
                               name={"uri"}
@@ -176,52 +175,45 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                               required
                             />
                           </div>
-                        </div>
                         <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"externalId"}
-                              id={"externalIdInput"}
-                              data={objectEntity && objectEntity.externalId && objectEntity.externalId}
-                              nameOverride={"External Id"}
-                            />
-                          </div>
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"externalId"}
+                            id={"externalIdInput"}
+                            data={objectEntity && objectEntity.externalId && objectEntity.externalId}
+                            nameOverride={"External Id"}
+                          />
                         </div>
                       </div>
-                      <br/>
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
-                            {
-                              applications !== null && applications.length > 0 ? (
-                                <>
-                                  {objectEntity !== null &&
-                                  objectEntity.application !== undefined &&
-                                  objectEntity.application !== null ? (
-                                      <SelectInputComponent
-                                        options={applications}
-                                        data={objectEntity.application.name}
-                                        name={"application"} id={"applicationInput"}
-                                        nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
-                                    )
-                                    : (
-                                      <SelectInputComponent
-                                        options={applications}
-                                        name={"application"} id={"applicationInput"}
-                                        nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
-                                    )}
-                                </>
-                              ) : (
-                                <SelectInputComponent
-                                  options={[{name: "Please create a Application.", value: null}]}
-                                  name={"application"} id={"applicationInput"}
-                                  nameOverride={"Application"}
-                                />
-                              )}
-                          </div>
+                          {applications !== null && applications.length > 0 ? (
+                            <>
+                              {objectEntity !== null &&
+                              objectEntity.application !== undefined &&
+                              objectEntity.application !== null ? (
+                                  <SelectInputComponent
+                                    options={applications}
+                                    data={objectEntity.application.name}
+                                    name={"application"} id={"applicationInput"}
+                                    nameOverride={"Application"}
+                                    value={"/admin/applications/"}/>
+                                )
+                                : (
+                                  <SelectInputComponent
+                                    options={applications}
+                                    name={"application"} id={"applicationInput"}
+                                    nameOverride={"Application"}
+                                    value={"/admin/applications/"}/>
+                                )}
+                            </>
+                          ) : (
+                            <SelectInputComponent
+                              options={[{name: "Please create a Application.", value: null}]}
+                              name={"application"} id={"applicationInput"}
+                              nameOverride={"Application"}
+                            />
+                          )}
                         </div>
                         <div className="col-6">
                           <GenericInputComponent
@@ -233,7 +225,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           />
                         </div>
                       </div>
-                      <br/>
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -245,7 +236,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           />
                         </div>
                       </div>
-
                       <Accordion
                         id="objectEntityAccordion"
                         items={[

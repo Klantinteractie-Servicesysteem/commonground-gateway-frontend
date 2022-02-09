@@ -20,6 +20,7 @@ import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {TextareaGroup} from "../common/textareaGroup";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
@@ -233,24 +234,23 @@ export default function HandlerForm({id, endpointId}) {
                         </div>
                         <div className="col-6">
                           <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={handler && handler.description && handler.description}
-                            nameOverride={"Description"}
-                          />
-                        </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
                             type={"number"}
                             name={"sequence"}
                             id={"sequenceInput"}
                             data={handler && handler.sequence && handler.sequence}
                             nameOverride={"Sequence"}
                             required
+                          />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"template"}
+                            id={"templateInput"}
+                            data={handler && handler.template && handler.template}
+                            nameOverride={"Template"}
                           />
                         </div>
                         <div className="col-6">
@@ -263,17 +263,7 @@ export default function HandlerForm({id, endpointId}) {
                           />
                         </div>
                       </div>
-                      <br/>
                       <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"template"}
-                            id={"templateInput"}
-                            data={handler && handler.template && handler.template}
-                            nameOverride={"Template"}
-                          />
-                        </div>
                         <div className="col-6">
                           {
                             entities !== null && entities.length > 0 ? (
@@ -301,6 +291,15 @@ export default function HandlerForm({id, endpointId}) {
                                 value={"/admin/entities/"}/>
                             )
                           }
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-12">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={handler?.description}
+                          />
                         </div>
                       </div>
                       <Accordion
