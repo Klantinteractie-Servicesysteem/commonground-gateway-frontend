@@ -111,6 +111,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                                     ""
                                   )}`}
                                 >
+                                  <i className="fas fa-eye mr-2"/>
                                   View log
                                 </button>
                               </div>

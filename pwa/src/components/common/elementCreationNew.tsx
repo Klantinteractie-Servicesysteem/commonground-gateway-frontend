@@ -65,7 +65,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
                     onClick={handleDelete}
                     className="utrecht-button utrecht-button-sm btn-danger"
                   >
-                    Delete
+                    <i className="fas fa-trash mr-2"/>Delete
                   </button>
                 </div>
               </div>
@@ -100,7 +100,8 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
           }
         </div>
         <div className="col-2">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
+            <i className="fas fa-plus mr-2" />Add
           </button>
         </div>
       </div>
