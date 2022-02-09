@@ -65,7 +65,7 @@ export default function MainMenu() {
                   </li>
                   <li className="utrecht-topnav__item">
                     <Link to={"/translation-tables"} className="utrecht-topnav__link">
-                      Translations
+                      Translation tables
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
