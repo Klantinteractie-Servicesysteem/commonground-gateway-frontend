@@ -11,7 +11,7 @@ const IndexPage = (props) => {
   const id: string = entityId;
 
   return (
-    <Layout title={"Object"} subtext={"Create or modify your object"}>
+    <Layout title={"Object types"} subtext={"Create or modify your object types"}>
       <main>
         <div className="row">
           <div className="col-12">

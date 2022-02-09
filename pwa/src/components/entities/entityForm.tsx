@@ -27,7 +27,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [sources, setSources] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
-  const title: string = entityId ? "Edit Object" : "Create Object";
+  const title: string = entityId ? "Edit Object types" : "Create Object types";
 
   React.useEffect(() => {
     handleSetSources()
