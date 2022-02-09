@@ -16,7 +16,7 @@ export default class APIService {
 
   public get adminClient (): AxiosInstance {
     return axios.create({
-      baseURL: window.GATSBY_ADMIN_URL,
+      baseURL: process.env.GATSBY_ADMIN_URL,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export default class APIService {
 
   public get apiClient (): AxiosInstance {
     return axios.create({
-      baseURL: window.GATSBY_API_URL,
+      baseURL: process.env.GATSBY_API_URL,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
