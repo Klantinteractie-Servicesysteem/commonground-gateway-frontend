@@ -20,4 +20,5 @@ export const isLoggedIn = () => {
 export const logout = () => {
   setUser({});
   window.sessionStorage.removeItem("jwt");
+  window.sessionStorage.removeItem("user");
 };
