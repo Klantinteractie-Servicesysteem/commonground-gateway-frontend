@@ -101,7 +101,7 @@ export default function HandlerTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/handlers/${item.id}/${id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/handlers/${item.id}/${id}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
