@@ -35,15 +35,13 @@ export default function ConfigurationsExportButton() {
   };
 
   return (
-    <div>
       <button
-        className="utrecht-button"
+        className="utrecht-button text-center"
         type="button"
         onClick={handleExport}
         disabled={loading}
       >
         {loading ? "Perparing your download..." : "Export Configuration"}
       </button>
-    </div>
   );
 }

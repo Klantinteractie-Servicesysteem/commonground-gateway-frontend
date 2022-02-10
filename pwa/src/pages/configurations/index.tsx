@@ -9,7 +9,7 @@ const IndexPage = () => {
       <main>
         <div className="row">
           <div className="col-12">
-            <div className="utrecht-page">
+            <div className="utrecht-page col-3">
               <ConfigurationsExportButton />
             </div>
           </div>
