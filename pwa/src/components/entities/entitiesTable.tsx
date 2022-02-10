@@ -9,7 +9,9 @@ export default function EntitiesTable() {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
 
-  React.useEffect(() => { handleSetEntities() }, [API])
+  React.useEffect(() => {
+    handleSetEntities()
+  }, [API])
 
   const handleSetEntities = () => {
     setShowSpinner(true)
@@ -18,7 +20,7 @@ export default function EntitiesTable() {
         setEntities(res.data)
       })
       .catch((err) => {
-        throw new Error ('GET Applications error: ' + err)
+        throw new Error('GET Entities error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
