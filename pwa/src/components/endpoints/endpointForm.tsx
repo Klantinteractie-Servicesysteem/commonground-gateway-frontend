@@ -44,7 +44,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
         setEndpoint(res.data)
       })
       .catch((err) => {
-        throw new Error('GET application error: ' + err)
+        throw new Error('GET Endpoints error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)

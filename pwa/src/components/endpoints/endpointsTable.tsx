@@ -20,7 +20,7 @@ export default function EndpointsTable() {
         setEndpoints(res.data)
       })
       .catch((err) => {
-        throw new Error('GET Entities error: ' + err)
+        throw new Error('GET Endpoints error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
