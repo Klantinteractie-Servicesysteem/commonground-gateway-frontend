@@ -4,8 +4,8 @@ import ConfigurationsExportButton from "../../components/configurationsExportBut
 
 const IndexPage = () => {
   return (
-    <Layout title={"ConfigurationsExportButton"} subtext={"An overview of your endpoints objects"}>
-      <title>Gateway - ConfigurationsExportButton</title>
+    <Layout title={"Configurations"} subtext={"An overview of your endpoints objects"}>
+      <title>Gateway - Configurations</title>
       <main>
         <div className="row">
           <div className="col-12">

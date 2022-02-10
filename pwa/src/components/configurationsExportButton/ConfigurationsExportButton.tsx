@@ -26,8 +26,8 @@ export default function ConfigurationsExportButton() {
           download("export.yaml", text, "text/yaml");
         });
       })
-      .catch((error) => {
-        throw new Error(error)
+      .catch((err) => {
+        throw new Error('GET export: ' + err)
       })
       .finally(() => {
         setLoading(false)
