@@ -200,6 +200,14 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
           title={title}
           cardHeader={function () {
             return (<>
+              <button
+                className="utrecht-link button-no-style"
+                data-toggle="modal"
+                data-target="helpModal"
+              >
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
               <Link className="utrecht-link" to={`/entities/${entityId}`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2"/>Back
