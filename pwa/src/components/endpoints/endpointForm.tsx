@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   GenericInputComponent,
   SelectInputComponent,
+  TextareaGroup,
   Spinner,
   Card,
   Alert,
@@ -168,13 +169,43 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={endpoint && endpoint.description && endpoint.description}
-                            nameOverride={"Description"}
-                          />
+                          {
+                            applications !== null && applications.length > 0 ? (
+                              <>
+                                {endpoint !== null &&
+                                endpoint.application !== undefined &&
+                                endpoint.application !== null ? (
+                                  <SelectInputComponent
+                                    options={applications}
+                                    data={endpoint.application.name}
+                                    name={"application"}
+                                    id={"applicationInput"}
+                                    nameOverride={"Applications"}
+                                    value={"/admin/applications/"}
+                                  />
+                                ) : (
+                                  <SelectInputComponent
+                                    options={applications}
+                                    name={"application"}
+                                    id={"applicationInput"}
+                                    nameOverride={"Applications"}
+                                    value={"/admin/applications/"}
+                                  />
+                                )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                data="Please wait, gettings applications from the Gateway..."
+                                options={[{
+                                  name: "Please wait, gettings applications from the Gateway...",
+                                  value: "Please wait, gettings applications from the Gateway..."
+                                }]}
+                                name={"application"}
+                                id={"applicationInput"}
+                                nameOverride={"Applications"}
+                                disabled
+                              />
+                            )}
                         </div>
                       </div>
                       <br/>
@@ -211,45 +242,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                       </div>
                       <div className="row">
                         <div className="col-12">
-                          <div className="form-group">
-                            {
-                              applications !== null && applications.length > 0 ? (
-                                <>
-                                  {endpoint !== null &&
-                                  endpoint.application !== undefined &&
-                                  endpoint.application !== null ? (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      data={endpoint.application.name}
-                                      name={"application"}
-                                      id={"applicationInput"}
-                                      nameOverride={"Applications"}
-                                      value={"/admin/applications/"}
-                                    />
-                                  ) : (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      name={"application"}
-                                      id={"applicationInput"}
-                                      nameOverride={"Applications"}
-                                      value={"/admin/applications/"}
-                                    />
-                                  )}
-                                </>
-                              ) : (
-                                <SelectInputComponent
-                                  data="Please wait, gettings applications from the Gateway..."
-                                  options={[{
-                                    name: "Please wait, gettings applications from the Gateway...",
-                                    value: "Please wait, gettings applications from the Gateway..."
-                                  }]}
-                                name={"application"}
-                                  id={"applicationInput"}
-                                  nameOverride={"Applications"}
-                                  disabled
-                                />
-                              )}
-                          </div>
+                            <TextareaGroup
+                              name={"description"}
+                              id={"descriptionInput"}
+                              defaultValue={endpoint?.description}
+                            />
                         </div>
                       </div>
                     </div>
