@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   GenericInputComponent,
+  TextareaGroup,
   Spinner,
   Card,
   Alert,
@@ -17,7 +18,6 @@ import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
-import {TextareaGroup} from "../common/textareaGroup";
 
 interface IApplication {
   name: string,

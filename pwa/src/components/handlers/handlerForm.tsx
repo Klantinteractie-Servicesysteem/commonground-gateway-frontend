@@ -9,6 +9,7 @@ import {
 import {
   GenericInputComponent,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
@@ -20,7 +21,6 @@ import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import {TextareaGroup} from "../common/textareaGroup";
 
 export default function HandlerForm({id, endpointId}) {
   const [context, setContext] = React.useState(null);
