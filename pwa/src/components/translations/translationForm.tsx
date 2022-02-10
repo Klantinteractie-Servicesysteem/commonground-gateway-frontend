@@ -22,6 +22,16 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const title: string = (tableName && tableName !== 'new' && !id) ? "Create translation" : (tableName && id) ? "Edit translation" : (tableName && tableName === 'new') ? "Create table" : null
   const API: APIService = React.useContext(APIContext);
 
+
+  // if (id) {
+  //   const _id = id === "new" ? null : id
+  //   return <NewTranslationForm id={_id} />
+  // }
+
+  // if (tableName) {
+  //   return <NewTranslationTableForm />
+  // }
+
   React.useEffect(() => {
     id && getTranslation(id)
   }, [API]);
@@ -167,3 +177,26 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   );
 }
 export default TranslationForm
+
+
+interface NewTranslationFormProps {
+  id?: string;
+}
+
+const NewTranslationForm: React.FC<NewTranslationFormProps> = ({ id }) => { // zou nieuw bestand kunnen zijn
+  // 3 velden (From, To, Language)
+  const title: string = `${id ? "Edit" : "Create"} translation`
+  // isFirst ? You need to create at least one translation when creating a new table
+  return <></>
+}
+
+
+const TranslationTableForm = () => { // zou nieuw bestand kunnen zijn
+  // name veld
+  // <h> You need to create at least one translation when creating a new table </h>
+  return (
+    <>
+      <NewTranslationForm />
+    </>
+  )
+}
