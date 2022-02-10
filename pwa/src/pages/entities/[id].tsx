@@ -24,7 +24,7 @@ const IndexPage = (props) => {
                       name: "Attributes",
                       id: "attributes",
                     },
-                    {name: "Object", id: "data"},
+                    {name: "Objects", id: "data"},
                     {name: "Logs", id: "logs"}
                   ]}
                 />
