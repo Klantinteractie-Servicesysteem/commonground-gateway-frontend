@@ -31,7 +31,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
 
   return (<>
     <Card
-      title={"Object"}
+      title={"Objects"}
       cardHeader={function () {
         return (
           <>
