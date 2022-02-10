@@ -6,7 +6,7 @@ import Entity from './resources/entity';
 import ObjectEntity from "./resources/ObjectEntity";
 import Login from './services/login';
 import Log from './resources/log';
-import Endpoint from './resources/endpoint';
+import Endpoint from "./resources/endpoint";
 import { GATSBY_ADMIN_URL, GATSBY_API_URL } from '../../static/env.js';
 
 export default class APIService {
