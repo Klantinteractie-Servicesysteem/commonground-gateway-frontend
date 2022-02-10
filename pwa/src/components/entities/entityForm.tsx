@@ -15,7 +15,6 @@ import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import {TextareaGroup} from "../common/textareaGroup";
 
 interface EntityFormProps {
   entityId: string,
@@ -36,17 +35,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   }, [API, entityId])
 
   const handleSetSources = () => {
-    setShowSpinner(true)
-
     API.Source.getAll()
       .then((res) => {
         setSources(res.data)
       })
       .catch((err) => {
         throw new Error('GET sources error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
       })
   }
 
@@ -145,6 +139,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!sources}
                 >
                   <i className="fas fa-save mr-2"/>Save
                 </button>
@@ -159,7 +154,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay/>}
+                      {loadingOverlay && <LoadingOverlay /> }
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -171,18 +166,29 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                           />
                         </div>
                         <div className="col-6">
-                          <SelectInputComponent
-                            options={[
-                              {name: 'Organization', value: 'organization'},
-                              {name: 'User', value: 'user'},
-                              {name: 'User group', value: 'userGroup'}
-                            ]}
-                            data={entity?.function}
-                            name={"function"}
-                            id={"functionInput"}
-                            nameOverride={"Function"}
-                            required
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"description"}
+                            id={"descriptionInput"}
+                            data={entity && entity.description && entity.description}
+                            nameOverride={"Description"}
                           />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-6">
+                          <div className="form-group">
+                            <SelectInputComponent
+                              options={[{name: 'Organization', value: 'organization'}, {
+                                name: 'User',
+                                value: 'user'
+                              }, {name: 'User group', value: 'userGroup'}]}
+                              data={entity && entity.function ? entity.function : null}
+                              name={"function"}
+                              id={"functionInput"}
+                              nameOverride={"Function"}
+                              required/>
+                          </div>
                         </div>
                       </div>
                       <div className="row">
@@ -206,58 +212,51 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          {sources !== null && sources.length > 0 ? (
-                            <>
-                              {entity !== null &&
-                              entity.gateway !== undefined &&
-                              entity.gateway !== null ? (
-                                  <SelectInputComponent
-                                    options={sources}
-                                    data={entity.gateway.name}
-                                    name={"gateway"}
-                                    id={"gatewayInput"}
-                                    nameOverride={"Source"}
-                                    value={"/admin/gateways/"}
-                                  />
-                                )
-                                : (
-                                  <SelectInputComponent
-                                    options={sources}
-                                    name={"gateway"}
-                                    id={"gatewayInput"}
-                                    nameOverride={"Source"}
-                                    value={"/admin/gateways/"}
-                                  />
-                                )}
-                            </>
-                          ) : (
-                            <SelectInputComponent
-                              options={[{
-                                name: "Please create a Source before creating an Entity",
-                                value: null
-                              }]}
-                              name={"gateway"}
-                              id={"gatewayInput"}
-                              nameOverride={"Source"}
-                            />
-                          )}
+                          <div className="form-group">
+                            {
+                              sources !== null && sources.length > 0 ? (
+                                <>
+                                  {entity !== null &&
+                                  entity.gateway !== undefined &&
+                                  entity.gateway !== null ? (
+                                      <SelectInputComponent
+                                        options={sources}
+                                        data={entity.gateway.name}
+                                        name={"gateway"}
+                                        id={"gatewayInput"}
+                                        nameOverride={"Source"}
+                                        value={"/admin/gateways/"}/>
+                                    )
+                                    : (
+                                      <SelectInputComponent
+                                        options={sources}
+                                        name={"gateway"}
+                                        id={"gatewayInput"}
+                                        nameOverride={"Source"}
+                                        value={"/admin/gateways/"}/>
+                                    )}
+                                </>
+                              ) : (
+                                <SelectInputComponent
+                                  data="Please wait, gettings sources from the Gateway..."
+                                  options={[{
+                                    name: "Please wait, gettings sources from the Gateway...",
+                                    value: "Please wait, gettings sources from the Gateway..."
+                                  }]}
+                                  name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled />
+                              )}
+                          </div>
                         </div>
-                        <div className="col-6">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"extendInput"}
-                            nameLabel={"Extend"}
-                            nameAttribute={"extend"}
-                            data={entity && entity.extend && entity.extend}
-                          />
-                        </div>
-                        <div className="row">
-                          <div className="col-12">
-                            <TextareaGroup
-                              name={"description"}
-                              id={"descriptionInput"}
-                              defaultValue={entity?.description}
-                            />
+                      </div>
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="form-check">
+                            <Checkbox
+                              type={"checkbox"}
+                              id={"extendInput"}
+                              nameLabel={"Extend"}
+                              nameAttribute={"extend"}
+                              data={entity && entity.extend && entity.extend}/>
                           </div>
                         </div>
                       </div>
