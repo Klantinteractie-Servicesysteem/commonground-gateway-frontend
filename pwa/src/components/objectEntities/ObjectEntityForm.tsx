@@ -22,7 +22,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
+  const title: string = objectEntityId ? "Edit object" : "Create  object";
 
 
   React.useEffect(() => {

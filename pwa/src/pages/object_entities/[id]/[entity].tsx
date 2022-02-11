@@ -7,7 +7,7 @@ const IndexPage = (props) => {
   const entityId: string = props.params.entity === "new" ? null : props.params.entity
 
   return (
-    <Layout title='Object entity' subtext="Create or edit your object entities">
+    <Layout title='Object' subtext="Create or edit your object">
       <main>
         <div className="row">
           <div className="col-12">
