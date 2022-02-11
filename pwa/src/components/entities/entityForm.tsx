@@ -137,7 +137,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                   disabled={!sources}
                 >
