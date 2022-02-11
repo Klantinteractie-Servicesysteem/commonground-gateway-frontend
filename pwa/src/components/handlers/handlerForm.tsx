@@ -137,7 +137,7 @@ export default function HandlerForm({id, endpointId}) {
       template: event.target.template.value
         ? event.target.template.value : null,
       templateType: event.target.templateType.value
-        ? event.target.entity.value : null,
+        ? event.target.templateType.value : null,
       skeletonIn,
       skeletonOut,
       mappingIn,
@@ -217,7 +217,7 @@ export default function HandlerForm({id, endpointId}) {
                     <Spinner/>
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -252,18 +252,18 @@ export default function HandlerForm({id, endpointId}) {
                           />
                         </div>
                         <div className="col-6">
-                            <SelectInputComponent
-                              options={[
-                                {name: "twig", value: "twig"},
-                                {name: "markdown", value: "markdown"},
-                                {name: "restructuredText", value: "restructuredText"}
-                              ]}
-                              name={"type"}
-                              id={"templateType"}
-                              nameOverride={"Template Type"}
-                              required={true}
-                              data={handler?.templateType}
-                            />
+                          <SelectInputComponent
+                            options={[
+                              {name: "twig", value: "twig"},
+                              {name: "markdown", value: "markdown"},
+                              {name: "restructuredText", value: "restructuredText"}
+                            ]}
+                            name={"templateType"}
+                            id={"templateTypeInput"}
+                            nameOverride={"Template Type"}
+                            required={true}
+                            data={handler?.templateType}
+                          />
                         </div>
                       </div>
                       <br/>
