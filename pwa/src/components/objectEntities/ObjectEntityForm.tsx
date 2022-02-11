@@ -22,7 +22,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
+  const title: string = objectEntityId ? "Edit object" : "Create  object";
 
 
   React.useEffect(() => {
@@ -46,17 +46,12 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
   }
 
   const handleSetApplications = () => {
-    setShowSpinner(true)
-
     API.Application.getAll()
       .then((res) => {
         setApplications(res.data)
       })
       .catch((err) => {
         throw new Error('GET applications error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
       })
   }
 
@@ -148,6 +143,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                 <button
                   className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
+                  disabled={!applications}
                 >
                   <i className="fas fa-save mr-2"/>
                   Save
@@ -216,10 +212,12 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                 </>
                               ) : (
                                 <SelectInputComponent
-                                  options={[{name: "Please create a Application.", value: null}]}
-                                  name={"application"} id={"applicationInput"}
-                                  nameOverride={"Application"}
-                                />
+                                  data="Please wait, gettings applications from the Gateway..."
+                                  options={[{
+                                    name: "Please wait, gettings applications from the Gateway...",
+                                    value: "Please wait, gettings applications from the Gateway..."
+                                  }]}
+                                  name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
                               )}
                           </div>
                         </div>

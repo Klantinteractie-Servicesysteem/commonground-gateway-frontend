@@ -46,7 +46,7 @@ export default function EntitiesTable() {
 
   return (
     <Card
-      title={"Objects"}
+      title={"Object types"}
       cardHeader={function () {
         return (
           <>

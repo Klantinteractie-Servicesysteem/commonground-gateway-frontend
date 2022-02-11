@@ -26,8 +26,8 @@ export default function ConfigurationsExportButton() {
           download("export.yaml", text, "text/yaml");
         });
       })
-      .catch((error) => {
-        throw new Error(error);
+      .catch((err) => {
+        throw new Error("GET export: " + err);
       })
       .finally(() => {
         setLoading(false);
@@ -36,7 +36,7 @@ export default function ConfigurationsExportButton() {
 
   return (
     <button
-      className="utrecht-button"
+      className="utrecht-button text-center"
       type="button"
       onClick={handleExport}
       disabled={loading}

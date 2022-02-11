@@ -224,3 +224,11 @@ a:hover {
     text-align: left;
     color: black;
 }
+
+.utrecht-button:disabled {
+    opacity: 0.8;
+}
+
+.utrecht-button:disabled:hover {
+    cursor: not-allowed;
+}
