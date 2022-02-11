@@ -1,5 +1,5 @@
 import * as React from "react";
-import Footer from './../footer/footer'
+import Footer from "./../footer/footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
@@ -20,21 +20,22 @@ import favicon from "../../images/conduction_logo_blauw.svg";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
-  const [API, setAPI] = React.useState<APIService>(null)
+  const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
-  }, [API])
+    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
+  }, [API]);
 
   return (
-    API &&
+    API && (
       <APIProvider value={API}>
-        {isLoggedIn() ?
+        {isLoggedIn() ? (
           <>
             <Helmet
               link={[
-                { rel: 'shortcut icon', type: 'image/png', href: favicon }
-              ]}>
+                { rel: "shortcut icon", type: "image/png", href: favicon },
+              ]}
+            >
               <title>Gateway Admin Dashboard</title>
             </Helmet>
             <div className="utrecht-document conduction-theme">
@@ -48,8 +49,11 @@ export default function Layout({ children, title = "", subtext = "" }) {
               </div>
             </div>
             <WelcomeModal />
-          </> : <Login />
-        }
+          </>
+        ) : (
+          <Login />
+        )}
       </APIProvider>
+    )
   );
 }
