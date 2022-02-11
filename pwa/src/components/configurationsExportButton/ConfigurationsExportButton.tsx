@@ -26,20 +26,22 @@ export default function ConfigurationsExportButton() {
           download("export.yaml", text, "text/yaml");
         });
       })
-      .catch((error) => {
-        throw new Error (error)
+      .catch((err) => {
+        throw new Error('GET export: ' + err)
       })
-      .finally(() => { setLoading(false) })
+      .finally(() => {
+        setLoading(false)
+      })
   };
 
   return (
-    <button
-      className="utrecht-button"
-      type="button"
-      onClick={handleExport}
-      disabled={loading}
-    >
-      {loading ? "Perparing your download...": "Export Configuration"}
-    </button>
+      <button
+        className="utrecht-button text-center"
+        type="button"
+        onClick={handleExport}
+        disabled={loading}
+      >
+        {loading ? "Perparing your download..." : "Export Configuration"}
+      </button>
   );
 }
