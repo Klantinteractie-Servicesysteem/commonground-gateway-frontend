@@ -121,7 +121,6 @@ export default function HandlerForm({id, endpointId}) {
     let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
     let mappingIn: {} = retrieveFormArrayAsObject(event.target, "mappingIn");
     let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
-    let conditions: any[] = retrieveFormArrayAsOArray(event.target, "conditions");
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 

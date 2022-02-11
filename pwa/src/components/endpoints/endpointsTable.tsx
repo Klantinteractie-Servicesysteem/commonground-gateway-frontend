@@ -1,31 +1,48 @@
 import * as React from "react";
-import {Table, Card, Spinner} from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
+import {
+  Card,
+  Table,
+  Spinner,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
+import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 export default function EndpointsTable() {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetEndpoints()
-  }, [API])
+    handleSetEndpoints();
+    handleSetDocumentation();
+  }, [API]);
 
   const handleSetEndpoints = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Endpoint.getAll()
       .then((res) => {
-        setEndpoints(res.data)
+        setEndpoints(res.data);
       })
       .catch((err) => {
-        throw new Error('GET Endpoints error: ' + err)
+        throw new Error("GET Endpoints error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
+        setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
       })
-  }
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <Card
@@ -35,19 +52,26 @@ export default function EndpointsTable() {
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#helpModal"
             >
-              <i className="fas fa-question mr-1"/>
+              <Modal
+                title="Endpoints Documentation"
+                id="helpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
+              <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
             <a className="utrecht-link" onClick={handleSetEndpoints}>
-              <i className="fas fa-sync-alt mr-1"/>
+              <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2"/>
+                <i className="fas fa-plus mr-2" />
                 Create
               </button>
             </Link>
@@ -59,7 +83,7 @@ export default function EndpointsTable() {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner/>
+                <Spinner />
               ) : endpoints ? (
                 <Table
                   columns={[
@@ -81,7 +105,7 @@ export default function EndpointsTable() {
                             to={`/endpoints/${item.id}`}
                           >
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1"/>
+                              <i className="fas fa-edit pr-1" />
                               Edit
                             </button>
                           </Link>
@@ -107,7 +131,7 @@ export default function EndpointsTable() {
                     {
                       name: "No results found",
                       description: " ",
-                    }
+                    },
                   ]}
                 />
               )}
@@ -116,5 +140,5 @@ export default function EndpointsTable() {
         );
       }}
     />
-  )
+  );
 }

@@ -1,10 +1,15 @@
 import * as React from "react";
-import {Table, Card, Spinner, Alert} from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
-import {Link} from "gatsby";
-import FlashMessage from 'react-flash-message';
+import {
+  Table,
+  Card,
+  Spinner,
+  Alert,
+} from "@conductionnl/nl-design-system/lib";
+import { isLoggedIn } from "../../services/auth";
+import { Link } from "gatsby";
+import FlashMessage from "react-flash-message";
 
-export default function TranslationTable({id}) {
+export default function TranslationTable({ id }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -31,25 +36,28 @@ export default function TranslationTable({id}) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setTranslations(data["hydra:member"])
+        setTranslations(data["hydra:member"]);
       })
       .catch((error) => {
         setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
       });
   };
 
-  return (<>
-      {
-        alert !== null &&
+  return (
+    <>
+      {alert !== null && (
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
+          <Alert
+            alertClass={alert.type}
+            body={function () {
+              return <>{alert.message}</>;
+            }}
+          />
         </FlashMessage>
-      }
+      )}
       <Card
         title={"Translations"}
         cardHeader={function () {
@@ -60,16 +68,17 @@ export default function TranslationTable({id}) {
                 data-toggle="modal"
                 data-target="helpModal"
               >
-                <i className="fas fa-question mr-1"/>
+                <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
               <a className="utrecht-link" onClick={getTranslations}>
-                <i className="fas fa-sync-alt mr-1"/>
+                <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
               <Link className="utrecht-link" to={"/translations"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
               </Link>
             </div>
@@ -80,7 +89,7 @@ export default function TranslationTable({id}) {
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner/>
+                  <Spinner />
                 ) : translations ? (
                   <Table
                     columns={[
@@ -99,7 +108,7 @@ export default function TranslationTable({id}) {
                       {
                         headerName: "Language",
                         field: "language",
-                      }
+                      },
                     ]}
                     rows={translations}
                   />
@@ -121,9 +130,9 @@ export default function TranslationTable({id}) {
                       {
                         headerName: "Language",
                         field: "language",
-                      }
+                      },
                     ]}
-                    rows={[{name: 'No results found'}]}
+                    rows={[{ name: "No results found" }]}
                   />
                 )}
               </div>
@@ -132,5 +141,5 @@ export default function TranslationTable({id}) {
         }}
       />
     </>
-  )
+  );
 }
