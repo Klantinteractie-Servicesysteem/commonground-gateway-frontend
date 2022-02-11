@@ -18,21 +18,21 @@ export default function EndpointsTable() {
   React.useEffect(() => {
     handleSetEndpoints();
     handleSetDocumentation();
-  }, [API])
+  }, [API]);
 
   const handleSetEndpoints = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Endpoint.getAll()
-    .then((res) => {
-      setEndpoints(res.data)
-    })
-    .catch((err) => {
-      throw new Error('GET Endpoints error: ' + err)
-    })
-    .finally(() => {
-      setShowSpinner(false)
-    })
-  }
+      .then((res) => {
+        setEndpoints(res.data);
+      })
+      .catch((err) => {
+        throw new Error("GET Endpoints error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -46,8 +46,8 @@ export default function EndpointsTable() {
 
   return (
     <Card
-    title={"Endpoints"}
-    cardHeader={function () {
+      title={"Endpoints"}
+      cardHeader={function () {
         return (
           <>
             <button
@@ -66,12 +66,12 @@ export default function EndpointsTable() {
               <span className="mr-2">Help</span>
             </button>
             <a className="utrecht-link" onClick={handleSetEndpoints}>
-              <i className="fas fa-sync-alt mr-1"/>
+              <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2"/>
+                <i className="fas fa-plus mr-2" />
                 Create
               </button>
             </Link>
@@ -83,7 +83,7 @@ export default function EndpointsTable() {
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner/>
+                <Spinner />
               ) : endpoints ? (
                 <Table
                   columns={[
@@ -105,7 +105,7 @@ export default function EndpointsTable() {
                             to={`/endpoints/${item.id}`}
                           >
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1"/>
+                              <i className="fas fa-edit pr-1" />
                               Edit
                             </button>
                           </Link>
@@ -131,7 +131,7 @@ export default function EndpointsTable() {
                     {
                       name: "No results found",
                       description: " ",
-                    }
+                    },
                   ]}
                 />
               )}
@@ -140,6 +140,5 @@ export default function EndpointsTable() {
         );
       }}
     />
-  )
->>>>>>> development
+  );
 }
