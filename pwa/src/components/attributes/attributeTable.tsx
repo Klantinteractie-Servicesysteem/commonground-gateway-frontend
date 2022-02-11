@@ -1,29 +1,48 @@
 import * as React from "react";
-import { Table, Spinner, Card } from "@conductionnl/nl-design-system/lib";
+import {
+  Table,
+  Spinner,
+  Card,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 export default function AttributeTable({ entityId }) {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
 
-  React.useEffect(() => { handleSetAttributes() }, [API])
+  React.useEffect(() => {
+    handleSetAttributes();
+    handleSetDocumentation();
+  }, [API]);
 
   const handleSetAttributes = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        setAttributes(res.data)
+        setDocumentation(res.data);
       })
       .catch((err) => {
-        throw new Error ('GET attributes from entity error: ' + err)
+        throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
+        setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
       })
-  }
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <Card
@@ -36,6 +55,13 @@ export default function AttributeTable({ entityId }) {
               data-toggle="modal"
               data-target="helpModal"
             >
+              <Modal
+                title="Attributes Documentation"
+                id="helpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -74,7 +100,10 @@ export default function AttributeTable({ entityId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/attributes/${item.id}/${entityId}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/attributes/${item.id}/${entityId}`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
