@@ -4,8 +4,8 @@ import EntitiesTable from "../../components/entities/entitiesTable";
 
 const IndexPage = () => {
   return (
-    <Layout title={"Object"} subtext={"An overview of your objects"}>
-      <title>Gateway - Objects</title>
+    <Layout title={"Object types"} subtext={"An overview of your object types"}>
+      <title>Gateway - Object types</title>
       <main>
         <div className="row">
           <div className="col-12">

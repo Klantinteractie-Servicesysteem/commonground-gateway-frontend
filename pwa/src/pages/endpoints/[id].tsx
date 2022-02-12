@@ -7,6 +7,7 @@ import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const [context, setContext] = React.useState(null);
+  const id: string = props.params.id === "new" ? null : props.params.id
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -54,7 +55,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <EndpointForm id={props.params.id}/>
+                <EndpointForm {...{id}}/>
               </div>
               <div
                 className="tab-pane"

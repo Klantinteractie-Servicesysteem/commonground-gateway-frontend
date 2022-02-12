@@ -31,7 +31,7 @@ export default function TranslationTable({ tableName }) {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setTranslations(data["hydra:member"])
+        setTranslations(data["hydra:member"]);
       })
       .catch((error) => {
         setShowSpinner(false);

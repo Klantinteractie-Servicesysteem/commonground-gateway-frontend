@@ -1,4 +1,16 @@
 import * as React from "react";
+import {
+  Table,
+  Card,
+  Spinner,
+  Alert,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
+import { isLoggedIn } from "../../services/auth";
+import { Link } from "gatsby";
+import FlashMessage from "react-flash-message";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 import { Table, Card, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
@@ -6,8 +18,11 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 export default function TableNamesTable() {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState(null);
+  const API: APIService = React.useContext(APIContext);
   const API: APIService = React.useContext(APIContext);
 
 
