@@ -9,6 +9,7 @@ import {
 import {
   GenericInputComponent,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
@@ -299,23 +300,20 @@ export default function HandlerForm({id, endpointId}) {
                             )
                           }
                         </div>
+                        <div className="row">
+                          <div className="col-6">
+                              <TextareaGroup
+                              id="conditionsInput"
+                              name="conditions"
+                              defaultValue={handler?.conditions}
+                              />
+                          </div>
+
+                        </div>
                       </div>
                       <Accordion
                         id="handlerAccordion"
                         items={[
-                          {
-                            title: "Conditions *",
-                            id: "conditionsAccordion",
-                            render: function () {
-                              return (
-                                <ElementCreationNew
-                                  id="conditions"
-                                  label="Conditions"
-                                  data={handler?.conditions}
-                                />
-                              )
-                            }
-                          },
                           {
                             title: "Translations In",
                             id: "translationsInAccordion",
