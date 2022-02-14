@@ -72,7 +72,7 @@ export default function TranslationTable({ tableName }) {
                 <i className="fas fa-long-arrow-alt-left mr-2" />Back
               </button>
             </Link>
-              <Link to={`/translation-tables/${tableName}/new`}>
+              <Link to={`/translation-tables/${tableName}/translations/new`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2"/>
                   Create new
@@ -107,7 +107,7 @@ export default function TranslationTable({ tableName }) {
                       headerName: " ",
                       renderCell: (item: { id: string, translationTable: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${item.translationTable}/${item.id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${item.translationTable}/translations/${item.id}`}>
                             <button className="utrecht-button btn-sm btn-primary">
                               <i className="fas fa-edit pr-1" />
                               Edit

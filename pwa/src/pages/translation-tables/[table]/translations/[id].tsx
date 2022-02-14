@@ -1,7 +1,6 @@
-import { title } from "process";
 import * as React from "react";
-import Layout from "../../../components/common/layout";
-import TranslationForm from "../../../components/translations/translationForm";
+import Layout from "../../../../components/common/layout";
+import TranslationForm from "../../../../components/translations/translationForm";
 
 const IndexPage = (props) => {
   const id: string = props.params.id === "new" ? null : props.params.id;

@@ -1,19 +1,6 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Alert,
-  Modal,
-} from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import FlashMessage from "react-flash-message";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
 import { Table, Card, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
-import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
@@ -22,7 +9,6 @@ export default function TableNamesTable() {
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
-  const API: APIService = React.useContext(APIContext);
   const API: APIService = React.useContext(APIContext);
 
 
@@ -72,7 +58,10 @@ export default function TableNamesTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {
+                JSON.stringify(tableNames)
+              }
+              {/* {showSpinner === true ? (
                 <Spinner />
               ) : tableNames ? (
                 <Table
@@ -86,7 +75,7 @@ export default function TableNamesTable() {
                       headerName: " ",
                       renderCell: (tables: { name: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${tables.name}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${tables.name}/translations`}>
                             <button className="utrecht-button btn-sm btn-primary">
                               <i className="fas fa-eye pr-1" />
                               View
@@ -108,7 +97,7 @@ export default function TableNamesTable() {
                   ]}
                   rows={[{ name: 'No results found' }]}
                 />
-              )}
+              )} */}
             </div>
           </div>
         );
