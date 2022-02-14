@@ -212,23 +212,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
-                            <SelectInputComponent
-                              options={[
-                                {name: "gateway-endpoint", value: "gateway-endpoint"},
-                                {name: 'entity-route', value: 'entity-route'},
-                                {name: 'entity-endpoint', value: 'entity-endpoint'},
-                                {name: 'documentation-endpoint', value: 'documentation-endpoint'}
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              data={endpoint && endpoint.type ? endpoint.type : "gateway-endpoint"}
-                              required={true}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
                             <GenericInputComponent
                               nameOverride={"Path"}
                               name={"path"}
@@ -239,9 +222,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                             />
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
+                        <div className="col-6">
                             <TextareaGroup
                               name={"description"}
                               id={"descriptionInput"}
