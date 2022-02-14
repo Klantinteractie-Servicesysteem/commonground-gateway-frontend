@@ -56,8 +56,8 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setHandler(data);
+        setShowSpinner(false);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -68,7 +68,6 @@ export default function HandlerForm({id, endpointId}) {
   };
 
   const getEntities = () => {
-    setShowSpinner(true);
     fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
@@ -77,13 +76,11 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setEntities(data["hydra:member"]);
         }
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
@@ -91,7 +88,6 @@ export default function HandlerForm({id, endpointId}) {
   };
 
   const getTableNames = () => {
-    setShowSpinner(true);
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
@@ -101,11 +97,9 @@ export default function HandlerForm({id, endpointId}) {
       .then((response) => response.json())
       .then((data) => {
         const convertedArray = data['results'].map((value, idx) => ({id: idx, name: value, value: value}));
-        setShowSpinner(false);
         setTableNames(convertedArray)
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
@@ -138,7 +132,6 @@ export default function HandlerForm({id, endpointId}) {
         ? event.target.template.value : null,
       templateType: event.target.templateType.value
         ? event.target.templateType.value : null,
-      conditions,
       skeletonIn,
       skeletonOut,
       mappingIn,
@@ -226,7 +219,7 @@ export default function HandlerForm({id, endpointId}) {
                     <Spinner/>
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -261,12 +254,17 @@ export default function HandlerForm({id, endpointId}) {
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
+                          <SelectInputComponent
+                            options={[
+                              {name: "twig", value: "twig"},
+                              {name: "markdown", value: "markdown"},
+                              {name: "restructuredText", value: "restructuredText"}
+                            ]}
                             name={"templateType"}
                             id={"templateTypeInput"}
-                            data={handler && handler.templateType && handler.templateType}
                             nameOverride={"Template Type"}
+                            required={true}
+                            data={handler?.templateType}
                           />
                         </div>
                       </div>
