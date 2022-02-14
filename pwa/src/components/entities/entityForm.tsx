@@ -4,7 +4,8 @@ import {
   Checkbox,
   SelectInputComponent,
   Card,
-  Alert
+  Alert,
+  Modal,
 }
   from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
@@ -28,9 +29,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object type" : "Create Object type";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetSources()
+    handleSetDocumentation()
     entityId && handleSetEntity()
   }, [API, entityId])
 
@@ -43,7 +46,15 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
         throw new Error('GET sources error: ' + err)
       })
   }
-
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
   const handleSetEntity = () => {
     setShowSpinner(true)
 
@@ -133,9 +144,17 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
               <div>
                 <button
                   className="utrecht-link button-no-style"
-                  data-toggle="modal"
-                  data-target="helpModal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#helpModal"
+                  onClick={(e) => e.preventDefault()}
                 >
+                  <Modal
+                    title="Application Documentation"
+                    id="helpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
                   <i className="fas fa-question mr-1"/>
                   <span className="mr-2">Help</span>
                 </button>

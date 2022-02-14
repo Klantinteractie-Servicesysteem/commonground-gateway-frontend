@@ -14,7 +14,7 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
+  Alert, Modal,
 } from "@conductionnl/nl-design-system/lib";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
@@ -36,11 +36,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   const [alert, setAlert] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     if (attributeId) {
       handleSetAttributes()
       handleSetAttribute()
+      handleSetDocumentation()
     }
   }, [API])
 
@@ -58,7 +60,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
         setShowSpinner(false)
       })
   }
-
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  }
   const handleSetAttributes = () => {
     setShowSpinner(true)
 
@@ -72,7 +82,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       .finally(() => {
         setShowSpinner(false)
       })
-  }
+  };
 
   const saveAttribute = (event) => {
     event.preventDefault();
@@ -202,9 +212,17 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
             return (<>
               <button
                 className="utrecht-link button-no-style"
-                data-toggle="modal"
-                data-target="helpModal"
+                data-bs-toggle="modal"
+                data-bs-target="#helpModal"
+                onClick={(e) => e.preventDefault()}
               >
+                <Modal
+                  title="Application Documentation"
+                  id="helpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
