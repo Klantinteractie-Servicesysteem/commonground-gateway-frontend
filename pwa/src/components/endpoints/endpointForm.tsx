@@ -65,7 +65,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         setShowSpinner(false)
       })
   }
-  console.log(endpointId)
+
   const saveEndpoint = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
