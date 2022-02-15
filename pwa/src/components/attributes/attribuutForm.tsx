@@ -11,6 +11,7 @@ import {
   GenericInputComponent,
   Checkbox,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
@@ -256,18 +257,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={attribute && attribute.description && attribute.description}
-                            nameOverride={"Description"}
-                          />
-                        </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
                           <SelectInputComponent
                             options={[
                               {name: "String", value: 'string'},
@@ -286,23 +275,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                             nameOverride={"Type"}
                             data={attribute && attribute.type && attribute.type} required/>
                         </div>
-                        <div className="col-6">
-                          <SelectInputComponent
-                            options={[
-                              {name: "Email", value: 'email'},
-                              {name: "Phone", value: 'phone'},
-                              {name: "Country code", value: 'country code'},
-                              {name: "BSN", value: 'bsn'},
-                              {name: "Url", value: 'url'},
-                              {name: "UUID", value: 'uuid'},
-                              {name: "Json", value: 'json'}
-                            ]}
-                            name={"format"}
-                            id={"formatInput"}
-                            nameOverride={"Format"}
-                            data={attribute && attribute.format && attribute.format}/>
-                        </div>
                       </div>
+                      <br/>
                       <div className="row">
                         <div className="col-6">
                           {
@@ -337,6 +311,22 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                                 nameOverride={"inversedBy"}
                               />
                             )}
+                        </div>
+                        <div className="col-6">
+                          <SelectInputComponent
+                            options={[
+                              {name: "Email", value: 'email'},
+                              {name: "Phone", value: 'phone'},
+                              {name: "Country code", value: 'country code'},
+                              {name: "BSN", value: 'bsn'},
+                              {name: "Url", value: 'url'},
+                              {name: "UUID", value: 'uuid'},
+                              {name: "Json", value: 'json'}
+                            ]}
+                            name={"format"}
+                            id={"formatInput"}
+                            nameOverride={"Format"}
+                            data={attribute && attribute.format && attribute.format}/>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -509,6 +499,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                             id={"maxFileSizeInput"}
                             data={attribute && attribute.maxFileSize && attribute.maxFileSize}
                             nameOverride={"Max File Size"}
+                          />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-12">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={attribute?.description}
                           />
                         </div>
                       </div>

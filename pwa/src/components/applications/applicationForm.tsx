@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   GenericInputComponent,
+  TextareaGroup,
   Spinner,
   Card,
   Alert,
@@ -194,10 +195,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={application && application.description && application.description}
-                            nameOverride={"Description"}
+                            name={"resource"}
+                            id={"resourceInput"}
+                            data={application && application.resource && application.resource}
+                            nameOverride={"Resource"}
                           />
                         </div>
                       </div>
@@ -222,13 +223,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"resource"}
-                            id={"resourceInput"}
-                            data={application && application.resource && application.resource}
-                            nameOverride={"Resource"}
+                        <div className="col-12">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={application?.description}
                           />
                         </div>
                       </div>
