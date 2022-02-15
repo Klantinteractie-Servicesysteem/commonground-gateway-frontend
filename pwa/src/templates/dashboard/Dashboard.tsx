@@ -17,15 +17,6 @@ const Dashboard: React.FC = () => {
     <div className="dashboard">
       <div>
         <h3 className="dashboard-dividerTitle">
-            To your personalized dashboard
-        </h3>
-        <h2 className="dashboard-title">
-          Welcome
-        </h2>
-      </div>
-
-      <div>
-        <h3 className="dashboard-dividerTitle">
             Quick overview
         </h3>
         <div className="dashboard-quickOverview">
