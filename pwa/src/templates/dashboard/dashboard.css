@@ -37,6 +37,10 @@
     flex: 1;
 }
 
+.dashboard .dashboard-externalLinks > *:not(:first-child) {
+    margin-bottom: 20px;
+}
+
 .dashboard .dashboard-logsTable .dashboard-logsTableContainer {
     display: flex;
     flex-direction: column;
