@@ -14,6 +14,7 @@ export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
 
   React.useEffect(() => {
     handleSetAttributes()
@@ -24,7 +25,7 @@ export default function AttributeTable({ entityId }) {
     setShowSpinner(true);
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        setDocumentation(res.data);
+        setAttributes(res.data);
       })
       .catch((err) => {
         throw new Error("GET attributes from entity error: " + err);
@@ -46,7 +47,7 @@ export default function AttributeTable({ entityId }) {
 
   return (
     <Card
-      title={"Attributes"}
+      title={title}
       cardHeader={function () {
         return (
           <>
