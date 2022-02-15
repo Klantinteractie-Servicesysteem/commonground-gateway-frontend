@@ -47,3 +47,21 @@
     color: #6C757D;
     font-size: 16px;
 }
+
+/* Small implementation */
+.dashboardCard--small {
+    padding: 10px;
+}
+
+.dashboardCard--small .dashboardCard-icon {
+    height: 50px;
+    width: 50px;
+}
+
+.dashboardCard--small > .dashboardCard-content .dashboardCard-content-title {
+    font-size: 16px;
+}
+
+.dashboardCard--small > .dashboardCard-content > .dashboardCard-content-subtitle {
+    font-size: 14px;
+}
