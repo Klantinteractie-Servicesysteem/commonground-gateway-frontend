@@ -31,7 +31,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
         <div className="dashboardCard-content-title">
           <FontAwesomeIcon icon={faAngleRight} />
           <span className="dashboardCard-content-titleAmount">{amount}</span>
-          <span className="dashboardCard-content-title">{title}</span>
+          <span>{title}</span>
         </div>
 
         <div className="dashboardCard-content-subtitle">
