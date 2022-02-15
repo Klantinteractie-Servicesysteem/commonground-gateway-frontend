@@ -6,6 +6,8 @@ import DashboardLogsTable from "../../components/dashboardLogsTable/DashboardLog
 import { DashboardLogs } from "../../dummy_data/dashboardLog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 import applicationsIcon from "./../../images/icon-applications.svg";
 import sourcesIcon from "./../../images/icon-sources.svg";
@@ -13,6 +15,41 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 
 const Dashboard: React.FC = () => {
+  const [applicationsCount, setApplicationsCount] = React.useState<number>(0)
+  const [sourcesCount, setSourcesCount] = React.useState<number>(0)
+  const [endpointsCount, setEndpointsCount] = React.useState<number>(0)
+  const API: APIService = React.useContext(APIContext)
+
+  React.useEffect(() => {
+    handleSetCounts()
+  }, [API])
+
+  const handleSetCounts = (): void => {
+    API.Application.getAll()
+      .then((res) => {
+        setApplicationsCount(res.data.length)
+      })
+      .catch((err) => {
+        throw new Error(`GET applications error: ${err}`)
+      })
+
+    API.Source.getAll()
+      .then((res) => {
+        setSourcesCount(res.data.length)
+      })
+      .catch((err) => {
+        throw new Error(`GET sources error: ${err}`)
+      })
+
+    API.Endpoint.getAll()
+      .then((res) => {
+        setEndpointsCount(res.data.length)
+      })
+      .catch((err) => {
+        throw new Error(`GET endpoints error: ${err}`)
+      })
+  }
+
   return (
     <div className="dashboard">
       <div>
@@ -21,7 +58,7 @@ const Dashboard: React.FC = () => {
         </h3>
         <div className="dashboard-quickOverview">
           <DashboardCard
-            amount={4}
+            amount={applicationsCount}
             title="Applications"
             iconBackgroundColor="6861CE"
             icon={<img src={applicationsIcon} alt="applications" />}
@@ -30,7 +67,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={16}
+            amount={sourcesCount}
             title="Sources"
             iconBackgroundColor="FFAD46"
             icon={<img src={sourcesIcon} alt="sources" />}
@@ -39,7 +76,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={88}
+            amount={endpointsCount}
             title="Endpoints"
             iconBackgroundColor="31CE36"
             icon={<img src={endpointsIcon} alt="endpoints" />}
