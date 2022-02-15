@@ -1,28 +1,56 @@
-.dashboard > .dashboardRow {
+.dashboard > * {
     margin-top: 75px;
 }
 
-.dashboard > .dashboardRow > .dashboard-title {
+.dashboard .dashboard-title {
     font-size: 82px;
     font-weight: bold;
 }
 
-.dashboard > .dashboardRow > .dashboard-dividerTitle {
+.dashboard .dashboard-dividerTitle {
     margin-bottom: 10px;
     font-size: 14px;
     font-weight: bold;
     color: #6C757D;
 }
 
-.dashboard > .dashboardRow > .dashboard-quickOverview {
+.dashboard .dashboard-quickOverview {
     width: 100%;
     display: flex;
+    gap: 20px;
 }
 
-.dashboard > .dashboardRow > .dashboard-quickOverview > * {
+.dashboard .dashboard-quickOverview > * {
     flex: 1;
 }
 
-.dashboard > .dashboardRow > .dashboard-quickOverview > *:not(:last-child) {
-    margin-right: 20px;
+.dashboard .dashboard-row-logsAndDocumentation {
+    display: flex;
+    gap: 40px;
+}
+
+.dashboard .dashboard-row-logsAndDocumentation .dashboard-logsTable {
+    flex: 2;
+}
+
+.dashboard .dashboard-row-logsAndDocumentation .dashboard-externalLinks {
+    flex: 1;
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%);
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer .title {
+    font-size: 22px;
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer .subtitle {
+    color: #6C757D;
+    margin-bottom: 24px;
 }
