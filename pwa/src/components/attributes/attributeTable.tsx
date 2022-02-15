@@ -16,8 +16,8 @@ export default function AttributeTable({ entityId }) {
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetAttributes();
-    handleSetDocumentation();
+    handleSetAttributes()
+    handleSetDocumentation()
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -53,11 +53,11 @@ export default function AttributeTable({ entityId }) {
             <button
               className="utrecht-link button-no-style"
               data-toggle="modal"
-              data-target="helpModal"
+              data-target="#attributeHelpModal"
             >
               <Modal
                 title="Attributes Documentation"
-                id="helpModal"
+                id="attributeHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}

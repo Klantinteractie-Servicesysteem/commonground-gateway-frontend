@@ -215,12 +215,12 @@ export default function HandlerForm({id, endpointId}) {
                 <button
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
-                  data-bs-target="#helpModal"
+                  data-bs-target="#handlerHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
                     title="Handler Documentation"
-                    id="helpModal"
+                    id="handlerHelpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />
                     )}

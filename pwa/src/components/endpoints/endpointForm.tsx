@@ -149,12 +149,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                 <button
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
-                  data-bs-target="#helpModal"
+                  data-bs-target="#endpointHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
                     title="Endpoint Documentation"
-                    id="helpModal"
+                    id="endpointHelpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />
                     )}

@@ -153,12 +153,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                 <button
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
-                  data-bs-target="#helpModal"
+                  data-bs-target="#sourceHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
                     title="Source Documentation"
-                    id="helpModal"
+                    id="sourceHelpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />
                     )}

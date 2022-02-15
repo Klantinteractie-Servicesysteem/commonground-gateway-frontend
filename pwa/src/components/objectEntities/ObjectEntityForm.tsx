@@ -157,12 +157,12 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                 <button
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
-                  data-bs-target="#helpModal"
+                  data-bs-target="#ObjectEntityHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
                     title="Entity_object Documentation"
-                    id="helpModal"
+                    id="ObjectEntityHelpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />
                     )}

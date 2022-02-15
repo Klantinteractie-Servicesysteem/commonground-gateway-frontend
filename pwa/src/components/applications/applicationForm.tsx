@@ -146,12 +146,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#applicationHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
                 <Modal
                   title="Application Documentation"
-                  id="helpModal"
+                  id="applicationHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}

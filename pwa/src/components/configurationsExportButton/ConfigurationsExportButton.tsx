@@ -64,11 +64,11 @@ export default function ConfigurationsExportButton() {
       <button
         className="utrecht-link button-no-style"
         data-bs-toggle="modal"
-        data-bs-target="#helpModal"
+        data-bs-target="#configurationsHelpModal"
       >
         <Modal
           title="Configurations Documentation"
-          id="helpModal"
+          id="configurationsHelpModal"
           body={() => (
             <div dangerouslySetInnerHTML={{__html: documentation}}/>
           )}

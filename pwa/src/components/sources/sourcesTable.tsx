@@ -53,11 +53,11 @@ export default function SourcesTable() {
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#sourceHelpModal"
             >
               <Modal
                 title="Sources Documentation"
-                id="helpModal"
+                id="sourceHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}

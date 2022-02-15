@@ -214,12 +214,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#attributeHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
                 <Modal
                   title="Attribute Documentation"
-                  id="helpModal"
+                  id="attributeHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}

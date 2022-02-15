@@ -71,11 +71,11 @@ export default function UsersTable() {
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#UserHelpModal"
             >
               <Modal
                 title="User Documentation"
-                id="helpModal"
+                id="UserHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{__html: documentation}}/>
                 )}
