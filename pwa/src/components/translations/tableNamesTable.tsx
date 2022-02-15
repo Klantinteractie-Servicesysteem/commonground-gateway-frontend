@@ -20,8 +20,15 @@ export default function TableNamesTable() {
   const getTableNames = () => {
     setShowSpinner(true);
     API.Translation.getTableNames()
-      .then((res) => { setTableNames(res.data); })
-      .catch((err) => { throw new Error('GET translation error: ' + err) })
+      .then((res) => { 
+        let names = [];
+        let results = res.data.results;
+        for (let i = 0; i < results.length; i++) {
+          names.push({name: results[i]})
+        }
+        setTableNames(names); 
+      })
+      .catch((err) => { throw new Error('GET table names error: ' + err) })
       .finally(() => {
         setShowSpinner(false);
       });
@@ -58,10 +65,7 @@ export default function TableNamesTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {
-                JSON.stringify(tableNames)
-              }
-              {/* {showSpinner === true ? (
+              {showSpinner === true ? (
                 <Spinner />
               ) : tableNames ? (
                 <Table
@@ -87,7 +91,7 @@ export default function TableNamesTable() {
                   ]}
                   rows={tableNames}
                 />
-              ) : (
+               ) : (
                 <Table
                   columns={[
                     {
@@ -97,7 +101,7 @@ export default function TableNamesTable() {
                   ]}
                   rows={[{ name: 'No results found' }]}
                 />
-              )} */}
+              )} 
             </div>
           </div>
         );

@@ -91,7 +91,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
           cardHeader={function () {
             return (
               <div>
-                <Link className="utrecht-link" to={translation?.translationTable ? `/translation-tables/${translation.translationTable}` : (tableName && tableName !== 'new') ? `/translation-tables/${tableName}` : '/translation-tables'}>
+                <Link className="utrecht-link" to={translation?.translationTable ? `/translation-tables/${translation.translationTable}/translations` : (tableName && tableName !== 'new') ? `/translation-tables/${tableName}/translations` : '/translation-tables'}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />Back
                   </button>
