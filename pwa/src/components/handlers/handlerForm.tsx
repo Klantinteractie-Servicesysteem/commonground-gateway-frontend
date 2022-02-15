@@ -23,9 +23,8 @@ import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import HandlerTable from "./handlerTable";
 
-export default function HandlerForm({id, endpointId}) {
+export default function HandlerForm({endpointId}) {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -33,7 +32,7 @@ export default function HandlerForm({id, endpointId}) {
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = (id === "new") ? "Create Handler" : "Edit Handler";
+  const title: string = (endpointId === "new") ? "Create Handler" : "Edit Handler";
   const [documentation, setDocumentation] = React.useState<string>(null)
   const API: APIService = React.useContext(APIContext)
 
@@ -43,7 +42,7 @@ export default function HandlerForm({id, endpointId}) {
         adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      if (id !== "new") {
+      if (endpointId !== "new") {
         getHandler();
       }
       getEntities();
@@ -53,7 +52,7 @@ export default function HandlerForm({id, endpointId}) {
 
   const getHandler = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers/${id}`, {
+    fetch(`${context.adminUrl}/handlers/${endpointId}`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -170,8 +169,8 @@ export default function HandlerForm({id, endpointId}) {
 
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
-    if (id !== "new") {
-      url = `${url}/${id}`;
+    if (endpointId !== "new") {
+      url = `${url}/${endpointId}`;
       method = "PUT";
     }
 

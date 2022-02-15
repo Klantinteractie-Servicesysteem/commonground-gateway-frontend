@@ -53,11 +53,12 @@ export default function AttributeTable({ entityId }) {
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="#attributeHelpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#attributeHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
               <Modal
-                title="Attributes Documentation"
+                title="Attribute Documentation"
                 id="attributeHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
