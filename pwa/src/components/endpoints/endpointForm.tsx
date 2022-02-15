@@ -81,7 +81,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["type"], body["path"]])) {
+    if (!checkValues([body["name"], body["path"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setShowSpinner(false);
