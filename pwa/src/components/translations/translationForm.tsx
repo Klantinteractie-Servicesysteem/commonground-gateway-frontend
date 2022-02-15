@@ -2,7 +2,8 @@ import * as React from "react";
 import {
   GenericInputComponent,
   Card,
-  Alert
+  Alert,
+  Modal,
 }
   from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
@@ -10,6 +11,8 @@ import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface TranslationFormProps {
   id: string,
@@ -22,6 +25,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
+  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -65,6 +70,19 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
         setLoadingOverlay(false);
       })
   }
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <>
@@ -84,9 +102,16 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
               <div>
                 <button
                   className="utrecht-link button-no-style"
-                  data-toggle="modal"
-                  data-target="helpModal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#helpModal"
                 >
+                  <Modal
+                    title="Translations Documentation"
+                    id="helpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                    )}
+                  />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>

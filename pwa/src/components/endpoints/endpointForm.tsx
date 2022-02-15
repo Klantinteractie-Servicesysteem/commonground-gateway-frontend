@@ -152,7 +152,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
-                    title="Application Documentation"
+                    title="Endpoint Documentation"
                     id="helpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />

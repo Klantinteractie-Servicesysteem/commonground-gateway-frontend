@@ -149,7 +149,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
-                    title="Application Documentation"
+                    title="Entity Documentation"
                     id="helpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />

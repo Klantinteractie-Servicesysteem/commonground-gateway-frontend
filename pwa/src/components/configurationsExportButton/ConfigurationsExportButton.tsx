@@ -67,7 +67,7 @@ export default function ConfigurationsExportButton() {
         data-bs-target="#helpModal"
       >
         <Modal
-          title="Translations Documentation"
+          title="Configurations Documentation"
           id="helpModal"
           body={() => (
             <div dangerouslySetInnerHTML={{__html: documentation}}/>

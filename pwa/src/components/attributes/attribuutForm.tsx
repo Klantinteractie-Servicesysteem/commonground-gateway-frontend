@@ -217,7 +217,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                 onClick={(e) => e.preventDefault()}
               >
                 <Modal
-                  title="Application Documentation"
+                  title="Attribute Documentation"
                   id="helpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />

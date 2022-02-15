@@ -157,7 +157,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                   onClick={(e) => e.preventDefault()}
                 >
                   <Modal
-                    title="Application Documentation"
+                    title="Source Documentation"
                     id="helpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{ __html: documentation }} />

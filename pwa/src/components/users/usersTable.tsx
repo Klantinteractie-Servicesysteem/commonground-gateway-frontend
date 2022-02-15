@@ -4,11 +4,16 @@ import Spinner from "../common/spinner";
 import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 import { getUser, isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import {Modal} from "@conductionnl/nl-design-system";
 
 export default function UsersTable() {
   const [context, setContext] = React.useState(null);
   const [users, setUsers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -43,6 +48,19 @@ export default function UsersTable() {
       });
   };
 
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <Card
@@ -52,9 +70,16 @@ export default function UsersTable() {
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#helpModal"
             >
+              <Modal
+                title="User Documentation"
+                id="helpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
