@@ -9,34 +9,38 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
-import {checkValues, removeEmptyObjectValues} from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+} from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
+
 interface EndpointFormProps {
-  endpointId: string,
+  id: string,
 }
 
-export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
+export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
   const API: APIService = React.useContext(APIContext)
 
   React.useEffect(() => {
     handleSetApplications()
-    endpointId && handleSetEndpoint()
-  }, [API, endpointId])
+    id && handleSetEndpoint()
+  }, [API, id])
 
   const handleSetEndpoint = () => {
     setShowSpinner(true)
 
-    API.Endpoint.getOne(endpointId)
+    API.Endpoint.getOne(id)
       .then((res) => {
         setEndpoint(res.data)
       })
@@ -57,6 +61,9 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
       .catch((err) => {
         throw new Error('GET application error: ' + err)
       })
+      .finally(() => {
+        setShowSpinner(false)
+      })
   }
 
   const saveEndpoint = (event) => {
@@ -71,15 +78,17 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
       application: event.target.application.value
         ? event.target.application.value : null,
     };
-    debugger
-    // This removes empty values from the body
+
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["type"], body["path"]])) {
+    if (!checkValues([body["name"], body["path"]])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
       return;
     }
 
-    if (!endpointId) { // unset id means we're creating a new entry
+    if (!id) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then((res) => {
           navigate(`/endpoints/${res.data.id}`)
@@ -93,8 +102,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         })
     }
 
-    if (endpointId) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, endpointId)
+    if (id) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, id)
         .then((res) => {
           setEndpoint(res.data)
         })
@@ -147,7 +156,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay/>}
+                    {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -213,11 +222,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                           </div>
                         </div>
                         <div className="col-6">
-                          <TextareaGroup
-                            name={"description"}
-                            id={"descriptionInput"}
-                            defaultValue={endpoint?.description}
-                          />
+                            <TextareaGroup
+                              name={"description"}
+                              id={"descriptionInput"}
+                              defaultValue={endpoint?.description}
+                            />
                         </div>
                       </div>
                     </div>
