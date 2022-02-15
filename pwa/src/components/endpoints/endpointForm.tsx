@@ -74,7 +74,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       name: event.target.name.value,
       description: event.target.description.value
         ? event.target.description.value : null,
-      type: event.target.type.value,
       path: event.target.path.value,
       application: event.target.application.value
         ? event.target.application.value : null,
