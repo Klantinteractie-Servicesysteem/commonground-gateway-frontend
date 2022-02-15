@@ -1,0 +1,28 @@
+.dashboard > .dashboardRow {
+    margin-top: 75px;
+}
+
+.dashboard > .dashboardRow > .dashboard-title {
+    font-size: 82px;
+    font-weight: bold;
+}
+
+.dashboard > .dashboardRow > .dashboard-dividerTitle {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6C757D;
+}
+
+.dashboard > .dashboardRow > .dashboard-quickOverview {
+    width: 100%;
+    display: flex;
+}
+
+.dashboard > .dashboardRow > .dashboard-quickOverview > * {
+    flex: 1;
+}
+
+.dashboard > .dashboardRow > .dashboard-quickOverview > *:not(:last-child) {
+    margin-right: 20px;
+}
