@@ -20,27 +20,27 @@ import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
 
 interface EndpointFormProps {
-  id: string,
+  endpointId: string,
 }
 
-export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
+export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
   const API: APIService = React.useContext(APIContext)
 
   React.useEffect(() => {
     handleSetApplications()
-    id && handleSetEndpoint()
-  }, [API, id])
+    endpointId && handleSetEndpoint()
+  }, [API, endpointId])
 
   const handleSetEndpoint = () => {
     setShowSpinner(true)
 
-    API.Endpoint.getOne(id)
+    API.Endpoint.getOne(endpointId)
       .then((res) => {
         setEndpoint(res.data)
       })
@@ -65,7 +65,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
         setShowSpinner(false)
       })
   }
-
+  console.log(endpointId)
   const saveEndpoint = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
@@ -88,7 +88,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!endpointId) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then((res) => {
           navigate(`/endpoints/${res.data.id}`)
@@ -102,8 +102,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
         })
     }
 
-    if (id) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, id)
+    if (endpointId) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, endpointId)
         .then((res) => {
           setEndpoint(res.data)
         })
