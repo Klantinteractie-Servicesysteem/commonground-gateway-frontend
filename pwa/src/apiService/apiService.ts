@@ -8,6 +8,7 @@ import Log from "./resources/log";
 import Login from "./services/login";
 import Documentation from "./services/documentation";
 import Endpoint from "./resources/endpoint";
+import FormIO from "./resources/formIO";
 import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
 
 export default class APIService {
@@ -48,6 +49,16 @@ export default class APIService {
     });
   }
 
+  public get formIOClient(): AxiosInstance {
+    return axios.create({
+      baseURL: GATSBY_API_URL,
+      headers: {
+        Accept: "application/form.io",
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
   // Resources
   public get Application(): Application {
     return new Application(this.adminClient);
@@ -77,5 +88,8 @@ export default class APIService {
   }
   public get Documentation(): Documentation {
     return new Documentation(this.documentationClient);
+  }
+  public get FormIO(): FormIO {
+    return new FormIO(this.formIOClient);
   }
 }

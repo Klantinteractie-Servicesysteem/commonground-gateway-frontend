@@ -8,6 +8,8 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {Form} from '@formio/react';
+import FormJson from '../../dummy_data/form';
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -18,13 +20,49 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
 }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
+  const [entity, setEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    entityId && handleSetObjectEntities();
+    if (entityId) {
+      handleSetObjectEntities();
+      getEntity();
+    }
     handleSetDocumentation();
   }, [API, entityId]);
+
+  React.useEffect(() => {
+    entity && getFormIOSchema();
+  }, [API, entity]);
+
+  const getFormIOSchema = () => {
+    setShowSpinner(true);
+    API.FormIO.getSchema(entity?.endpoint)
+      .then((res) => {
+        setEntity(res.data);
+      })
+      .catch((err) => {
+        throw new Error("GET form.io schema error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const getEntity = () => {
+    setShowSpinner(true);
+    API.Entity.getOne(entityId)
+      .then((res) => {
+        setEntity(res.data);
+      })
+      .catch((err) => {
+        throw new Error("GET entity error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
 
   const handleSetObjectEntities = () => {
     setShowSpinner(true);
@@ -76,12 +114,21 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to={`/object_entities/new/${entityId}`}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                  <i className="fas fa-plus mr-2" />
-                  Create
-                </button>
-              </Link>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#objectModal">
+                <i className="fas fa-plus mr-2" />
+                Create
+              </button>
+              <Modal
+                title={`Create a new ${entity?.name}`}
+                id="objectModal"
+                body={() => (
+                  <Form src={FormJson} />
+                  // <span>test</span>
+                )}
+              />
             </>
           );
         }}
