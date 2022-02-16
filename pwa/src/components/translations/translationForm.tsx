@@ -5,7 +5,7 @@ import {
   Spinner
 }
   from "@conductionnl/nl-design-system/lib";
-import { Link } from "gatsby";
+import { Link, navigate } from "gatsby";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -19,18 +19,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (tableName && tableName !== 'new' && !id) ? "Create translation" : (tableName && id) ? "Edit translation" : (tableName && tableName === 'new') ? "Create table" : null
+  const title: string = !id ? "Create translation" : "Edit translation";
   const API: APIService = React.useContext(APIContext);
-
-
-  // if (id) {
-  //   const _id = id === "new" ? null : id
-  //   return <NewTranslationForm id={_id} />
-  // }
-
-  // if (tableName) {
-  //   return <NewTranslationTableForm />
-  // }
 
   React.useEffect(() => {
     id && getTranslation(id)
@@ -40,7 +30,6 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
     setShowSpinner(true);
     API.Translation.getOne(id)
       .then((res) => {
-        console.log(res.data);
         setTranslation(res.data)
       })
       .catch((err) => { throw new Error('GET translation error: ' + err) })
@@ -52,29 +41,26 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
     setLoadingOverlay(true);
 
     let body = {
-      translationTable: event.target.translationTable ? event.target.translationTable.value : null,
+      translationTable: tableName,
       language: event.target.language ? event.target.language.value : null,
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
     };
 
-    if (tableName && tableName !== 'new') {
-      body.translationTable = tableName
-    }
-
     if (!id) {
       API.Translation.create(body)
-        .then((res) => { setTranslation(res.data); console.log(res) })
+        .then((res) => { setTranslation(res.data); })
         .catch((err) => { throw new Error('GET translation error: ' + err) })
         .finally(() => {
           setShowSpinner(false);
           setLoadingOverlay(false);
+          navigate(`/translation-tables/${tableName}/translations`);
         });
     }
 
     if (id) {
       API.Translation.update(body, id)
-        .then((res) => { setTranslation(res.data); console.log(res) })
+        .then((res) => { setTranslation(res.data); })
         .catch((err) => { throw new Error('GET translation error: ' + err) })
         .finally(() => {
           setShowSpinner(false);
@@ -91,7 +77,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
           cardHeader={function () {
             return (
               <div>
-                <Link className="utrecht-link" to={translation?.translationTable ? `/translation-tables/${translation.translationTable}/translations` : (tableName && tableName !== 'new') ? `/translation-tables/${tableName}/translations` : '/translation-tables'}>
+                <Link className="utrecht-link" to={`/translation-tables/${tableName}/translations`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />Back
                   </button>
@@ -113,59 +99,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                   ) : (
                     <>
                       {loadingOverlay && <LoadingOverlay />}
-                      {
-                        tableName && tableName === 'new' &&
-                        <>
-                          <div className="row">
-                            <div className="col-12">
-                              <div className="form-group">
-                                <GenericInputComponent
-                                  type={"text"}
-                                  name={"translationTable"}
-                                  id={"translationTableInput"}
-                                  data={translation && translation.translationTable && translation.translationTable}
-                                  nameOverride={"Name"}
-                                  required />
-                              </div>
-                            </div>
-                          </div>
-                          <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">You need to create at least one translation when creating a new table</h4>
-                        </>
-                      }
-                      <div className="row">
-                        <div className="col-4">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translateFrom"}
-                              id={"translateFromInput"}
-                              data={translation && translation.translateFrom && translation.translateFrom}
-                              nameOverride={"From"}
-                              required />
-                          </div>
-                        </div>
-                        <div className="col-4">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translateTo"}
-                              id={"translateToInput"}
-                              data={translation && translation.translateTo && translation.translateTo}
-                              nameOverride={"To"}
-                              required />
-                          </div>
-                        </div>
-                        <div className="col-4">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"language"}
-                              id={"languageInput"}
-                              data={translation && translation.language && translation.language}
-                              nameOverride={"Language"} />
-                          </div>
-                        </div>
-                      </div>
+                      <TransForm translation={translation} />
                     </>
                   )}
                 </div>
@@ -178,25 +112,45 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
 }
 export default TranslationForm
 
-
-interface NewTranslationFormProps {
-  id?: string;
+interface TransFormProps {
+  translation: any
 }
 
-const NewTranslationForm: React.FC<NewTranslationFormProps> = ({ id }) => { // zou nieuw bestand kunnen zijn
-  // 3 velden (From, To, Language)
-  const title: string = `${id ? "Edit" : "Create"} translation`
-  // isFirst ? You need to create at least one translation when creating a new table
-  return <></>
-}
-
-
-const TranslationTableForm = () => { // zou nieuw bestand kunnen zijn
-  // name veld
-  // <h> You need to create at least one translation when creating a new table </h>
+export const TransForm: React.FC<TransFormProps> = ({ translation }) => {
   return (
-    <>
-      <NewTranslationForm />
-    </>
+    <div className="row">
+      <div className="col-4">
+        <div className="form-group">
+          <GenericInputComponent
+            type={"text"}
+            name={"translateFrom"}
+            id={"translateFromInput"}
+            data={translation?.translateFrom && translation.translateFrom}
+            nameOverride={"From"}
+            required />
+        </div>
+      </div>
+      <div className="col-4">
+        <div className="form-group">
+          <GenericInputComponent
+            type={"text"}
+            name={"translateTo"}
+            id={"translateToInput"}
+            data={translation?.translateTo && translation.translateTo}
+            nameOverride={"To"}
+            required />
+        </div>
+      </div>
+      <div className="col-4">
+        <div className="form-group">
+          <GenericInputComponent
+            type={"text"}
+            name={"language"}
+            id={"languageInput"}
+            data={translation?.language && translation.language}
+            nameOverride={"Language"} />
+        </div>
+      </div>
+    </div>
   )
 }
