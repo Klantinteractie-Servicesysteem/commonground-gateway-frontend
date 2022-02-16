@@ -24,7 +24,7 @@ export default function AttributeTable({ entityId }) {
     setShowSpinner(true);
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        setDocumentation(res.data);
+        setAttributes(res.data);
       })
       .catch((err) => {
         throw new Error("GET attributes from entity error: " + err);
