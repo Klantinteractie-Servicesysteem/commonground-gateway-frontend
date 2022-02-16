@@ -9,15 +9,11 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-} from "../utility/inputHandler";
+import {checkValues, removeEmptyObjectValues} from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
-
 
 interface EndpointFormProps {
   endpointId: string,
@@ -45,7 +41,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         setEndpoint(res.data)
       })
       .catch((err) => {
-        throw new Error('GET Endpoints error: ' + err)
+        throw new Error('GET endpoints error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
@@ -79,12 +75,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         ? event.target.application.value : null,
     };
 
+    // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["path"]])) {
-      setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
       return;
     }
 
@@ -95,7 +89,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Create application error: ' + err)
+          throw new Error('Create endpoint error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
@@ -109,7 +103,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Update application error: ' + err)
+          throw new Error('Update endpoint error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
@@ -139,7 +133,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                   disabled={!applications}
                 >
@@ -156,7 +150,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                    {loadingOverlay && <LoadingOverlay />}
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -222,11 +216,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                           </div>
                         </div>
                         <div className="col-6">
-                            <TextareaGroup
-                              name={"description"}
-                              id={"descriptionInput"}
-                              defaultValue={endpoint?.description}
-                            />
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={endpoint?.description}
+                          />
                         </div>
                       </div>
                     </div>

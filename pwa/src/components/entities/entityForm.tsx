@@ -4,12 +4,11 @@ import {
   Checkbox,
   SelectInputComponent,
   Card,
-  Alert
-}
-  from "@conductionnl/nl-design-system/lib";
+  Alert,
+  Spinner,
+} from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
-import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
@@ -52,7 +51,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
         setEntity(res.data)
       })
       .catch((err) => {
-        throw new Error('GET source error: ' + err)
+        throw new Error('GET entity error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
