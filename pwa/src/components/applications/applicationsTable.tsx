@@ -53,11 +53,11 @@ export default function ApplicationsTable() {
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#applicationHelpModal"
             >
               <Modal
                 title="Application Documentation"
-                id="helpModal"
+                id="applicationHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}

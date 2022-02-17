@@ -6,46 +6,62 @@ import {
   Spinner,
   Card,
   Alert,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
-import {checkValues, removeEmptyObjectValues} from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+} from "../utility/inputHandler";
 import FlashMessage from 'react-flash-message';
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
+
 interface EndpointFormProps {
-  endpointId: string,
+  id: string,
 }
 
-export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
+export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
   const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetApplications()
-    endpointId && handleSetEndpoint()
-  }, [API, endpointId])
+    handleSetDocumentation()
+    id && handleSetEndpoint()
+  }, [API, id])
 
   const handleSetEndpoint = () => {
     setShowSpinner(true)
 
-    API.Endpoint.getOne(endpointId)
+    API.Endpoint.getOne(id)
       .then((res) => {
         setEndpoint(res.data)
       })
       .catch((err) => {
-        throw new Error('GET endpoints error: ' + err)
+        throw new Error('GET Endpoints error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
       })
+  }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
   }
   const handleSetApplications = () => {
     setShowSpinner(true)
@@ -75,35 +91,37 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         ? event.target.application.value : null,
     };
 
-    // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["path"]])) {
+      setAlert(null);
+      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setShowSpinner(false);
       return;
     }
 
-    if (!endpointId) { // unset id means we're creating a new entry
+    if (!id) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then((res) => {
           navigate(`/endpoints/${res.data.id}`)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Create endpoint error: ' + err)
+          throw new Error('Create application error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
         })
     }
 
-    if (endpointId) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, endpointId)
+    if (id) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, id)
         .then((res) => {
           setEndpoint(res.data)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Update endpoint error: ' + err)
+          throw new Error('Update application error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
@@ -127,13 +145,29 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#endpointHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Endpoint Documentation"
+                    id="endpointHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/endpoints"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
                   type="submit"
                   disabled={!applications}
                 >
@@ -150,7 +184,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay/>}
+                    {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -216,11 +250,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                           </div>
                         </div>
                         <div className="col-6">
-                          <TextareaGroup
-                            name={"description"}
-                            id={"descriptionInput"}
-                            defaultValue={endpoint?.description}
-                          />
+                            <TextareaGroup
+                              name={"description"}
+                              id={"descriptionInput"}
+                              defaultValue={endpoint?.description}
+                            />
                         </div>
                       </div>
                     </div>
