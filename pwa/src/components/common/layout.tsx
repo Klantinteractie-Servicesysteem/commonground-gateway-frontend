@@ -23,37 +23,37 @@ export default function Layout({ children, title = "", subtext = "" }) {
   const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
-  }, [API]);
+    if (!isLoggedIn()) {
+      setAPI(null)
+      return
+    }
+
+    const jwt = sessionStorage.getItem("jwt")
+    !API && jwt && setAPI(new APIService(jwt));
+  }, [API, isLoggedIn()]);
 
   return (
-    API && (
+    API ? (
       <APIProvider value={API}>
-        {isLoggedIn() ? (
-          <>
-            <Helmet
-              link={[
-                { rel: "shortcut icon", type: "image/png", href: favicon },
-              ]}
-            >
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <Header title={title} subText={subtext} />
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
-              </div>
+        <Helmet
+          link={[
+            { rel: "shortcut icon", type: "image/png", href: favicon },
+          ]}
+        >
+          <title>Gateway Admin Dashboard</title>
+        </Helmet>
+        <div className="utrecht-document conduction-theme">
+          <div className="utrecht-page">
+            <MainMenu />
+            <div className="utrecht-page__content">
+              <Header title={title} subText={subtext} />
+              <div className="container py-4">{children}</div>
             </div>
-            <WelcomeModal />
-          </>
-        ) : (
-          <Login />
-        )}
+            <Footer />
+          </div>
+        </div>
+        <WelcomeModal />
       </APIProvider>
-    )
-  );
+    ) : <Login />
+  )
 }

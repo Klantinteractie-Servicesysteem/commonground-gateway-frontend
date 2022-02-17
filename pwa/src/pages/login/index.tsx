@@ -1,7 +1,6 @@
 import * as React from "react";
 import "./login.css";
 import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
 import { setUser } from "./../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
@@ -13,7 +12,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = React.useState<string>(null)
   const [error, setError] = React.useState<string>(null)
   const [loading, setLoading] = React.useState<boolean>(false)
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = new APIService("")
 
   const handleLogin = (): void => {
     setLoading(true)
