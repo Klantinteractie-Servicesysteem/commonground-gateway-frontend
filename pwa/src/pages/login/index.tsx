@@ -30,7 +30,8 @@ const Login: React.FC = () => {
         navigate('/')
       })
       .catch((err) => {
-        setError(err.response.data.message)
+        console.log(err)
+        // setError(err.response.data.message)
       })
       .finally(() => { setLoading(false) })
   }

@@ -1,0 +1,60 @@
+.dashboard > * {
+    margin-top: 75px;
+}
+
+.dashboard .dashboard-title {
+    font-size: 82px;
+    font-weight: bold;
+}
+
+.dashboard .dashboard-dividerTitle {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6C757D;
+}
+
+.dashboard .dashboard-quickOverview {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard .dashboard-quickOverview > * {
+    flex: 1;
+}
+
+.dashboard .dashboard-row-logsAndDocumentation {
+    display: flex;
+    gap: 40px;
+}
+
+.dashboard .dashboard-row-logsAndDocumentation .dashboard-logsTable {
+    flex: 2;
+}
+
+.dashboard .dashboard-row-logsAndDocumentation .dashboard-externalLinks {
+    flex: 1;
+}
+
+.dashboard .dashboard-externalLinks > *:not(:first-child) {
+    margin-bottom: 20px;
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%);
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer .title {
+    font-size: 22px;
+}
+
+.dashboard .dashboard-logsTable .dashboard-logsTableContainer .subtitle {
+    color: #6C757D;
+    margin-bottom: 24px;
+}

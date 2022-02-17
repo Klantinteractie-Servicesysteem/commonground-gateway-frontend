@@ -99,11 +99,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#ObjectEntityHelpModal"
               >
                 <Modal
                   title="Object Entities Documentation"
-                  id="helpModal"
+                  id="ObjectEntityHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}
