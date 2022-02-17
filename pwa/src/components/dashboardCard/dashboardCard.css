@@ -1,0 +1,67 @@
+.dashboardCard {
+    display: flex;
+    padding: 30px 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%);
+    transition: transform 100ms ease-in;
+}
+
+.dashboardCard:hover {
+    text-decoration: none;
+    transform: scale(1.025);
+}
+
+.dashboardCard > .dashboardCard-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 3px;
+    color: white;
+    margin-right: 20px;
+}
+
+.dashboardCard > .dashboardCard-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.dashboardCard > .dashboardCard-content .dashboardCard-content-title {
+    color: #212529;
+    font-size: 22px;
+}
+
+.dashboardCard > .dashboardCard-content .dashboardCard-content-title > *:not(:last-child) {
+    margin-right: 5px;
+}
+
+.dashboardCard > .dashboardCard-content .dashboardCard-content-titleAmount {
+    font-weight: bold;
+}
+
+.dashboardCard > .dashboardCard-content > .dashboardCard-content-subtitle {
+    color: #6C757D;
+    font-size: 16px;
+}
+
+/* Small implementation */
+.dashboardCard--small {
+    padding: 10px;
+}
+
+.dashboardCard--small .dashboardCard-icon {
+    height: 50px;
+    width: 50px;
+}
+
+.dashboardCard--small > .dashboardCard-content .dashboardCard-content-title {
+    font-size: 16px;
+}
+
+.dashboardCard--small > .dashboardCard-content > .dashboardCard-content-subtitle {
+    font-size: 14px;
+}

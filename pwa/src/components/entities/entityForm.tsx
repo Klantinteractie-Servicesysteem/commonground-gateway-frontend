@@ -4,7 +4,8 @@ import {
   Checkbox,
   SelectInputComponent,
   Card,
-  Alert
+  Alert,
+  Modal,
 }
   from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
@@ -28,9 +29,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object type" : "Create Object type";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetSources()
+    handleSetDocumentation()
     entityId && handleSetEntity()
   }, [API, entityId])
 
@@ -43,7 +46,15 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
         throw new Error('GET sources error: ' + err)
       })
   }
-
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
   const handleSetEntity = () => {
     setShowSpinner(true)
 
@@ -131,6 +142,22 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#entityHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Object Type Documentation"
+                    id="entityHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/entities"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
