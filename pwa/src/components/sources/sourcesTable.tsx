@@ -56,7 +56,7 @@ export default function SourcesTable() {
               data-bs-target="#sourceHelpModal"
             >
               <Modal
-                title="Sources Documentation"
+                title="Source Documentation"
                 id="sourceHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />

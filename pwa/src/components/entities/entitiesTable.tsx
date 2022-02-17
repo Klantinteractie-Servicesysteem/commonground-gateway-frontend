@@ -56,7 +56,7 @@ export default function EntitiesTable() {
               data-bs-target="#entityHelpModal"
             >
               <Modal
-                title="Objects Documentation"
+                title="Object Types Documentation"
                 id="entityHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />

@@ -56,7 +56,7 @@ export default function EndpointsTable() {
               data-bs-target="#endpointHelpModal"
             >
               <Modal
-                title="Endpoints Documentation"
+                title="Endpoint Documentation"
                 id="endpointHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />

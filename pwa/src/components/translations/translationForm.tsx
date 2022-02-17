@@ -106,7 +106,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                   data-bs-target="#helpModal"
                 >
                   <Modal
-                    title="Translations Documentation"
+                    title="Translation Documentation"
                     id="helpModal"
                     body={() => (
                       <div dangerouslySetInnerHTML={{__html: documentation}}/>
@@ -121,7 +121,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                 >
                   <i className="fas fa-save mr-2"/>Save
