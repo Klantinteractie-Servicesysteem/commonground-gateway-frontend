@@ -20,27 +20,28 @@ import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
 
 interface EndpointFormProps {
-  id: string,
+  endpointId: string,
 }
 
-export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
+export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
+
   const API: APIService = React.useContext(APIContext)
 
   React.useEffect(() => {
     handleSetApplications()
-    id && handleSetEndpoint()
-  }, [API, id])
+    endpointId && handleSetEndpoint()
+  }, [API, endpointId])
 
   const handleSetEndpoint = () => {
     setShowSpinner(true)
 
-    API.Endpoint.getOne(id)
+    API.Endpoint.getOne(endpointId)
       .then((res) => {
         setEndpoint(res.data)
       })
@@ -74,22 +75,23 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       name: event.target.name.value,
       description: event.target.description.value
         ? event.target.description.value : null,
-      type: event.target.type.value,
       path: event.target.path.value,
       application: event.target.application.value
         ? event.target.application.value : null,
+      type: "gateway-endpoint",
     };
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["type"], body["path"]])) {
+    if (!checkValues([body["name"], body["path"]])) {
       setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
+      setLoadingOverlay(false);
+      
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!endpointId) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then((res) => {
           navigate(`/endpoints/${res.data.id}`)
@@ -103,8 +105,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
         })
     }
 
-    if (id) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, id)
+    if (endpointId) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, endpointId)
         .then((res) => {
           setEndpoint(res.data)
         })

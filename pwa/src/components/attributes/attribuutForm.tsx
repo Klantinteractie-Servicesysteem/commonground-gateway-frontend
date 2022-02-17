@@ -147,7 +147,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       requiredIf,
       objectConfig,
     };
-
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["type"]])) {

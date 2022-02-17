@@ -11,29 +11,29 @@ import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface ObjectEntityFormProps {
-  objectEntityId: string,
+  objectId: string,
   entityId: string,
 }
 
-export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityId, entityId}) => {
+export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectId, entityId}) => {
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = objectEntityId ? "Edit object" : "Create  object";
+  const title: string = objectId ? "Edit object" : "Create object";
 
 
   React.useEffect(() => {
-    objectEntityId && handleSetEntity_object()
+    objectId && handleSetEntity_object()
     handleSetApplications()
-  }, [API, objectEntityId])
+  }, [API, objectId])
 
   const handleSetEntity_object = () => {
     setShowSpinner(true)
 
-    API.ObjectEntity.getOne(objectEntityId)
+    API.ObjectEntity.getOne(objectId)
       .then((res) => {
         setObjectEntity(res.data)
       })
@@ -89,7 +89,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
       return;
     }
 
-    if (!objectEntityId) { // unset id means we're creating a new entry
+    if (!objectId) { // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
           navigate(`/entities/${entityId}`)
@@ -104,7 +104,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     }
 
     if (objectEntity) { // set id means we're updating a existing entry
-      API.ObjectEntity.update(body, objectEntityId)
+      API.ObjectEntity.update(body, objectId)
         .then((res) => {
           setObjectEntity(res.data)
         })

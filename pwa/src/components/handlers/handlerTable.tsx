@@ -4,7 +4,7 @@ import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
 
-export default function HandlerTable({ id }) {
+export default function HandlerTable({ endpointId }) {
   const [handlers, setHandlers] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -24,7 +24,7 @@ export default function HandlerTable({ id }) {
 
   const getHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers?endpoint.id=${id}`, {
+    fetch(`${context.adminUrl}/handlers?endpoint.id=${endpointId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -70,7 +70,7 @@ export default function HandlerTable({ id }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/handlers/new/${id}`}>
+            <Link to={`/endpoints/${endpointId}/handlers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -101,7 +101,7 @@ export default function HandlerTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/handlers/${item.id}/${id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

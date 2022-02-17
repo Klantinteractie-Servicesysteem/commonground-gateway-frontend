@@ -21,7 +21,11 @@ import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
-export default function HandlerForm({id, endpointId}) {
+interface HandlerFormProps {
+  id: string,
+  endpointId: string,
+}
+export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -29,7 +33,7 @@ export default function HandlerForm({id, endpointId}) {
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = (id === "new") ? "Create Handler" : "Edit Handler";
+  const title: string = id ? "Edit Handler" : "Create Handler";
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -37,7 +41,7 @@ export default function HandlerForm({id, endpointId}) {
         adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      if (id !== "new") {
+      if (id) {
         getHandler();
       }
       getEntities();
@@ -151,7 +155,7 @@ export default function HandlerForm({id, endpointId}) {
 
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
-    if (id !== "new") {
+    if (id) {
       url = `${url}/${id}`;
       method = "PUT";
     }
@@ -418,3 +422,4 @@ export default function HandlerForm({id, endpointId}) {
     </>
   );
 }
+export default HandlerForm
