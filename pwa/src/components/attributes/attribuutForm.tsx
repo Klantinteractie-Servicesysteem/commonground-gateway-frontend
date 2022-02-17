@@ -75,6 +75,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
+        console.log(res.data)
         setAttributes(res.data)
       })
       .catch((err) => {
@@ -117,8 +118,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       deprecated: event.target.deprecated.checked,
       defaultValue: event.target.defaultValue.value
         ? event.target.defaultValue.value : null,
-      fileType: event.target.fileType.value
-        ? event.target.fileType.value : null,
+      fileTypes: [event.target.fileTypes.value] ?? null,
       example: event.target.example.value
         ? event.target.example.value : null,
       maxFileSize: event.target.maxFileSize.value
@@ -147,8 +147,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
         ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value
-        ? parseInt(event.target.maxProperties.value) : null,
+      maxProperties: event.target.maxProperties.value ?? null,
       attributeEnum,
       allOf,
       oneOf,
@@ -157,7 +156,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       requiredIf,
       objectConfig,
     };
-
+console.log(body)
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["type"]])) {
@@ -484,10 +483,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
-                            name={"fileType"}
-                            id={"fileTypeInput"}
-                            data={attribute && attribute.fileType && attribute.fileType}
-                            nameOverride={"File Type"}
+                            name={"fileTypes"}
+                            id={"fileTypesInput"}
+                            data={attribute && attribute.fileTypes && attribute.fileTypes}
+                            nameOverride={"File Types"}
                           />
                         </div>
                       </div>
