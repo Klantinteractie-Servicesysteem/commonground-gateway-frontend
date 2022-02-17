@@ -8,7 +8,6 @@ import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.id === "new" ? null : props.params.id;
-  const id: string = entityId;
 
   return (
     <Layout title={"Object types"} subtext={"Create or modify your object types"}>
@@ -69,7 +68,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br/>
-                <LogTable {...{id}}/>
+                <LogTable entityId={entityId}/>
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const endpointId: string = props.params.id === "new" ? null : props.params.id
-  const id: string = endpointId;
+
 
   return (
     <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
@@ -65,7 +65,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable {...{id}}/>
+                <LogTable endpointId={endpointId}/>
               </div>
             </div>
           </div>

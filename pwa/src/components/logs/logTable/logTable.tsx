@@ -18,9 +18,10 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface LogTableProps {
   entityId?: string;
+  endpointId?: string;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
+export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [logs, setLogs] = React.useState([log]);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -28,7 +29,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
 
   React.useEffect(() => {
     handleSetLogs();
-  }, [API, entityId]);
+  }, [API, endpointId,endpointId]);
 
   const handleSetLogs = () => {
     setShowSpinner(true);
@@ -59,7 +60,19 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
           setShowSpinner(false);
         });
     }
-    if (!entityId) {
+    if (endpointId) {
+      API.Log.getAllFromEndpoint(endpointId)
+        .then((res) => {
+          setLogs(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET logs for endpoint error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+    if (!endpointId && !entityId) {
       API.Log.getAll()
         .then((res) => {
           res?.data.length > 0 ? setLogs(res.data) : setLogs([log]);
@@ -83,11 +96,11 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#LogHelpModal"
+                data-bs-target="#LogEntityHelpModal"
               >
                 <Modal
                   title="Logs Documentation"
-                  id="LogHelpModal"
+                  id="LogEntityHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}
