@@ -270,17 +270,20 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                             render: function () {
                               return (
                                 <>
-                                  {log.session && (
+                                  {log?.session && (
                                     <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
                                       Session: {log.session && log.session}
                                     </h5>
                                   )}
-                                  {log.sessionValues ? (
-                                    JSON.stringify(log.sessionValues)
-                                  ) : (
-                                    <p className="utrecht-paragraph">
-                                      No session values found
-                                    </p>
+                                  {log?.sessionValues && (
+                                    < table className="mt-1 logTable-table">
+                                      {Object.entries(log?.sessionValues).map(([key, value]) => (
+                                        <tr>
+                                          <th>{key}</th>
+                                          <td>{value}</td>
+                                        </tr>
+                                      ))}
+                                    </table>
                                   )}
                                 </>
                               );
@@ -318,13 +321,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                             render: function () {
                               return (
                                 <>
-                                  {log.requestHeaders ? (
-                                    JSON.stringify(log.requestHeaders)
-                                  ) : (
-                                    <p className="utrecht-paragraph">
-                                      No headers found
-                                    </p>
-                                  )}
+                                {log?.requestHeaders && (
+                                  < table className="mt-1  logTable-table">
+                                    {Object.entries(log?.requestHeaders).map(([key, value]) => (
+                                      <tr>
+                                        <th>{key}</th>
+                                        <td>{value}</td>
+                                      </tr>
+                                    ))}
+                                  </table>
+                                )}
                                 </>
                               );
                             },
@@ -335,13 +341,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                             render: function () {
                               return (
                                 <>
-                                  {log.requestQuery ? (
-                                    JSON.stringify(log.requestQuery)
-                                  ) : (
-                                    <p className="utrecht-paragraph">
-                                      No parameters found
-                                    </p>
-                                  )}
+                                {log?.requestQuery && (
+                                  < table className="mt-1  logTable-table">
+                                    {Object.entries(log?.requestQuery).map(([key, value]) => (
+                                      <tr>
+                                        <th>{key}</th>
+                                        <td>{value}</td>
+                                      </tr>
+                                    ))}
+                                  </table>
+                                )}
                                 </>
                               );
                             },
@@ -385,13 +394,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
                             render: function () {
                               return (
                                 <>
-                                  {log.responseHeaders ? (
-                                    JSON.stringify(log.responseHeaders)
-                                  ) : (
-                                    <p className="utrecht-paragraph">
-                                      No headers found
-                                    </p>
-                                  )}
+                                {log?.responseHeaders && (
+                                  < table className="mt-1 logTable-table">
+                                    {Object.entries(log?.responseHeaders).map(([key, value]) => (
+                                      <tr>
+                                        <th>{key}</th>
+                                        <td>{value}</td>
+                                      </tr>
+                                    ))}
+                                  </table>
+                                )}
                                 </>
                               );
                             },
@@ -426,7 +438,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
             }}
           />
         ))}
-    </div>
+    </div >
   );
 };
 
