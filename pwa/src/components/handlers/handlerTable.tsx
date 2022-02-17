@@ -9,7 +9,7 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-export default function HandlerTable({ endpointId }) {
+export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null)
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
