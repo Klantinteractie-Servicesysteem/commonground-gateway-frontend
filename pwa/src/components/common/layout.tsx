@@ -20,42 +20,39 @@ import favicon from "../../images/conduction_logo_blauw.svg";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
-  const [jwt, setJwt] = React.useState<string>(null);
   const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    !jwt && setJwt(sessionStorage.getItem("jwt"));
-    !API && jwt && setAPI(new APIService(sessionStorage.getItem("jwt")));
-  }, [API, jwt]);
+    if (!sessionStorage.getItem("jwt")) {
+      setAPI(null)
+      return
+    }
+
+    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
+  }, [API, sessionStorage.getItem("jwt")]);
 
   return (
-    API && (
+    API ? (
       <APIProvider value={API}>
-        {isLoggedIn() ? (
-          <>
-            <Helmet
-              link={[
-                { rel: "shortcut icon", type: "image/png", href: favicon },
-              ]}
-            >
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <Header title={title} subText={subtext} />
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
-              </div>
+        <Helmet
+          link={[
+            { rel: "shortcut icon", type: "image/png", href: favicon },
+          ]}
+        >
+          <title>Gateway Admin Dashboard</title>
+        </Helmet>
+        <div className="utrecht-document conduction-theme">
+          <div className="utrecht-page">
+            <MainMenu />
+            <div className="utrecht-page__content">
+              <Header title={title} subText={subtext} />
+              <div className="container py-4">{children}</div>
             </div>
-            <WelcomeModal />
-          </>
-        ) : (
-          <Login />
-        )}
+            <Footer />
+          </div>
+        </div>
+        <WelcomeModal />
       </APIProvider>
-    )
-  );
+    ) : <Login />
+  )
 }
