@@ -53,7 +53,7 @@ export default class APIService {
     return axios.create({
       baseURL: GATSBY_API_URL,
       headers: {
-        Accept: "application/form.io",
+        "Accept": "application/form.io",
         "Content-Type": "application/json",
       },
     });

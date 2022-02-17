@@ -8,6 +8,6 @@ export default class FormIO {
   }
 
   public getSchema = (endpoint): Promise<AxiosResponse> => {
-    return this._instance.put(`/${endpoint}`);
+    return this._instance.get(`/${endpoint}`);
   }
 }

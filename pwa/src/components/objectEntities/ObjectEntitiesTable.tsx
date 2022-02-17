@@ -21,6 +21,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
+  const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
@@ -40,7 +41,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     setShowSpinner(true);
     API.FormIO.getSchema(entity?.endpoint)
       .then((res) => {
-        setEntity(res.data);
+        setFormIOSchema(res.data);
       })
       .catch((err) => {
         throw new Error("GET form.io schema error: " + err);
@@ -125,8 +126,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 title={`Create a new ${entity?.name}`}
                 id="objectModal"
                 body={() => (
-                  <Form src={FormJson} />
-                  // <span>test</span>
+                  <Form src={formIOSchema} />
                 )}
               />
             </>
