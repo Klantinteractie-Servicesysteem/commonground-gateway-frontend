@@ -8,47 +8,44 @@ import {
   Alert,
   Modal,
 } from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-} from "../utility/inputHandler";
+import {Link} from "gatsby";
 import FlashMessage from 'react-flash-message';
+import {checkValues, removeEmptyObjectValues} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
 
 
 interface EndpointFormProps {
-  id: string,
+  endpointId: string,
 }
 
-export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
+export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<any>(null);
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
   const API: APIService = React.useContext(APIContext)
   const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetApplications()
     handleSetDocumentation()
-    id && handleSetEndpoint()
-  }, [API, id])
+    endpointId && handleSetEndpoint()
+  }, [API, endpointId])
 
   const handleSetEndpoint = () => {
     setShowSpinner(true)
 
-    API.Endpoint.getOne(id)
+    API.Endpoint.getOne(endpointId)
       .then((res) => {
         setEndpoint(res.data)
       })
       .catch((err) => {
-        throw new Error('GET Endpoints error: ' + err)
+        throw new Error('GET endpoints error: ' + err)
       })
       .finally(() => {
         setShowSpinner(false)
@@ -84,44 +81,40 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description.value
-        ? event.target.description.value : null,
+      description: event.target.description.value ?? null,
       path: event.target.path.value,
-      application: event.target.application.value
-        ? event.target.application.value : null,
+      application: event.target.application.value ?? null,
     };
 
+    // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["path"]])) {
-      setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
-      setShowSpinner(false);
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!endpointId) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
-        .then((res) => {
-          navigate(`/endpoints/${res.data.id}`)
+        .then(() => {
+          navigate(`/endpoints/`)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Create application error: ' + err)
+          throw new Error('Create endpoint error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
         })
     }
 
-    if (id) { // set id means we're updating a existing entry
-      API.Endpoint.update(body, id)
+    if (endpointId) { // set id means we're updating a existing entry
+      API.Endpoint.update(body, endpointId)
         .then((res) => {
           setEndpoint(res.data)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
-          throw new Error('Update application error: ' + err)
+          throw new Error('Update endpoint error: ' + err)
         })
         .finally(() => {
           setLoadingOverlay(false);
@@ -155,7 +148,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     title="Endpoint Documentation"
                     id="endpointHelpModal"
                     body={() => (
-                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
                     )}
                   />
                   <i className="fas fa-question mr-1"/>
@@ -184,7 +177,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                    {loadingOverlay && <LoadingOverlay />}
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -250,11 +243,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
                           </div>
                         </div>
                         <div className="col-6">
-                            <TextareaGroup
-                              name={"description"}
-                              id={"descriptionInput"}
-                              defaultValue={endpoint?.description}
-                            />
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={endpoint?.description}
+                          />
                         </div>
                       </div>
                     </div>
