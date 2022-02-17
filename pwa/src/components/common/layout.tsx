@@ -23,13 +23,14 @@ export default function Layout({ children, title = "", subtext = "" }) {
   const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    if (!sessionStorage.getItem("jwt")) {
+    if (!isLoggedIn()) {
       setAPI(null)
       return
     }
 
-    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
-  }, [API, sessionStorage.getItem("jwt")]);
+    const jwt = sessionStorage.getItem("jwt")
+    !API && jwt && setAPI(new APIService(jwt));
+  }, [API, isLoggedIn()]);
 
   return (
     API ? (
