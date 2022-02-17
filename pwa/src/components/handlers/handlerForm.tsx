@@ -121,18 +121,15 @@ export default function HandlerForm({id, endpointId}) {
     // get the inputs and check if set other set null
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description
-        ? event.target.description.value : null,
+      description: event.target.description ?? null,
       sequence: event.target.sequence.value
         ? parseInt(event.target.sequence.value)
         : null,
       endpoint: `/admin/endpoints/${endpointId}`,
-      entity: event.target.entity.value
-        ? event.target.entity.value : null,
-      template: event.target.template.value
-        ? event.target.template.value : null,
-      templateType: event.target.templateType.value
-        ? event.target.templateType.value : null,
+      entity: event.target.entity.value ?? null,
+      template: event.target.template.value ?? null,
+      templateType: event.target.templateType.value ?? null,
+      conditions: event.target.conditions.value ?? null,
       skeletonIn,
       skeletonOut,
       mappingIn,
