@@ -7,7 +7,15 @@ export default class FormIO {
     this._instance = _instance
   }
 
-  public getSchema = (endpoint): Promise<AxiosResponse> => {
+  public getSchema = (endpoint: string): Promise<AxiosResponse> => {
     return this._instance.get(`/${endpoint}`);
+  }
+
+  public createObject = (endpoint: string, data: any): Promise<AxiosResponse> => {
+    return this._instance.post(`/${endpoint}`, JSON.stringify(data));
+  }
+
+  public updateObject = (endpoint: string, id: string, data: any): Promise<AxiosResponse> => {
+    return this._instance.post(`/${endpoint}/${id}`, JSON.stringify(data));
   }
 }

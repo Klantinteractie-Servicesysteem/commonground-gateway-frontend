@@ -8,7 +8,7 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {Form} from '@formio/react';
+import { Form } from '@formio/react';
 import FormJson from '../../dummy_data/form';
 
 interface ObjectEntitiesTableProps {
@@ -49,6 +49,37 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
       .finally(() => {
         setShowSpinner(false);
       });
+  };
+
+  const saveObject = (event) => {
+    let body = event.data;
+    body.submit = undefined;
+
+    let id = null;
+
+    if (!id) {
+      API.FormIO.createObject(entity?.endpoint, body)
+        .then((res) => {
+        })
+        .catch((err) => {
+          throw new Error("Create object error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+
+    if (id) {
+      API.FormIO.updateObject(entity?.endpoint, id, body)
+        .then((res) => {
+        })
+        .catch((err) => {
+          throw new Error("Update object error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
   };
 
   const getEntity = () => {
@@ -123,10 +154,10 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 Create
               </button>
               <Modal
-                title={`Create a new ${entity?.name}`}
+                title={`Create a new ${entity?.name} object`}
                 id="objectModal"
                 body={() => (
-                  <Form src={formIOSchema} />
+                  <Form src={formIOSchema} onSubmit={saveObject} />
                 )}
               />
             </>
