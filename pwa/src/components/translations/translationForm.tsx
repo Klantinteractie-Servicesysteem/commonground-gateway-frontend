@@ -4,6 +4,7 @@ import {
   Card,
   Alert,
   Modal,
+  SelectInputComponent
 }
   from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
@@ -151,12 +152,15 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                         </div>
                         <div className="col-6">
                           <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
+                            <SelectInputComponent
+                              options={[
+                                {name: "Nederlands (NL)", value: 'nl_NL'},
+                                {name: "English (EN)", value: "en_EN"},
+                              ]}
                               name={"language"}
                               id={"languageInput"}
-                              data={translation && translation.language && translation.language}
-                              nameOverride={"Language"}/>
+                              nameOverride={"Language"}
+                              data={translation?.language}/>
                           </div>
                         </div>
                       </div>
