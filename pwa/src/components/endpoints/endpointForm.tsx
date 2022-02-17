@@ -6,6 +6,7 @@ import {
   Spinner,
   Card,
   Alert,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
@@ -32,6 +33,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
 
   const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetApplications()
@@ -51,6 +53,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
       .finally(() => {
         setShowSpinner(false)
       })
+  }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
   }
   const handleSetApplications = () => {
     setShowSpinner(true)
@@ -136,6 +147,22 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#endpointHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Endpoint Documentation"
+                    id="endpointHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/endpoints"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back

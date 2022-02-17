@@ -15,7 +15,7 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
+  Alert, Modal,
 } from "@conductionnl/nl-design-system/lib";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
@@ -37,11 +37,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   const [alert, setAlert] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     if (attributeId) {
       handleSetAttributes()
       handleSetAttribute()
+      handleSetDocumentation()
     }
   }, [API])
 
@@ -59,12 +61,21 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
         setShowSpinner(false)
       })
   }
-
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  }
   const handleSetAttributes = () => {
     setShowSpinner(true)
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
+        console.log(res.data)
         setAttributes(res.data)
       })
       .catch((err) => {
@@ -73,7 +84,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       .finally(() => {
         setShowSpinner(false)
       })
-  }
+  };
 
   const saveAttribute = (event) => {
     event.preventDefault();
@@ -107,8 +118,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       deprecated: event.target.deprecated.checked,
       defaultValue: event.target.defaultValue.value
         ? event.target.defaultValue.value : null,
-      fileType: event.target.fileType.value
-        ? event.target.fileType.value : null,
+      fileTypes: [event.target.fileTypes.value] ?? null,
       example: event.target.example.value
         ? event.target.example.value : null,
       maxFileSize: event.target.maxFileSize.value
@@ -137,8 +147,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
         ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value
-        ? parseInt(event.target.maxProperties.value) : null,
+      maxProperties: event.target.maxProperties.value ?? null,
       attributeEnum,
       allOf,
       oneOf,
@@ -200,6 +209,22 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
           title={title}
           cardHeader={function () {
             return (<>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#attributeHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Attribute Documentation"
+                  id="attributeHelpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
               <Link className="utrecht-link" to={`/entities/${entityId}`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2"/>Back
@@ -457,10 +482,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
-                            name={"fileType"}
-                            id={"fileTypeInput"}
-                            data={attribute && attribute.fileType && attribute.fileType}
-                            nameOverride={"File Type"}
+                            name={"fileTypes"}
+                            id={"fileTypesInput"}
+                            data={attribute && attribute.fileTypes && attribute.fileTypes}
+                            nameOverride={"File Types"}
                           />
                         </div>
                       </div>

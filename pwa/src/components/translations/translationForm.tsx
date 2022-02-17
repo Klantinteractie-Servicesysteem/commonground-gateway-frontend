@@ -2,7 +2,9 @@ import * as React from "react";
 import {
   GenericInputComponent,
   Card,
-  Alert
+  Alert,
+  Modal,
+  SelectInputComponent
 }
   from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
@@ -10,6 +12,8 @@ import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface TranslationFormProps {
   id: string,
@@ -22,6 +26,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
+  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -65,6 +71,19 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
         setLoadingOverlay(false);
       })
   }
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <>
@@ -82,13 +101,28 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#helpModal"
+                >
+                  <Modal
+                    title="Translation Documentation"
+                    id="helpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                    )}
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/translations"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                 >
                   <i className="fas fa-save mr-2"/>Save
@@ -118,12 +152,15 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                         </div>
                         <div className="col-6">
                           <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
+                            <SelectInputComponent
+                              options={[
+                                {name: "Nederlands (NL)", value: 'nl_NL'},
+                                {name: "English (EN)", value: "en_EN"},
+                              ]}
                               name={"language"}
                               id={"languageInput"}
-                              data={translation && translation.language && translation.language}
-                              nameOverride={"Language"}/>
+                              nameOverride={"Language"}
+                              data={translation?.language}/>
                           </div>
                         </div>
                       </div>

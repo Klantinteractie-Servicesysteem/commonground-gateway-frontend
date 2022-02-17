@@ -83,11 +83,11 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#LogHelpModal"
               >
                 <Modal
                   title="Logs Documentation"
-                  id="helpModal"
+                  id="LogHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}
