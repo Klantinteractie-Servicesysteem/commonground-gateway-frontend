@@ -20,11 +20,13 @@ import favicon from "../../images/conduction_logo_blauw.svg";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
+  const [jwt, setJwt] = React.useState<string>(null);
   const [API, setAPI] = React.useState<APIService>(null);
 
   React.useEffect(() => {
-    !API && setAPI(new APIService(sessionStorage.getItem("jwt")));
-  }, [API]);
+    !jwt && setJwt(sessionStorage.getItem("jwt"));
+    !API && jwt && setAPI(new APIService(sessionStorage.getItem("jwt")));
+  }, [API, jwt]);
 
   return (
     API && (
