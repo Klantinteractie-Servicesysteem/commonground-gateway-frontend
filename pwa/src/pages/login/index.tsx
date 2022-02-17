@@ -5,7 +5,8 @@ import APIContext from "../../apiService/apiContext";
 import { setUser } from "./../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
-
+import Particles from "react-tsparticles";
+import ParticlesOptions from "./particles";
 
 const Login: React.FC = () => {
   const [username, setUsername] = React.useState<string>(null)
@@ -30,17 +31,62 @@ const Login: React.FC = () => {
         navigate('/')
       })
       .catch((err) => {
-        console.log(err)
-        // setError(err.response.data.message)
+        setError(err.response.data.message)
       })
       .finally(() => { setLoading(false) })
   }
 
   return (
     <div className="login">
+      <Particles options={
+        {
+          fpsLimit: 60,
+          particles: {
+            color: {
+              value: "#ffffff",
+            },
+            links: {
+              color: "#ffffff",
+              distance: 150,
+              enable: true,
+              opacity: 0.5,
+              width: 1,
+            },
+            collisions: {
+              enable: true,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outMode: "bounce",
+              random: false,
+              speed: 2,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                area: 800,
+              },
+              value: 80,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              random: true,
+              value: 5,
+            },
+          },
+          detectRetina: true,
+        }
+      } />
+
       <div className="login-container">
         <h1>Welcome to your gateway admin dashboard</h1>
-
 
         <form className="login-form">
           <h2>Login</h2>
