@@ -53,11 +53,11 @@ export default function EndpointsTable() {
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#endpointHelpModal"
             >
               <Modal
-                title="Endpoints Documentation"
-                id="helpModal"
+                title="Endpoint Documentation"
+                id="endpointHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}

@@ -6,6 +6,7 @@ import {
   Spinner,
   Card,
   Alert,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
@@ -31,9 +32,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
   const [alert, setAlert] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Endpoint" : "Edit Endpoint"
   const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetApplications()
+    handleSetDocumentation()
     id && handleSetEndpoint()
   }, [API, id])
 
@@ -50,6 +53,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
       .finally(() => {
         setShowSpinner(false)
       })
+  }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
   }
   const handleSetApplications = () => {
     setShowSpinner(true)
@@ -133,6 +145,22 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({id}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#endpointHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Endpoint Documentation"
+                    id="endpointHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/endpoints"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back

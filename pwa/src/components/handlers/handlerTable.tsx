@@ -1,14 +1,25 @@
 import * as React from "react";
-import { Table, Spinner, Card, Alert } from "@conductionnl/nl-design-system/lib";
+import {
+  Table,
+  Spinner,
+  Card,
+  Alert,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from 'react-flash-message';
+import APIContext from "../../apiService/apiContext";
+import APIService from "../../apiService/apiService";
 
-export default function HandlerTable({ id }) {
+export default function HandlerTable({ handlersId }) {
   const [handlers, setHandlers] = React.useState(null);
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext)
+  const title: string = (handlersId === "new") ? "Create Handler" : "Edit Handler";
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -24,7 +35,7 @@ export default function HandlerTable({ id }) {
 
   const getHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers?endpoint.id=${id}`, {
+    fetch(`${context.adminUrl}/handlers?endpoint.id=${handlersId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -45,7 +56,20 @@ export default function HandlerTable({ id }) {
       });
 
   };
-
+  React.useEffect(() => {
+    if (handlersId) {
+      handleSetDocumentation()
+    }
+  }, [API])
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
   return (<>
     {
       alert !== null &&
@@ -54,15 +78,23 @@ export default function HandlerTable({ id }) {
       </FlashMessage>
     }
     <Card
-      title={"Handlers"}
+      title={title}
       cardHeader={function () {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#handlerHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
+              <Modal
+                title="Handler Documentation"
+                id="handlerHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -70,7 +102,7 @@ export default function HandlerTable({ id }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/handlers/new/${id}`}>
+            <Link to={`/handlers/new/${handlersId}`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -101,7 +133,7 @@ export default function HandlerTable({ id }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/handlers/${item.id}/${id}`}>
+                          <Link className="utrecht-link d-flex justify-content-end" to={`/handlers/${item.id}/${handlersId}`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
