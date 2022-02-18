@@ -32,21 +32,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
 
   const handleSetLogs = () => {
     setShowSpinner(true);
-  };
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  }, [API]);
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        throw new Error("GET Documentation error: " + err);
-      });
-
+    
     if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
@@ -71,6 +57,21 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
           setShowSpinner(false);
         });
     }
+  };
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  }, [API]);
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+
   };
 
   return (
