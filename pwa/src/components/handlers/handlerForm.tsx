@@ -37,6 +37,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = id ? "Edit Handler" : "Create Handler";
+  const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -159,7 +161,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       translationsIn,
       translationsOut
     };
-
+    
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
@@ -168,7 +170,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       setLoadingOverlay(false);
       return;
     }
-
+    
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
     if (id) {

@@ -14,7 +14,6 @@ export default function HandlersTable({ endpointId }) {
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
-  const title: string = (endpointId === "new") ? "Create Handler" : "Edit Handler";
 
   React.useEffect(() => {
     handleSetHandlers()
@@ -47,7 +46,7 @@ export default function HandlersTable({ endpointId }) {
 
   return (
     <Card
-      title={title}
+      title="Handlers"
       cardHeader={function () {
         return (
           <>
