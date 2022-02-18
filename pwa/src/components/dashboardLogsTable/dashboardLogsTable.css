@@ -18,12 +18,12 @@
     padding-bottom: 20px;
 }
 
-.dashboardLogsTable .dashboardLogsTable-tr tbody tr {
+.dashboardLogsTable .dashboardLogsTable-tr {
     border-top: 1px rgba(69, 65, 78, 0.10) solid;
     transition: transform 100ms ease-in;
 }
 
-.dashboardLogsTable .dashboardLogsTable-tr tbody tr:hover {
+.dashboardLogsTable .dashboardLogsTable-tr:hover {
     transform: scale(1.0175);
     cursor: pointer;
 }
