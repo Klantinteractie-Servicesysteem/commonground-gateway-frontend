@@ -3,7 +3,7 @@ import "./dashboard.css"
 import { DashboardCard, DashboardCardSmall } from "./../../components/dashboardCard/DashboardCard"
 import CallHealthQuickview from "./../../components/callHealthQuickview/CallHealthQuickview"
 import DashboardLogsTable from "../../components/dashboardLogsTable/DashboardLogsTable";
-import { DashboardLogs } from "../../dummy_data/dashboardLog";
+import logs from "../../dummy_data/logs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import APIService from "../../apiService/apiService";
@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
           <div className="dashboard-logsTableContainer">
             <span className="title">Activity</span>
             <span className="subtitle">View all logged activities of the last 24 hours</span>
-            <DashboardLogsTable logs={DashboardLogs} />
+            <DashboardLogsTable {...{logs}} />
           </div>
         </div>
 
