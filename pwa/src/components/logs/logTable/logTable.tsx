@@ -29,7 +29,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
 
   React.useEffect(() => {
     handleSetLogs();
-  }, [API, endpointId,endpointId]);
+  }, [API, entityId,endpointId]);
 
   const handleSetLogs = () => {
     setShowSpinner(true);
@@ -204,7 +204,6 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
           );
         }}
       />
-
       {logs !== null &&
         logs.map((log, idx) => (
           <Modal
