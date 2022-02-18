@@ -28,7 +28,8 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetLogs();
+    handleSetLogs()
+    handleSetDocumentation()
   }, [API, entityId,endpointId]);
 
   const handleSetLogs = () => {
