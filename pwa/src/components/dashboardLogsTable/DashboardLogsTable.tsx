@@ -38,7 +38,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                       type="button"
                       className="btn btn-primary"
                       data-bs-toggle="modal"
-                      data-bs-target="#logs1234"
+                      data-bs-target={`#logs${log.id.replace(new RegExp('-', 'g'), '')}`}
                     >
                       <FontAwesomeIcon icon={faEye} /> View log
                     </button>
