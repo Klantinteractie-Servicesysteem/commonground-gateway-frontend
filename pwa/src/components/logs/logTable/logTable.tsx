@@ -31,7 +31,8 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
     handleSetLogs()
     handleSetDocumentation()
   }, [API, entityId,endpointId]);
-
+console.log(endpointId)
+  console.log(entityId)
   const handleSetLogs = () => {
     setShowSpinner(true);
   };
@@ -73,7 +74,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
           setShowSpinner(false);
         });
     }
-    if (!endpointId && !entityId) {
+    if (!endpointId) {
       API.Log.getAll()
         .then((res) => {
           res?.data.length > 0 ? setLogs(res.data) : setLogs([log]);
