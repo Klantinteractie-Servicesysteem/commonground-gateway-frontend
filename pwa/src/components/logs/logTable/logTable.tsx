@@ -15,9 +15,10 @@ import LogModal from "../logModal/LogModal";
 
 interface LogTableProps {
   entityId?: string;
+  sourceId?: string;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ entityId }) => {
+export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
