@@ -3,64 +3,38 @@ import {
   Table,
   Spinner,
   Card,
-  Alert,
   Modal,
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import FlashMessage from 'react-flash-message';
-import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
-export default function HandlerTable({ endpointId }) {
-  const [handlers, setHandlers] = React.useState(null);
-  const [context, setContext] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null)
+  const [handlers, setHandlers] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
-  const title: string = (handlersId === "new") ? "Create Handler" : "Edit Handler";
+  const title: string = (endpointId === "new") ? "Create Handler" : "Edit Handler";
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else {
-      if (isLoggedIn()) {
-        getHandlers();
-      }
-    }
-  }, [context]);
+    handleSetHandlers()
+    handleSetDocumentation()
+  }, [API]);
 
-  const getHandlers = () => {
+  const handleSetHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers?endpoint.id=${endpointId}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setHandlers(data["hydra:member"]);
-        }
+    API.Handler.getAllFromEndpoint(endpointId)
+      .then((res) => {
+        setHandlers(res.data);
       })
-      .catch((error) => {
+      .catch((err) => {
+        throw new Error("GET handler from endpoint error: " + err);
+      })
+      .finally(() => {
         setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
       });
-
   };
-  React.useEffect(() => {
-    if (handlersId) {
-      handleSetDocumentation()
-    }
-  }, [API])
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -70,13 +44,8 @@ export default function HandlerTable({ endpointId }) {
         throw new Error("GET Documentation error: " + err);
       });
   };
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () { return (<>{alert.message}</>) }} />
-      </FlashMessage>
-    }
+
+  return (
     <Card
       title={title}
       cardHeader={function () {
@@ -98,7 +67,7 @@ export default function HandlerTable({ endpointId }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getHandlers}>
+            <a className="utrecht-link" onClick={handleSetHandlers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
@@ -133,7 +102,9 @@ export default function HandlerTable({ endpointId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
+                          <Link 
+                            className="utrecht-link d-flex justify-content-end" 
+                            to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -164,6 +135,6 @@ export default function HandlerTable({ endpointId }) {
           </div>
         );
       }}
-    /></>
+    />
   );
 }
