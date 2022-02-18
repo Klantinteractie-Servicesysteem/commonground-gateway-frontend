@@ -9,8 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-import { InfoOverlay } from "../../components/common/infoOverlay/infoOverlay";
-
 export default function ApplicationsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [applications, setApplications] = React.useState(null);
@@ -71,20 +69,6 @@ export default function ApplicationsTable() {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-
-            <InfoOverlay
-              title={"Help Overlay"}
-              id="helpModal"
-              body={() => {
-                return (
-                  <>
-                    <ul>
-                      <li>Link to docs</li>
-                    </ul>
-                  </>
-                );
-              }}
-            />
 
             <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
