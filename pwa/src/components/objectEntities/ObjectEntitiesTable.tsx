@@ -10,6 +10,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { Form } from '@formio/react';
 import FormJson from '../../dummy_data/form';
+import FormIO from "../../apiService/resources/formIO";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -37,18 +38,28 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     entity && getFormIOSchema();
   }, [API, entity]);
 
-  const getFormIOSchema = () => {
+  const getFormIOSchema = (objectEntity?: any) => {
     setShowSpinner(true);
-    API.FormIO.getSchema(entity?.endpoint)
-      .then((res) => {
-        setFormIOSchema(res.data);
-      })
-      .catch((err) => {
-        throw new Error("GET form.io schema error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
+    if (!formIOSchema) {
+      API.FormIO.getSchema(entity?.endpoint)
+        .then((res) => {
+          setFormIOSchema(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET form.io schema error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+    if (formIOSchema && objectEntity) {
+      let schemaWithData = formIOSchema;
+      for (let i = 0; i < formIOSchema.components.length; i++) {
+        schemaWithData.components[i].defaultValue = 'test';
+      }
+      setShowSpinner(false);
+      return schemaWithData;
+    }
   };
 
   const saveObject = (event) => {
@@ -65,7 +76,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
           throw new Error("Create object error: " + err);
         })
         .finally(() => {
-          setShowSpinner(false);
+          handleSetObjectEntities();
         });
     }
 
@@ -77,7 +88,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
           throw new Error("Update object error: " + err);
         })
         .finally(() => {
-          setShowSpinner(false);
+          handleSetObjectEntities();
         });
     }
   };
@@ -156,9 +167,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
               <Modal
                 title={`Create a new ${entity?.name} object`}
                 id="objectModal"
-                body={() => (
-                  <Form src={formIOSchema} onSubmit={saveObject} />
-                )}
+                body={() => (<>
+                  {
+                    formIOSchema &&
+                    <Form src={formIOSchema} onSubmit={saveObject} />
+                  }
+                </>)}
               />
             </>
           );
@@ -173,12 +187,34 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   <Table
                     columns={[
                       {
-                        headerName: "Uri",
-                        field: "uri",
+                        headerName: "ID",
+                        field: "id",
                       },
                       {
                         headerName: "Owner",
                         field: "owner",
+                      },
+                      {
+                        field: "id",
+                        headerName: " ",
+                        renderCell: (item: any) => {
+                          return (<>
+                            <button className="utrecht-button btn-sm btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#object${item.id.substring(0, 8)}Modal`}>
+                              <i className="fas fa-edit pr-1" />
+                              Edit
+                            </button>
+                            <Modal
+                              title={`Create a new ${entity?.name} object`}
+                              id={`object${item.id.substring(0, 8)}Modal`}
+                              body={() => (
+                                formIOSchema &&
+                                <Form src={getFormIOSchema(item)} onSubmit={saveObject} />
+                              )}
+                            />
+                          </>);
+                        }
                       },
                       {
                         field: "id",
@@ -189,9 +225,9 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                               className="utrecht-link d-flex justify-content-end"
                               to={`/object_entities/${item.id}/${entityId}`}
                             >
-                              <button className="utrecht-button btn-sm btn-success">
-                                <i className="fas fa-edit pr-1" />
-                                Edit
+                              <button className="utrecht-button btn-sm btn-primary">
+                                <i className="fas fa-eye pr-1" />
+                                View
                               </button>
                             </Link>
                           );
