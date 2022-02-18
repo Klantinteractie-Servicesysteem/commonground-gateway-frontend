@@ -234,7 +234,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                           return (
                             <Link
                               className="utrecht-link d-flex justify-content-end"
-                              to={`/object_entities/${item.id}/${entityId}`}
+                              to={`/entities/${entityId}/objects/${item.id}`}
                             >
                               <button className="utrecht-button btn-sm btn-primary">
                                 <i className="fas fa-eye pr-1" />

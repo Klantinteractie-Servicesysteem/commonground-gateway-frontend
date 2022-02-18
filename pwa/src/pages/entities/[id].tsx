@@ -5,6 +5,9 @@ import ObjectEntitiesTable from "../../components/objectEntities/ObjectEntitiesT
 import EntityForm from "../../components/entities/entityForm";
 import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
+import FormIO from "../../apiService/resources/formIO";
+import ApiCalls from "../../apiService/resources/apiCalls";
+
 
 const IndexPage = (props) => {
   const entityId: string = props.params.id === "new" ? null : props.params.id;
