@@ -24,7 +24,11 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 
-export default function HandlerForm({endpointId}) {
+interface HandlerFormProps {
+  id: string,
+  endpointId: string,
+}
+export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -32,9 +36,9 @@ export default function HandlerForm({endpointId}) {
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = (endpointId === "new") ? "Create Handler" : "Edit Handler";
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const title: string = id ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -42,7 +46,7 @@ export default function HandlerForm({endpointId}) {
         adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      if (endpointId !== "new") {
+      if (id) {
         getHandler();
       }
       getEntities();
@@ -157,7 +161,7 @@ export default function HandlerForm({endpointId}) {
       translationsIn,
       translationsOut
     };
-
+    
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
@@ -166,11 +170,11 @@ export default function HandlerForm({endpointId}) {
       setLoadingOverlay(false);
       return;
     }
-
+    
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
-    if (endpointId !== "new") {
-      url = `${url}/${endpointId}`;
+    if (id) {
+      url = `${url}/${id}`;
       method = "PUT";
     }
 
@@ -452,3 +456,4 @@ export default function HandlerForm({endpointId}) {
     </>
   );
 }
+export default HandlerForm
