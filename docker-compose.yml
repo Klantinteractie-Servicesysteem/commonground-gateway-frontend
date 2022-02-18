@@ -1,17 +1,6 @@
 version: "3.4"
-
 services:
-  pwa:
-    &pwa
-    image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build: pwa
-    depends_on:
-      - php
-    ports:
-      - "81:80"
-  
-  php:
-    &php
+  php: &php
     image: ghcr.io/conductionnl/commonground-gateway-php:cleanup
     depends_on:
       - db
@@ -26,13 +15,11 @@ services:
       - REDIS_PORT=6379
       - APP_REPRO=example
       - APP_ENV=dev
-      - APP_DEBUG=0 
+      - APP_DEBUG=0
       - APP_CACHE=true
     ports:
       - "82:80"
-
-  api:
-    &nginx
+  api: &nginx
     image: ghcr.io/conductionnl/commonground-gateway-nginx:cleanup
     depends_on:
       - php
@@ -41,7 +28,6 @@ services:
     environment:
       - NGINX_HOST=php
       - NGINX_ENV=${APP_ENV}
-
   db:
     image: mysql:5.7
     environment:
@@ -53,10 +39,8 @@ services:
       - db-mysql:/var/lib/mysql:rw
     ports:
       - "3366:3306"
-
   redis:
     image: redis:4-alpine
-
 volumes:
   db-data: {}
   db-mysql: {}

@@ -1,6 +1,6 @@
 # API Service
 
-## Prerequisites:
+## Prerequisites
 
 -   understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if you want to read more about it, check out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog post.
 -   React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
@@ -62,7 +62,7 @@ Then in the component:
 const API: APIService = React.useContext(APIContext);
 ```
 
-This `const `references the variable(context) in the wrapped, top component where we instantiated the API service. It's the `value` prop we sent along with the provider component. The difference here is that we **don't** have to make a new instance. We use the same instance everywhere in the application.
+This `const`references the variable(context) in the wrapped, top component where we instantiated the API service. It's the `value` prop we sent along with the provider component. The difference here is that we **don't** have to make a new instance. We use the same instance everywhere in the application.
 
 Now, if we want to use it all, invoke `API`, and you will see the available `resources`. Select a resource, and automatically, you will see the available methods (see quick list below) for you to use in your functions and use the known methods like `then()`, `catch()` and `finally()`.
 
