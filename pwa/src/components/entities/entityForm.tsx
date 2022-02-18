@@ -6,9 +6,9 @@ import {
   Card,
   Alert,
   Modal,
-  Spinner, TextareaGroup,
-}
-  from "@conductionnl/nl-design-system/lib";
+  Spinner,
+  TextareaGroup,
+} from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
 import FlashMessage from 'react-flash-message';

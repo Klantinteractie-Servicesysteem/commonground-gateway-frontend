@@ -51,6 +51,17 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         setShowSpinner(false)
       })
   }
+
+  const handleSetApplications = () => {
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET application error: ' + err)
+      })
+  }
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -60,20 +71,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         throw new Error("GET Documentation error: " + err);
       });
   }
-  const handleSetApplications = () => {
-    setShowSpinner(true)
 
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(res.data)
-      })
-      .catch((err) => {
-        throw new Error('GET application error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
-      })
-  }
 
   const saveEndpoint = (event) => {
     event.preventDefault();
@@ -96,7 +94,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
     if (!endpointId) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then(() => {
-          navigate(`/endpoints/`)
+          navigate(`/endpoints`)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -160,7 +158,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                   disabled={!applications}
                 >
