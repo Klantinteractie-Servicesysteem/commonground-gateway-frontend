@@ -10,14 +10,14 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 export default function HandlersTable({ endpointId }) {
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetHandlers()
-    handleSetDocumentation()
+    handleSetHandlers();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetHandlers = () => {
@@ -35,7 +35,7 @@ export default function HandlersTable({ endpointId }) {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -101,9 +101,10 @@ export default function HandlersTable({ endpointId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link 
-                            className="utrecht-link d-flex justify-content-end" 
-                            to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/endpoints/${endpointId}/handlers/${item.id}/`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

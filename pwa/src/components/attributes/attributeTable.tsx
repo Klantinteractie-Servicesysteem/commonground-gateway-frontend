@@ -14,11 +14,12 @@ export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
+  const title: string =
+    entityId === "new" ? "Create Attribute" : "Edit Attribute";
 
   React.useEffect(() => {
-    handleSetAttributes()
-    handleSetDocumentation()
+    handleSetAttributes();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -36,7 +37,7 @@ export default function AttributeTable({ entityId }) {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("")
       .then((res) => {
         setDocumentation(res.data.content);
       })

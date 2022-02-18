@@ -4,7 +4,6 @@ import { getUser, isLoggedIn } from "../services/auth";
 import Dashboard from "../templates/dashboard/Dashboard";
 
 const IndexPage = () => {
-
   return (
     <Layout
       title={"Dashboard"}
@@ -12,12 +11,10 @@ const IndexPage = () => {
         isLoggedIn()
           ? `Welcome ${getUser().username}, to the gateway admin dashboard`
           : `Welcome to the gateway admin dashboard`
-      }>
-
-      {isLoggedIn() && (
-        <Dashboard />
-      )}
-    </Layout >
+      }
+    >
+      {isLoggedIn() && <Dashboard />}
+    </Layout>
   );
 };
 
