@@ -14,7 +14,6 @@ export default function HandlersTable({ endpointId }) {
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
-  const title: string = (endpointId === "new") ? "Create Handler" : "Edit Handler";
 
   React.useEffect(() => {
     handleSetHandlers()
@@ -47,7 +46,7 @@ export default function HandlersTable({ endpointId }) {
 
   return (
     <Card
-      title={title}
+      title="Handlers"
       cardHeader={function () {
         return (
           <>
@@ -71,7 +70,7 @@ export default function HandlersTable({ endpointId }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/handlers/new/${endpointId}`}>
+            <Link to={`/endpoints/${endpointId}/handlers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -102,10 +101,9 @@ export default function HandlersTable({ endpointId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/handlers/${item.id}/${endpointId}`}
-                          >
+                          <Link 
+                            className="utrecht-link d-flex justify-content-end" 
+                            to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit

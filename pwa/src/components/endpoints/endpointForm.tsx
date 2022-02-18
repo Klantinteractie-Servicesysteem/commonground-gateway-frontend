@@ -27,7 +27,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext)
   const [documentation, setDocumentation] = React.useState<string>(null)
 
@@ -82,6 +82,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
       description: event.target.description.value ?? null,
       path: event.target.path.value,
       application: event.target.application.value ?? null,
+      type: "gateway-endpoint",
     };
 
     // This removes empty values from the body

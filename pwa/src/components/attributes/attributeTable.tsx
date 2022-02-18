@@ -71,7 +71,7 @@ export default function AttributeTable({ entityId }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${entityId}`}>
+            <Link to={`/entities/${entityId}/attributes/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -104,7 +104,7 @@ export default function AttributeTable({ entityId }) {
                         return (
                           <Link
                             className="utrecht-link d-flex justify-content-end"
-                            to={`/attributes/${item.id}/${entityId}`}
+                            to={`/entities/${entityId}/attributes/${item.id}`}
                           >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
