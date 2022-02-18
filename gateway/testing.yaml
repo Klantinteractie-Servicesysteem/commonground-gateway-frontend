@@ -4,14 +4,13 @@ App\Entity\Endpoint:
     weerEndpoint:
         name: Weer handler
         description: endpoint voor dingen rondom weer
-        type: gateway-endpoint
         path: weer
 App\Entity\Entity:
     weekWeather:
         route: "/api/weer"
         name: weer
         description: Dit endpoint behandeld weer.
-        endpoint: "weer"
+        endpoint: "/weer"
 App\Entity\Attribute:
     weekWeather_monday:
         name: monday

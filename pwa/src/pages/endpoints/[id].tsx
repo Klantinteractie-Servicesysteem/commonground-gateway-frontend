@@ -65,7 +65,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable endpointId={endpointId}/>
+                <LogTable {...{endpointId}}/>
               </div>
             </div>
           </div>
