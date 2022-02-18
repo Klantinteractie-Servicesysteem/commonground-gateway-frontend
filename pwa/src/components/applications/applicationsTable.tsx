@@ -35,7 +35,7 @@ export default function ApplicationsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("applications")
       .then((res) => {
         setDocumentation(res.data.content);
       })

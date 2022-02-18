@@ -35,7 +35,7 @@ export default function SourcesTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("sources")
       .then((res) => {
         setDocumentation(res.data.content);
       })

@@ -4,29 +4,29 @@ import {
   Card,
   Alert,
   Modal,
-  SelectInputComponent
-}
-  from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
+  SelectInputComponent,
+} from "@conductionnl/nl-design-system/lib";
+import { Link } from "gatsby";
 import Spinner from "../common/spinner";
-import FlashMessage from 'react-flash-message';
-import {navigate} from "gatsby-link";
+import FlashMessage from "react-flash-message";
+import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
 interface TranslationFormProps {
-  id: string,
+  id: string;
 }
 
-export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
+export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const title: string =
+    id === "new" ? "Create Translation" : "Edit Translation";
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
@@ -44,8 +44,12 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
     let body = {
       translationTable: id,
       language: event.target.language ? event.target.language.value : null,
-      translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
-      translateTo: event.target.translateTo ? event.target.translateTo.value : null,
+      translateFrom: event.target.translateFrom
+        ? event.target.translateFrom.value
+        : null,
+      translateTo: event.target.translateTo
+        ? event.target.translateTo.value
+        : null,
     };
 
     let url = `${context.adminUrl}/translations`;
@@ -54,29 +58,32 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
       .then((data) => {
         setTranslation(data);
-        method === 'POST' && navigate("/translations")
+        method === "POST" && navigate("/translations");
       })
       .catch((error) => {
         console.error(error);
         setAlert(null);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
       })
       .finally(() => {
         setLoadingOverlay(false);
-      })
-  }
+      });
+  };
   React.useEffect(() => {
     handleSetDocumentation();
   });
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("translations")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -87,14 +94,16 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
 
   return (
     <>
-      {
-        alert !== null &&
+      {alert !== null && (
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
+          <Alert
+            alertClass={alert.type}
+            body={function () {
+              return <>{alert.message}</>;
+            }}
+          />
         </FlashMessage>
-      }
+      )}
       <form id="dataForm" onSubmit={saveTranslation}>
         <Card
           title={title}
@@ -110,7 +119,9 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                     title="Translation Documentation"
                     id="helpModal"
                     body={() => (
-                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                      <div
+                        dangerouslySetInnerHTML={{ __html: documentation }}
+                      />
                     )}
                   />
                   <i className="fas fa-question mr-1" />
@@ -118,26 +129,29 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                 </button>
                 <Link className="utrecht-link" to={"/translations"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                    <i className="fas fa-long-arrow-alt-left mr-2" />
+                    Back
                   </button>
                 </Link>
                 <button
                   className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                 >
-                  <i className="fas fa-save mr-2"/>Save
+                  <i className="fas fa-save mr-2" />
+                  Save
                 </button>
-              </div>)
+              </div>
+            );
           }}
           cardBody={function () {
             return (
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner/>
+                    <Spinner />
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -145,22 +159,28 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                               type={"text"}
                               name={"translationTable"}
                               id={"translationTableInput"}
-                              data={translation && translation.translationTable && translation.translationTable}
+                              data={
+                                translation &&
+                                translation.translationTable &&
+                                translation.translationTable
+                              }
                               nameOverride={"Table"}
-                              required/>
+                              required
+                            />
                           </div>
                         </div>
                         <div className="col-6">
                           <div className="form-group">
                             <SelectInputComponent
                               options={[
-                                {name: "Nederlands (NL)", value: 'nl_NL'},
-                                {name: "English (EN)", value: "en_EN"},
+                                { name: "Nederlands (NL)", value: "nl_NL" },
+                                { name: "English (EN)", value: "en_EN" },
                               ]}
                               name={"language"}
                               id={"languageInput"}
                               nameOverride={"Language"}
-                              data={translation?.language}/>
+                              data={translation?.language}
+                            />
                           </div>
                         </div>
                       </div>
@@ -171,9 +191,14 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                               type={"text"}
                               name={"translateFrom"}
                               id={"translateFromInput"}
-                              data={translation && translation.translateFrom && translation.translateFrom}
+                              data={
+                                translation &&
+                                translation.translateFrom &&
+                                translation.translateFrom
+                              }
                               nameOverride={"From"}
-                              required/>
+                              required
+                            />
                           </div>
                         </div>
                         <div className="col-6">
@@ -182,9 +207,14 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                               type={"text"}
                               name={"translateTo"}
                               id={"translateToInput"}
-                              data={translation && translation.translateTo && translation.translateTo}
+                              data={
+                                translation &&
+                                translation.translateTo &&
+                                translation.translateTo
+                              }
                               nameOverride={"To"}
-                              required/>
+                              required
+                            />
                           </div>
                         </div>
                       </div>
@@ -192,10 +222,11 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                   )}
                 </div>
               </div>
-            )
-          }}/>
+            );
+          }}
+        />
       </form>
     </>
   );
-}
-export default TranslationForm
+};
+export default TranslationForm;

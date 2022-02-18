@@ -60,7 +60,7 @@ export default function TableNamesTable() {
   });
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("translations")
       .then((res) => {
         setDocumentation(res.data.content);
       })

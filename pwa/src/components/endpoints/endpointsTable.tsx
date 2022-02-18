@@ -35,7 +35,7 @@ export default function EndpointsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("endpoints")
       .then((res) => {
         setDocumentation(res.data.content);
       })

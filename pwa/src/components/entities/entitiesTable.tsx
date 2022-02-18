@@ -35,7 +35,7 @@ export default function EntitiesTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("object_types")
       .then((res) => {
         setDocumentation(res.data.content);
       })

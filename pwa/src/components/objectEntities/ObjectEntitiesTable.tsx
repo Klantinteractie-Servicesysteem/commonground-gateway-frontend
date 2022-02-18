@@ -41,7 +41,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -70,7 +70,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   )}
                 />
                 <i className="fas fa-question mr-1" />
-                <span className="mr-2">Help</span>
+                <span className="mr-2">Helllp</span>
               </button>
               <a className="utrecht-link" onClick={handleSetObjectEntities}>
                 <i className="fas fa-sync-alt mr-1" />
