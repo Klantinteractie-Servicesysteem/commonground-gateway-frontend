@@ -38,7 +38,7 @@ const IndexPage = (props) => {
                   aria-labelledby="logs-tab"
                 >
                   <br />
-                  <LogTable/>
+                  <LogTable sourceId={id} />
                 </div>
               </div>
             </div>

@@ -26,15 +26,51 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
 
   React.useEffect(() => {
     handleSetLogs();
+    handleSetDocumentation();
   }, [API, entityId]);
 
-  const handleSetLogs = () => {
-    setShowSpinner(true);
-  };
+  const handleSetLogs = (): void => {
+    setShowSpinner(true)
 
-  React.useEffect(() => {
-    handleSetDocumentation();
-  }, [API]);
+    if (entityId) {
+      API.Log.getAllFromEntity(entityId)
+        .then((res) => {
+          res.data.length && setLogs(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET logs from entity error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+
+    if (sourceId) {
+      API.Log.getAllFromSource(sourceId)
+        .then((res) => {
+          res.data.length && setLogs(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET logs from source error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+
+    if (!entityId && !sourceId) {
+      API.Log.getAll()
+        .then((res) => {
+          res.data.length && setLogs(res.data)
+        })
+        .catch((err) => {
+          throw new Error("GET logs error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+  };
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -44,31 +80,6 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
       .catch((err) => {
         throw new Error("GET Documentation error: " + err);
       });
-
-    if (entityId) {
-      API.Log.getAllFromEntity(entityId)
-        .then((res) => {
-          setLogs(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET logs for entity error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-        });
-    }
-    if (!entityId) {
-      API.Log.getAll()
-        .then((res) => {
-          res?.data.length > 0 ? setLogs(res.data) : setLogs(log);
-        })
-        .catch((err) => {
-          throw new Error("GET logs error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-        });
-    }
   };
 
   return (
