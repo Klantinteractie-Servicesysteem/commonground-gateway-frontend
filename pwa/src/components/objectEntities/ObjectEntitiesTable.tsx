@@ -11,6 +11,7 @@ import APIContext from "../../apiService/apiContext";
 import { Form } from '@formio/react';
 import FormJson from '../../dummy_data/form';
 import FormIO from "../../apiService/resources/formIO";
+import ApiCalls from "../../apiService/resources/apiCalls";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -39,62 +40,71 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   }, [API, entity]);
 
   const getFormIOSchema = (objectEntity?: any) => {
-    setShowSpinner(true);
-    if (!formIOSchema) {
-      API.FormIO.getSchema(entity?.endpoint)
+    // setShowSpinner(true);
+    if (!objectEntity) {
+      console.log(entity.endpoint);
+      API.FormIO.getSchema(entity.endpoint)
         .then((res) => {
+          console.log('schema with call: ', res.data)
           setFormIOSchema(res.data);
         })
         .catch((err) => {
           throw new Error("GET form.io schema error: " + err);
         })
-        .finally(() => {
-          setShowSpinner(false);
-        });
+        return;
     }
-    if (formIOSchema && objectEntity) {
+    console.log('schema from state: ', formIOSchema)
+    if (formIOSchema && objectEntity && objectEntity.objectValues) {
       let schemaWithData = formIOSchema;
       for (let i = 0; i < formIOSchema.components.length; i++) {
-        schemaWithData.components[i].defaultValue = 'test';
+        for (let i = 0; i < objectEntity.objectValues.length; i++) {
+          if (schemaWithData.components[i].key = objectEntity.objectValues[i].attribute.name) {
+            let type = objectEntity.objectValues[i].attribute.type;
+            schemaWithData.components[i].defaultValue = objectEntity.objectValues[i][`${type}Value`];
+          }
+        }
+        // setShowSpinner(false);
+        return schemaWithData;
       }
-      setShowSpinner(false);
-      return schemaWithData;
-    }
-  };
+      // setShowSpinner(false);
+    };
+  }
 
-  const saveObject = (event) => {
+  const saveObject = id => event => {
     let body = event.data;
     body.submit = undefined;
 
-    let id = null;
+    console.log('ID', id);
 
     if (!id) {
-      API.FormIO.createObject(entity?.endpoint, body)
-        .then((res) => {
-        })
+      API.ApiCalls.createObject(entity?.endpoint, body)
         .catch((err) => {
           throw new Error("Create object error: " + err);
         })
         .finally(() => {
+          // setShowSpinner(false);
           handleSetObjectEntities();
         });
     }
 
     if (id) {
-      API.FormIO.updateObject(entity?.endpoint, id, body)
+
+      API.ApiCalls.updateObject(entity?.endpoint, id, body)
         .then((res) => {
+          console.log(res.data);
         })
         .catch((err) => {
           throw new Error("Update object error: " + err);
         })
         .finally(() => {
+          // setShowSpinner(false);
           handleSetObjectEntities();
         });
     }
   };
 
   const getEntity = () => {
-    setShowSpinner(true);
+    // setShowSpinner(true);
     API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data);
@@ -103,21 +113,22 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false);
+        // setShowSpinner(false);
       });
   };
 
   const handleSetObjectEntities = () => {
-    setShowSpinner(true);
+    // setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        setObjectEntities(res.data);
+        res?.data?.length > 0 &&
+          setObjectEntities(res.data)
       })
       .catch((err) => {
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false);
+        // setShowSpinner(false);
       });
   };
 
@@ -134,7 +145,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   return (
     <>
       <Card
-        title={"Object entities"}
+        title={"Objects"}
         cardHeader={function () {
           return (
             <>
@@ -170,7 +181,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 body={() => (<>
                   {
                     formIOSchema &&
-                    <Form src={formIOSchema} onSubmit={saveObject} />
+                    <Form id={'1'} src={formIOSchema} onSubmit={saveObject} />
                   }
                 </>)}
               />
@@ -206,11 +217,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                               Edit
                             </button>
                             <Modal
-                              title={`Create a new ${entity?.name} object`}
+                              title={`Update ${entity?.name} object`}
                               id={`object${item.id.substring(0, 8)}Modal`}
                               body={() => (
                                 formIOSchema &&
-                                <Form src={getFormIOSchema(item)} onSubmit={saveObject} />
+                                <Form id={item.id} src={getFormIOSchema(item)} onSubmit={saveObject(item.id)} />
                               )}
                             />
                           </>);
@@ -247,8 +258,16 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                         headerName: "Owner",
                         field: "owner",
                       },
+                      {
+                        headerName: "",
+                        field: "id",
+                      },
+                      {
+                        headerName: "",
+                        field: "id",
+                      },
                     ]}
-                    rows={[]}
+                    rows={[{ uri: 'No results found', owner: '' }]}
                   />
                 )}
               </div>
