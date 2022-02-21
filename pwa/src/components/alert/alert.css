@@ -12,11 +12,15 @@
 }
 
 .conduction-alert.conduction-alert-success {
-    background-color: #00B74A;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
 }
 
 .conduction-alert.conduction-alert-danger {
-    background-color: #F93154;
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 
 .conduction-alert-closeContainer {
