@@ -169,28 +169,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                         headerName: "Owner",
                         field: "owner",
                       },
-                      // {
-                      //   field: "id",
-                      //   headerName: " ",
-                      //   renderCell: (item: any) => {
-                      //     return (<>
-                      //       <button className="utrecht-button btn-sm btn-primary"
-                      //         data-bs-toggle="modal"
-                      //         data-bs-target={`#object${item.id.substring(0, 8)}Modal`}>
-                      //         <i className="fas fa-edit pr-1" />
-                      //         Edit
-                      //       </button>
-                      //       <Modal
-                      //         title={`Update ${entity?.name} object`}
-                      //         id={`object${item.id.substring(0, 8)}Modal`}
-                      //         body={() => (
-                      //           formIOSchema &&
-                      //           <Form key={`${item.id.substring(0, 8)}`} src={getFormIOSchema(item)} onSubmit={saveObject(item.id)} />
-                      //         )}
-                      //       />
-                      //     </>);
-                      //   }
-                      // },
                       {
                         field: "id",
                         headerName: " ",
