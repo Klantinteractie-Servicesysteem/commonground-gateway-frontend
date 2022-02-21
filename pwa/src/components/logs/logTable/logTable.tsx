@@ -32,6 +32,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
   React.useEffect(() => {
     handleSetLogs()
     handleSetDocumentation()
+    setHeader({ title: "Logs", subText: "An overview of your log objects" });
   }, [API, entityId, endpointId, sourceId]);
 
   const handleSetLogs = () => {
@@ -71,6 +72,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs for endpoint error: " + err);
         })
         .finally(() => {
