@@ -7,7 +7,7 @@ import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const entityId: string = props.params.id === "new" ? null : props.params.id;
+  const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
 
   return (
     <Layout title={"Object types"} subtext={"Create or modify your object types"}>
@@ -68,7 +68,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br/>
-                <LogTable entityId={entityId}/>
+                <LogTable {...{entityId}}/>
               </div>
             </div>
           </div>
