@@ -49,5 +49,5 @@ services:
     image: redis:4-alpine
 
 volumes:
-  db-data: {}
-  db-mysql: {}
+    db-data: {}
+    db-mysql: {}
