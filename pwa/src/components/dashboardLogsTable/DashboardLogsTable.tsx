@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logs/logModal/LogModal";
 import log, { LogObject } from "../../dummy_data/logs";
+import msToSeconds from "../../services/msToSeconds";
 
 interface DashboardLogsTableProps {
   logs: LogObject[],
@@ -32,7 +33,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                 <td><span className={`dashboardLogsTable-status ${statusClass}`}>{log.responseStatusCode}</span></td>
                 <td>{log.type}</td>
                 <td>{log.requestMethod}</td>
-                <td>{log.responseTime}ms</td>
+                <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)})s`}</td>
                 <td className="dashboardLogsTable-viewLogTd">
                   <button
                     type="button"
