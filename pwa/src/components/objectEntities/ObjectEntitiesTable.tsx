@@ -9,9 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { Form } from '@formio/react';
-import FormJson from '../../dummy_data/form';
-import FormIO from "../../apiService/resources/formIO";
-import ApiCalls from "../../apiService/resources/apiCalls";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -42,7 +39,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const getFormIOSchema = (objectEntity?: any) => {
     // setShowSpinner(true);
     if (!objectEntity) {
-      console.log(entity.endpoint);
       API.FormIO.getSchema(entity.endpoint)
         .then((res) => {
           console.log('schema with call: ', res.data)
@@ -74,9 +70,9 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     let body = event.data;
     body.submit = undefined;
 
-    console.log('ID', id);
-
+    console.log('test');
     if (!id) {
+      console.log('!id');
       API.ApiCalls.createObject(entity?.endpoint, body)
         .catch((err) => {
           throw new Error("Create object error: " + err);
@@ -86,9 +82,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
           handleSetObjectEntities();
         });
     }
-
     if (id) {
-
+      console.log('id');
       API.ApiCalls.updateObject(entity?.endpoint, id, body)
         .then((res) => {
           console.log(res.data);
@@ -181,7 +176,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 body={() => (<>
                   {
                     formIOSchema &&
-                    <Form id={'1'} src={formIOSchema} onSubmit={saveObject} />
+                    <Form key={0} src={formIOSchema} onSubmit={saveObject(null)} />
                   }
                 </>)}
               />
@@ -205,28 +200,28 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                         headerName: "Owner",
                         field: "owner",
                       },
-                      {
-                        field: "id",
-                        headerName: " ",
-                        renderCell: (item: any) => {
-                          return (<>
-                            <button className="utrecht-button btn-sm btn-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target={`#object${item.id.substring(0, 8)}Modal`}>
-                              <i className="fas fa-edit pr-1" />
-                              Edit
-                            </button>
-                            <Modal
-                              title={`Update ${entity?.name} object`}
-                              id={`object${item.id.substring(0, 8)}Modal`}
-                              body={() => (
-                                formIOSchema &&
-                                <Form id={item.id} src={getFormIOSchema(item)} onSubmit={saveObject(item.id)} />
-                              )}
-                            />
-                          </>);
-                        }
-                      },
+                      // {
+                      //   field: "id",
+                      //   headerName: " ",
+                      //   renderCell: (item: any) => {
+                      //     return (<>
+                      //       <button className="utrecht-button btn-sm btn-primary"
+                      //         data-bs-toggle="modal"
+                      //         data-bs-target={`#object${item.id.substring(0, 8)}Modal`}>
+                      //         <i className="fas fa-edit pr-1" />
+                      //         Edit
+                      //       </button>
+                      //       <Modal
+                      //         title={`Update ${entity?.name} object`}
+                      //         id={`object${item.id.substring(0, 8)}Modal`}
+                      //         body={() => (
+                      //           formIOSchema &&
+                      //           <Form key={`${item.id.substring(0, 8)}`} src={getFormIOSchema(item)} onSubmit={saveObject(item.id)} />
+                      //         )}
+                      //       />
+                      //     </>);
+                      //   }
+                      // },
                       {
                         field: "id",
                         headerName: " ",
@@ -251,8 +246,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   <Table
                     columns={[
                       {
-                        headerName: "Uri",
-                        field: "uri",
+                        headerName: "ID",
+                        field: "id",
                       },
                       {
                         headerName: "Owner",
@@ -260,14 +255,14 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                       },
                       {
                         headerName: "",
-                        field: "id",
+                        field: "",
                       },
                       {
                         headerName: "",
-                        field: "id",
-                      },
+                        field: "",
+                      }
                     ]}
-                    rows={[{ uri: 'No results found', owner: '' }]}
+                    rows={[{ id: 'No results found', owner: '' }]}
                   />
                 )}
               </div>
