@@ -5,8 +5,8 @@ import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
-const IndexPage = (props) => {  
-  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
+const IndexPage = (props) => {
+  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId
 
   return (
     <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
@@ -64,7 +64,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable/>
+                <LogTable {...{endpointId}}/>
               </div>
             </div>
           </div>

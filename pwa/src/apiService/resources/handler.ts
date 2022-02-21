@@ -20,6 +20,6 @@ export default class Handler {
   }
 
   public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/handlers?endpoints.id=${endpointId}`)
+    return this._instance.get(`/handlers?endpoint.id=${endpointId}`)
   }
 }
