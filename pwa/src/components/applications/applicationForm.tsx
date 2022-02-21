@@ -14,12 +14,11 @@ import {
   checkValues,
   removeEmptyObjectValues, retrieveFormArrayAsOArray,
 } from "../utility/inputHandler";
+import FlashMessage from 'react-flash-message';
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from '../loadingOverlay/loadingOverlay'
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
 
 interface IApplication {
   name: string,
@@ -35,7 +34,7 @@ interface ApplicationFormProps {
 }
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
-  const [_, setAlert] = React.useContext(AlertContext);
+  const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
@@ -44,7 +43,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
-    id ? setHeader({title: `${id}`, subText: 'Edit your application here'}) : setHeader({title: `Create`, subText: 'Create your application here'})
     id && handleSetApplications()
     handleSetDocumentation()
   }, [API, id])
@@ -57,7 +55,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
         setApplication(res.data)
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
         throw new Error('GET application error: ' + err)
       })
       .finally(() => {
@@ -96,6 +93,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["domains"]])) {
+      setAlert(null);
       setAlert({type: 'danger', message: 'Required fields are empty'});
       setLoadingOverlay(false);
       return;
@@ -104,7 +102,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (!id) { // unset id means we're creating a new entry
       API.Application.create(body)
         .then(() => {
-          setAlert({message: 'Saved application', type: 'success'})
           navigate('/applications')
         })
         .catch((err) => {
@@ -120,7 +117,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
       API.Application.update(body, id)
         .then((res) => {
           setApplication(res.data);
-          setAlert({message: 'Updated application', type: 'success'})
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -206,14 +202,25 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                           />
                         </div>
                       </div>
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"description"}
-                          id={"descriptionInput"}
-                          data={application && application.description && application.description}
-                          nameOverride={"Description"}
-                        />
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"public"}
+                            id={"publicInput"}
+                            data={application && application.public && application.public}
+                            nameOverride={"Public"}
+                          />
+                        </div>
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"secret"}
+                            id={"secretInput"}
+                            data={application && application.secret && application.secret}
+                            nameOverride={"Secret"}
+                          />
+                        </div>
                       </div>
                       <div className="row">
                         <div className="col-12">
@@ -224,51 +231,31 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                           />
                         </div>
                       </div>
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"secret"}
-                          id={"secretInput"}
-                          data={application && application.secret && application.secret}
-                          nameOverride={"Secret"}
-                        />
-                      </div>
+                      <Accordion
+                        id="applicationAccordion"
+                        items={[{
+                          title: "Domains *",
+                          id: "domainsAccordion",
+                          render: function () {
+                            return (
+                              <ElementCreationNew
+                                id="domains"
+                                label="Domains"
+                                data={application?.domains}
+                              />
+                            );
+                          },
+                        }]}
+                      />
                     </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"resource"}
-                          id={"resourceInput"}
-                          data={application && application.resource && application.resource}
-                          nameOverride={"Resource"}
-                        />
-                      </div>
-                    </div>
-                    <Accordion
-                      id="applicationAccordion"
-                      items={[{
-                        title: "Domains *",
-                        id: "domainsAccordion",
-                        render: function () {
-                          return (
-                            <ElementCreationNew
-                              id="domains"
-                              label="Domains"
-                              data={application?.domains}
-                            />
-                          );
-                        },
-                      }]}
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          )
-        }}
-      />
-    </form>
+            )
+          }}
+        />
+      </form>
+    </div>
   );
 }
 
