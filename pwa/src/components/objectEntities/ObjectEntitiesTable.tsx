@@ -3,7 +3,7 @@ import {
   Table,
   Card,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -15,8 +15,8 @@ interface ObjectEntitiesTableProps {
 }
 
 const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
-  entityId,
-}) => {
+                                                                   entityId
+                                                                 }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
@@ -152,7 +152,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -167,7 +167,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                       },
                       {
                         headerName: "Owner",
-                        field: "owner",
+                        field: "owner"
                       },
                       {
                         field: "id",
@@ -184,8 +184,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                               </button>
                             </Link>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                     rows={objectEntities}
                   />

@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from "axios";
+import axios, { AxiosInstance } from "axios";
 import Application from "./resources/application";
 import Attribute from "./resources/attribute";
 import Source from "./resources/source";
@@ -26,8 +26,8 @@ export default class APIService {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer " + this._jwtToken,
-      },
+        Authorization: "Bearer " + this._jwtToken
+      }
     });
   }
 
@@ -57,8 +57,8 @@ export default class APIService {
       baseURL: process.env.GATSBY_READ_THE_DOCS_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 
