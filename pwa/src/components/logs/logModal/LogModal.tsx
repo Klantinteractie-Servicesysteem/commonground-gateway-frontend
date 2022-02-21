@@ -3,6 +3,7 @@ import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
 import { StatusCode } from "../logTable/logTable";
+import msToSeconds from "../../../services/msToSeconds";
 
 interface LogModalProps {
   log: any;
@@ -53,7 +54,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   </tr>
                   <tr>
                     <th>Response time</th>
-                    <td>{log?.responseTime.toString() + " seconds"}</td>
+                    <td>log && `${log.responseTime}ms (${msToSeconds(log.responseTime)})`</td>
                   </tr>
                   <tr>
                     <th>Route</th>
