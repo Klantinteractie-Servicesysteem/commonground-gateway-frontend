@@ -21,10 +21,6 @@ const IndexPage = (props) => {
                     {
                       name: "Handlers",
                       id: "handlers"
-                    },
-                    {
-                      name: "Logs",
-                      id: "logs"
                     }
                   ]}
                 />
