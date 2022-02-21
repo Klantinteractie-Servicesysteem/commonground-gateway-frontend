@@ -14,4 +14,8 @@ export default class Log {
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
     return this._instance.get('/logs?entity.id=' + entityId)
   }
+
+  public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
+    return this._instance.get('/logs?source.id=' + sourceId)
+  }
 }

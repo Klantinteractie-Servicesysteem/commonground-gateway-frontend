@@ -18,18 +18,14 @@
     padding-bottom: 20px;
 }
 
-.dashboardLogsTable tbody tr {
+.dashboardLogsTable .dashboardLogsTable-tr {
     border-top: 1px rgba(69, 65, 78, 0.10) solid;
     transition: transform 100ms ease-in;
 }
 
-.dashboardLogsTable tbody tr:hover {
+.dashboardLogsTable .dashboardLogsTable-tr:hover {
     transform: scale(1.0175);
     cursor: pointer;
-}
-
-.dashboardLogsTable tbody tr:hover svg {
-    color: var(--utrecht-page-header-background-color);
 }
 
 .dashboardLogsTable tbody tr td {
@@ -50,4 +46,9 @@
 .dashboardLogsTable .dashboardLogsTable-status.error {
     background-color: #F8D7DA;
     color: #721C24;
+}
+
+.dashboardLogsTable .dashboardLogsTable-viewLogTd {
+    display: flex;
+    justify-content: right;
 }

@@ -27,7 +27,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
   const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const title: string = (endpointId === "new") ? "Create Endpoint" : "Edit Endpoint"
+  const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext)
   const [documentation, setDocumentation] = React.useState<string>(null)
 
@@ -51,6 +51,17 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         setShowSpinner(false)
       })
   }
+
+  const handleSetApplications = () => {
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET application error: ' + err)
+      })
+  }
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -60,20 +71,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
         throw new Error("GET Documentation error: " + err);
       });
   }
-  const handleSetApplications = () => {
-    setShowSpinner(true)
 
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(res.data)
-      })
-      .catch((err) => {
-        throw new Error('GET application error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
-      })
-  }
 
   const saveEndpoint = (event) => {
     event.preventDefault();
@@ -84,6 +82,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
       description: event.target.description.value ?? null,
       path: event.target.path.value,
       application: event.target.application.value ?? null,
+      type: "gateway-endpoint",
     };
 
     // This removes empty values from the body
@@ -96,7 +95,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
     if (!endpointId) { // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then(() => {
-          navigate(`/endpoints/`)
+          navigate(`/endpoints`)
         })
         .catch((err) => {
           setAlert({type: 'danger', message: err.message});
@@ -160,7 +159,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({endpointId}) => {
                   </button>
                 </Link>
                 <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
                   type="submit"
                   disabled={!applications}
                 >
