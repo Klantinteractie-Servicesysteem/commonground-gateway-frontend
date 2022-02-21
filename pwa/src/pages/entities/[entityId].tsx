@@ -1,23 +1,16 @@
 import * as React from "react";
 import Layout from "../../components/common/layout";
+import AttributeTable from "../../components/attributes/attributeTable";
+import ObjectEntitiesTable from "../../components/objectEntities/ObjectEntitiesTable";
+import EntityForm from "../../components/entities/entityForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import EndpointForm from "../../components/endpoints/endpointForm";
-import HandlerTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const [context, setContext] = React.useState(null);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    }
-  }, [context]);
+  const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
 
   return (
-    <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
+    <Layout title={"Object types"} subtext={"Create or modify your object types"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -27,13 +20,11 @@ const IndexPage = (props) => {
                   items={[
                     { name: "Overview", id: "overview", active: true },
                     {
-                      name: "Handlers",
-                      id: "handlers",
+                      name: "Attributes",
+                      id: "attributes"
                     },
-                    {
-                      name: "Logs",
-                      id: "logs",
-                    }
+                    { name: "Objects", id: "data" },
+                    { name: "Logs", id: "logs" }
                   ]}
                 />
               ) : (
@@ -50,16 +41,25 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <EndpointForm id={props.params.id}/>
+                <EntityForm {...{ entityId }} />
               </div>
               <div
                 className="tab-pane"
-                id="handlers"
+                id="attributes"
                 role="tabpanel"
-                aria-labelledby="handlers-tab"
+                aria-labelledby="attributes-tab"
               >
                 <br />
-                <HandlerTable id={props.params.id} />
+                <AttributeTable {...{ entityId }} />
+              </div>
+              <div
+                className="tab-pane"
+                id="data"
+                role="tabpanel"
+                aria-labelledby="data-tab"
+              >
+                <br />
+                <ObjectEntitiesTable {...{ entityId }} />
               </div>
               <div
                 className="tab-pane"
@@ -68,7 +68,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable id={props.params.id} query={'endpoint.id'}/>
+                <LogTable {...{ entityId }} />
               </div>
             </div>
           </div>

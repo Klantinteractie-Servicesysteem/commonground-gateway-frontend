@@ -1,59 +1,79 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {GenericInputComponent, Accordion, SelectInputComponent, Alert, Card} from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
-import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
-import {navigate} from "gatsby-link";
-import ElementCreationNew from "../common/elementCreationNew"
+import {
+  GenericInputComponent,
+  Accordion,
+  SelectInputComponent,
+  Alert,
+  Card,
+  Modal
+} from "@conductionnl/nl-design-system/lib";
+import { Link } from "gatsby";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray
+} from "../utility/inputHandler";
+import { navigate } from "gatsby-link";
+import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import FlashMessage from 'react-flash-message';
+import FlashMessage from "react-flash-message";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface ObjectEntityFormProps {
-  objectEntityId: string,
+  objectId: string,
   entityId: string,
 }
 
-export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityId, entityId}) => {
+export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, entityId }) => {
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
-
+  const title: string = objectId ? "Edit object" : "Create object";
+  const [documentation, setDocumentation] = React.useState<string>(null);
 
   React.useEffect(() => {
-    objectEntityId && handleSetEntity_object()
-    handleSetApplications()
-  }, [API, objectEntityId])
+    objectId && handleSetEntity_object();
+    handleSetApplications();
+    handleSetDocumentation();
+  }, [API, objectId]);
 
   const handleSetEntity_object = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
-    API.ObjectEntity.getOne(objectEntityId)
+    API.ObjectEntity.getOne(objectId)
       .then((res) => {
-        setObjectEntity(res.data)
+        setObjectEntity(res.data);
       })
       .catch((err) => {
-        throw new Error('GET object entity error: ' + err)
+        throw new Error("GET object entity error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
-
+        setShowSpinner(false);
+      });
+  };
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        setApplications(res.data)
+        setApplications(res.data);
       })
       .catch((err) => {
-        throw new Error('GET applications error: ' + err)
+        throw new Error("GET applications error: " + err);
+      });
+  };
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
       })
-  }
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
@@ -76,7 +96,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
       entity: `/admin/entities/${entityId}`,
       errors,
       promises,
-      externalResult,
+      externalResult
     };
 
     // This removes empty values from the body
@@ -84,59 +104,75 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
 
     if (!checkValues([body["uri"]])) {
       setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!objectEntityId) { // unset id means we're creating a new entry
+    if (!objectId) { // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
-          navigate(`/entities/${entityId}`)
+          navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('CREATE object entity error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("CREATE object entity error: " + err);
         })
         .finally(() => {
-          setLoadingOverlay(false)
-        })
+          setLoadingOverlay(false);
+        });
     }
 
     if (objectEntity) { // set id means we're updating a existing entry
-      API.ObjectEntity.update(body, objectEntityId)
+      API.ObjectEntity.update(body, objectId)
         .then((res) => {
-          setObjectEntity(res.data)
+          setObjectEntity(res.data);
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('UPDATE object entity error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("UPDATE object entity error: " + err);
         })
         .finally(() => {
-          setLoadingOverlay(false)
-        })
+          setLoadingOverlay(false);
+        });
     }
-  }
+  };
 
   return (
     <div>
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
+          <Alert alertClass={alert.type} body={function() {
+            return (<>{alert.message}</>);
+          }} />
         </FlashMessage>
       }
       <form id="dataForm" onSubmit={saveObjectEntity}>
         <Card
           title={title}
-          cardHeader={function () {
+          cardHeader={function() {
             return (
               <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ObjectEntityHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Entity_object Documentation"
+                    id="ObjectEntityHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={`/entities/${entityId}`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>
+                    <i className="fas fa-long-arrow-alt-left mr-2" />
                     Back
                   </button>
                 </Link>
@@ -145,21 +181,21 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                   type="submit"
                   disabled={!applications}
                 >
-                  <i className="fas fa-save mr-2"/>
+                  <i className="fas fa-save mr-2" />
                   Save
                 </button>
               </>
             );
           }}
-          cardBody={function () {
+          cardBody={function() {
             return (
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner/>
+                    <Spinner />
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -185,7 +221,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           </div>
                         </div>
                       </div>
-                      <br/>
+                      <br />
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -200,14 +236,14 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                         data={objectEntity.application.name}
                                         name={"application"} id={"applicationInput"}
                                         nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
+                                        value={"/admin/applications/"} />
                                     )
                                     : (
                                       <SelectInputComponent
                                         options={applications}
                                         name={"application"} id={"applicationInput"}
                                         nameOverride={"Application"}
-                                        value={"/admin/applications/"}/>
+                                        value={"/admin/applications/"} />
                                     )}
                                 </>
                               ) : (
@@ -231,7 +267,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           />
                         </div>
                       </div>
-                      <br/>
+                      <br />
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -250,7 +286,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           {
                             title: "Errors",
                             id: "errorsAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <>
                                   <ElementCreationNew
@@ -265,7 +301,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           {
                             title: "Promises",
                             id: "promisesAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <>
                                   <ElementCreationNew
@@ -280,7 +316,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                           {
                             title: "External Result",
                             id: "externalResultAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <>
                                   <ElementCreationNew
@@ -290,7 +326,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                   />
                                 </>
                               );
-                            },
+                            }
                           }
                         ]}
                       />
@@ -303,6 +339,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
         />
       </form>
     </div>
-  )
-}
-export default ObjectEntityForm
+  );
+};
+export default ObjectEntityForm;
