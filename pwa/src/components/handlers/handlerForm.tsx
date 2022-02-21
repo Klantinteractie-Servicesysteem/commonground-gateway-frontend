@@ -56,7 +56,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
 
   const getHandler = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers/${endpointId}`, {
+    fetch(`${context.adminUrl}/handlers/${id}`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",

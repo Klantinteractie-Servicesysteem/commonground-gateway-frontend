@@ -15,10 +15,11 @@ import LogModal from "../logModal/LogModal";
 
 interface LogTableProps {
   entityId?: string;
-  endpointId?: string;
+  endpointId?: string;       
+  sourceId?: string;
 }
-
-export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
+  
+export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -27,38 +28,37 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId,endpointId }) => {
   React.useEffect(() => {
     handleSetLogs()
     handleSetDocumentation()
-  }, [API, entityId,endpointId]);
-console.log(endpointId)
-  console.log(entityId)
+  }, [API, entityId, endpointId, sourceId]);
+
   const handleSetLogs = () => {
     setShowSpinner(true);
-  };
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  }, [API]);
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        throw new Error("GET Documentation error: " + err);
-      });
-
-    if (entityId) {
+    
+     if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
-          setLogs(res.data);
+          res.data.length && setLogs(res.data);
         })
         .catch((err) => {
-          throw new Error("GET logs for entity error: " + err);
+          throw new Error("GET logs from entity error: " + err);
         })
         .finally(() => {
           setShowSpinner(false);
         });
     }
+
+    if (sourceId) {
+      API.Log.getAllFromSource(sourceId)
+        .then((res) => {
+          res.data.length && setLogs(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET logs from source error: " + err);
+        })
+        .finally(() => {
+          setShowSpinner(false);
+        });
+    }
+
     if (endpointId) {
       API.Log.getAllFromEndpoint(endpointId)
         .then((res) => {
@@ -71,10 +71,11 @@ console.log(endpointId)
           setShowSpinner(false);
         });
     }
-    if (!endpointId) {
+    
+    if (!entityId && !sourceId && !endpointId) {
       API.Log.getAll()
         .then((res) => {
-          res?.data.length > 0 ? setLogs(res.data) : setLogs(log);
+          res.data.length && setLogs(res.data)
         })
         .catch((err) => {
           throw new Error("GET logs error: " + err);
@@ -83,6 +84,16 @@ console.log(endpointId)
           setShowSpinner(false);
         });
     }
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
   };
 
   return (
