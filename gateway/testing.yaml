@@ -1,16 +1,17 @@
-
 # todo: NOTE: When changing this .yaml from dev to stag or acc. Don't forget to change the organization_parentOrganization defaultValue!!!
 App\Entity\Endpoint:
     weerEndpoint:
         name: Weer handler
         description: endpoint voor dingen rondom weer
         path: weer
+
 App\Entity\Entity:
     weekWeather:
         route: "/api/weer"
         name: weer
         description: Dit endpoint behandeld weer.
-        endpoint: "/weer"
+        endpoint: "weer"
+
 App\Entity\Attribute:
     weekWeather_monday:
         name: monday
@@ -61,6 +62,7 @@ App\Entity\Attribute:
         maxLength: 255
         required: true
         entity: "@weekWeather"
+
 App\Entity\Handler:
     weatherHandler:
         name: Weather handler
@@ -79,8 +81,8 @@ App\Entity\Handler:
             montag: monday
             dienstag: tuesday
             mittwoch: wednesday
-            donnerstag: thursday
-            freitag: friday
+            donnerstag: thursday 
+            freitag: friday 
             wochenende.samstag: saturday
             wochenende.sonntag: sunday
         endpoint: "@weerEndpoint"
@@ -88,6 +90,7 @@ App\Entity\Handler:
         # Denormalizer throws error trying denormalize template (set with api call for now)
         # template: "<html><body><h1>Test</h1></body></html>"
         # templateType: twig
+
 App\Entity\Translation:
     regenTranslation:
         translationTable: weatherTable1
@@ -99,3 +102,8 @@ App\Entity\Translation:
         translateFrom: regen
         translateTo: sturm
         language: de
+        
+App\Entity\Application:
+    localHostApp:
+        name: localhost
+        domains: ["http://localhost:8000"]

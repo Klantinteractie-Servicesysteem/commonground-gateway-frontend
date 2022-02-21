@@ -8,6 +8,7 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { Form } from '@formio/react';
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -18,19 +19,74 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                                                                  }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
+  const [entity, setEntity] = React.useState(null);
+  const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    entityId && handleSetObjectEntities();
+    setShowSpinner(true);
+    if (entityId) {
+      handleSetObjectEntities();
+      getEntity();
+    }
     handleSetDocumentation();
+    setShowSpinner(false);
   }, [API, entityId]);
+
+  React.useEffect(() => {
+    setShowSpinner(true);
+    entity && getFormIOSchema();
+    setShowSpinner(false);
+  }, [API, entity]);
+
+  const getFormIOSchema = (objectEntity?: any) => {
+    if (!objectEntity) {
+      API.FormIO.getSchema(entity.endpoint)
+        .then((res) => {
+          console.log('schema with call: ', res.data)
+          setFormIOSchema(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET form.io schema error: " + err);
+        })
+    }
+  }
+
+  const saveObject = id => event => {
+    setShowSpinner(true);
+    let body = event.data;
+    body.submit = undefined;
+
+    API.ApiCalls.createObject(entity?.endpoint, body)
+      .catch((err) => {
+        throw new Error("Create object error: " + err);
+      })
+      .finally(() => {
+        handleSetObjectEntities();
+      });
+  };
+
+  const getEntity = () => {
+    setShowSpinner(true);
+    API.Entity.getOne(entityId)
+      .then((res) => {
+        setEntity(res.data);
+      })
+      .catch((err) => {
+        throw new Error("GET entity error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
 
   const handleSetObjectEntities = () => {
     setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        setObjectEntities(res.data);
+        res?.data?.length > 0 &&
+          setObjectEntities(res.data)
       })
       .catch((err) => {
         throw new Error("GET object entities error: " + err);
@@ -53,8 +109,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   return (
     <>
       <Card
-        title={"Object entities"}
-        cardHeader={function() {
+        title={"Objects"}
+        cardHeader={function () {
           return (
             <>
               <button
@@ -76,12 +132,23 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to={`/entities/${entityId}/object_entities/new`}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                  <i className="fas fa-plus mr-2" />
-                  Create
-                </button>
-              </Link>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#objectModal">
+                <i className="fas fa-plus mr-2" />
+                Create
+              </button>
+              <Modal
+                title={`Create a new ${entity?.name} object`}
+                id="objectModal"
+                body={() => (<>
+                  {
+                    formIOSchema &&
+                    <Form key={0} src={formIOSchema} onSubmit={saveObject(null)} />
+                  }
+                </>)}
+              />
             </>
           );
         }}
@@ -95,8 +162,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   <Table
                     columns={[
                       {
-                        headerName: "Uri",
-                        field: "uri"
+                        headerName: "ID",
+                        field: "id",
                       },
                       {
                         headerName: "Owner",
@@ -109,11 +176,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                           return (
                             <Link
                               className="utrecht-link d-flex justify-content-end"
-                              to={`/entities/${entityId}/object_entities/${item.id}`}
+                              to={`/entities/${entityId}/objects/${item.id}`}
                             >
-                              <button className="utrecht-button btn-sm btn-success">
-                                <i className="fas fa-edit pr-1" />
-                                Edit
+                              <button className="utrecht-button btn-sm btn-primary">
+                                <i className="fas fa-eye pr-1" />
+                                View
                               </button>
                             </Link>
                           );
@@ -126,15 +193,23 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   <Table
                     columns={[
                       {
-                        headerName: "Uri",
-                        field: "uri"
+                        headerName: "ID",
+                        field: "id",
                       },
                       {
                         headerName: "Owner",
-                        field: "owner"
+                        field: "owner",
+                      },
+                      {
+                        headerName: "",
+                        field: "",
+                      },
+                      {
+                        headerName: "",
+                        field: "",
                       }
                     ]}
-                    rows={[]}
+                    rows={[{ id: 'No results found', owner: '' }]}
                   />
                 )}
               </div>
