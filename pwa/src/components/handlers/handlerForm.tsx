@@ -13,6 +13,7 @@ import {
   Spinner,
   Card,
   Alert,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {isLoggedIn} from "../../services/auth";
 import FlashMessage from 'react-flash-message';
@@ -20,8 +21,14 @@ import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import APIContext from "../../apiService/apiContext";
+import APIService from "../../apiService/apiService";
 
-export default function HandlerForm({id, endpointId}) {
+interface HandlerFormProps {
+  id: string,
+  endpointId: string,
+}
+export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -29,7 +36,9 @@ export default function HandlerForm({id, endpointId}) {
   const [alert, setAlert] = React.useState(null);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = (id === "new") ? "Create Handler" : "Edit Handler";
+  const title: string = id ? "Edit Handler" : "Create Handler";
+  const API: APIService = React.useContext(APIContext)
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -37,7 +46,7 @@ export default function HandlerForm({id, endpointId}) {
         adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
-      if (id !== "new") {
+      if (id) {
         getHandler();
       }
       getEntities();
@@ -56,8 +65,8 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         setHandler(data);
+        setShowSpinner(false);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -68,7 +77,6 @@ export default function HandlerForm({id, endpointId}) {
   };
 
   const getEntities = () => {
-    setShowSpinner(true);
     fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
@@ -77,13 +85,11 @@ export default function HandlerForm({id, endpointId}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowSpinner(false);
         if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
           setEntities(data["hydra:member"]);
         }
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
@@ -91,7 +97,6 @@ export default function HandlerForm({id, endpointId}) {
   };
 
   const getTableNames = () => {
-    setShowSpinner(true);
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
@@ -101,14 +106,25 @@ export default function HandlerForm({id, endpointId}) {
       .then((response) => response.json())
       .then((data) => {
         const convertedArray = data['results'].map((value, idx) => ({id: idx, name: value, value: value}));
-        setShowSpinner(false);
         setTableNames(convertedArray)
       })
       .catch((error) => {
-        setShowSpinner(false);
         console.log("Error:", error);
         setAlert(null);
         setAlert({type: 'danger', message: error.message});
+      });
+  };
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
       });
   };
 
@@ -120,7 +136,6 @@ export default function HandlerForm({id, endpointId}) {
     let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
     let mappingIn: {} = retrieveFormArrayAsObject(event.target, "mappingIn");
     let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
-    let conditions: any[] = retrieveFormArrayAsOArray(event.target, "conditions");
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
@@ -139,7 +154,6 @@ export default function HandlerForm({id, endpointId}) {
         ? event.target.template.value : null,
       templateType: event.target.templateType.value
         ? event.target.templateType.value : null,
-      conditions,
       skeletonIn,
       skeletonOut,
       mappingIn,
@@ -147,7 +161,7 @@ export default function HandlerForm({id, endpointId}) {
       translationsIn,
       translationsOut
     };
-
+    
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
@@ -156,10 +170,10 @@ export default function HandlerForm({id, endpointId}) {
       setLoadingOverlay(false);
       return;
     }
-
+    
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
-    if (id !== "new") {
+    if (id) {
       url = `${url}/${id}`;
       method = "PUT";
     }
@@ -201,6 +215,22 @@ export default function HandlerForm({id, endpointId}) {
           cardHeader={function () {
             return (
               <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#handlerHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Handler Documentation"
+                    id="handlerHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
@@ -219,7 +249,7 @@ export default function HandlerForm({id, endpointId}) {
                     <Spinner/>
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -254,12 +284,17 @@ export default function HandlerForm({id, endpointId}) {
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
+                          <SelectInputComponent
+                            options={[
+                              {name: "twig", value: "twig"},
+                              {name: "markdown", value: "markdown"},
+                              {name: "restructuredText", value: "restructuredText"}
+                            ]}
                             name={"templateType"}
                             id={"templateTypeInput"}
-                            data={handler && handler.templateType && handler.templateType}
                             nameOverride={"Template Type"}
+                            required={true}
+                            data={handler?.templateType}
                           />
                         </div>
                       </div>
@@ -421,3 +456,4 @@ export default function HandlerForm({id, endpointId}) {
     </>
   );
 }
+export default HandlerForm
