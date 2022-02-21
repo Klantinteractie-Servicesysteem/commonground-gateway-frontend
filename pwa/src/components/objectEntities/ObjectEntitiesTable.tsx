@@ -25,19 +25,22 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
+    setShowSpinner(true);
     if (entityId) {
       handleSetObjectEntities();
       getEntity();
     }
     handleSetDocumentation();
+    setShowSpinner(false);
   }, [API, entityId]);
 
   React.useEffect(() => {
+    setShowSpinner(true);
     entity && getFormIOSchema();
+    setShowSpinner(false);
   }, [API, entity]);
 
   const getFormIOSchema = (objectEntity?: any) => {
-    // setShowSpinner(true);
     if (!objectEntity) {
       API.FormIO.getSchema(entity.endpoint)
         .then((res) => {
@@ -47,59 +50,25 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         .catch((err) => {
           throw new Error("GET form.io schema error: " + err);
         })
-        return;
     }
-    console.log('schema from state: ', formIOSchema)
-    if (formIOSchema && objectEntity && objectEntity.objectValues) {
-      let schemaWithData = formIOSchema;
-      for (let i = 0; i < formIOSchema.components.length; i++) {
-        for (let i = 0; i < objectEntity.objectValues.length; i++) {
-          if (schemaWithData.components[i].key = objectEntity.objectValues[i].attribute.name) {
-            let type = objectEntity.objectValues[i].attribute.type;
-            schemaWithData.components[i].defaultValue = objectEntity.objectValues[i][`${type}Value`];
-          }
-        }
-        // setShowSpinner(false);
-        return schemaWithData;
-      }
-      // setShowSpinner(false);
-    };
   }
 
   const saveObject = id => event => {
+    setShowSpinner(true);
     let body = event.data;
     body.submit = undefined;
 
-    console.log('test');
-    if (!id) {
-      console.log('!id');
-      API.ApiCalls.createObject(entity?.endpoint, body)
-        .catch((err) => {
-          throw new Error("Create object error: " + err);
-        })
-        .finally(() => {
-          // setShowSpinner(false);
-          handleSetObjectEntities();
-        });
-    }
-    if (id) {
-      console.log('id');
-      API.ApiCalls.updateObject(entity?.endpoint, id, body)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          throw new Error("Update object error: " + err);
-        })
-        .finally(() => {
-          // setShowSpinner(false);
-          handleSetObjectEntities();
-        });
-    }
+    API.ApiCalls.createObject(entity?.endpoint, body)
+      .catch((err) => {
+        throw new Error("Create object error: " + err);
+      })
+      .finally(() => {
+        handleSetObjectEntities();
+      });
   };
 
   const getEntity = () => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data);
@@ -108,12 +77,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
       });
   };
 
   const handleSetObjectEntities = () => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
         res?.data?.length > 0 &&
@@ -123,7 +92,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
       });
   };
 

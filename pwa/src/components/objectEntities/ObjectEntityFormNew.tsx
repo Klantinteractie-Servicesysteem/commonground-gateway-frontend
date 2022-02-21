@@ -33,6 +33,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   }, [API, object, entity]);
 
   const getObject = () => {
+    setShowSpinner(true);
     API.ObjectEntity.getOne(objectEntityId)
       .then((res) => {
         setObject(res.data);
@@ -41,12 +42,12 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         throw new Error("GET objectEntity error: " + err);
       })
       .finally(() => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
       });
   };
 
   const getEntity = () => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data);
@@ -55,21 +56,25 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
       });
   };
 
   const getFormIOSchema = () => {
+    setShowSpinner(true);
     API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
         setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
       })
       .catch((err) => {
         throw new Error("GET form.io schema error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
-  const fillFormIOSchema = (schema) => {
+  const fillFormIOSchema = (schema: any) => {
     let schemaWithData = schema;
     for (let i = 0; i < schemaWithData.components.length; i++) {
       for (let i = 0; i < object.objectValues.length; i++) {
@@ -78,9 +83,8 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
           schemaWithData.components[i].defaultValue = object.objectValues[i][`${type}Value`];
         }
       }
-      return schemaWithData;
     }
-    // setShowSpinner(false);
+    return schemaWithData;
   }
 
   const saveObject = (event) => {
@@ -96,7 +100,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
           throw new Error("Create object error: " + err);
         })
         .finally(() => {
-          // setShowSpinner(false);
+          getObject();
         });
     }
     if (objectEntityId) {
@@ -108,7 +112,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
           throw new Error("Update object error: " + err);
         })
         .finally(() => {
-          // setShowSpinner(false);
+          getObject();
         });
     }
   };
@@ -144,7 +148,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
               ) : (
                 formIOSchema &&
                 <Form src={formIOSchema} onSubmit={saveObject} />
-                )}
+              )}
             </div>
           </div>
         )
