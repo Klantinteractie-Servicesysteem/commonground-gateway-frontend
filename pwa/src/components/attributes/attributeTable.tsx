@@ -3,7 +3,7 @@ import {
   Table,
   Spinner,
   Card,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -17,8 +17,8 @@ export default function AttributeTable({ entityId }) {
   const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
 
   React.useEffect(() => {
-    handleSetAttributes()
-    handleSetDocumentation()
+    handleSetAttributes();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -48,7 +48,7 @@ export default function AttributeTable({ entityId }) {
   return (
     <Card
       title={title}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -80,7 +80,7 @@ export default function AttributeTable({ entityId }) {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -91,11 +91,11 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Type",
-                      field: "type",
+                      field: "type"
                     },
                     {
                       field: "id",
@@ -112,8 +112,8 @@ export default function AttributeTable({ entityId }) {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={attributes}
                 />
@@ -122,12 +122,12 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Type",
-                      field: "type",
-                    },
+                      field: "type"
+                    }
                   ]}
                   rows={[]}
                 />

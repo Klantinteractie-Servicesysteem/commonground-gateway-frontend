@@ -1,24 +1,21 @@
 import * as React from "react";
 import {
-  GenericInputComponent,
-  TextareaGroup,
-  Spinner,
-  Card,
-  Alert,
   Accordion,
+  Alert,
+  Card,
+  GenericInputComponent,
   Modal,
+  Spinner,
+  TextareaGroup
 } from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
-import {navigate} from "gatsby-link";
-import {
-  checkValues,
-  removeEmptyObjectValues, retrieveFormArrayAsOArray,
-} from "../utility/inputHandler";
-import FlashMessage from 'react-flash-message';
+import { Link } from "gatsby";
+import { navigate } from "gatsby-link";
+import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
+import FlashMessage from "react-flash-message";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from '../loadingOverlay/loadingOverlay'
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface IApplication {
   name: string,
@@ -33,34 +30,34 @@ interface ApplicationFormProps {
   id?: string,
 }
 
-export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
+export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [alert, setAlert] = React.useState<Record<string, string>>(null);
   const [application, setApplication] = React.useState<IApplication>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
   const title: string = id ? "Edit Application" : "Create Application";
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
 
   React.useEffect(() => {
-    id && handleSetApplications()
-    handleSetDocumentation()
-  }, [API, id])
+    id && handleSetApplications();
+    handleSetDocumentation();
+  }, [API, id]);
 
   const handleSetApplications = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     API.Application.getOne(id)
       .then((res) => {
-        setApplication(res.data)
+        setApplication(res.data);
       })
       .catch((err) => {
-        throw new Error('GET application error: ' + err)
+        throw new Error("GET application error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -87,14 +84,14 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
         ? event.target.secret.value : null,
       resource: event.target.resource.value
         ? event.target.resource.value : null,
-      domains,
+      domains
     };
 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["domains"]])) {
       setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -102,15 +99,15 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
     if (!id) { // unset id means we're creating a new entry
       API.Application.create(body)
         .then(() => {
-          navigate('/applications')
+          navigate("/applications");
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Create application error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create application error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
 
     if (id) { // set id means we're updating a existing entry
@@ -119,12 +116,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
           setApplication(res.data);
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Update application error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Update application error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
   };
 
@@ -133,15 +130,15 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
+          <Alert alertClass={alert.type} body={function() {
+            return (<>{alert.message}</>);
+          }} />
         </FlashMessage>
       }
       <form id="applicationForm" onSubmit={saveApplication}>
         <Card
           title={title}
-          cardHeader={function () {
+          cardHeader={function() {
             return (<>
               <button
                 className="utrecht-link button-no-style"
@@ -161,26 +158,26 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
               </button>
               <Link className="utrecht-link" to={"/applications"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
                 </button>
               </Link>
               <button
                 className="utrecht-button utrecht-button-sm btn-sm btn-success"
                 type="submit"
               >
-                <i className="fas fa-save mr-2"/>Save
+                <i className="fas fa-save mr-2" />Save
               </button>
-            </>)
+            </>);
           }}
-          cardBody={function () {
+          cardBody={function() {
             return (
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner/>
+                    <Spinner />
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -236,7 +233,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                         items={[{
                           title: "Domains *",
                           id: "domainsAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="domains"
@@ -244,20 +241,20 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                                 data={application?.domains}
                               />
                             );
-                          },
+                          }
                         }]}
                       />
                     </div>
                   )}
                 </div>
               </div>
-            )
+            );
           }}
         />
       </form>
     </div>
   );
-}
+};
 
-export default ApplicationForm
+export default ApplicationForm;
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./loadingOverlay.css";
-import {Spinner} from "@conductionnl/nl-design-system/lib";
+import { Spinner } from "@conductionnl/nl-design-system/lib";
 
 interface loadingOverlayProps {
 
@@ -9,9 +9,9 @@ interface loadingOverlayProps {
 const loadingOverlay: React.FC<loadingOverlayProps> = ({}) => {
   return (
     <div className="loadingOverlay">
-        <Spinner />
+      <Spinner />
     </div>
-  )
-}
+  );
+};
 
-export default loadingOverlay
+export default loadingOverlay;

@@ -4,7 +4,7 @@ import {
   Card,
   Spinner,
   Alert,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
@@ -17,12 +17,12 @@ export default function TranslationTable({ id }) {
   const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetDocumentation() // we added this
-  }, [API, id])
+    handleSetDocumentation(); // we added this
+  }, [API, id]);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -37,7 +37,7 @@ export default function TranslationTable({ id }) {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     } else if (isLoggedIn()) {
       getTranslations(context);
@@ -49,8 +49,8 @@ export default function TranslationTable({ id }) {
     fetch(`${context.adminUrl}/translations?translationTable=${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -71,7 +71,7 @@ export default function TranslationTable({ id }) {
         <FlashMessage duration={5000}>
           <Alert
             alertClass={alert.type}
-            body={function () {
+            body={function() {
               return <>{alert.message}</>;
             }}
           />
@@ -79,7 +79,7 @@ export default function TranslationTable({ id }) {
       )}
       <Card
         title={"Translations"}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <div>
               <button
@@ -91,7 +91,7 @@ export default function TranslationTable({ id }) {
                   title="Translation Documentation"
                   id="helpModal"
                   body={() => (
-                    <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}
                 />
                 <i className="fas fa-question mr-1" />
@@ -110,7 +110,7 @@ export default function TranslationTable({ id }) {
             </div>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -121,20 +121,20 @@ export default function TranslationTable({ id }) {
                     columns={[
                       {
                         headerName: "Translation Table",
-                        field: "translationTable",
+                        field: "translationTable"
                       },
                       {
                         headerName: "Translate From",
-                        field: "translateFrom",
+                        field: "translateFrom"
                       },
                       {
                         headerName: "Translate To",
-                        field: "translateTo",
+                        field: "translateTo"
                       },
                       {
                         headerName: "Language",
-                        field: "language",
-                      },
+                        field: "language"
+                      }
                     ]}
                     rows={translations}
                   />
@@ -143,20 +143,20 @@ export default function TranslationTable({ id }) {
                     columns={[
                       {
                         headerName: "Translation Table",
-                        field: "translationTable",
+                        field: "translationTable"
                       },
                       {
                         headerName: "Translate From",
-                        field: "translateFrom",
+                        field: "translateFrom"
                       },
                       {
                         headerName: "Translate To",
-                        field: "translateTo",
+                        field: "translateTo"
                       },
                       {
                         headerName: "Language",
-                        field: "language",
-                      },
+                        field: "language"
+                      }
                     ]}
                     rows={[{ name: "No results found" }]}
                   />

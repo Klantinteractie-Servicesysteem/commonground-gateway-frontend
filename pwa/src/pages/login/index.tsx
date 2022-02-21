@@ -8,32 +8,34 @@ import Particles from "react-tsparticles";
 import ParticlesOptions from "./particles";
 
 const Login: React.FC = () => {
-  const [username, setUsername] = React.useState<string>(null)
-  const [password, setPassword] = React.useState<string>(null)
-  const [error, setError] = React.useState<string>(null)
-  const [loading, setLoading] = React.useState<boolean>(false)
-  const API: APIService = new APIService("")
+  const [username, setUsername] = React.useState<string>(null);
+  const [password, setPassword] = React.useState<string>(null);
+  const [error, setError] = React.useState<string>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const API: APIService = new APIService("");
 
   const handleLogin = (): void => {
-    setLoading(true)
+    setLoading(true);
 
-    const body = {...{username, password}}
+    const body = { ...{ username, password } };
 
     API.Login.login(body)
       .then((res) => {
-        const user = { username: res.data.username }
+        const user = { username: res.data.username };
 
-        setUser(user)
+        setUser(user);
         sessionStorage.setItem("jwt", res.data.jwtToken);
         sessionStorage.setItem("user", JSON.stringify(user));
 
-        navigate('/')
+        navigate("/");
       })
       .catch((err) => {
-        setError(err.response.data.message)
+        setError(err.response.data.message);
       })
-      .finally(() => { setLoading(false) })
-  }
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="login">
@@ -42,17 +44,17 @@ const Login: React.FC = () => {
           fpsLimit: 60,
           particles: {
             color: {
-              value: "#ffffff",
+              value: "#ffffff"
             },
             links: {
               color: "#ffffff",
               distance: 150,
               enable: true,
               opacity: 0.5,
-              width: 1,
+              width: 1
             },
             collisions: {
-              enable: true,
+              enable: true
             },
             move: {
               direction: "none",
@@ -60,27 +62,27 @@ const Login: React.FC = () => {
               outMode: "bounce",
               random: false,
               speed: 2,
-              straight: false,
+              straight: false
             },
             number: {
               density: {
                 enable: true,
-                area: 800,
+                area: 800
               },
-              value: 80,
+              value: 80
             },
             opacity: {
-              value: 0.5,
+              value: 0.5
             },
             shape: {
-              type: "circle",
+              type: "circle"
             },
             size: {
               random: true,
-              value: 5,
-            },
+              value: 5
+            }
           },
-          detectRetina: true,
+          detectRetina: true
         }
       } />
 
@@ -114,7 +116,7 @@ const Login: React.FC = () => {
 
       <Footer layoutClassName="login-footer" />
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

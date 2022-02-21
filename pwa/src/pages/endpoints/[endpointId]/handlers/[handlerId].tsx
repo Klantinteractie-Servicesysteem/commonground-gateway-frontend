@@ -3,8 +3,8 @@ import Layout from "../../../../components/common/layout";
 import HandlerForm from "../../../../components/handlers/handlerForm";
 
 const IndexPage = (props) => {
-  const handlerId: string = props.params.handlerId === "new" ? null : props.params.handlerId
-  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId
+  const handlerId: string = props.params.handlerId === "new" ? null : props.params.handlerId;
+  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
 
   return (
     <Layout title={"Handler properties"} subtext={"Create or edit your properties"}>

@@ -1,7 +1,7 @@
 import * as React from "react";
-import "./dashboard.css"
-import { DashboardCard, DashboardCardSmall } from "./../../components/dashboardCard/DashboardCard"
-import CallHealthQuickview from "./../../components/callHealthQuickview/CallHealthQuickview"
+import "./dashboard.css";
+import { DashboardCard, DashboardCardSmall } from "./../../components/dashboardCard/DashboardCard";
+import CallHealthQuickview from "./../../components/callHealthQuickview/CallHealthQuickview";
 import DashboardLogsTable from "../../components/dashboardLogsTable/DashboardLogsTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
@@ -15,54 +15,58 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 
 const Dashboard: React.FC = () => {
-  const [logs, setLogs] = React.useState(null)
-  const [applicationsCount, setApplicationsCount] = React.useState<number>(0)
-  const [sourcesCount, setSourcesCount] = React.useState<number>(0)
-  const [endpointsCount, setEndpointsCount] = React.useState<number>(0)
-  const API: APIService = React.useContext(APIContext)
+  const [logs, setLogs] = React.useState(null);
+  const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
+  const [sourcesCount, setSourcesCount] = React.useState<number>(0);
+  const [endpointsCount, setEndpointsCount] = React.useState<number>(0);
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    handleSetCounts()
-    handleSetLogs()
-  }, [API])
+    handleSetCounts();
+    handleSetLogs();
+  }, [API]);
 
   const handleSetLogs = (): void => {
     API.Log.getAll()
-      .then((res) => { res.data.length && setLogs(res.data) })
-      .catch((err) => { throw new Error (`GET Logs error: ${err}`) })
-  }
+      .then((res) => {
+        res.data.length && setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET Logs error: ${err}`);
+      });
+  };
 
   const handleSetCounts = (): void => {
     API.Application.getAll()
       .then((res) => {
-        setApplicationsCount(res.data.length)
+        setApplicationsCount(res.data.length);
       })
       .catch((err) => {
-        throw new Error(`GET applications error: ${err}`)
-      })
+        throw new Error(`GET applications error: ${err}`);
+      });
 
     API.Source.getAll()
       .then((res) => {
-        setSourcesCount(res.data.length)
+        setSourcesCount(res.data.length);
       })
       .catch((err) => {
-        throw new Error(`GET sources error: ${err}`)
-      })
+        throw new Error(`GET sources error: ${err}`);
+      });
 
     API.Endpoint.getAll()
       .then((res) => {
-        setEndpointsCount(res.data.length)
+        setEndpointsCount(res.data.length);
       })
       .catch((err) => {
-        throw new Error(`GET endpoints error: ${err}`)
-      })
-  }
+        throw new Error(`GET endpoints error: ${err}`);
+      });
+  };
 
   return (
     <div className="dashboard">
       <div>
         <h3 className="dashboard-dividerTitle">
-            Quick overview
+          Quick overview
         </h3>
         <div className="dashboard-quickOverview">
           <DashboardCard
@@ -130,7 +134,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

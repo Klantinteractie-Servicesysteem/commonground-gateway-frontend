@@ -1,13 +1,13 @@
 import * as React from "react";
-import './footer.css';
+import "./footer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 interface FooterProps {
-  layoutClassName?: string
+  layoutClassName?: string;
 }
 
-const Footer: React.FC<FooterProps> = ({layoutClassName}) => {
+const Footer: React.FC<FooterProps> = ({ layoutClassName }) => {
   return (
     <footer className={`footer ${layoutClassName}`}>
       <div className="container">
@@ -25,7 +25,8 @@ const Footer: React.FC<FooterProps> = ({layoutClassName}) => {
           </li>
 
           <li>
-            <a href="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md" target="_blank">
+            <a href="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md"
+               target="_blank">
               License
             </a>
           </li>
@@ -46,7 +47,7 @@ const Footer: React.FC<FooterProps> = ({layoutClassName}) => {
         </ul>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

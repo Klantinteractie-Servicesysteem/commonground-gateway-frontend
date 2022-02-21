@@ -51,7 +51,7 @@ export const addElement = (
   //create row
   let formGroupRow = createElement("div", [
     "row",
-    key.value.replaceAll(" ", "-"),
+    key.value.replaceAll(" ", "-")
   ]);
 
   //set classNames for elements
@@ -75,7 +75,7 @@ export const addElement = (
     {
       type: "text",
       id: value.value,
-      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`,
+      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`
     },
     value.value
   );
@@ -85,7 +85,7 @@ export const addElement = (
     "col-2",
     "d-flex",
     "mt-auto",
-    "mb-3",
+    "mb-3"
   ]);
   let deleteButton = createElement(
     "button",

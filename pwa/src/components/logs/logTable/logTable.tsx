@@ -4,7 +4,7 @@ import {
   Table,
   Modal,
   Spinner,
-  Card,
+  Card
 } from "@conductionnl/nl-design-system/lib";
 import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
@@ -18,7 +18,7 @@ interface LogTableProps {
   sourceId?: string;
 }
 
-export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
+export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -30,7 +30,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
   }, [API, entityId]);
 
   const handleSetLogs = (): void => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     if (entityId) {
       API.Log.getAllFromEntity(entityId)
@@ -61,7 +61,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
     if (!entityId && !sourceId) {
       API.Log.getAll()
         .then((res) => {
-          res.data.length && setLogs(res.data)
+          res.data.length && setLogs(res.data);
         })
         .catch((err) => {
           throw new Error("GET logs error: " + err);
@@ -86,7 +86,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
     <div className="logTable">
       <Card
         title="Call logs"
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -130,7 +130,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
                                 message={item?.responseStatus}
                               />
                             );
-                          },
+                          }
                         },
                         {
                           headerName: "Type",
@@ -141,15 +141,15 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
                                 {item.type === "in" ? "Incoming" : "Outcoming"}
                               </span>
                             );
-                          },
+                          }
                         },
                         {
                           headerName: "Method",
-                          field: "requestMethod",
+                          field: "requestMethod"
                         },
                         {
                           headerName: "Response time (seconds)",
-                          field: "responseTime",
+                          field: "responseTime"
                         },
                         {
                           field: "id",
@@ -170,8 +170,8 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
                                 </button>
                               </div>
                             );
-                          },
-                        },
+                          }
+                        }
                       ]}
                       rows={logs}
                     />
@@ -180,16 +180,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
                       columns={[
                         {
                           headerName: "Status",
-                          field: "status",
+                          field: "status"
                         },
                         {
                           headerName: "Status Code",
-                          field: "statusCode",
+                          field: "statusCode"
                         },
                         {
                           headerName: "Method",
-                          field: "method",
-                        },
+                          field: "method"
+                        }
                       ]}
                       rows={[{ status: "No results found" }]}
                     />
@@ -202,7 +202,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
       />
 
       {logs !== null &&
-        logs?.map((log) => <LogModal log={log} />
+      logs?.map((log) => <LogModal log={log} />
       )}
     </div>
   );
