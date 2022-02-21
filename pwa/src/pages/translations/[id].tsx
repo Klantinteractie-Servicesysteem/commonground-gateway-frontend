@@ -10,7 +10,7 @@ const IndexPage = (props) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     }
   }, [context]);
@@ -25,12 +25,12 @@ const IndexPage = (props) => {
                 <Tabs
                   items={[
                     { name: "Add", id: "overview", active: true },
-                    { name: "Translations", id: "translations"}
+                    { name: "Translations", id: "translations" }
                   ]}
                 />
               ) : (
                 <Tabs
-                  items={[{name: "Overview", id: "overview", active: true}]}
+                  items={[{ name: "Overview", id: "overview", active: true }]}
                 />
               )}
 
@@ -53,7 +53,7 @@ const IndexPage = (props) => {
               >
                 <br />
 
-               <TranslationTable id={props.params.id}/>
+                <TranslationTable id={props.params.id} />
               </div>
             </div>
           </div>

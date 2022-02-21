@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Layout from "../../components/common/layout";
 import UsersTable from "../../components/users/usersTable";
 
@@ -9,13 +9,13 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <UsersTable/>
+              <UsersTable />
             </div>
           </div>
         </div>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;
