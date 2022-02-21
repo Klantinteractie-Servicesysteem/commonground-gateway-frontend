@@ -1,19 +1,19 @@
 import * as React from "react";
-import {download} from "../utility/DocumentDownload";
+import { download } from "../utility/DocumentDownload";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {Modal} from "@conductionnl/nl-design-system";
+import { Modal } from "@conductionnl/nl-design-system";
 
 export default function ConfigurationsExportButton() {
   const [context, setContext] = React.useState(null);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     }
   }, [context]);
@@ -23,11 +23,11 @@ export default function ConfigurationsExportButton() {
     fetch(`${context.adminUrl}/export/all`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => {
-        response.text().then(function (text) {
+        response.text().then(function(text) {
           download("export.yaml", text, "text/yaml");
         });
       })
@@ -70,10 +70,10 @@ export default function ConfigurationsExportButton() {
           title="Configuration Documentation"
           id="configurationsHelpModal"
           body={() => (
-            <div dangerouslySetInnerHTML={{__html: documentation}}/>
+            <div dangerouslySetInnerHTML={{ __html: documentation }} />
           )}
         />
-        <i className="fas fa-question mr-1"/>
+        <i className="fas fa-question mr-1" />
         <span className="mr-2">Help</span>
       </button>
     </div>

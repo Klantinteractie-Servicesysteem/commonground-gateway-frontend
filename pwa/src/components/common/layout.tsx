@@ -24,11 +24,11 @@ export default function Layout({ children, title = "", subtext = "" }) {
 
   React.useEffect(() => {
     if (!isLoggedIn()) {
-      setAPI(null)
-      return
+      setAPI(null);
+      return;
     }
 
-    const jwt = sessionStorage.getItem("jwt")
+    const jwt = sessionStorage.getItem("jwt");
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
@@ -37,7 +37,7 @@ export default function Layout({ children, title = "", subtext = "" }) {
       <APIProvider value={API}>
         <Helmet
           link={[
-            { rel: "shortcut icon", type: "image/png", href: favicon },
+            { rel: "shortcut icon", type: "image/png", href: favicon }
           ]}
         >
           <title>Gateway Admin Dashboard</title>
@@ -55,5 +55,5 @@ export default function Layout({ children, title = "", subtext = "" }) {
         <WelcomeModal />
       </APIProvider>
     ) : <Login />
-  )
+  );
 }

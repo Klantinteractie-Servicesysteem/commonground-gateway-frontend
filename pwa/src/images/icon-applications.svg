@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28">
-  <g fill="none" fill-rule="evenodd">
-    <rect width="10.174" height="10.174" x="1" y="1" stroke="#FFF" stroke-width="2" rx="1"/>
-    <rect width="10.174" height="10.174" x="1" y="16.826" stroke="#FFF" stroke-width="2" rx="1"/>
-    <rect width="10.174" height="10.174" x="15.609" y="16.826" stroke="#FFF" stroke-width="2" rx="1"/>
-    <rect width="12.174" height="12.174" x="14.609" fill="#FFF" rx="1"/>
-  </g>
+    <g fill="none" fill-rule="evenodd">
+        <rect width="10.174" height="10.174" x="1" y="1" stroke="#FFF" stroke-width="2" rx="1"/>
+        <rect width="10.174" height="10.174" x="1" y="16.826" stroke="#FFF" stroke-width="2" rx="1"/>
+        <rect width="10.174" height="10.174" x="15.609" y="16.826" stroke="#FFF" stroke-width="2" rx="1"/>
+        <rect width="12.174" height="12.174" x="14.609" fill="#FFF" rx="1"/>
+    </g>
 </svg>

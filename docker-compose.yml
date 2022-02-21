@@ -9,7 +9,7 @@ services:
       - php
     ports:
       - "81:80"
-  
+
   php:
     &php
     image: ghcr.io/conductionnl/commonground-gateway-php:cleanup
@@ -26,7 +26,7 @@ services:
       - REDIS_PORT=6379
       - APP_REPRO=example
       - APP_ENV=dev
-      - APP_DEBUG=0 
+      - APP_DEBUG=0
       - APP_CACHE=true
     ports:
       - "82:80"
@@ -58,5 +58,5 @@ services:
     image: redis:4-alpine
 
 volumes:
-  db-data: {}
-  db-mysql: {}
+  db-data: { }
+  db-mysql: { }

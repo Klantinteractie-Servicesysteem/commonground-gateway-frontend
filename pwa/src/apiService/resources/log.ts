@@ -1,21 +1,25 @@
-import { AxiosInstance, AxiosResponse } from "axios"
+import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Log {
-  private _instance: AxiosInstance
+  private _instance: AxiosInstance;
 
-  constructor (_instance: AxiosInstance) {
-    this._instance = _instance
+  constructor(_instance: AxiosInstance) {
+    this._instance = _instance;
   }
 
   public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get('/logs')
-  }
+    return this._instance.get("/logs");
+  };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
-    return this._instance.get('/logs?entity.id=' + entityId)
+    return this._instance.get("/logs?entity.id=" + entityId);
+  };
+
+  public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
+    return this._instance.get('/logs?endpoint.id=' + endpointId)
   }
 
   public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
-    return this._instance.get('/logs?source.id=' + sourceId)
-  }
+    return this._instance.get("/logs?source.id=" + sourceId);
+  };
 }

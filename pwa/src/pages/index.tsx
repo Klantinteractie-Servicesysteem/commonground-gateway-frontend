@@ -17,7 +17,7 @@ const IndexPage = () => {
       {isLoggedIn() && (
         <Dashboard />
       )}
-    </Layout >
+    </Layout>
   );
 };
 

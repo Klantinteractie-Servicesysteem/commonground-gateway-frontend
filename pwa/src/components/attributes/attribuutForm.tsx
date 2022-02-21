@@ -1,12 +1,12 @@
 import * as React from "react";
-import {Link} from "gatsby";
+import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
-import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import {
   GenericInputComponent,
   Checkbox,
@@ -15,10 +15,10 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert, Modal,
+  Alert, Modal
 } from "@conductionnl/nl-design-system/lib";
-import FlashMessage from 'react-flash-message';
-import {navigate} from "gatsby-link";
+import FlashMessage from "react-flash-message";
+import { navigate } from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -29,38 +29,38 @@ interface AttributeFormProps {
   entityId: string,
 }
 
-export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entityId}) => {
+export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entityId }) => {
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
 
   React.useEffect(() => {
     if (attributeId) {
-      handleSetAttributes()
-      handleSetAttribute()
-      handleSetDocumentation()
+      handleSetAttributes();
+      handleSetAttribute();
+      handleSetDocumentation();
     }
-  }, [API])
+  }, [API]);
 
   const handleSetAttribute = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     API.Attribute.getOne(attributeId)
       .then((res) => {
-        setAttribute(res.data)
+        setAttribute(res.data);
       })
       .catch((err) => {
-        throw new Error('GET attribute error: ' + err)
+        throw new Error("GET attribute error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -69,21 +69,21 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       .catch((err) => {
         throw new Error("GET Documentation error: " + err);
       });
-  }
+  };
   const handleSetAttributes = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        console.log(res.data)
-        setAttributes(res.data)
+        console.log(res.data);
+        setAttributes(res.data);
       })
       .catch((err) => {
-        throw new Error('GET attributes error: ' + err)
+        throw new Error("GET attributes error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
+        setShowSpinner(false);
+      });
   };
 
   const saveAttribute = (event) => {
@@ -154,14 +154,14 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       anyOf,
       forbiddenIf,
       requiredIf,
-      objectConfig,
+      objectConfig
     };
-    
+
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["type"]])) {
       setAlert(null);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -169,15 +169,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
     if (!attributeId) { // unset id means we're creating a new entry
       API.Attribute.create(body)
         .then(() => {
-          navigate(`/entities/${entityId}`)
+          navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Create application error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create application error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
 
     if (attributeId) { // set id means we're updating a existing entry
@@ -186,12 +186,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
           setAttribute(res.data);
         })
         .catch((err) => {
-          setAlert({type: 'danger', message: err.message});
-          throw new Error('Update application error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Update application error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
   };
 
@@ -200,15 +200,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
+          <Alert alertClass={alert.type} body={function() {
+            return (<>{alert.message}</>);
+          }} />
         </FlashMessage>
       }
       <form id="attributeForm" onSubmit={saveAttribute}>
         <Card
           title={title}
-          cardHeader={function () {
+          cardHeader={function() {
             return (<>
               <button
                 className="utrecht-link button-no-style"
@@ -228,23 +228,23 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
               </button>
               <Link className="utrecht-link" to={`/entities/${entityId}`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
                 </button>
               </Link>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                <i className="fas fa-save mr-2"/>Save
+                <i className="fas fa-save mr-2" />Save
               </button>
-            </>)
+            </>);
           }}
-          cardBody={function () {
+          cardBody={function() {
             return (
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner/>
+                    <Spinner />
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -258,24 +258,24 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                         <div className="col-6">
                           <SelectInputComponent
                             options={[
-                              {name: "String", value: 'string'},
-                              {name: "Array", value: "array"},
-                              {name: "Integer", value: "integer"},
-                              {name: "Boolean", value: "boolean"},
-                              {name: "Object", value: "object"},
-                              {name: "Date", value: "date"},
-                              {name: "Datetime", value: "datetime"},
-                              {name: "Number", value: "number"},
-                              {name: "Float", value: "float"},
-                              {name: "File", value: "file"}
+                              { name: "String", value: "string" },
+                              { name: "Array", value: "array" },
+                              { name: "Integer", value: "integer" },
+                              { name: "Boolean", value: "boolean" },
+                              { name: "Object", value: "object" },
+                              { name: "Date", value: "date" },
+                              { name: "Datetime", value: "datetime" },
+                              { name: "Number", value: "number" },
+                              { name: "Float", value: "float" },
+                              { name: "File", value: "file" }
                             ]}
                             name={"type"}
                             id={"typeInput"}
                             nameOverride={"Type"}
-                            data={attribute && attribute.type && attribute.type} required/>
+                            data={attribute && attribute.type && attribute.type} required />
                         </div>
                       </div>
-                      <br/>
+                      <br />
                       <div className="row">
                         <div className="col-6">
                           {
@@ -304,7 +304,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                               </>
                             ) : (
                               <SelectInputComponent
-                                options={[{name: "Please create a attribute to use inversedBy", value: null}]}
+                                options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
                                 name={"inversedBy"}
                                 id={"inversedByInput"}
                                 nameOverride={"inversedBy"}
@@ -314,18 +314,18 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                         <div className="col-6">
                           <SelectInputComponent
                             options={[
-                              {name: "Email", value: 'email'},
-                              {name: "Phone", value: 'phone'},
-                              {name: "Country code", value: 'country code'},
-                              {name: "BSN", value: 'bsn'},
-                              {name: "Url", value: 'url'},
-                              {name: "UUID", value: 'uuid'},
-                              {name: "Json", value: 'json'}
+                              { name: "Email", value: "email" },
+                              { name: "Phone", value: "phone" },
+                              { name: "Country code", value: "country code" },
+                              { name: "BSN", value: "bsn" },
+                              { name: "Url", value: "url" },
+                              { name: "UUID", value: "uuid" },
+                              { name: "Json", value: "json" }
                             ]}
                             name={"format"}
                             id={"formatInput"}
                             nameOverride={"Format"}
-                            data={attribute && attribute.format && attribute.format}/>
+                            data={attribute && attribute.format && attribute.format} />
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -335,7 +335,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                             name={"defaultValue"}
                             id={"defaultValueInput"}
                             data={attribute && attribute.defaultValue && attribute.defaultValue}
-                            nameOverride={"Default Value"}/>
+                            nameOverride={"Default Value"} />
                         </div>
                         <div className="col-6">
                           <GenericInputComponent
@@ -386,7 +386,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                               id={"exclusiveMaximumInput"}
                               nameLabel={"Exclusive Maximum"}
                               nameAttribute={"exclusiveMaximum"}
-                              data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum}/>
+                              data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum} />
                           </div>
                         </div>
                       </div>
@@ -638,7 +638,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                               nameLabel={"Write Only"}
                               nameAttribute={"writeOnly"}
                               data={attribute && attribute.writeOnly && attribute.writeOnly}
-                              defaultValue={"true"}/>
+                              defaultValue={"true"} />
                           </div>
                         </div>
                         <div className="col-12 col-sm-6">
@@ -659,109 +659,109 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                         items={[{
                           title: "Object Config",
                           id: "objectConfigAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"objectConfig"}
                                 label={"Object Config"}
                                 data={attribute && attribute.objectConfig ? [{
-                                  key: 'objectConfig',
+                                  key: "objectConfig",
                                   value: attribute.objectConfig
                                 }] : null}
                               />
-                            )
+                            );
                           }
                         },
                           {
                             title: "Enum",
                             id: "enumAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <ElementCreationNew
                                   id={"enum"}
                                   label={"Enum"}
                                   data={attribute?.enum}
                                 />
-                              )
+                              );
                             }
                           },
                           {
                             title: "Required If",
                             id: "requiredIfAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <MultiDimensionalArrayInput
                                   id={"requiredIf"}
                                   label={"Required If"}
                                   data={attribute && attribute.requiredIf ? [{
-                                    key: 'requiredIf',
+                                    key: "requiredIf",
                                     value: attribute.requiredIf
                                   }] : null}
                                 />
-                              )
+                              );
                             }
                           },
                           {
                             title: "Forbidden If",
                             id: "forbiddenIfAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <ElementCreationNew
                                   id={"forbiddenIf"}
                                   label={"Forbidden If"}
                                   data={attribute?.forbiddenIf}
                                 />
-                              )
+                              );
                             }
                           },
                           {
                             title: "All Of",
                             id: "allOfAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <ElementCreationNew
                                   label={"All Of"}
                                   id={"allOf"}
                                   data={attribute?.allOf}
                                 />
-                              )
+                              );
                             }
                           },
                           {
                             title: "Any Of",
                             id: "anyOfAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <ElementCreationNew
                                   label={"Any Of"}
                                   id={"anyOf"}
                                   data={attribute?.anyOf}
                                 />
-                              )
+                              );
                             }
                           },
                           {
                             title: "One Of",
                             id: "oneOfAccordion",
-                            render: function () {
+                            render: function() {
                               return (
                                 <ElementCreationNew
                                   label={"One Of"}
                                   id={"oneOf"}
                                   data={attribute?.oneOf}
-                                />)
+                                />);
                             }
                           }
-                        ]}/>
+                        ]} />
                     </div>
                   )}
                 </div>
               </div>
-            )
-          }}/>
+            );
+          }} />
       </form>
     </div>
   );
-}
+};
 
-export default AttributeForm
+export default AttributeForm;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import './callHealthQuickview.css';
+import "./callHealthQuickview.css";
 
 interface CallHealthQuickviewProps {
   healthyCallsAmount: number,
@@ -7,9 +7,9 @@ interface CallHealthQuickviewProps {
 }
 
 export const CallHealthQuickview: React.FC<CallHealthQuickviewProps> = ({
-  healthyCallsAmount,
-  unhealthyCallsAmount
-}) => {
+                                                                          healthyCallsAmount,
+                                                                          unhealthyCallsAmount
+                                                                        }) => {
   return (
     <div className="callHealthQuickview">
       <div className="callHealthQuickview--healthy">
@@ -20,7 +20,7 @@ export const CallHealthQuickview: React.FC<CallHealthQuickviewProps> = ({
         Unhealthy <span>{unhealthyCallsAmount}</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default CallHealthQuickview;

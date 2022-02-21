@@ -1,4 +1,4 @@
-import {createContext, useContext} from 'react';
+import { createContext, useContext } from "react";
 import * as React from "react";
 
 const UrlContext = createContext(undefined);
@@ -14,8 +14,8 @@ export function UrlContextWrapper({ children }) {
       baseUrl: (window as any).GATSBY_BASE_URL ?? process.env.GATSBY_BASE_URL,
       frontendUrl: (window as any).GATSBY_FRONTEND_URL ?? process.env.GATSBY_FRONTEND_URL,
       organization: (window as any).GATSBY_ORGANIZATION ?? process.env.GATSBY_ORGANIZATION,
-      loginRedirect: (window as any).GATSBY_LOGIN_REDIRECT ?? process.env.GATSBY_LOGIN_REDIRECT,
-    }
+      loginRedirect: (window as any).GATSBY_LOGIN_REDIRECT ?? process.env.GATSBY_LOGIN_REDIRECT
+    };
   }
 
   return (
