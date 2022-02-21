@@ -236,3 +236,24 @@ a:hover {
 .utrecht-button:disabled:hover {
     cursor: not-allowed;
 }
+
+.circle {
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 6px 10px;
+    height: 30px;
+    width: 65px;
+}
+
+.circle.false {
+    color: #818182;
+    background-color: #e6e6e6;
+}
+
+.circle.true {
+    color: #004085;
+    background-color: #cce5ff;
+
+}
