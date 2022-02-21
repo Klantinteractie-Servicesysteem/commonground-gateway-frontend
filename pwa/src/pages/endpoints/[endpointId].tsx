@@ -54,7 +54,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <EndpointForm {...{endpointId}}/>
+                <EndpointForm {...{ endpointId }} />
               </div>
               <div
                 className="tab-pane"
@@ -63,7 +63,7 @@ const IndexPage = (props) => {
                 aria-labelledby="handlers-tab"
               >
                 <br />
-                <HandlersTable {...{endpointId}} />
+                <HandlersTable {...{ endpointId }} />
               </div>
               <div
                 className="tab-pane"

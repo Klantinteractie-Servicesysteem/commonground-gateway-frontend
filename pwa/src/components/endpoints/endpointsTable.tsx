@@ -3,7 +3,7 @@ import {
   Card,
   Table,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -54,7 +54,7 @@ export default function EndpointsTable() {
   return (
     <Card
       title={"Endpoints"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -85,7 +85,7 @@ export default function EndpointsTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -96,11 +96,11 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Path",
-                      field: "path",
+                      field: "path"
                     },
                     {
                       field: "id",
@@ -117,8 +117,8 @@ export default function EndpointsTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={endpoints}
                 />
@@ -127,18 +127,18 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
-                    },
+                      field: "description"
+                    }
                   ]}
                   rows={[
                     {
                       name: "No results found",
-                      description: " ",
-                    },
+                      description: " "
+                    }
                   ]}
                 />
               )}

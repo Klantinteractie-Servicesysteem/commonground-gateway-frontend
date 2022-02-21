@@ -3,7 +3,7 @@ import {
   Table,
   Card,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -54,7 +54,7 @@ export default function EntitiesTable() {
   return (
     <Card
       title={"Object types"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -85,7 +85,7 @@ export default function EntitiesTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -96,22 +96,22 @@ export default function EntitiesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Endpoint",
-                      field: "endpoint",
+                      field: "endpoint"
                     },
                     {
                       headerName: "Path",
-                      field: "route",
+                      field: "route"
                     },
                     {
                       headerName: "Source",
                       field: "gateway",
                       valueFormatter: (item) => {
                         return item ? item.name : "";
-                      },
+                      }
                     },
                     {
                       field: "id",
@@ -128,8 +128,8 @@ export default function EntitiesTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={entities}
                 />
@@ -138,20 +138,20 @@ export default function EntitiesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Endpoint",
-                      field: "endpoint",
+                      field: "endpoint"
                     },
                     {
                       headerName: "Path",
-                      field: "route",
+                      field: "route"
                     },
                     {
                       headerName: "Source",
-                      field: "gateway.name",
-                    },
+                      field: "gateway.name"
+                    }
                   ]}
                   rows={[{ name: "No results found" }]}
                 />

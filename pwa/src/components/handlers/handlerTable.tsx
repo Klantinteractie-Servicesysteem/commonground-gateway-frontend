@@ -3,7 +3,7 @@ import {
   Table,
   Spinner,
   Card,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -12,7 +12,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 
 export default function HandlersTable({ endpointId }) {
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
@@ -54,7 +54,7 @@ export default function HandlersTable({ endpointId }) {
   return (
     <Card
       title="Handlers"
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -86,7 +86,7 @@ export default function HandlersTable({ endpointId }) {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -97,11 +97,11 @@ export default function HandlersTable({ endpointId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
+                      field: "description"
                     },
                     {
                       field: "id",
@@ -117,8 +117,8 @@ export default function HandlersTable({ endpointId }) {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={handlers}
                 />
@@ -127,12 +127,12 @@ export default function HandlersTable({ endpointId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
-                    },
+                      field: "description"
+                    }
                   ]}
                   rows={[]}
                 />
