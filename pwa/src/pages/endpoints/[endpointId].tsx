@@ -6,7 +6,7 @@ import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const endpointId: string = props.params.id === "new" ? null : props.params.id
+  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId
 
   return (
     <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>

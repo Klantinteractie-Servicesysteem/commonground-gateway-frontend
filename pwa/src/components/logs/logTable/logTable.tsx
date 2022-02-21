@@ -15,11 +15,11 @@ import LogModal from "../logModal/LogModal";
 
 interface LogTableProps {
   entityId?: string;
-  endpointId?: string;       
+  endpointId?: string;
   sourceId?: string;
 }
-  
-export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
+
+export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpointId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -32,7 +32,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
 
   const handleSetLogs = () => {
     setShowSpinner(true);
-    
+
      if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
@@ -71,7 +71,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, }) => {
           setShowSpinner(false);
         });
     }
-    
+
     if (!entityId && !sourceId && !endpointId) {
       API.Log.getAll()
         .then((res) => {
