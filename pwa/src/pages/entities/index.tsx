@@ -3,19 +3,16 @@ import EntitiesTable from "../../components/entities/entitiesTable";
 
 const IndexPage = () => {
   return (
-    <>
-      <title>Gateway - Objects</title>
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <div className="page-top-item">
-              <EntitiesTable/>
-            </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <div className="page-top-item">
+            <EntitiesTable />
           </div>
         </div>
-      </main>
-    </>
-  )
-}
+      </div>
+    </main>
+  );
+};
 
 export default IndexPage;

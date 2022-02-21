@@ -1,10 +1,7 @@
 import * as React from "react"
 import ApplicationsTable from "../../components/applications/applicationsTable";
-import {HeaderContext} from "../../context/headerContext";
 
 const IndexPage = () => {
-  const [header, setHeader] = React.useContext(HeaderContext);
-
   return (
     <main>
       <div className="row">
