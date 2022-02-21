@@ -10,7 +10,8 @@ import {
   Accordion,
   Card,
   Spinner,
-  SelectInputComponent
+  SelectInputComponent,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
@@ -30,11 +31,10 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Source" : "Create Source";
-  const [_, setAlert] = React.useContext(AlertContext)
-  const [header, setHeader] = React.useContext(HeaderContext);
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
-    id ? setHeader({title: `${id}`, subText: 'Edit your source here'}) : setHeader({title: `Create`, subText: 'Create your source here'})
+    handleSetDocumentation()
     id && handleSetSource()
   }, [API, id])
 
@@ -53,6 +53,15 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
         setShowSpinner(false)
       })
   }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   const saveSource = (event) => {
     event.preventDefault();
@@ -127,15 +136,47 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
 
 
   return (
-    <form id="dataForm" onSubmit={saveSource}>
-      <Card
-        title={title}
-        cardHeader={function () {
-          return (
-            <>
-              <Link className="utrecht-link" to={"/sources"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+    <>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="dataForm" onSubmit={saveSource}>
+        <Card
+          title={title}
+          cardHeader={function () {
+            return (
+              <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#sourceHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Source Documentation"
+                    id="sourceHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
+                <Link className="utrecht-link" to={"/sources"}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  </button>
+                </Link>
+                <button
+                  className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
+                  type="submit"
+                >
+                  <i className="fas fa-save mr-2"/>Save
                 </button>
               </Link>
               <button

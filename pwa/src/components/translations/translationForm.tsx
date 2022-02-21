@@ -2,14 +2,17 @@ import * as React from "react";
 import {
   GenericInputComponent,
   Card,
+  Alert,
+  Modal,
+  SelectInputComponent
 }
   from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import Spinner from "../common/spinner";
 import {navigate} from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 interface TranslationFormProps {
   id: string,
@@ -21,8 +24,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
-  const [_, setAlert] = React.useContext(AlertContext)
-  const [header, setHeader] = React.useContext(HeaderContext);
+  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     id !== 'new' ? setHeader({title: `${id}`, subText: 'Edit your translation here'}) : setHeader({title: `Create`, subText: 'Create your translation here'})
@@ -67,17 +70,61 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
         setLoadingOverlay(false);
       })
   }
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
-    <form id="dataForm" onSubmit={saveTranslation}>
-      <Card
-        title={title}
-        cardHeader={function () {
-          return (
-            <div>
-              <Link className="utrecht-link" to={"/translations"}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+    <>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="dataForm" onSubmit={saveTranslation}>
+        <Card
+          title={title}
+          cardHeader={function () {
+            return (
+              <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#helpModal"
+                >
+                  <Modal
+                    title="Translation Documentation"
+                    id="helpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                    )}
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
+                <Link className="utrecht-link" to={"/translations"}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  </button>
+                </Link>
+                <button
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                  type="submit"
+                >
+                  <i className="fas fa-save mr-2"/>Save
                 </button>
               </Link>
               <button
@@ -108,15 +155,18 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({id}) => {
                             nameOverride={"Table"}
                             required/>
                         </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"language"}
-                            id={"languageInput"}
-                            data={translation && translation.language && translation.language}
-                            nameOverride={"Language"}/>
+                        <div className="col-6">
+                          <div className="form-group">
+                            <SelectInputComponent
+                              options={[
+                                {name: "Nederlands (NL)", value: 'nl_NL'},
+                                {name: "English (EN)", value: "en_EN"},
+                              ]}
+                              name={"language"}
+                              id={"languageInput"}
+                              nameOverride={"Language"}
+                              data={translation?.language}/>
+                          </div>
                         </div>
                       </div>
                     </div>

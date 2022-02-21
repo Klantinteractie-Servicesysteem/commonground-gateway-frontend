@@ -1,9 +1,12 @@
 import * as React from "react";
 import {
   GenericInputComponent,
+  TextareaGroup,
   Spinner,
   Card,
-  Accordion
+  Alert,
+  Accordion,
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
 import {navigate} from "gatsby-link";
@@ -38,11 +41,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = id ? "Edit Application" : "Create Application";
-  const [header, setHeader] = React.useContext(HeaderContext);
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     id ? setHeader({title: `${id}`, subText: 'Edit your application here'}) : setHeader({title: `Create`, subText: 'Create your application here'})
     id && handleSetApplications()
+    handleSetDocumentation()
   }, [API, id])
 
   const handleSetApplications = () => {
@@ -60,6 +64,15 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
         setShowSpinner(false)
       })
   }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   const saveApplication = (event) => {
     event.preventDefault();
@@ -120,43 +133,78 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
   };
 
   return (
-    <form id="applicationForm" onSubmit={saveApplication}>
-      <Card
-        title={title}
-        cardHeader={function () {
-          return (<>
-            <Link className="utrecht-link" to={"/applications"}>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+    <div>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="applicationForm" onSubmit={saveApplication}>
+        <Card
+          title={title}
+          cardHeader={function () {
+            return (<>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#applicationHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Application Documentation"
+                  id="applicationHelpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
               </button>
-            </Link>
-            <button
-              className="utrecht-button utrecht-button-sm btn-sm btn-success"
-              type="submit"
-            >
-              <i className="fas fa-save mr-2"/>Save
-            </button>
-          </>)
-        }}
-        cardBody={function () {
-          return (
-            <div className="row">
-              <div className="col-12">
-                {showSpinner === true ? (
-                  <Spinner/>
-                ) : (
-                  <div>
-                    {loadingOverlay && <LoadingOverlay/>}
-                    <div className="row">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={application && application.name && application.name}
-                          nameOverride={"Name"}
-                          required
-                        />
+              <Link className="utrecht-link" to={"/applications"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                </button>
+              </Link>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                type="submit"
+              >
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </>)
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner/>
+                  ) : (
+                    <div>
+                      {loadingOverlay && <LoadingOverlay /> }
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            data={application && application.name && application.name}
+                            nameOverride={"Name"}
+                            required
+                          />
+                        </div>
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"resource"}
+                            id={"resourceInput"}
+                            data={application && application.resource && application.resource}
+                            nameOverride={"Resource"}
+                          />
+                        </div>
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
@@ -167,16 +215,14 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({id}) => {
                           nameOverride={"Description"}
                         />
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"public"}
-                          id={"publicInput"}
-                          data={application && application.public && application.public}
-                          nameOverride={"Public"}
-                        />
+                      <div className="row">
+                        <div className="col-12">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={application?.description}
+                          />
+                        </div>
                       </div>
                       <div className="col-6">
                         <GenericInputComponent

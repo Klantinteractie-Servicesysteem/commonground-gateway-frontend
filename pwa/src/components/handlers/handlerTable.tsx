@@ -1,68 +1,76 @@
 import * as React from "react";
-import {Table, Spinner, Card} from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
-import {Link} from "gatsby";
+import {
+  Table,
+  Spinner,
+  Card,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
+import { Link } from "gatsby";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
-export default function HandlerTable({id}) {
+export default function HandlersTable({ endpointId }) {
+  const [documentation, setDocumentation] = React.useState<string>(null)
   const [handlers, setHandlers] = React.useState(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
+  const API: APIService = React.useContext(APIContext)
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else {
-      if (isLoggedIn()) {
-        getHandlers();
-      }
-    }
-  }, [context]);
+    handleSetHandlers()
+    handleSetDocumentation()
+  }, [API]);
 
-  const getHandlers = () => {
+  const handleSetHandlers = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers?endpoint.id=${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
-          setHandlers(data["hydra:member"]);
-        }
+    API.Handler.getAllFromEndpoint(endpointId)
+      .then((res) => {
+        setHandlers(res.data);
       })
-      .catch((error) => {
+      .catch((err) => {
+        throw new Error("GET handler from endpoint error: " + err);
+      })
+      .finally(() => {
         setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert({type: 'danger', message: error.message});
       });
+  };
 
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
   };
 
   return (
     <Card
-      title={"Handlers"}
+      title="Handlers"
       cardHeader={function () {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#handlerHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
-              <i className="fas fa-question mr-1"/>
+              <Modal
+                title="Handler Documentation"
+                id="handlerHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
+              <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getHandlers}>
-              <i className="fas fa-sync-alt mr-1"/>
+            <a className="utrecht-link" onClick={handleSetHandlers}>
+              <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/handlers/new/${id}`}>
+            <Link to={`/endpoints/${endpointId}/handlers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2"/>
                 Create
@@ -93,7 +101,9 @@ export default function HandlerTable({id}) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link to={`/handlers/${item.id}/${id}`}>
+                          <Link 
+                            className="utrecht-link d-flex justify-content-end" 
+                            to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>
                               Edit

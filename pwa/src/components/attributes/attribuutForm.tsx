@@ -11,9 +11,11 @@ import {
   GenericInputComponent,
   Checkbox,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
+  Alert, Modal,
 } from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
@@ -35,14 +37,14 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
-  const [_, setAlert] = React.useContext(AlertContext)
-  const [header, setHeader] = React.useContext(HeaderContext);
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     attributeId ? setHeader({title: `${attributeId}`, subText: 'Edit your attribute here'}) : setHeader({title: `Create`, subText: 'Create your attribute here'})
     if (attributeId) {
       handleSetAttributes()
       handleSetAttribute()
+      handleSetDocumentation()
     }
   }, [API])
 
@@ -61,12 +63,21 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
         setShowSpinner(false)
       })
   }
-
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  }
   const handleSetAttributes = () => {
     setShowSpinner(true)
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
+        console.log(res.data)
         setAttributes(res.data)
       })
       .catch((err) => {
@@ -76,7 +87,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       .finally(() => {
         setShowSpinner(false)
       })
-  }
+  };
 
   const saveAttribute = (event) => {
     event.preventDefault();
@@ -110,8 +121,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       deprecated: event.target.deprecated.checked,
       defaultValue: event.target.defaultValue.value
         ? event.target.defaultValue.value : null,
-      fileType: event.target.fileType.value
-        ? event.target.fileType.value : null,
+      fileTypes: [event.target.fileTypes.value] ?? null,
       example: event.target.example.value
         ? event.target.example.value : null,
       maxFileSize: event.target.maxFileSize.value
@@ -140,8 +150,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
         ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value
-        ? parseInt(event.target.maxProperties.value) : null,
+      maxProperties: event.target.maxProperties.value ?? null,
       attributeEnum,
       allOf,
       oneOf,
@@ -150,7 +159,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
       requiredIf,
       objectConfig,
     };
-
+    
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["type"]])) {
@@ -191,70 +200,137 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
   };
 
   return (
-    <form id="attributeForm" onSubmit={saveAttribute}>
-      <Card
-        title={title}
-        cardHeader={function () {
-          return (<>
-            <Link className="utrecht-link" to={`/entities/${entityId}`}>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+    <div>
+      {
+        alert !== null &&
+        <FlashMessage duration={5000}>
+          <Alert alertClass={alert.type} body={function () {
+            return (<>{alert.message}</>)
+          }}/>
+        </FlashMessage>
+      }
+      <form id="attributeForm" onSubmit={saveAttribute}>
+        <Card
+          title={title}
+          cardHeader={function () {
+            return (<>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#attributeHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Attribute Documentation"
+                  id="attributeHelpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
               </button>
-            </Link>
-            <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-              <i className="fas fa-save mr-2"/>Save
-            </button>
-          </>)
-        }}
-        cardBody={function () {
-          return (
-            <div className="row">
-              <div className="col-12">
-                {showSpinner === true ? (
-                  <Spinner/>
-                ) : (
-                  <div>
-                    {loadingOverlay && <LoadingOverlay/>}
-                    <div className="row">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={attribute && attribute.name && attribute.name}
-                          nameOverride={"Name"} required
-                        />
+              <Link className="utrecht-link" to={`/entities/${entityId}`}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                </button>
+              </Link>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                <i className="fas fa-save mr-2"/>Save
+              </button>
+            </>)
+          }}
+          cardBody={function () {
+            return (
+              <div className="row">
+                <div className="col-12">
+                  {showSpinner === true ? (
+                    <Spinner/>
+                  ) : (
+                    <div>
+                      {loadingOverlay && <LoadingOverlay /> }
+                      <div className="row">
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            data={attribute && attribute.name && attribute.name}
+                            nameOverride={"Name"} required
+                          />
+                        </div>
+                        <div className="col-6">
+                          <SelectInputComponent
+                            options={[
+                              {name: "String", value: 'string'},
+                              {name: "Array", value: "array"},
+                              {name: "Integer", value: "integer"},
+                              {name: "Boolean", value: "boolean"},
+                              {name: "Object", value: "object"},
+                              {name: "Date", value: "date"},
+                              {name: "Datetime", value: "datetime"},
+                              {name: "Number", value: "number"},
+                              {name: "Float", value: "float"},
+                              {name: "File", value: "file"}
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            data={attribute && attribute.type && attribute.type} required/>
+                        </div>
                       </div>
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"description"}
-                          id={"descriptionInput"}
-                          data={attribute && attribute.description && attribute.description}
-                          nameOverride={"Description"}
-                        />
-                      </div>
-                    </div>
-                    <br/>
-                    <div className="row">
-                      <div className="col-6">
-                        <SelectInputComponent
-                          options={[
-                            {name: "String", value: 'string'},
-                            {name: "Array", value: "array"},
-                            {name: "Integer", value: "integer"},
-                            {name: "Boolean", value: "boolean"},
-                            {name: "Object", value: "object"},
-                            {name: "Date", value: "date"},
-                            {name: "Datetime", value: "datetime"},
-                            {name: "Number", value: "number"},
-                            {name: "Float", value: "float"},
-                            {name: "File", value: "file"}
-                          ]}
-                          name={"type"}
-                          id={"typeInput"}
-                          nameOverride={"Type"}
-                          data={attribute && attribute.type && attribute.type} required/>
+                      <br/>
+                      <div className="row">
+                        <div className="col-6">
+                          {
+                            attributes !== null && attributes.length > 0 ? (
+                              <>
+                                {attribute !== null &&
+                                attribute.inversedBy !== undefined &&
+                                attribute.inversedBy !== null ? (
+                                  <SelectInputComponent
+                                    options={attributes}
+                                    data={attribute.inversedBy.name}
+                                    name={"inversedBy"}
+                                    id={"inversedByInput"}
+                                    nameOverride={"inversedBy"}
+                                    value={"/admin/attributes/"}
+                                  />
+                                ) : (
+                                  <SelectInputComponent
+                                    options={attributes}
+                                    name={"inversedBy"}
+                                    id={"inversedByInput"}
+                                    nameOverride={"inversedBy"}
+                                    value={"/admin/attributes/"}
+                                  />
+                                )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                options={[{name: "Please create a attribute to use inversedBy", value: null}]}
+                                name={"inversedBy"}
+                                id={"inversedByInput"}
+                                nameOverride={"inversedBy"}
+                              />
+                            )}
+                        </div>
+                        <div className="col-6">
+                          <SelectInputComponent
+                            options={[
+                              {name: "Email", value: 'email'},
+                              {name: "Phone", value: 'phone'},
+                              {name: "Country code", value: 'country code'},
+                              {name: "BSN", value: 'bsn'},
+                              {name: "Url", value: 'url'},
+                              {name: "UUID", value: 'uuid'},
+                              {name: "Json", value: 'json'}
+                            ]}
+                            name={"format"}
+                            id={"formatInput"}
+                            nameOverride={"Format"}
+                            data={attribute && attribute.format && attribute.format}/>
+                        </div>
                       </div>
                       <div className="col-6">
                         <SelectInputComponent
@@ -589,16 +665,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                             defaultValue={"true"}
                           />
                         </div>
-                      </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"readOnlyInput"}
-                            nameLabel={"Read Only"}
-                            nameAttribute={"readOnly"}
-                            data={attribute && attribute.readOnly && attribute.readOnly}
-                            defaultValue={"true"}
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"fileTypes"}
+                            id={"fileTypesInput"}
+                            data={attribute && attribute.fileTypes && attribute.fileTypes}
+                            nameOverride={"File Types"}
                           />
                         </div>
                       </div>
@@ -613,16 +686,26 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entity
                             defaultValue={"true"}/>
                         </div>
                       </div>
-                      <div className="col-12 col-sm-6">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"deprecatedInput"}
-                            nameLabel={"Deprecated"}
-                            nameAttribute={"deprecated"}
-                            data={attribute && attribute.deprecated && attribute.deprecated}
-                            defaultValue={"true"}
+                      <div className="row">
+                        <div className="col-12">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={attribute?.description}
                           />
+                        </div>
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col-12 col-sm-6 ">
+                          <div className="form-check">
+                            <Checkbox
+                              type={"checkbox"}
+                              id={"inversedByInput"}
+                              nameLabel={"Inversed By"}
+                              nameAttribute={"inversedBy"}
+                              data={attribute && attribute.inversedBy && attribute.inversedBy}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -12,6 +12,8 @@
   },
   "include": [
     "src/custom.d.ts",
-    "src/components"
-  ] 
+    "src/components",
+    "src/pages",
+    "src/templates"
+  ]
 }
