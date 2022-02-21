@@ -1,8 +1,19 @@
 import * as React from "react";
 import Spinner from "../common/spinner";
-import {GenericInputComponent, Accordion, SelectInputComponent, Alert, Card} from "@conductionnl/nl-design-system/lib";
+import {
+  GenericInputComponent,
+  Accordion,
+  SelectInputComponent,
+  Alert,
+  Card,
+  Modal,
+} from "@conductionnl/nl-design-system/lib";
 import {Link} from "gatsby";
-import {checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray} from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray
+} from "../utility/inputHandler";
 import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew"
 import APIService from "../../apiService/apiService";
@@ -11,29 +22,30 @@ import FlashMessage from 'react-flash-message';
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 interface ObjectEntityFormProps {
-  objectEntityId: string,
+  objectId: string,
   entityId: string,
 }
 
-export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityId, entityId}) => {
+export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectId, entityId}) => {
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = objectEntityId ? "Edit Entity objects" : "Create  objects";
-
+  const title: string = objectId ? "Edit object" : "Create object";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
-    objectEntityId && handleSetEntity_object()
+    objectId && handleSetEntity_object()
     handleSetApplications()
-  }, [API, objectEntityId])
+    handleSetDocumentation()
+  }, [API, objectId])
 
   const handleSetEntity_object = () => {
     setShowSpinner(true)
 
-    API.ObjectEntity.getOne(objectEntityId)
+    API.ObjectEntity.getOne(objectId)
       .then((res) => {
         setObjectEntity(res.data)
       })
@@ -44,7 +56,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
         setShowSpinner(false)
       })
   }
-
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
@@ -54,6 +65,15 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
         throw new Error('GET applications error: ' + err)
       })
   }
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
@@ -89,7 +109,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
       return;
     }
 
-    if (!objectEntityId) { // unset id means we're creating a new entry
+    if (!objectId) { // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
           navigate(`/entities/${entityId}`)
@@ -104,7 +124,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
     }
 
     if (objectEntity) { // set id means we're updating a existing entry
-      API.ObjectEntity.update(body, objectEntityId)
+      API.ObjectEntity.update(body, objectId)
         .then((res) => {
           setObjectEntity(res.data)
         })
@@ -134,6 +154,22 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
           cardHeader={function () {
             return (
               <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ObjectEntityHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Entity_object Documentation"
+                    id="ObjectEntityHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={`/entities/${entityId}`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>
@@ -159,7 +195,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                     <Spinner/>
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <div className="form-group">
@@ -217,7 +253,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({objectEntityI
                                     name: "Please wait, gettings applications from the Gateway...",
                                     value: "Please wait, gettings applications from the Gateway..."
                                   }]}
-                                  name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
+                                  name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled/>
                               )}
                           </div>
                         </div>

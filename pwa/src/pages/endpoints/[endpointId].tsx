@@ -2,19 +2,11 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import EndpointForm from "../../components/endpoints/endpointForm";
-import HandlerTable from "../../components/handlers/handlerTable";
+import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
-const IndexPage = (props) => {
-  const [context, setContext] = React.useState(null);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    }
-  }, [context]);
+const IndexPage = (props) => {  
+  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
 
   return (
     <Layout title={"Endpoints"} subtext={"Create or modify your endpoint"}>
@@ -54,7 +46,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <EndpointForm id={props.params.id}/>
+                <EndpointForm {...{endpointId}}/>
               </div>
               <div
                 className="tab-pane"
@@ -63,7 +55,7 @@ const IndexPage = (props) => {
                 aria-labelledby="handlers-tab"
               >
                 <br />
-                <HandlerTable id={props.params.id} />
+                <HandlersTable {...{endpointId}} />
               </div>
               <div
                 className="tab-pane"
@@ -72,7 +64,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable id={props.params.id} query={'endpoint.id'}/>
+                <LogTable/>
               </div>
             </div>
           </div>
