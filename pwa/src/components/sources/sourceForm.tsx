@@ -39,8 +39,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     handleSetDocumentation();
     id && handleSetSource();
     setHeader({
-      title: "Sources",
-      subText: "Manage your sources here"
+      title: "Source",
+      subText: "Manage your source here"
     });
   }, [API, id]);
 

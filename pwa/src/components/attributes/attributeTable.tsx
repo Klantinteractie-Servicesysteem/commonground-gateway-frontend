@@ -17,10 +17,13 @@ export default function AttributeTable({ entityId }) {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetAttributes()
     handleSetDocumentation()
+    setHeader({title: 'Attributes', subText: 'An overview of your attribute objects'});
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -30,6 +33,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
@@ -43,6 +47,7 @@ export default function AttributeTable({ entityId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };

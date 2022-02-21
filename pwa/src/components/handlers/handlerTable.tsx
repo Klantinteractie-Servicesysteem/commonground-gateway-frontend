@@ -8,16 +8,21 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null)
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetHandlers()
     handleSetDocumentation()
+    setHeader({title: 'Handlers', subText: 'An overview of your handler objects'});
   }, [API]);
 
   const handleSetHandlers = () => {
@@ -27,6 +32,7 @@ export default function HandlersTable({ endpointId }) {
         setHandlers(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET handler from endpoint error: " + err);
       })
       .finally(() => {
@@ -40,6 +46,7 @@ export default function HandlersTable({ endpointId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -101,8 +108,8 @@ export default function HandlersTable({ endpointId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link 
-                            className="utrecht-link d-flex justify-content-end" 
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
                             to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1"/>

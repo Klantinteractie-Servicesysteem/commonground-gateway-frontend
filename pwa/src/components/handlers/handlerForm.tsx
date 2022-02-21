@@ -1,10 +1,10 @@
 import * as React from "react";
-import {Link} from "gatsby";
+import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -13,21 +13,25 @@ import {
   Spinner,
   Card,
   Alert,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
-import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
+import { isLoggedIn } from "../../services/auth";
+import FlashMessage from "react-flash-message";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
-import {navigate} from "gatsby-link";
+import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 interface HandlerFormProps {
   id: string,
   endpointId: string,
 }
-export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
+
+export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -35,14 +39,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = id ? "Edit Handler" : "Create Handler";
-  const API: APIService = React.useContext(APIContext)
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const API: APIService = React.useContext(APIContext);
+  const [documentation, setDocumentation] = React.useState<string>(null);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    id !== 'new' ? setHeader({title: `${id}`, subText: 'Edit your handler here'}) : setHeader({title: `Create`, subText: 'Create your handler here'})
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     } else if (isLoggedIn()) {
       if (id) {
@@ -50,6 +55,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       }
       getEntities();
       getTableNames();
+      setHeader({
+        title: "Handler",
+        subText: "Manage your handler here"
+      });
     }
   }, [context]);
 
@@ -59,8 +68,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -69,8 +78,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       })
       .catch((error) => {
         setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
 
@@ -78,18 +87,18 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
     fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data['hydra:member'] !== undefined && data['hydra:member'].length > 0) {
+        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
           setEntities(data["hydra:member"]);
         }
       })
       .catch((error) => {
-        console.log("Error:", error);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
 
@@ -97,17 +106,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
-        const convertedArray = data['results'].map((value, idx) => ({id: idx, name: value, value: value}));
-        setTableNames(convertedArray)
+        const convertedArray = data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
+        setTableNames(convertedArray);
       })
       .catch((error) => {
-        console.log("Error:", error);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
   React.useEffect(() => {
@@ -157,15 +166,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       translationsIn,
       translationsOut
     };
-    
+
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
-      setAlert({type: 'danger', message: 'Required fields are empty'});
+      setAlert(null);
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
-    
+
     let url = `${context.adminUrl}/handlers`;
     let method = "POST";
     if (id) {
@@ -176,128 +186,87 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
     fetch(url, {
       method: method,
       credentials: "include",
-      headers: {"Content-Type": "application/json", 'Authorization': 'Bearer ' + sessionStorage.getItem('jwt')},
-      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sessionStorage.getItem("jwt") },
+      body: JSON.stringify(body)
     })
       .then((response) => response.json())
       .then((data) => {
-        setHandler(data)
-        method === 'POST' && navigate(`/endpoints/${endpointId}`) && setAlert({
-          message: 'Saved handler',
-          type: 'success'
-        })
-        setAlert({message: 'Updated handler', type: 'success'})
+        setHandler(data);
+        endpointId && navigate(`/endpoints/${endpointId}`);
       })
       .catch((error) => {
-        console.log("Error:", error);
-        setAlert({type: 'danger', message: error.message});
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       })
       .finally(() => {
         setLoadingOverlay(false);
-      })
+      });
   };
 
   return (
-    <>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      }
-      <form id="handlerForm" onSubmit={saveHandler}>
-        <Card
-          title={title}
-          cardHeader={function () {
-            return (
-              <>
-                <button
-                  className="utrecht-link button-no-style"
-                  data-bs-toggle="modal"
-                  data-bs-target="#handlerHelpModal"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Modal
-                    title="Handler Documentation"
-                    id="handlerHelpModal"
-                    body={() => (
-                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                    )}
-                  />
-                  <i className="fas fa-question mr-1" />
-                  <span className="mr-2">Help</span>
+    <form id="handlerForm" onSubmit={saveHandler}>
+      <Card
+        title={title}
+        cardHeader={function() {
+          return (
+            <>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#handlerHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Handler Documentation"
+                  id="handlerHelpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
+              <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
                 </button>
-                <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                  </button>
-                </Link>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                  <i className="fas fa-save mr-2"/>Save
-                </button>
-              </>)
-          }}
-          cardBody={function () {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner/>
-                  ) : (
-                    <>
-                      {loadingOverlay && <LoadingOverlay/>}
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={handler && handler.name && handler.name}
-                            nameOverride={"Name"}
-                            required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={handler && handler.description && handler.description}
-                            nameOverride={"Description"}
-                          />
-                        </div>
+              </Link>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
+                <i className="fas fa-save mr-2" />Save
+              </button>
+            </>);
+        }}
+        cardBody={function() {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    {loadingOverlay && <LoadingOverlay />}
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={handler && handler.name && handler.name}
+                          nameOverride={"Name"}
+                          required
+                        />
                       </div>
-                      <br/>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"number"}
-                            name={"sequence"}
-                            id={"sequenceInput"}
-                            data={handler && handler.sequence && handler.sequence}
-                            nameOverride={"Sequence"}
-                            required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <SelectInputComponent
-                            options={[
-                              {name: "twig", value: "twig"},
-                              {name: "markdown", value: "markdown"},
-                              {name: "restructuredText", value: "restructuredText"}
-                            ]}
-                            name={"templateType"}
-                            id={"templateTypeInput"}
-                            nameOverride={"Template Type"}
-                            required={true}
-                            data={handler?.templateType}
-                          />
-                        </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"description"}
+                          id={"descriptionInput"}
+                          data={handler && handler.description && handler.description}
+                          nameOverride={"Description"}
+                        />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -310,16 +279,21 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
                         />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
+                        <SelectInputComponent
+                          options={[
+                            { name: "twig", value: "twig" },
+                            { name: "markdown", value: "markdown" },
+                            { name: "restructuredText", value: "restructuredText" }
+                          ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
-                          data={handler && handler.templateType && handler.templateType}
                           nameOverride={"Template Type"}
+                          required={true}
+                          data={handler?.templateType}
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -341,20 +315,20 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
                                     options={entities}
                                     data={handler.entity}
                                     name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                    value={"/admin/entities/"}/>
+                                    value={"/admin/entities/"} />
                                 )
                                 : (
                                   <SelectInputComponent
                                     options={entities}
                                     name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                    value={"/admin/entities/"}/>
+                                    value={"/admin/entities/"} />
                                 )}
                             </div>
                           ) : (
                             <SelectInputComponent
                               options={[]}
                               name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                              value={"/admin/entities/"}/>
+                              value={"/admin/entities/"} />
                           )
                         }
                       </div>
@@ -365,20 +339,20 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
                         {
                           title: "Conditions *",
                           id: "conditionsAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="conditions"
                                 label="Conditions"
                                 data={handler?.conditions}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Translations In",
                           id: "translationsInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="translationsIn"
@@ -388,13 +362,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
                                 selectName={"translationIn"}
                                 options={tableNames}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Translations Out",
                           id: "translationsOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="translationsOut"
@@ -404,68 +378,68 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
                                 selectName={"translationOut"}
                                 options={tableNames}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Mapping In",
                           id: "mappingInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
                                 label={"Mapping In"}
                                 data={handler && handler.mappingIn ? [{
-                                  key: 'mappingIn',
+                                  key: "mappingIn",
                                   value: handler.mappingIn
                                 }] : null}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
                                 label={"Mapping Out"}
                                 data={handler && handler.mappingOut ? [{
-                                  key: 'mappingOut',
+                                  key: "mappingOut",
                                   value: `${handler.mappingOut}`
                                 }] : null}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="skeletonIn"
                                 label="Skeleton In"
                                 data={handler?.skeletonIn}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Skeleton Out",
                           id: "skeletonOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="skeletonOut"
                                 label="Skeleton Out"
                                 data={handler?.skeletonOut}
                               />
-                            )
+                            );
                           }
                         }
-                      ]}/>
+                      ]} />
                   </>
                 )}
               </div>
@@ -475,5 +449,5 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({id, endpointId}) => {
       />
     </form>
   );
-}
-export default HandlerForm
+};
+export default HandlerForm;
