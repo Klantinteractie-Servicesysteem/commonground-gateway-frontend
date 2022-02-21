@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="28" viewBox="0 0 30 28">
-  <g fill="none" fill-rule="evenodd" transform="matrix(-1 0 0 1 29 0)">
-    <rect width="8.275" height="8.275" x="18.725" y="1" stroke="#FFF" stroke-width="2" rx="1"/>
-    <rect width="8.275" height="8.275" x="1" y="18.725" stroke="#FFF" stroke-width="2" rx="1"/>
-    <line x1="9.706" x2="18.147" y1="18.147" y2="9.706" stroke="#FFF" stroke-linecap="square" stroke-width="3"/>
-    <rect width="10.275" height="10.275" x=".275" fill="#FFF" rx="1" transform="matrix(-1 0 0 1 10.826 0)"/>
-    <rect width="8.275" height="8.275" x="19" y="18.725" stroke="#FFF" stroke-width="2" rx="1" transform="matrix(-1 0 0 1 46.275 0)"/>
-    <line x1="10.138" x2="18.578" y1="18.147" y2="9.706" stroke="#FFF" stroke-linecap="square" stroke-width="3" transform="matrix(-1 0 0 1 28.716 0)"/>
-  </g>
+    <g fill="none" fill-rule="evenodd" transform="matrix(-1 0 0 1 29 0)">
+        <rect width="8.275" height="8.275" x="18.725" y="1" stroke="#FFF" stroke-width="2" rx="1"/>
+        <rect width="8.275" height="8.275" x="1" y="18.725" stroke="#FFF" stroke-width="2" rx="1"/>
+        <line x1="9.706" x2="18.147" y1="18.147" y2="9.706" stroke="#FFF" stroke-linecap="square" stroke-width="3"/>
+        <rect width="10.275" height="10.275" x=".275" fill="#FFF" rx="1" transform="matrix(-1 0 0 1 10.826 0)"/>
+        <rect width="8.275" height="8.275" x="19" y="18.725" stroke="#FFF" stroke-width="2" rx="1"
+              transform="matrix(-1 0 0 1 46.275 0)"/>
+        <line x1="10.138" x2="18.578" y1="18.147" y2="9.706" stroke="#FFF" stroke-linecap="square" stroke-width="3"
+              transform="matrix(-1 0 0 1 28.716 0)"/>
+    </g>
 </svg>

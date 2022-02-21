@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Layout from "../../components/common/layout";
 import ConfigurationsExportButton from "../../components/configurationsExportButton/ConfigurationsExportButton";
 
@@ -16,7 +16,7 @@ const IndexPage = () => {
         </div>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;

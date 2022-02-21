@@ -1,9 +1,9 @@
 import * as React from "react";
-import './codeBlock.css';
+import "./codeBlock.css";
 
 interface CodeBlockProps {
   code: any,
-  language: 'json' | 'xml' 
+  language: "json" | "xml"
 }
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
@@ -15,5 +15,5 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
       </code>
     </pre>
   );
-}
+};
 export default CodeBlock;

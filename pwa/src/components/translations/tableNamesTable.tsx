@@ -4,7 +4,7 @@ import {
   Card,
   Spinner,
   Alert,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
@@ -23,7 +23,7 @@ export default function TableNamesTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     } else if (isLoggedIn()) {
       getTranslations(context);
@@ -35,14 +35,14 @@ export default function TableNamesTable() {
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
         // convert array to array objects
         const convertedArray = data["results"].map((value) => ({
-          name: value,
+          name: value
         }));
         setShowSpinner(false);
         setTableNames(convertedArray);
@@ -75,7 +75,7 @@ export default function TableNamesTable() {
         <FlashMessage duration={5000}>
           <Alert
             alertClass={alert.type}
-            body={function () {
+            body={function() {
               return <>{alert.message}</>;
             }}
           />
@@ -83,7 +83,7 @@ export default function TableNamesTable() {
       )}
       <Card
         title={"Translations"}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -114,7 +114,7 @@ export default function TableNamesTable() {
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -125,7 +125,7 @@ export default function TableNamesTable() {
                     columns={[
                       {
                         headerName: "Tables",
-                        field: "name",
+                        field: "name"
                       },
                       {
                         field: "name",
@@ -142,8 +142,8 @@ export default function TableNamesTable() {
                               </button>
                             </Link>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                     rows={tableNames}
                   />
@@ -152,8 +152,8 @@ export default function TableNamesTable() {
                     columns={[
                       {
                         headerName: "Tables",
-                        field: "name",
-                      },
+                        field: "name"
+                      }
                     ]}
                     rows={[{ name: "No results found" }]}
                   />

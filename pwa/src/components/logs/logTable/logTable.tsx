@@ -4,7 +4,7 @@ import {
   Table,
   Modal,
   Spinner,
-  Card,
+  Card
 } from "@conductionnl/nl-design-system/lib";
 import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
@@ -75,7 +75,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     if (!entityId && !sourceId && !endpointId) {
       API.Log.getAll()
         .then((res) => {
-          res.data.length && setLogs(res.data)
+          res.data.length && setLogs(res.data);
         })
         .catch((err) => {
           throw new Error("GET logs error: " + err);
@@ -100,7 +100,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     <div className="logTable">
       <Card
         title="Call logs"
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -144,7 +144,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                 message={item?.responseStatus}
                               />
                             );
-                          },
+                          }
                         },
                         {
                           headerName: "Type",
@@ -155,15 +155,15 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                 {item.type === "in" ? "Incoming" : "Outcoming"}
                               </span>
                             );
-                          },
+                          }
                         },
                         {
                           headerName: "Method",
-                          field: "requestMethod",
+                          field: "requestMethod"
                         },
                         {
                           headerName: "Response time (seconds)",
-                          field: "responseTime",
+                          field: "responseTime"
                         },
                         {
                           field: "id",
@@ -184,8 +184,8 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                 </button>
                               </div>
                             );
-                          },
-                        },
+                          }
+                        }
                       ]}
                       rows={logs}
                     />
@@ -194,16 +194,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                       columns={[
                         {
                           headerName: "Status",
-                          field: "status",
+                          field: "status"
                         },
                         {
                           headerName: "Status Code",
-                          field: "statusCode",
+                          field: "statusCode"
                         },
                         {
                           headerName: "Method",
-                          field: "method",
-                        },
+                          field: "method"
+                        }
                       ]}
                       rows={[{ status: "No results found" }]}
                     />
@@ -215,7 +215,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
         }}
       />
       {logs !== null &&
-        logs?.map((log) => <LogModal log={log} />
+      logs?.map((log) => <LogModal log={log} />
       )}
     </div>
   );

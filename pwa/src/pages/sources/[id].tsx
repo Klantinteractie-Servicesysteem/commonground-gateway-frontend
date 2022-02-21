@@ -5,7 +5,7 @@ import SourceForm from "../../components/sources/sourceForm";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const id: string = props.params.id === "new" ? null : props.params.id
+  const id: string = props.params.id === "new" ? null : props.params.id;
 
   return (
     <Layout title={"Source"} subtext={"Edit your source here"}>
@@ -29,7 +29,7 @@ const IndexPage = (props) => {
                   aria-labelledby="overview-tab"
                 >
                   <br />
-                  <SourceForm {...{id}} />
+                  <SourceForm {...{ id }} />
                 </div>
                 <div
                   className="tab-pane"
