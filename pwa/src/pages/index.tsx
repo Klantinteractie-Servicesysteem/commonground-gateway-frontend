@@ -1,22 +1,21 @@
 import * as React from "react";
-import Layout from "../components/common/layout";
 import { getUser, isLoggedIn } from "../services/auth";
 import Dashboard from "../templates/dashboard/Dashboard";
+import { HeaderContext } from "../context/headerContext";
 
 const IndexPage = () => {
-  return (
-    <Layout
-      title={"Dashboard"}
-      subtext={
-        isLoggedIn()
-          ? `Welcome ${getUser().username}, to the gateway admin dashboard`
-          : `Welcome to the gateway admin dashboard`
-      }>
+  const [_, setHeader] = React.useContext(HeaderContext);
 
-      {isLoggedIn() && (
-        <Dashboard />
-      )}
-    </Layout >
+  React.useEffect(() => {
+    isLoggedIn()
+      ? setHeader({subText: `Welcome ${getUser().username}, to the gateway admin dashboard`, title: 'Dashboard'})
+      : setHeader({subText: `Welcome to the gateway admin dashboard`, title: 'Dashboard'})
+  })
+
+  return (
+    isLoggedIn() && (
+      <Dashboard />
+    )
   );
 };
 
