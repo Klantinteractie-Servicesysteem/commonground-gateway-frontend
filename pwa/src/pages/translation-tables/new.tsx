@@ -2,9 +2,7 @@ import * as React from "react";
 import Layout from "../../components/common/layout";
 import TranslationTableForm from "../../components/translations/TranslationTableForm";
 
-const IndexPage = (props) => {
-  const tableName: string = props.params.table
-
+const IndexPage = () => {
 
   return (
     <Layout title={"Translation table"} subtext={"Create a new translation table"}>

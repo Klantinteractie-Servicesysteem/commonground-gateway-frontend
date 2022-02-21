@@ -50,7 +50,15 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
           title={title}
           cardHeader={function () {
             return (
-              <div>
+              <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-toggle="modal"
+                  data-target="helpModal"
+                >
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={`/translation-tables`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />Back
@@ -62,7 +70,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                 >
                   <i className="fas fa-save mr-2" />Save
                 </button>
-              </div>)
+              </>)
           }}
           cardBody={function () {
             return (
@@ -86,6 +94,8 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                           </div>
                         </div>
                       </div>
+
+                      <hr />
                       <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">You need to create at least one translation when creating a new table</h4>
 
                       <TransForm translation={translation} />

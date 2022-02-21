@@ -10,9 +10,7 @@ export default function TableNamesTable() {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
-
-
-
+  
   React.useEffect(() => {
     getTableNames()
   }, [API]);

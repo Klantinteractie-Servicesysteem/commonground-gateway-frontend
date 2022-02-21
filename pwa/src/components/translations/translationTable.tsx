@@ -3,10 +3,8 @@ import {
   Table,
   Card,
   Spinner,
-  Alert,
-  Modal,
+  Alert
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
 import FlashMessage from "react-flash-message";
 import APIService from "../../apiService/apiService";
@@ -14,7 +12,6 @@ import APIContext from "../../apiService/apiContext";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState(null);
   const [documentation, setDocumentation] = React.useState<string>(null)
@@ -22,7 +19,11 @@ export default function TranslationTable({ tableName }) {
 
   React.useEffect(() => {
     handleSetDocumentation() // we added this
-  }, [API, id])
+  }, [API])
+  
+  React.useEffect(() => {
+    getTranslations()
+  }, [API]);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -34,34 +35,15 @@ export default function TranslationTable({ tableName }) {
       });
   };
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getTranslations(context);
-    }
-  }, [context]);
-
-  const getTranslations = (context) => {
+  const getTranslations = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/translations?translationTable=${tableName}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setTranslations(data["hydra:member"]);
+    API.Translation.getAllFrom(tableName)
+      .then((res) => {
+        setTranslations(res.data);
       })
-      .catch((error) => {
+      .catch((err) => { throw new Error('GET translations error: ' + err) })
+      .finally(() => {
         setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: 'danger', message: error.message });
       });
   };
 
@@ -96,12 +78,12 @@ export default function TranslationTable({ tableName }) {
                 <i className="fas fa-long-arrow-alt-left mr-2" />Back
               </button>
             </Link>
-              <Link to={`/translation-tables/${tableName}/translations/new`}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                  <i className="fas fa-plus mr-2"/>
-                  Create new
-                </button>
-              </Link>
+            <Link to={`/translation-tables/${tableName}/translations/new`}>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                <i className="fas fa-plus mr-2" />
+                Create new
+              </button>
+            </Link>
           </div>
         );
       }}

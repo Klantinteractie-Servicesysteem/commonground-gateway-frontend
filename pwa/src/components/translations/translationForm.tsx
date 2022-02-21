@@ -2,9 +2,8 @@ import * as React from "react";
 import {
   GenericInputComponent,
   Card,
-  Alert,
   Modal,
-  SelectInputComponent
+  SelectInputComponent,
   Spinner
 }
   from "@conductionnl/nl-design-system/lib";
@@ -74,7 +73,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   }
   React.useEffect(() => {
     handleSetDocumentation();
-  });
+  }, []);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -103,13 +102,13 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                     title="Translation Documentation"
                     id="helpModal"
                     body={() => (
-                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
                     )}
                   />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>
-                <Link className="utrecht-link" to={"/translations"}>
+                <Link className="utrecht-link" to={`/translation-tables/${tableName}/translations`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />Back
                   </button>
@@ -130,57 +129,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                     <Spinner />
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay /> }
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translationTable"}
-                              id={"translationTableInput"}
-                              data={translation && translation.translationTable && translation.translationTable}
-                              nameOverride={"Table"}
-                              required/>
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <SelectInputComponent
-                              options={[
-                                {name: "Nederlands (NL)", value: 'nl_NL'},
-                                {name: "English (EN)", value: "en_EN"},
-                              ]}
-                              name={"language"}
-                              id={"languageInput"}
-                              nameOverride={"Language"}
-                              data={translation?.language}/>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translateFrom"}
-                              id={"translateFromInput"}
-                              data={translation && translation.translateFrom && translation.translateFrom}
-                              nameOverride={"From"}
-                              required/>
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translateTo"}
-                              id={"translateToInput"}
-                              data={translation && translation.translateTo && translation.translateTo}
-                              nameOverride={"To"}
-                              required/>
-                          </div>
-                        </div>
-                      </div>
+                      {loadingOverlay && <LoadingOverlay />}
+                      <TransForm translation={translation} />
                     </>
                   )}
                 </div>
@@ -224,12 +174,15 @@ export const TransForm: React.FC<TransFormProps> = ({ translation }) => {
       </div>
       <div className="col-4">
         <div className="form-group">
-          <GenericInputComponent
-            type={"text"}
+          <SelectInputComponent
+            options={[
+              { name: "Nederlands (NL)", value: 'nl_NL' },
+              { name: "English (EN)", value: "en_EN" },
+            ]}
             name={"language"}
             id={"languageInput"}
-            data={translation?.language && translation.language}
-            nameOverride={"Language"} />
+            nameOverride={"Language"}
+            data={translation?.language} />
         </div>
       </div>
     </div>
