@@ -5,7 +5,7 @@ import { setUser } from "./../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 import Particles from "react-tsparticles";
-import ParticlesOptions from "./particles";
+
 
 const Login: React.FC = () => {
   const [username, setUsername] = React.useState<string>(null);

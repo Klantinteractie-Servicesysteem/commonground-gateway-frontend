@@ -3,7 +3,7 @@ version: "3.4"
 services:
     php:
       &php
-        image: ghcr.io/conductionnl/commonground-gateway-php:dev
+        image: ghcr.io/conductionnl/commonground-gateway-php:cleanup
         depends_on:
             - db
         volumes:
@@ -16,15 +16,15 @@ services:
             - REDIS_HOST=redis
             - REDIS_PORT=6379
             - APP_REPRO=example
-            - APP_ENV=prod
+            - APP_ENV=dev
             - APP_DEBUG=0
             - APP_CACHE=true
         ports:
             - "82:80"
-
+    
     api:
       &nginx
-        image: ghcr.io/conductionnl/commonground-gateway-nginx:latest
+        image: ghcr.io/conductionnl/commonground-gateway-nginx:cleanup
         depends_on:
             - php
         ports:
@@ -32,7 +32,7 @@ services:
         environment:
             - NGINX_HOST=php
             - NGINX_ENV=${APP_ENV}
-
+    
     db:
         image: mysql:5.7
         environment:
@@ -44,10 +44,10 @@ services:
             - db-mysql:/var/lib/mysql:rw
         ports:
             - "3366:3306"
-
+    
     redis:
         image: redis:4-alpine
 
 volumes:
-    db-data: { }
-    db-mysql: { }
+    db-data: {}
+    db-mysql: {}
