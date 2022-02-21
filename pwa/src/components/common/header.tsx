@@ -2,7 +2,7 @@ import * as React from "react";
 import {HeaderContext} from "../../context/headerContext";
 
 const Header = () => {
-  const [header, _] = React.useContext(HeaderContext)
+  const [header] = React.useContext(HeaderContext)
 
   return (
     header ? (
