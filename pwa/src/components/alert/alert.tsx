@@ -11,9 +11,8 @@ const AlertComponent = () => {
     alert && setTimeout(() => setAlert(null), 5000);
   }, [alert])
 
-  return (
-    alert ? (
-
+  if (alert) {
+    return (
       <div className={`conduction-alert conduction-alert-${alert.type}`}>
         {alert.message}
 
@@ -21,9 +20,10 @@ const AlertComponent = () => {
           <FontAwesomeIcon className="conduction-alert-close" icon={faTimes} />
         </div>
       </div>
+    )
+  }
 
-    ) : <></>
-  )
+  return <></>
 }
 
 
