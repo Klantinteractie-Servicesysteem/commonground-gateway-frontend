@@ -14,10 +14,11 @@ export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
 
   React.useEffect(() => {
-    handleSetAttributes();
-    handleSetDocumentation();
+    handleSetAttributes()
+    handleSetDocumentation()
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -46,18 +47,19 @@ export default function AttributeTable({ entityId }) {
 
   return (
     <Card
-      title={"Attributes"}
+      title={title}
       cardHeader={function () {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#attributeHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
               <Modal
-                title="Attributes Documentation"
-                id="helpModal"
+                title="Attribute Documentation"
+                id="attributeHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}
@@ -69,7 +71,7 @@ export default function AttributeTable({ entityId }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${entityId}`}>
+            <Link to={`/entities/${entityId}/attributes/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -102,7 +104,7 @@ export default function AttributeTable({ entityId }) {
                         return (
                           <Link
                             className="utrecht-link d-flex justify-content-end"
-                            to={`/attributes/${item.id}/${entityId}`}
+                            to={`/entities/${entityId}/attributes/${item.id}`}
                           >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />

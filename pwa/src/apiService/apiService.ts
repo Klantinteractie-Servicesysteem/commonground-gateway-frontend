@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, {AxiosInstance} from "axios";
 import Application from "./resources/application";
 import Attribute from "./resources/attribute";
 import Source from "./resources/source";
@@ -8,8 +8,9 @@ import Log from "./resources/log";
 import Login from "./services/login";
 import Documentation from "./services/documentation";
 import Endpoint from "./resources/endpoint";
-import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
 import Translation from './resources/translation';
+import Handler from "./resources/handler";
+import {GATSBY_ADMIN_URL, GATSBY_API_URL} from "../../static/env.js";
 
 export default class APIService {
   private _jwtToken: string;
@@ -53,30 +54,41 @@ export default class APIService {
   public get Application(): Application {
     return new Application(this.adminClient);
   }
+
   public get Attribute(): Attribute {
     return new Attribute(this.adminClient);
   }
+
   public get Source(): Source {
     return new Source(this.adminClient);
   }
+
   public get Entity(): Entity {
     return new Entity(this.adminClient);
   }
+
   public get ObjectEntity(): ObjectEntity {
     return new ObjectEntity(this.adminClient);
   }
+
   public get Log(): Log {
     return new Log(this.adminClient);
   }
+
   public get Endpoint(): Endpoint {
     return new Endpoint(this.adminClient);
   }
   public get Translation (): Translation { return new Translation(this.adminClient) }
 
+  public get Handler(): Handler {
+    return new Handler(this.adminClient);
+  }
+
   // Services
   public get Login(): Login {
     return new Login(this.apiClient);
   }
+
   public get Documentation(): Documentation {
     return new Documentation(this.documentationClient);
   }

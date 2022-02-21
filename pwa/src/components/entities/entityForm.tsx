@@ -4,12 +4,13 @@ import {
   Checkbox,
   SelectInputComponent,
   Card,
-  Alert
-}
-  from "@conductionnl/nl-design-system/lib";
+  Alert,
+  Modal,
+  Spinner,
+  TextareaGroup,
+} from "@conductionnl/nl-design-system/lib";
 import {navigate} from "gatsby-link";
 import {Link} from "gatsby";
-import Spinner from "../common/spinner";
 import FlashMessage from 'react-flash-message';
 import {checkValues, removeEmptyObjectValues,} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
@@ -28,11 +29,28 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext)
   const title: string = entityId ? "Edit Object type" : "Create Object type";
+  const [documentation, setDocumentation] = React.useState<string>(null)
 
   React.useEffect(() => {
     handleSetSources()
+    handleSetDocumentation()
     entityId && handleSetEntity()
   }, [API, entityId])
+
+  const handleSetEntity = () => {
+    setShowSpinner(true)
+
+    API.Entity.getOne(entityId)
+      .then((res) => {
+        setEntity(res.data)
+      })
+      .catch((err) => {
+        throw new Error('GET entity error: ' + err)
+      })
+      .finally(() => {
+        setShowSpinner(false)
+      })
+  }
 
   const handleSetSources = () => {
     API.Source.getAll()
@@ -44,20 +62,15 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
       })
   }
 
-  const handleSetEntity = () => {
-    setShowSpinner(true)
-
-    API.Entity.getOne(entityId)
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
       .then((res) => {
-        setEntity(res.data)
+        setDocumentation(res.data.content);
       })
       .catch((err) => {
-        throw new Error('GET source error: ' + err)
-      })
-      .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        throw new Error("GET documentation error: " + err);
+      });
+  };
 
   const saveEntity = (event) => {
     event.preventDefault();
@@ -65,17 +78,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description.value
-        ? event.target.description.value : null,
-      route: event.target.route.value
-        ? event.target.route.value : null,
-      endpoint: event.target.endpoint.value
-        ? event.target.endpoint.value : null,
-      gateway: event.target.gateway.value
-        ? event.target.gateway.value : null,
+      description: event.target.description.value ?? null,
+      route: event.target.route.value ?? null,
+      endpoint: event.target.endpoint.value ?? null,
+      gateway: event.target.gateway.value ?? null,
       extend: event.target.extend.checked,
-      function: event.target.function.value
-        ? event.target.function.value : null,
+      function: event.target.function.value ?? null,
     };
 
     // This removes empty values from the body
@@ -114,7 +122,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
     }
   }
 
-
   return (
     <>
       {
@@ -131,6 +138,22 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
           cardHeader={function () {
             return (
               <div>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#entityHelpModal"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Modal
+                    title="Object Type Documentation"
+                    id="entityHelpModal"
+                    body={() => (
+                      <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                    )}
+                  />
+                  <i className="fas fa-question mr-1"/>
+                  <span className="mr-2">Help</span>
+                </button>
                 <Link className="utrecht-link" to={"/entities"}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2"/>Back
@@ -154,41 +177,30 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                     <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay /> }
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
                             name={"name"}
                             id={"nameInput"}
-                            data={entity && entity.name && entity.name}
+                            data={entity?.name}
                             nameOverride={"Name"} required
                           />
                         </div>
                         <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"description"}
-                            id={"descriptionInput"}
-                            data={entity && entity.description && entity.description}
-                            nameOverride={"Description"}
+                          <SelectInputComponent
+                            options={[
+                              {name: 'Organization', value: 'organization'},
+                              {name: 'User', value: 'user'},
+                              {name: 'User group', value: 'userGroup'}
+                            ]}
+                            data={entity?.function ?? null}
+                            name={"function"}
+                            id={"functionInput"}
+                            nameOverride={"Function"}
+                            required
                           />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <SelectInputComponent
-                              options={[{name: 'Organization', value: 'organization'}, {
-                                name: 'User',
-                                value: 'user'
-                              }, {name: 'User group', value: 'userGroup'}]}
-                              data={entity && entity.function ? entity.function : null}
-                              name={"function"}
-                              id={"functionInput"}
-                              nameOverride={"Function"}
-                              required/>
-                          </div>
                         </div>
                       </div>
                       <div className="row">
@@ -197,7 +209,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                             type={"text"}
                             name={"endpoint"}
                             id={"endpointInput"}
-                            data={entity && entity.endpoint && entity.endpoint}
+                            data={entity?.endpoint}
                             nameOverride={"Endpoint"}
                           />
                         </div>
@@ -206,46 +218,51 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                             type={"text"}
                             name={"route"}
                             id={"routeInput"}
-                            data={entity && entity.route && entity.route}
+                            data={entity?.route}
                             nameOverride={"Route"}/>
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
-                            {
-                              sources !== null && sources.length > 0 ? (
-                                <>
-                                  {entity !== null &&
-                                  entity.gateway !== undefined &&
-                                  entity.gateway !== null ? (
-                                      <SelectInputComponent
-                                        options={sources}
-                                        data={entity.gateway.name}
-                                        name={"gateway"}
-                                        id={"gatewayInput"}
-                                        nameOverride={"Source"}
-                                        value={"/admin/gateways/"}/>
-                                    )
-                                    : (
-                                      <SelectInputComponent
-                                        options={sources}
-                                        name={"gateway"}
-                                        id={"gatewayInput"}
-                                        nameOverride={"Source"}
-                                        value={"/admin/gateways/"}/>
-                                    )}
-                                </>
-                              ) : (
-                                <SelectInputComponent
-                                  data="Please wait, gettings sources from the Gateway..."
-                                  options={[{
-                                    name: "Please wait, gettings sources from the Gateway...",
-                                    value: "Please wait, gettings sources from the Gateway..."
-                                  }]}
-                                  name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled />
-                              )}
-                          </div>
+                          {
+                            sources !== null && sources.length > 0 ? (
+                              <>
+                                {entity !== null &&
+                                entity.gateway !== undefined &&
+                                entity.gateway !== null ? (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      data={entity.gateway.name}
+                                      name={"gateway"}
+                                      id={"gatewayInput"}
+                                      nameOverride={"Source"}
+                                      value={"/admin/gateways/"}/>
+                                  )
+                                  : (
+                                    <SelectInputComponent
+                                      options={sources}
+                                      name={"gateway"}
+                                      id={"gatewayInput"}
+                                      nameOverride={"Source"}
+                                      value={"/admin/gateways/"}/>
+                                  )}
+                              </>
+                            ) : (
+                              <SelectInputComponent
+                                data="Please wait, gettings sources from the Gateway..."
+                                options={[{
+                                  name: "Please wait, gettings sources from the Gateway...",
+                                  value: "Please wait, gettings sources from the Gateway..."
+                                }]}
+                                name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled/>
+                            )}
+                        </div>
+                        <div className="col-6">
+                          <TextareaGroup
+                            name={"description"}
+                            id={"descriptionInput"}
+                            defaultValue={entity?.description}
+                          />
                         </div>
                       </div>
                       <div className="row">
@@ -265,7 +282,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                 </div>
               </div>
             )
-          }}/>
+          }}
+        />
       </form>
     </>
   );

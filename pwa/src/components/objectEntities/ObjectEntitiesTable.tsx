@@ -60,11 +60,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#ObjectEntityHelpModal"
               >
                 <Modal
                   title="Object Entities Documentation"
-                  id="helpModal"
+                  id="ObjectEntityHelpModal"
                   body={() => (
                     <div dangerouslySetInnerHTML={{ __html: documentation }} />
                   )}
@@ -76,7 +76,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to={`/object_entities/new/${entityId}`}>
+              <Link to={`/entities/${entityId}/object_entities/new`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2" />
                   Create
@@ -109,7 +109,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                           return (
                             <Link
                               className="utrecht-link d-flex justify-content-end"
-                              to={`/object_entities/${item.id}/${entityId}`}
+                              to={`/entities/${entityId}/object_entities/${item.id}`}
                             >
                               <button className="utrecht-button btn-sm btn-success">
                                 <i className="fas fa-edit pr-1" />
