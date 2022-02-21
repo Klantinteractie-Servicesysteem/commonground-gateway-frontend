@@ -1,9 +1,9 @@
 import * as React from "react";
-import {Link} from "gatsby";
+import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArray
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -11,54 +11,61 @@ import {
   Card,
   Spinner,
   SelectInputComponent,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
-import ElementCreationNew from "../common/elementCreationNew"
+import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
-import {navigate} from "gatsby-link";
+import { navigate } from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 interface SourceFormProps {
   id: string,
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
+export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
   const title: string = id ? "Edit Source" : "Create Source";
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation()
-    id && handleSetSource()
-  }, [API, id])
+    handleSetDocumentation();
+    id && handleSetSource();
+    setHeader({
+      title: "Sources",
+      subText: "Manage your sources here"
+    });
+  }, [API, id]);
 
   const handleSetSource = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     API.Source.getOne(id)
       .then((res) => {
-        setSource(res.data)
+        setSource(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
-        throw new Error('GET gateway error: ' + err)
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET gateway error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -91,112 +98,96 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
       authorizationHeader: event.target.authorizationHeader.value,
       headers,
       oas,
-      paths,
+      paths
     };
 
 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
-      setAlert({type: 'danger', message: 'Required fields are empty'});
       return;
     }
 
     if (!id) { // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
-          setAlert({message: 'Saved source', type: 'success'})
-          navigate('/sources');
+          setAlert({ type: "success", message: 'Saved source' });
+          navigate("/sources");
         })
         .catch((err) => {
-          setAlert({message: err.message, type: 'danger'})
-          throw new Error('Create source error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create source error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
 
     if (id) { // set id means we're updating a existing entry
       API.Source.update(body, id)
         .then((res) => {
+          setAlert({ type: "success", message: 'Updated source' });
           setSource(res.data);
-          setAlert({message: 'Updated source', type: 'success'})
         })
         .catch((err) => {
-          setAlert({message: err.message, type: 'danger'})
-          throw new Error('Update source error: ' + err)
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Update source error: " + err);
         })
         .finally(() => {
           setLoadingOverlay(false);
-        })
+        });
     }
   };
 
 
   return (
-    <>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function () {
-            return (<>{alert.message}</>)
-          }}/>
-        </FlashMessage>
-      }
-      <form id="dataForm" onSubmit={saveSource}>
-        <Card
-          title={title}
-          cardHeader={function () {
-            return (
-              <>
-                <button
-                  className="utrecht-link button-no-style"
-                  data-bs-toggle="modal"
-                  data-bs-target="#sourceHelpModal"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Modal
-                    title="Source Documentation"
-                    id="sourceHelpModal"
-                    body={() => (
-                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                    )}
-                  />
-                  <i className="fas fa-question mr-1" />
-                  <span className="mr-2">Help</span>
-                </button>
-                <Link className="utrecht-link" to={"/sources"}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2"/>Back
-                  </button>
-                </Link>
-                <button
-                  className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
-                  type="submit"
-                >
-                  <i className="fas fa-save mr-2"/>Save
+    <form id="dataForm" onSubmit={saveSource}>
+      <Card
+        title={title}
+        cardHeader={function() {
+          return (
+            <>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#sourceHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Source Documentation"
+                  id="sourceHelpModal"
+                  body={() => (
+                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                  )}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
+              <Link className="utrecht-link" to={"/sources"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
                 </button>
               </Link>
               <button
                 className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
                 type="submit"
               >
-                <i className="fas fa-save mr-2"/>Save
+                <i className="fas fa-save mr-2" />Save
               </button>
             </>
-          )
+          );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner/>
+                  <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay/>}
+                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row">
                       <div className="col-6">
                         {source !== null && source.name !== null ? (
@@ -224,7 +215,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                             id={"locationInput"}
                             data={source.location}
                             nameOverride={"Location (url)"}
-                            infoTooltip={{content: <p>Enter the source location here</p>}}
+                            infoTooltip={{ content: <p>Enter the source location here</p> }}
                           />
                         ) : (
                           <GenericInputComponent
@@ -241,11 +232,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         {source !== null && source.type !== null ? (
                             <SelectInputComponent
                               options={[
-                                {name: "json", value: "json"},
-                                {name: "xml", value: "xml"},
-                                {name: "soaps", value: "soaps"},
-                                {name: "ftp", value: "ftp"},
-                                {name: "sftp", value: "sftp"}
+                                { name: "json", value: "json" },
+                                { name: "xml", value: "xml" },
+                                { name: "soaps", value: "soaps" },
+                                { name: "ftp", value: "ftp" },
+                                { name: "sftp", value: "sftp" }
                               ]}
                               name={"type"}
                               id={"typeInput"}
@@ -257,11 +248,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                           (
                             <SelectInputComponent
                               options={[
-                                {name: "json", value: "json"},
-                                {name: "xml", value: "xml"},
-                                {name: "soaps", value: "soaps"},
-                                {name: "ftp", value: "ftp"},
-                                {name: "sftp", value: "sftp"}
+                                { name: "json", value: "json" },
+                                { name: "xml", value: "xml" },
+                                { name: "soaps", value: "soaps" },
+                                { name: "ftp", value: "ftp" },
+                                { name: "sftp", value: "sftp" }
                               ]}
                               name={"type"}
                               id={"typeInput"}
@@ -313,9 +304,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                       <div className="col-12">
                         {source !== null && source.auth !== null ? (
                           <SelectInputComponent
-                            options={[{name: "apikey", value: "apikey"},
-                              {name: "jwt", value: "jwt"},
-                              {name: "username-password", value: "username-password"}
+                            options={[{ name: "apikey", value: "apikey" },
+                              { name: "jwt", value: "jwt" },
+                              { name: "username-password", value: "username-password" }
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -326,9 +317,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                         ) : (
                           <SelectInputComponent
                             options={[
-                              {name: "apikey", value: "apikey"},
-                              {name: "jwt", value: "jwt"},
-                              {name: "username-password", value: "username-password"}
+                              { name: "apikey", value: "apikey" },
+                              { name: "jwt", value: "jwt" },
+                              { name: "username-password", value: "username-password" }
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -494,53 +485,53 @@ export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
                       items={[{
                         title: "Headers",
                         id: "headersAccordion",
-                        render: function () {
+                        render: function() {
                           return (
                             <ElementCreationNew
                               id="headers"
                               label="Headers"
                               data={source?.headers}
                             />
-                          )
+                          );
                         }
                       },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="oas"
                                 label="OAS"
                                 data={source?.oas}
                               />
-                            )
+                            );
                           }
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew
                                 id="paths"
                                 label="Paths"
                                 data={source?.paths}
                               />
-                            )
+                            );
                           }
-                        },
+                        }
                       ]}
                     />
                   </>
                 )}
               </div>
             </div>
-          )
+          );
         }}
       />
     </form>
   );
-}
+};
 
-export default SourceForm
+export default SourceForm;

@@ -16,10 +16,13 @@ export default function SourcesTable() {
   const [sources, setSources] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext)
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetSources();
     handleSetDocumentation();
+    setHeader({title: 'Sources', subText: 'An overview of your source objects'});
   }, [API]);
 
   const handleSetSources = () => {
@@ -29,6 +32,7 @@ export default function SourcesTable() {
         setSources(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Sources error: " + err);
       })
       .finally(() => {
@@ -42,6 +46,7 @@ export default function SourcesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };
