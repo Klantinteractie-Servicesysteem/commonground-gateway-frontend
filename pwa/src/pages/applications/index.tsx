@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Layout from "../../components/common/layout";
 import ApplicationsTable from "../../components/applications/applicationsTable";
 
@@ -10,13 +10,13 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <ApplicationsTable/>
+              <ApplicationsTable />
             </div>
           </div>
         </div>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;

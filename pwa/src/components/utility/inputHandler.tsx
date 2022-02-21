@@ -25,7 +25,7 @@ export const removeEmptyObjectValues = (obj: {}) => {
   for (var propName in obj) {
     if (
       obj[propName] === undefined ||
-      (obj[propName] === null && obj[propName] !== false) || obj[propName] === ''
+      (obj[propName] === null && obj[propName] !== false) || obj[propName] === ""
     ) {
       delete obj[propName];
     }
@@ -51,7 +51,7 @@ export const retrieveFormArrayAsObject = (array: any[], type: string) => {
           target.name.indexOf("[") + 1,
           target.name.lastIndexOf("]")
         )
-      ] = target.value;
+        ] = target.value;
     }
   }
 

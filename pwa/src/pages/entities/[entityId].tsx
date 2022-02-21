@@ -3,15 +3,14 @@ import Layout from "../../components/common/layout";
 import AttributeTable from "../../components/attributes/attributeTable";
 import ObjectEntitiesTable from "../../components/objectEntities/ObjectEntitiesTable";
 import EntityForm from "../../components/entities/entityForm";
-import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
+import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const entityId: string = props.params.id === "new" ? null : props.params.id;
-  const id: string = entityId;
+  const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
 
   return (
-    <Layout title={"Object"} subtext={"Create or modify your object"}>
+    <Layout title={"Object types"} subtext={"Create or modify your object types"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -19,18 +18,18 @@ const IndexPage = (props) => {
               {props.params.id !== "new" ? (
                 <Tabs
                   items={[
-                    {name: "Overview", id: "overview", active: true},
+                    { name: "Overview", id: "overview", active: true },
                     {
                       name: "Attributes",
-                      id: "attributes",
+                      id: "attributes"
                     },
-                    {name: "Data", id: "data"},
-                    {name: "Logs", id: "logs"}
+                    { name: "Objects", id: "data" },
+                    { name: "Logs", id: "logs" }
                   ]}
                 />
               ) : (
                 <Tabs
-                  items={[{name: "Overview", id: "overview", active: true}]}
+                  items={[{ name: "Overview", id: "overview", active: true }]}
                 />
               )}
             </div>
@@ -41,8 +40,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="overview-tab"
               >
-                <br/>
-                <EntityForm {...{entityId}}/>
+                <br />
+                <EntityForm {...{ entityId }} />
               </div>
               <div
                 className="tab-pane"
@@ -50,8 +49,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="attributes-tab"
               >
-                <br/>
-                <AttributeTable {...{entityId}}/>
+                <br />
+                <AttributeTable {...{ entityId }} />
               </div>
               <div
                 className="tab-pane"
@@ -59,8 +58,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="data-tab"
               >
-                <br/>
-                <ObjectEntitiesTable {...{entityId}}/>
+                <br />
+                <ObjectEntitiesTable {...{ entityId }} />
               </div>
               <div
                 className="tab-pane"
@@ -68,8 +67,8 @@ const IndexPage = (props) => {
                 role="tabpanel"
                 aria-labelledby="logs-tab"
               >
-                <br/>
-                <LogTable {...{id}}/>
+                <br />
+                <LogTable {...{ entityId }} />
               </div>
             </div>
           </div>

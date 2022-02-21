@@ -1,5 +1,5 @@
 import * as React from "react";
-import Footer from './../footer/footer'
+import Footer from "./../footer/footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
@@ -21,7 +21,7 @@ import {navigate} from "gatsby-link";
  * @returns TSX of the generated Layout.
  */
 export default function Layout({ children, title = "", subtext = "" }) {
-  const [API, setAPI] = React.useState<APIService>(null)
+  const [API, setAPI] = React.useState<APIService>(null);
 
   const parseJwt = (token) => {
     try {
@@ -33,41 +33,37 @@ export default function Layout({ children, title = "", subtext = "" }) {
   const decodedJwt = parseJwt(sessionStorage.getItem('jwt'));
 
   React.useEffect(() => {
-    if (decodedJwt === null) {
-      logout()
-      navigate("/");
-    } else if (decodedJwt.exp * 1000 < Date.now()) {
-      logout();
-      navigate("/");
+    if (!isLoggedIn()) {
+      setAPI(null);
+      return;
     }
 
-    !API && setAPI(new APIService(sessionStorage.getItem('jwt')))
-  }, [API, decodedJwt])
+    const jwt = sessionStorage.getItem("jwt");
+    !API && jwt && setAPI(new APIService(jwt));
+  }, [API, isLoggedIn()]);
 
   return (
-    API &&
+    API ? (
       <APIProvider value={API}>
-        {isLoggedIn() ?
-          <>
-            <Helmet
-              link={[
-                { rel: 'shortcut icon', type: 'image/png', href: favicon }
-              ]}>
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <Header title={title} subText={subtext} />
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
-              </div>
+        <Helmet
+          link={[
+            { rel: "shortcut icon", type: "image/png", href: favicon }
+          ]}
+        >
+          <title>Gateway Admin Dashboard</title>
+        </Helmet>
+        <div className="utrecht-document conduction-theme">
+          <div className="utrecht-page">
+            <MainMenu />
+            <div className="utrecht-page__content">
+              <Header title={title} subText={subtext} />
+              <div className="container py-4">{children}</div>
             </div>
-            <WelcomeModal />
-          </> : <Login />
-        }
+            <Footer />
+          </div>
+        </div>
+        <WelcomeModal />
       </APIProvider>
+    ) : <Login />
   );
 }
