@@ -12,7 +12,7 @@ const IndexPage = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            {props.params.id !== "new" ? (
+            {endpointId && (
               <Tabs
                 items={[
                   { name: "Overview", id: "overview", active: true },
@@ -25,14 +25,6 @@ const IndexPage = (props) => {
                     id: "logs"
                   }
                 ]}
-              />
-            ) : (
-              <Tabs
-                items={[{ name: "Overview", id: "overview", active: true },
-                  {
-                    name: "Logs",
-                    id: "logs"
-                  }]}
               />
             )}
           </div>
@@ -64,15 +56,6 @@ const IndexPage = (props) => {
               <br />
               <LogTable {...{ endpointId }} />
             </div>
-          </div>
-          <div
-            className="tab-pane"
-            id="logs"
-            role="tabpanel"
-            aria-labelledby="logs-tab"
-          >
-            <br />
-            <LogTable />
           </div>
         </div>
       </div>

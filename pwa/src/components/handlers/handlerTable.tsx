@@ -9,7 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 
 export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -17,12 +16,10 @@ export default function HandlersTable({ endpointId }) {
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetHandlers()
     handleSetDocumentation()
-    setHeader({title: 'Handlers', subText: 'An overview of your handler objects'});
   }, [API]);
 
   const handleSetHandlers = () => {
