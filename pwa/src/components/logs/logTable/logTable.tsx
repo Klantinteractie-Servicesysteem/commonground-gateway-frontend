@@ -12,6 +12,7 @@ import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
+import msToSeconds from "../../../services/msToSeconds";
 import { AlertContext } from "../../../context/alertContext";
 import { HeaderContext } from "../../../context/headerContext";
 
@@ -173,7 +174,12 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                         },
                         {
                           headerName: "Response time (seconds)",
-                          field: "responseTime"
+                          field: "responseTime",
+                          renderCell: (item) => {
+                            return (
+                              item && `${item.responseTime}ms (${msToSeconds(item.responseTime)}s)`
+                            );
+                          }
                         },
                         {
                           field: "id",

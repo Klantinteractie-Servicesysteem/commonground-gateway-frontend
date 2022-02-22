@@ -28,7 +28,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 403,
-    responseTime: 8,
+    responseTime: 8687,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
@@ -62,7 +62,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 201,
-    responseTime: 8,
+    responseTime: 8246,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
@@ -96,7 +96,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 200,
-    responseTime: 8,
+    responseTime: 8135,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
@@ -130,7 +130,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 203,
-    responseTime: 8,
+    responseTime: 8976,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
@@ -164,7 +164,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 404,
-    responseTime: 8,
+    responseTime: 8658,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
@@ -198,7 +198,7 @@ const Logs: LogObject[] = [
     requestMethod: "POST",
     responseStatus: "HTTP_CREATED",
     responseStatusCode: 201,
-    responseTime: 8,
+    responseTime: 8245,
     requestPathInfo: "/api/weer",
     requestLanguages: "content type?",
     requestHeaders: [{
