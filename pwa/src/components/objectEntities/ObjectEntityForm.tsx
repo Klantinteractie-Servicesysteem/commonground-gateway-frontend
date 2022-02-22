@@ -42,8 +42,8 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     handleSetApplications();
     handleSetDocumentation();
     setHeader({
-      title: "Object entity",
-      subText: "Manage your object entity here"
+      title: "Object",
+      subText: "Manage your object here"
     });
   }, [API, objectId]);
 
