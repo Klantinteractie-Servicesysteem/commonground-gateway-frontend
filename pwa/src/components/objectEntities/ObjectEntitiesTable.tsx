@@ -59,7 +59,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
 
   return (
     <Card
-      title={"Object entities"}
+      title={"Object"}
       cardHeader={function() {
         return (
           <>
@@ -101,8 +101,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "ID",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
