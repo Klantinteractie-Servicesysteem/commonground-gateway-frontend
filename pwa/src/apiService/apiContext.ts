@@ -1,8 +1,8 @@
-import * as React from 'react'
-import APIService from './apiService'
+import * as React from "react";
+import APIService from "./apiService";
 
-const APIContext = React.createContext<APIService>(null)
+const APIContext = React.createContext<APIService>(null);
 
-export const APIProvider = APIContext.Provider
+export const APIProvider = APIContext.Provider;
 
-export default APIContext
+export default APIContext;

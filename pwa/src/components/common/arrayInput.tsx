@@ -22,32 +22,32 @@ export function ArrayInputComponent(props: ArrayInputProps) {
       <span className="utrecht-form-label">{_.upperFirst(props.label ?? props.id)}</span>
       <div id={`new${_.upperFirst(props.id)}`}>
         {props.data !== undefined &&
-          props.data !== null &&
-          props.data.map((item, idx) => (
-            <div key={idx} className={`row ${item}`}>
-              <div className="col-5">
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="value"
-                    name={`${props.id}[${item}]`}
-                    defaultValue={item.toString()}
-                    className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                  />
-                </div>
-              </div>
-              <div className="col-2 d-flex mt-auto mb-4">
-                <button
-                  value={item.toString()}
-                  onClick={deleteElementFunction}
-                  type="button"
-                  className="utrecht-button utrecht-button-sm btn-sm btn-danger"
-                >
-                  Delete
-                </button>
+        props.data !== null &&
+        props.data.map((item, idx) => (
+          <div key={idx} className={`row ${item}`}>
+            <div className="col-5">
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="value"
+                  name={`${props.id}[${item}]`}
+                  defaultValue={item.toString()}
+                  className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                />
               </div>
             </div>
-          ))}
+            <div className="col-2 d-flex mt-auto mb-4">
+              <button
+                value={item.toString()}
+                onClick={deleteElementFunction}
+                type="button"
+                className="utrecht-button utrecht-button-sm btn-sm btn-danger"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
       <br />
       <div className="separator-solid" />
@@ -70,7 +70,7 @@ export function ArrayInputComponent(props: ArrayInputProps) {
                 `new${_.upperFirst(props.id)}Value`,
                 props.id,
                 deleteElementFunction,
-                false,
+                false
               );
             }}
           >
@@ -84,5 +84,5 @@ export function ArrayInputComponent(props: ArrayInputProps) {
 
 ArrayInputComponent.defaultProps = {
   id: "exampleArrayInput",
-  label: "Example ArrayInput",
+  label: "Example ArrayInput"
 };

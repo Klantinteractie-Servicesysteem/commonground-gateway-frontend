@@ -25,37 +25,37 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
         props.data !== null &&
         props.data.map((item) => (
           item.value && Object.entries(item.value).map(([key, value]) => {
-              return (
-                <>
-                  <div key={value} className={`row ${key}`}>
-                    <div className="col-5">
-                      <div className="form-group">
-                        <label htmlFor={value} className="utrecht-form-label">
-                          {key}
-                        </label>
-                        <input
-                          type="text"
-                          id="value"
-                          name={`${props.id}[${key}]`}
-                          defaultValue={value}
-                          className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-2 d-flex mt-auto mb-4">
-                      <button
-                        value={key}
-                        onClick={deleteElement}
-                        type="button"
-                        className="utrecht-button utrecht-button-sm btn-sm btn-danger"
-                      >
-                        Delete
-                      </button>
+            return (
+              <>
+                <div key={value} className={`row ${key}`}>
+                  <div className="col-5">
+                    <div className="form-group">
+                      <label htmlFor={value} className="utrecht-form-label">
+                        {key}
+                      </label>
+                      <input
+                        type="text"
+                        id="value"
+                        name={`${props.id}[${key}]`}
+                        defaultValue={value}
+                        className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                      />
                     </div>
                   </div>
-                </>
-              );
-            })))}
+                  <div className="col-2 d-flex mt-auto mb-4">
+                    <button
+                      value={key}
+                      onClick={deleteElement}
+                      type="button"
+                      className="utrecht-button utrecht-button-sm btn-sm btn-danger"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            );
+          })))}
       </div>
       <br />
       <div className="separator-solid" />
@@ -83,7 +83,7 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
                 `new${_.upperFirst(props.id)}Key`,
                 `new${_.upperFirst(props.id)}Value`,
                 `${props.id}`,
-                deleteElement,
+                deleteElement
               );
             }}
           >
