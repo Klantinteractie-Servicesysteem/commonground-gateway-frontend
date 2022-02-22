@@ -1,3 +1,6 @@
+import { navigate } from "gatsby-link";
+import jwtDecode, { JwtPayload } from "jwt-decode";
+
 export const isBrowser = () => typeof window !== "undefined";
 
 export const getUser = () =>
@@ -22,3 +25,12 @@ export const logout = () => {
   window.sessionStorage.removeItem("jwt");
   window.sessionStorage.removeItem("user");
 };
+
+export const validateSession = (jwt) => {
+  const decodedJwt = jwtDecode<JwtPayload>(jwt);
+
+  if (decodedJwt?.exp >= Date.now()) {
+    logout()
+    navigate("/login");
+  }
+}
