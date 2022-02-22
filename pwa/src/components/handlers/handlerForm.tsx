@@ -15,8 +15,7 @@ import {
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
-import ElementCreationNew from "../common/elementCreationNew";
+import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
@@ -24,6 +23,7 @@ import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
+import ElementCreationNew from "../common/elementCreationNew";
 
 interface HandlerFormProps {
   id: string,
@@ -54,6 +54,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       }
       getEntities();
       getTableNames();
+      handleSetDocumentation()
       setHeader({
         title: "Handler",
         subText: "Manage your handler here"
@@ -118,9 +119,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
         throw new Error("GET handler error: " + error);
       });
   };
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -455,3 +453,5 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     </form>
   );
 };
+
+export default HandlerForm;
