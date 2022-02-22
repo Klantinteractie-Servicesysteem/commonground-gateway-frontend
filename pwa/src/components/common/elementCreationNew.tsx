@@ -1,13 +1,9 @@
 import * as React from "react";
-import { SelectInputComponent } from "@conductionnl/nl-design-system";
 
 interface ElementCreationNewProps {
   id: string;
   label: string;
   data?: any;
-  select?: boolean;
-  selectName?: string;
-  options?: Array<Partial<Record<"value" | "name" | "id" | "selected", any>>>;
 }
 
 interface IValue {
@@ -15,7 +11,7 @@ interface IValue {
   value: string,
 }
 
-const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data, select, selectName, options }) => {
+const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data }) => {
   const [value, setValue] = React.useState<string>("");
   const [values, setValues] = React.useState<IValue[]>([]);
 
@@ -77,42 +73,21 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
 
       <div className="row">
         <h5>Create {label}</h5>
-          {
-            select ? (
-              <>
-                <div className="col-10">
-                  <SelectInputComponent
-                    options={options !== null && options.length > 0 ? options : []}
-                    name={selectName} id={`${selectName}Input`}
-                    nameOverride={label}
-                    onChange={(e) => setValue(e.target.value)}
-                  />
-                </div>
-                <div className="col-2 select-elementCreation-button">
-                  <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="col-10">
-                  <input
-                    type="text"
-                    value={value}
-                    placeholder={`Add ${label}`}
-                    onChange={(e) => setValue(e.target.value)}
-                    className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                  />
-                </div>
-                <div className="col-2">
-                  <div className="input-group">
-                    <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
-                    </button>
-                  </div>
-                </div>
-              </>
-            )
-          }
+        <div className="col-10">
+          <input
+            type="text"
+            value={value}
+            placeholder={`Add ${label}`}
+            onChange={(e) => setValue(e.target.value)}
+            className="utrecht-textbox utrecht-textbox--html-input mb-2"
+          />
+        </div>
+        <div className="col-2">
+          <div className="input-group">
+            <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
