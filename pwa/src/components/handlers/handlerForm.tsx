@@ -361,7 +361,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                   options={tableNames}
                                 />
                                 ) : (
-                                  <></>
+                                  <><Spinner /></>
                               )
                             );
                           }
@@ -379,7 +379,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 options={tableNames}
                               />
                               ) : (
-                                <></>
+                                <><Spinner /></>
                               )
                             );
                           }
