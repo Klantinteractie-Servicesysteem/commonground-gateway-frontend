@@ -19,7 +19,7 @@ interface IValue {
   value: string
 }
 
-export const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) => {
+const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) => {
   const [value, setValue] = React.useState<string>("");
   const [values, setValues] = React.useState<IValue[]>([]);
 
