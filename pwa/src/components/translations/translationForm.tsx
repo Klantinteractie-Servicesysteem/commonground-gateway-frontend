@@ -65,6 +65,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
       .then((response) => response.json())
       .then((data) => {
         setTranslation(data);
+        !id && setAlert({ message: 'Saved translations', type: "success" });
+        id && setAlert({ message: 'Updated translations', type: "success" });
         !id && navigate("/translations");
       })
       .catch((error) => {

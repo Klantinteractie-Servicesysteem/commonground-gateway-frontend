@@ -192,7 +192,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       .then((response) => response.json())
       .then((data) => {
         setHandler(data);
-        endpointId && navigate(`/endpoints/${endpointId}`);
+        !id && setAlert({ message: 'Saved translations', type: "success" });
+        id && setAlert({ message: 'Updated translations', type: "success" });
+        id && navigate(`/endpoints/${endpointId}`);
       })
       .catch((error) => {
         setAlert({ type: "danger", message: error.message });
