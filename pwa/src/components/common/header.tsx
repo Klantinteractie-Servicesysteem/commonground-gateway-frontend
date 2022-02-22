@@ -1,13 +1,12 @@
 import * as React from "react";
 
 
-
 /**
  * This components renders a header.
  *
  * @returns TSX of the generated Header.
  */
-export default function Header({title, subText}) {
+export default function Header({ title, subText }) {
   return (
     <>
       <header className="utrecht-page-header">

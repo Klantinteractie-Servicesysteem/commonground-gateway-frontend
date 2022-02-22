@@ -3,6 +3,7 @@ import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
 import { StatusCode } from "../logTable/logTable";
+import msToSeconds from "../../../services/msToSeconds";
 
 interface LogModalProps {
   log: any;
@@ -14,14 +15,14 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
       key={log.id}
       title={"Call log"}
       id={`logs${log.id}`}
-      body={function () {
+      body={function() {
         return (
           <>
             <Tabs
               items={[
                 { name: "General", id: "logGeneral", active: true },
                 { name: "Request", id: "logRequest" },
-                { name: "Response", id: "logResponse" },
+                { name: "Response", id: "logResponse" }
               ]}
             />
             <div className="tab-content">
@@ -53,7 +54,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   </tr>
                   <tr>
                     <th>Response time</th>
-                    <td>{log?.responseTime.toString() + " seconds"}</td>
+                    <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                   </tr>
                   <tr>
                     <th>Route</th>
@@ -68,7 +69,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         data-bs-dismiss="modal"
                         aria-label="Close"
                         onClick={() => {
-                        navigate("/endpoints/" + log?.id);
+                          navigate("/endpoints/" + log?.id);
                         }}
                       >
                         {log?.endpoint?.name}
@@ -83,7 +84,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     {
                       title: "Session",
                       id: "logRequestSession",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.session && (
@@ -100,8 +101,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                 />
               </div>
@@ -131,7 +132,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     {
                       title: "Headers",
                       id: "logRequestHeaders",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.requestHeaders ? (
@@ -143,12 +144,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
+                      }
                     },
                     {
                       title: "Query paramaters",
                       id: "logRequestQueryparamters",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.requestQuery ? (
@@ -160,12 +161,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
+                      }
                     },
                     {
                       title: "Content",
                       id: "logRequestContent",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.requestContent ? (
@@ -181,8 +182,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           </>
                         );
                       },
-                      backgroundColor: "black",
-                    },
+                      backgroundColor: "black"
+                    }
                   ]}
                 />
               </div>
@@ -198,7 +199,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     {
                       title: "Headers",
                       id: "logResponseHeaders",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.responseHeaders ? (
@@ -210,12 +211,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
+                      }
                     },
                     {
                       title: "Content",
                       id: "logResponseContent",
-                      render: function () {
+                      render: function() {
                         return (
                           <>
                             {log.responseContent ? (
@@ -231,8 +232,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           </>
                         );
                       },
-                      backgroundColor: "black",
-                    },
+                      backgroundColor: "black"
+                    }
                   ]}
                 />
               </div>
@@ -241,7 +242,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         );
       }}
     />
-  )
-}
+  );
+};
 
 export default LogModal;

@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from "axios";
+import axios, { AxiosInstance } from "axios";
 import Application from "./resources/application";
 import Attribute from "./resources/attribute";
 import Source from "./resources/source";
@@ -9,7 +9,7 @@ import Login from "./services/login";
 import Documentation from "./services/documentation";
 import Endpoint from "./resources/endpoint";
 import Handler from "./resources/handler";
-import {GATSBY_ADMIN_URL, GATSBY_API_URL} from "../../static/env.js";
+import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
 
 export default class APIService {
   private _jwtToken: string;
@@ -24,8 +24,8 @@ export default class APIService {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer " + this._jwtToken,
-      },
+        Authorization: "Bearer " + this._jwtToken
+      }
     });
   }
 
@@ -34,8 +34,8 @@ export default class APIService {
       baseURL: GATSBY_API_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 
@@ -44,8 +44,8 @@ export default class APIService {
       baseURL: process.env.GATSBY_READ_THE_DOCS_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 

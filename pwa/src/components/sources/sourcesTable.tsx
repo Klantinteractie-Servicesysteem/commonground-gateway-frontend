@@ -4,7 +4,7 @@ import {
   Table,
   Card,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -47,7 +47,7 @@ export default function SourcesTable() {
   return (
     <Card
       title={"Sources"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -78,7 +78,7 @@ export default function SourcesTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -89,11 +89,11 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Location",
-                      field: "location",
+                      field: "location"
                     },
                     {
                       field: "id",
@@ -110,8 +110,8 @@ export default function SourcesTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={sources}
                 />
@@ -120,12 +120,12 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Location",
-                      field: "location",
-                    },
+                      field: "location"
+                    }
                   ]}
                   rows={[]}
                 />

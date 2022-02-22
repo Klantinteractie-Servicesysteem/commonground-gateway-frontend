@@ -3,7 +3,7 @@ import {
   Table,
   Card,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -14,8 +14,8 @@ interface ObjectEntitiesTableProps {
 }
 
 const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
-  entityId,
-}) => {
+                                                                   entityId
+                                                                 }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -54,7 +54,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     <>
       <Card
         title={"Object entities"}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -85,7 +85,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -96,11 +96,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                     columns={[
                       {
                         headerName: "Uri",
-                        field: "uri",
+                        field: "uri"
                       },
                       {
                         headerName: "Owner",
-                        field: "owner",
+                        field: "owner"
                       },
                       {
                         field: "id",
@@ -117,8 +117,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                               </button>
                             </Link>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                     rows={objectEntities}
                   />
@@ -127,12 +127,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                     columns={[
                       {
                         headerName: "Uri",
-                        field: "uri",
+                        field: "uri"
                       },
                       {
                         headerName: "Owner",
-                        field: "owner",
-                      },
+                        field: "owner"
+                      }
                     ]}
                     rows={[]}
                   />

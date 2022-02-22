@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {SelectInputComponent} from "@conductionnl/nl-design-system";
+import * as React from "react";
+import { SelectInputComponent } from "@conductionnl/nl-design-system";
 
 interface ElementCreationNewProps {
   id: string;
@@ -15,39 +15,39 @@ interface IValue {
   value: string,
 }
 
-const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data, select, selectName, options}) => {
-  const [value, setValue] = React.useState<string>("")
-  const [values, setValues] = React.useState<IValue[]>([])
+const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data, select, selectName, options }) => {
+  const [value, setValue] = React.useState<string>("");
+  const [values, setValues] = React.useState<IValue[]>([]);
 
   React.useEffect(() => {
-    if (!data) return
+    if (!data) return;
 
     const loadedValues: IValue[] = data?.map((value) => {
-      return {id: generateId(), value: value}
-    })
+      return { id: generateId(), value: value };
+    });
 
-    setValues([...loadedValues])
-  }, [data])
+    setValues([...loadedValues]);
+  }, [data]);
 
   const handleAdd = () => {
-      setValues([...values, {id: generateId(), value: value}])
-    setValue("")
-  }
+    setValues([...values, { id: generateId(), value: value }]);
+    setValue("");
+  };
 
   const handleDelete = (e) => {
-    e.preventDefault()
-    setValues(values.filter(value => value.id !== e.target.id))
-  }
+    e.preventDefault();
+    setValues(values.filter(value => value.id !== e.target.id));
+  };
 
-  const generateId = (): string => Math.random().toString(36)
+  const generateId = (): string => Math.random().toString(36);
 
   return (
     <div>
       {values.length > 0 &&
-      <ul style={{paddingLeft: 0}}>
+      <ul style={{ paddingLeft: 0 }}>
         {values.map((value, idx) => {
           return (
-            <li key={idx} style={{listStyleType: 'none'}}>
+            <li key={idx} style={{ listStyleType: "none" }}>
               <div className="row">
                 <div className="col-10">
                   <input
@@ -70,7 +70,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
                 </div>
               </div>
             </li>
-          )
+          );
         })}
       </ul>
       }
@@ -115,7 +115,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
           }
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ElementCreationNew
+export default ElementCreationNew;

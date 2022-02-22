@@ -9,13 +9,13 @@ const IndexPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-top-item">
-              <SourcesTable/>
+              <SourcesTable />
             </div>
           </div>
         </div>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
 export default IndexPage;
