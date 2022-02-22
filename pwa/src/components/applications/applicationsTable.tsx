@@ -10,6 +10,8 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function ApplicationsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -22,7 +24,7 @@ export default function ApplicationsTable() {
   React.useEffect(() => {
     handleSetApplications();
     handleSetDocumentation();
-    setHeader({title: 'Applications', subText: 'An overview of your application objects'});
+    setHeader({ title: "Applications", subText: "An overview of your application objects" });
   }, [API]);
 
   const handleSetApplications = (): void => {
@@ -32,7 +34,7 @@ export default function ApplicationsTable() {
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Applications error: " + err);
       })
       .finally(() => {
@@ -46,9 +48,23 @@ export default function ApplicationsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteApplication = (id): void => {
+    if (confirm(`Do you want to delete this application? With id ${id}`)) {
+      API.Application.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted application with id: ${id}`, type: "success" });
+          handleSetApplications();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE application error: " + err);
+        });
+    }
   };
 
   return (
@@ -107,15 +123,19 @@ export default function ApplicationsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/applications/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteApplication(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              to={`/applications/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       }
                     }
