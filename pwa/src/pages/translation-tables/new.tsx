@@ -1,12 +1,16 @@
 import * as React from "react";
-import Layout from "../../components/common/layout";
 import TranslationTableForm from "../../components/translations/TranslationTableForm";
+import { HeaderContext } from "../../context/headerContext";
 
 const IndexPage = () => {
 
+  const [__, setHeader] = React.useContext(HeaderContext);
+  
+  React.useEffect(() => {
+    setHeader({title: 'Translation table', subText: 'Create a new translation table'});
+  });
+
   return (
-    <Layout title={"Translation table"} subtext={"Create a new translation table"}>
-      <title>Gateway - {"Translation table"}</title>
       <main>
         <div className="row">
           <div className="col-12">
@@ -16,7 +20,6 @@ const IndexPage = () => {
           </div>
         </div>
       </main>
-    </Layout>
   )
 }
 

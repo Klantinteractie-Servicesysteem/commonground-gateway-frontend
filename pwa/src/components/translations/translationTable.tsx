@@ -1,15 +1,10 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Alert
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
@@ -18,15 +13,17 @@ export default function TranslationTable({ tableName }) {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-
-  React.useEffect(() => {
-    handleSetDocumentation() // we added this
-  }, [API])
   
   React.useEffect(() => {
-    getTranslations()
-  }, [API]);
+    setHeader({title: 'Translations', subText: 'An overview of your translations'});
+  });
 
+
+  React.useEffect(() => {
+    handleSetDocumentation(); // we added this
+    getTranslations();
+  }, [API]);
+  
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {
@@ -45,31 +42,21 @@ export default function TranslationTable({ tableName }) {
       .then((res) => {
         setTranslations(res.data);
       })
-      .catch((err) => { throw new Error('GET translations error: ' + err) })
+      .catch((err) => {
+        throw new Error("GET translations error: " + err);
+      })
       .finally(() => {
         setShowSpinner(false);
       });
   };
 
-  return (<>
-    {
-      alert !== null &&
-      <FlashMessage duration={5000}>
-        <Alert alertClass={alert.type} body={function () {
-          return (<>{alert.message}</>)
-        }} />
-      </FlashMessage>
-    }
+  return (
     <Card
       title={"Translations"}
       cardHeader={function () {
         return (
           <div>
-            <button
-              className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
-            >
+            <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -79,7 +66,8 @@ export default function TranslationTable({ tableName }) {
             </a>
             <Link className="utrecht-link" to={"/translation-tables"}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                <i className="fas fa-long-arrow-alt-left mr-2" />
+                Back
               </button>
             </Link>
             <Link to={`/translation-tables/${tableName}/translations/new`}>
@@ -115,9 +103,12 @@ export default function TranslationTable({ tableName }) {
                     {
                       field: "id",
                       headerName: " ",
-                      renderCell: (item: { id: string, translationTable: string }) => {
+                      renderCell: (item: { id: string; translationTable: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${item.translationTable}/translations/${item.id}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/translation-tables/${item.translationTable}/translations/${item.id}`}
+                          >
                             <button className="utrecht-button btn-sm btn-primary">
                               <i className="fas fa-edit pr-1" />
                               Edit
@@ -125,7 +116,7 @@ export default function TranslationTable({ tableName }) {
                           </Link>
                         );
                       },
-                    }
+                    },
                   ]}
                   rows={translations}
                 />
@@ -143,9 +134,9 @@ export default function TranslationTable({ tableName }) {
                     {
                       headerName: "Language",
                       field: "language",
-                    }
+                    },
                   ]}
-                  rows={[{ name: 'No results found' }]}
+                  rows={[{ name: "No results found" }]}
                 />
               )}
             </div>
@@ -153,6 +144,5 @@ export default function TranslationTable({ tableName }) {
         );
       }}
     />
-  </>
-  )
+  );
 }

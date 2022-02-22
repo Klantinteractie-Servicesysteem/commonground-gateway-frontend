@@ -1,22 +1,26 @@
 import * as React from "react";
-import Layout from "../../components/common/layout";
 import TableNamesTable from "../../components/translations/tableNamesTable";
+import {HeaderContext} from "../../context/headerContext";
 
 const IndexPage = () => {
+
+  const [__, setHeader] = React.useContext(HeaderContext);
+  
+  React.useEffect(() => {
+    setHeader({title: 'Translation tables', subText: 'An overview of your translation tables'});
+  });
+
   return (
-    <Layout title={"Translation tables"} subtext={"An overview of your translation tables"}>
-      <title>Gateway - Translation tables</title>
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <div className="page-top-item">
-              <TableNamesTable/>
-            </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <div className="page-top-item">
+            <TableNamesTable />
           </div>
         </div>
-      </main>
-    </Layout>
-  )
-}
+      </div>
+    </main>
+  );
+};
 
 export default IndexPage;
