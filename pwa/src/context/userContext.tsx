@@ -1,4 +1,4 @@
-import {createContext, useContext, useState} from 'react';
+import { createContext, useContext, useState } from "react";
 import * as React from "react";
 
 const UserContext = createContext(undefined);
@@ -7,8 +7,8 @@ export function UserContextWrapper({ children }) {
 
   let storedUser = null;
 
-  if(typeof window != "undefined") {
-    storedUser = sessionStorage.getItem('user');
+  if (typeof window != "undefined") {
+    storedUser = sessionStorage.getItem("user");
   }
 
   if (storedUser !== null) {
