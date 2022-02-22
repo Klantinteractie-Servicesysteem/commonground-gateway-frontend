@@ -10,7 +10,7 @@ import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
 import { AlertContext } from "../../../context/alertContext";
@@ -196,8 +196,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                     ""
                                   )}`}
                                 >
-                                  <i className="fas fa-eye mr-2"/>
-                                  View log
+                                  <FontAwesomeIcon icon={faEye} />View log
                                 </button>
                               </div>
                             );
