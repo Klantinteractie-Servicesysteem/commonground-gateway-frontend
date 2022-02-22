@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
+import { AlertContext } from "../../../context/alertContext";
+import { HeaderContext } from "../../../context/headerContext";
 
 interface LogTableProps {
   entityId?: string;
@@ -25,10 +27,13 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetLogs()
     handleSetDocumentation()
+    setHeader({ title: "Logs", subText: "An overview of your log objects" });
   }, [API, entityId, endpointId, sourceId]);
 
   const handleSetLogs = () => {
@@ -40,6 +45,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs from entity error: " + err);
         })
         .finally(() => {
@@ -53,6 +59,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs from source error: " + err);
         })
         .finally(() => {
@@ -66,6 +73,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs for endpoint error: " + err);
         })
         .finally(() => {
@@ -79,6 +87,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs error: " + err);
         })
         .finally(() => {
@@ -93,6 +102,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
