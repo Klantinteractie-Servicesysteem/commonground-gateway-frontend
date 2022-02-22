@@ -39,7 +39,7 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
                         />
                       </div>
                     </div>
-                    <div className="col-2 my-auto">
+                    <div className="col-2 m-auto">
                       <button
                         value={key}
                         onClick={deleteElement}
