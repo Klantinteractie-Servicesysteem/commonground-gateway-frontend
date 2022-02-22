@@ -11,6 +11,8 @@ import { Link, navigate } from "gatsby";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 interface TranslationFormProps {
   id?: string,
@@ -21,9 +23,11 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Translation" : "Edit Translation"
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const title: string = (id === "new") ? "Create Translation" : "Edit Translation";
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     id && getTranslation(id)
@@ -47,7 +51,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       translationTable: tableName,
       language: event.target.language ? event.target.language.value : null,
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
-      translateTo: event.target.translateTo ? event.target.translateTo.value : null,
+      translateTo: event.target.translateTo ? event.target.translateTo.value : null
     };
 
     if (!id) {
@@ -81,6 +85,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ type: "danger", message: err });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -140,8 +145,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       </form>
     </>
   );
-}
-export default TranslationForm
+};
+export default TranslationForm;
 
 interface TransFormProps {
   translation: any

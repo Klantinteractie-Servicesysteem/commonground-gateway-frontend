@@ -6,16 +6,18 @@ import {
   Alert
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import FlashMessage from "react-flash-message";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState(null);
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetDocumentation() // we added this
@@ -31,6 +33,8 @@ export default function TranslationTable({ tableName }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+
         throw new Error("GET Documentation error: " + err);
       });
   };

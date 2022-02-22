@@ -22,7 +22,7 @@ export default function MainMenu() {
             <ul className="utrecht-topnav__list">
               <li>
                 <div className="d-flex align-items-center h-100 justify-content-center">
-                  <Link to="/" >
+                  <Link to="/">
                     <img
                       className="logo"
                       alt="Conduction logo"

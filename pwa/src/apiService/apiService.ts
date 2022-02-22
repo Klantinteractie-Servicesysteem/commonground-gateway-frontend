@@ -25,8 +25,8 @@ export default class APIService {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer " + this._jwtToken,
-      },
+        Authorization: "Bearer " + this._jwtToken
+      }
     });
   }
 
@@ -35,8 +35,8 @@ export default class APIService {
       baseURL: GATSBY_API_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 
@@ -45,8 +45,8 @@ export default class APIService {
       baseURL: process.env.GATSBY_READ_THE_DOCS_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 

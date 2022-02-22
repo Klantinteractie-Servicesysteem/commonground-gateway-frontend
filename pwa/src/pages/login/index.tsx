@@ -1,18 +1,17 @@
 import * as React from "react";
 import "./login.css";
 import APIService from "../../apiService/apiService";
-import { setUser } from "./../../services/auth";
+import { setUser } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 import Particles from "react-tsparticles";
 
-
 const Login: React.FC = () => {
-  const [username, setUsername] = React.useState<string>(null)
-  const [password, setPassword] = React.useState<string>(null)
-  const [error, setError] = React.useState<string>(null)
-  const [loading, setLoading] = React.useState<boolean>(false)
-  const API: APIService = new APIService("")
+  const [username, setUsername] = React.useState<string>(null);
+  const [password, setPassword] = React.useState<string>(null);
+  const [error, setError] = React.useState<string>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const API: APIService = new APIService("");
 
   const handleLogin = (): void => {
     setLoading(true)
@@ -42,17 +41,17 @@ const Login: React.FC = () => {
           fpsLimit: 60,
           particles: {
             color: {
-              value: "#ffffff",
+              value: "#ffffff"
             },
             links: {
               color: "#ffffff",
               distance: 150,
               enable: true,
               opacity: 0.5,
-              width: 1,
+              width: 1
             },
             collisions: {
-              enable: true,
+              enable: true
             },
             move: {
               direction: "none",
@@ -60,27 +59,27 @@ const Login: React.FC = () => {
               outMode: "bounce",
               random: false,
               speed: 2,
-              straight: false,
+              straight: false
             },
             number: {
               density: {
                 enable: true,
-                area: 800,
+                area: 800
               },
-              value: 80,
+              value: 80
             },
             opacity: {
-              value: 0.5,
+              value: 0.5
             },
             shape: {
-              type: "circle",
+              type: "circle"
             },
             size: {
               random: true,
-              value: 5,
-            },
+              value: 5
+            }
           },
-          detectRetina: true,
+          detectRetina: true
         }
       } />
 
@@ -114,7 +113,7 @@ const Login: React.FC = () => {
 
       <Footer layoutClassName="login-footer" />
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

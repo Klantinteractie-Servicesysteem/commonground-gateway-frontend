@@ -4,20 +4,25 @@ import {
   Table,
   Card,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function SourcesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [sources, setSources] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetSources();
     handleSetDocumentation();
+    setHeader({title: 'Sources', subText: 'An overview of your source objects'});
   }, [API]);
 
   const handleSetSources = () => {
@@ -27,6 +32,7 @@ export default function SourcesTable() {
         setSources(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Sources error: " + err);
       })
       .finally(() => {
@@ -40,6 +46,7 @@ export default function SourcesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -47,7 +54,7 @@ export default function SourcesTable() {
   return (
     <Card
       title={"Sources"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -78,7 +85,7 @@ export default function SourcesTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -89,11 +96,11 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Location",
-                      field: "location",
+                      field: "location"
                     },
                     {
                       field: "id",
@@ -110,8 +117,8 @@ export default function SourcesTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={sources}
                 />
@@ -120,12 +127,12 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Location",
-                      field: "location",
-                    },
+                      field: "location"
+                    }
                   ]}
                   rows={[]}
                 />

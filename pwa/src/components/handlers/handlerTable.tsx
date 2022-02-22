@@ -3,21 +3,26 @@ import {
   Table,
   Spinner,
   Card,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 export default function HandlersTable({ endpointId }) {
-  const [documentation, setDocumentation] = React.useState<string>(null)
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext)
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetHandlers()
     handleSetDocumentation()
+    setHeader({title: 'Handlers', subText: 'An overview of your handler objects'});
   }, [API]);
 
   const handleSetHandlers = () => {
@@ -27,6 +32,7 @@ export default function HandlersTable({ endpointId }) {
         setHandlers(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET handler from endpoint error: " + err);
       })
       .finally(() => {
@@ -40,6 +46,7 @@ export default function HandlersTable({ endpointId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -47,7 +54,7 @@ export default function HandlersTable({ endpointId }) {
   return (
     <Card
       title="Handlers"
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -72,46 +79,46 @@ export default function HandlersTable({ endpointId }) {
             </a>
             <Link to={`/endpoints/${endpointId}/handlers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
+                <i className="fas fa-plus mr-2"/>
                 Create
               </button>
             </Link>
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner />
+                <Spinner/>
               ) : handlers ? (
                 <Table
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
+                      field: "description"
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link 
-                            className="utrecht-link d-flex justify-content-end" 
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
                             to={`/endpoints/${endpointId}/handlers/${item.id}/`}>
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
+                              <i className="fas fa-edit pr-1"/>
                               Edit
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={handlers}
                 />
@@ -120,12 +127,12 @@ export default function HandlersTable({ endpointId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
-                    },
+                      field: "description"
+                    }
                   ]}
                   rows={[]}
                 />
