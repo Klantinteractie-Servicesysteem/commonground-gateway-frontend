@@ -54,7 +54,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   </tr>
                   <tr>
                     <th>Response time</th>
-                    <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)})s`}</td>
+                    <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                   </tr>
                   <tr>
                     <th>Route</th>
