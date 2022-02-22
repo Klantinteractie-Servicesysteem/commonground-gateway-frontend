@@ -1,12 +1,14 @@
 import * as React from "react";
-import { Link } from "gatsby";
+import {Link} from "gatsby";
 import {
   checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArray
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject,
+  removeEmptyObjectValues
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
+  MultiDimensionalArrayInput,
   Accordion,
   Card,
   Spinner,
@@ -15,17 +17,17 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
-import { navigate } from "gatsby-link";
+import {navigate} from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
+import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 interface SourceFormProps {
   id: string,
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
+export const SourceForm: React.FC<SourceFormProps> = ({id}) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
@@ -52,7 +54,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         setSource(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({message: err, type: "danger"});
         throw new Error("GET gateway error: " + err);
       })
       .finally(() => {
@@ -65,7 +67,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({message: err, type: "danger"});
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -74,7 +76,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
@@ -105,7 +107,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+      setAlert({type: "danger", message: "Required fields are empty"});
       setLoadingOverlay(false);
       return;
     }
@@ -113,11 +115,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     if (!id) { // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
-          setAlert({ type: "success", message: 'Saved source' });
+          setAlert({type: "success", message: 'Saved source'});
           navigate("/sources");
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({type: "danger", message: err.message});
           throw new Error("Create source error: " + err);
         })
         .finally(() => {
@@ -128,11 +130,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     if (id) { // set id means we're updating a existing entry
       API.Source.update(body, id)
         .then((res) => {
-          setAlert({ type: "success", message: 'Updated source' });
+          setAlert({type: "success", message: 'Updated source'});
           setSource(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({type: "danger", message: err.message});
           throw new Error("Update source error: " + err);
         })
         .finally(() => {
@@ -146,7 +148,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     <form id="dataForm" onSubmit={saveSource}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -159,35 +161,35 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                   title="Source Documentation"
                   id="sourceHelpModal"
                   body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    <div dangerouslySetInnerHTML={{__html: documentation}}/>
                   )}
                 />
-                <i className="fas fa-question mr-1" />
+                <i className="fas fa-question mr-1"/>
                 <span className="mr-2">Help</span>
               </button>
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                 </button>
               </Link>
               <button
                 className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
                 type="submit"
               >
-                <i className="fas fa-save mr-2" />Save
+                <i className="fas fa-save mr-2"/>Save
               </button>
             </>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner />
+                  <Spinner/>
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
+                    {loadingOverlay && <LoadingOverlay/>}
                     <div className="row">
                       <div className="col-6">
                         {source !== null && source.name !== null ? (
@@ -215,7 +217,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             id={"locationInput"}
                             data={source.location}
                             nameOverride={"Location (url)"}
-                            infoTooltip={{ content: <p>Enter the source location here</p> }}
+                            infoTooltip={{content: <p>Enter the source location here</p>}}
                           />
                         ) : (
                           <GenericInputComponent
@@ -232,11 +234,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         {source !== null && source.type !== null ? (
                             <SelectInputComponent
                               options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
+                                {name: "json", value: "json"},
+                                {name: "xml", value: "xml"},
+                                {name: "soaps", value: "soaps"},
+                                {name: "ftp", value: "ftp"},
+                                {name: "sftp", value: "sftp"}
                               ]}
                               name={"type"}
                               id={"typeInput"}
@@ -248,11 +250,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                           (
                             <SelectInputComponent
                               options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
+                                {name: "json", value: "json"},
+                                {name: "xml", value: "xml"},
+                                {name: "soaps", value: "soaps"},
+                                {name: "ftp", value: "ftp"},
+                                {name: "sftp", value: "sftp"}
                               ]}
                               name={"type"}
                               id={"typeInput"}
@@ -304,9 +306,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                       <div className="col-12">
                         {source !== null && source.auth !== null ? (
                           <SelectInputComponent
-                            options={[{ name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                            options={[{name: "apikey", value: "apikey"},
+                              {name: "jwt", value: "jwt"},
+                              {name: "username-password", value: "username-password"}
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -317,9 +319,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         ) : (
                           <SelectInputComponent
                             options={[
-                              { name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                              {name: "apikey", value: "apikey"},
+                              {name: "jwt", value: "jwt"},
+                              {name: "username-password", value: "username-password"}
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -485,12 +487,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                       items={[{
                         title: "Headers",
                         id: "headersAccordion",
-                        render: function() {
+                        render: function () {
                           return (
-                            <ElementCreationNew
+                            <MultiDimensionalArrayInput
                               id="headers"
                               label="Headers"
-                              data={source?.headers}
+                              data={source && source.headers ? [{
+                                key: "headers", value: "source.headers"
+                              }] : null}
                             />
                           );
                         }
@@ -498,7 +502,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <ElementCreationNew
                                 id="oas"
@@ -511,7 +515,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <ElementCreationNew
                                 id="paths"
