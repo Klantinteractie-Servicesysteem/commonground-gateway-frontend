@@ -2,45 +2,52 @@ import * as _ from "lodash";
 import * as React from "react";
 
 interface SelectInputProps {
-  options: Array<Record<"value" | "name", any>>;
+  options: Array<Partial<Record<"value" | "name" | "id" | "selected", any>>>;
   name: string;
   nameOverride?: string;
-  id: string;
+  value?: string;
   data?: string;
+  id: string;
   required?: boolean;
+  onChange?: any;
+  disabled?: boolean;
 }
+
 
 /**
  * This component generates a select input.
  * @returns Jsx of the generated form.
  */
-export const SelectInputComponent = (props: SelectInputProps) => {
+export const SelectInputForMultiSelect: React.FC<SelectInputProps> = ({
+                                                                        options,
+                                                                        name,
+                                                                        nameOverride,
+                                                                        value,
+                                                                        id,
+                                                                        data,
+                                                                        required,
+                                                                        onChange,
+                                                                        disabled,
+                                                                      }) => {
   return (
-    <>
       <div className="input-group">
-        <label className="utrecht-form-label"
-               htmlFor={props.id}>{_.upperFirst(props.nameOverride ?? props.name)}</label>
-        <select name={props.name} id={props.id} required={props.required}
-                className="utrecht-select utrecht-select--html-select">
-          {
-            !props.required &&
-            <option></option>
-          }
-          {props.options.map((option) => (
-            <option
-              key={option.value}
-              selected={props.data == null ? false : props.data === option.value}
-              value={option.value}
-            >
+        <select
+          {...{ name, id, required, disabled }}
+          defaultValue={value ?? data}
+          className="utrecht-select utrecht-select--html-select"
+          onChange={onChange}
+        >
+          {!required && <option key={"empty"} />}
+          {options.map((option, idx) => (
+            <option key={idx} value={value ? `${value}${option.id}` : option.value}>
               {_.upperFirst(option.name)}
             </option>
           ))}
         </select>
       </div>
-    </>
   );
 };
 
-SelectInputComponent.defaultProps = {
+SelectInputForMultiSelect.defaultProps = {
   required: false
 };
