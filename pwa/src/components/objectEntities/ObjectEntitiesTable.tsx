@@ -9,7 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -23,12 +22,10 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     entityId && handleSetObjectEntities();
     handleSetDocumentation();
-    setHeader({ title: "Object entities", subText: "An overview of your object entities objects" });
   }, [API, entityId]);
 
   const handleSetObjectEntities = () => {

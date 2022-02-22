@@ -9,7 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
 
 export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -18,12 +17,10 @@ export default function AttributeTable({ entityId }) {
   const API: APIService = React.useContext(APIContext);
   const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetAttributes()
     handleSetDocumentation()
-    setHeader({title: 'Attributes', subText: 'An overview of your attribute objects'});
   }, [API]);
 
   const handleSetAttributes = () => {
