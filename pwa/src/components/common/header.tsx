@@ -1,10 +1,14 @@
 import * as React from "react";
 import {HeaderContext} from "../../context/headerContext";
+import Breadcrumbs from "./breadcrumbs/breadcrumbs";
 
-const Header = () => {
+
+export default function Header({ pageContext, location }) {
+  console.log({context:pageContext})
+  console.log({location:location})
+  const { breadcrumb: { crumbs } } = pageContext
   const [header] = React.useContext(HeaderContext)
-
-  return (
+  return (  
     header ? (
       <>
         <header className="utrecht-page-header">
@@ -12,14 +16,10 @@ const Header = () => {
           <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">
             {header.title}
           </h1>
-          <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-            {header.subText}
-          </h5>
+          <Breadcrumbs {...{crumbs}} />
         </div>
         </header>
       </>
       ) : <></>
   );
 }
-
-export default Header

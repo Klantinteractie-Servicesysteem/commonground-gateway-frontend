@@ -83,7 +83,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        console.log(res.data);
         setAttributes(res.data);
       })
       .catch((err) => {

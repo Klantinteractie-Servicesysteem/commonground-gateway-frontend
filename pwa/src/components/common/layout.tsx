@@ -20,7 +20,7 @@ import Header from "./header";
  * @param {object} children Content that is rendered as body.
  * @returns JSX of the generated Layout.
  */
-export default function Layout({ children }) {
+export default function Layout({ children, pageContext }) {
   const [API, setAPI] = React.useState<APIService>(null);
   const [alert, setAlert] = React.useState<AlertProps>(null);
   const [header, setHeader] = React.useState<HeaderProps>(null);
@@ -53,7 +53,7 @@ export default function Layout({ children }) {
                 <MainMenu />
                 <div className="utrecht-page__content">
                   <header className="utrecht-page-header">
-                    <Header />
+                    <Header pageContext={pageContext} />
                   </header>
                   <div className="container py-4">{children}</div>
                 </div>
