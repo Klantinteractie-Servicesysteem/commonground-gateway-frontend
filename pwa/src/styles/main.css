@@ -236,7 +236,3 @@ a:hover {
 .utrecht-button:disabled:hover {
     cursor: not-allowed;
 }
-
-.select-elementCreation-button {
-    margin-top: 28px;
-}
