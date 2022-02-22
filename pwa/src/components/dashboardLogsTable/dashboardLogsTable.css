@@ -1,0 +1,54 @@
+.dashboardLogsTable {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.dashboardLogsTable table {
+    width: 100%;
+}
+
+.dashboardLogsTable table th,
+.dashboardLogsTable table td {
+    padding: 14px 10px;
+}
+
+.dashboardLogsTable thead th {
+    font-weight: bold;
+    color: #6C757D;
+    padding-bottom: 20px;
+}
+
+.dashboardLogsTable .dashboardLogsTable-tr {
+    border-top: 1px rgba(69, 65, 78, 0.10) solid;
+    transition: transform 100ms ease-in;
+}
+
+.dashboardLogsTable .dashboardLogsTable-tr:hover {
+    transform: scale(1.0175);
+    cursor: pointer;
+}
+
+.dashboardLogsTable tbody tr td {
+    font-size: 16px;
+}
+
+.dashboardLogsTable .dashboardLogsTable-status {
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 6px 10px;
+}
+
+.dashboardLogsTable .dashboardLogsTable-status.success {
+    background-color: #C3E6CB;
+    color: #155724;
+}
+
+.dashboardLogsTable .dashboardLogsTable-status.error {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
+.dashboardLogsTable .dashboardLogsTable-viewLogTd {
+    display: flex;
+    justify-content: right;
+}

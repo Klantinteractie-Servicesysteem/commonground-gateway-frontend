@@ -32,7 +32,7 @@ export const getCall = (config: getCallConfig) => {
   config = handleDefaults(config);
   fetch(config.url, {
     method: "GET",
-    headers: config.headers,
+    headers: config.headers
   })
     .then((response) => {
       if (response.ok) {
@@ -55,7 +55,7 @@ export const postCall = (config: postCallConfig) => {
   fetch(config.url, {
     method: "POST",
     headers: config.headers,
-    body: JSON.stringify(config.body),
+    body: JSON.stringify(config.body)
   })
     .then((response) => {
       if (response.ok) {
@@ -78,7 +78,7 @@ export const putCall = (config: putCallConfig) => {
   fetch(config.url, {
     method: "PUT",
     headers: config.headers,
-    body: JSON.stringify(config.body),
+    body: JSON.stringify(config.body)
   })
     .then((response) => {
       if (response.ok) {
@@ -100,7 +100,7 @@ export const deleteCall = (config: deleteCallConfig) => {
   config = handleDefaults(config);
   fetch(config.url, {
     method: "DELETE",
-    headers: config.headers,
+    headers: config.headers
   })
     .then((response) => {
       if (response.ok) {
@@ -123,7 +123,7 @@ function handleDefaults(config) {
   if (config.headers === undefined) {
     config.headers = {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      Authorization: "Bearer " + sessionStorage.getItem("jwt")
     };
   }
 

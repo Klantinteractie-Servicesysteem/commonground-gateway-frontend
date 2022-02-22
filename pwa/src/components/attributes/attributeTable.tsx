@@ -1,41 +1,76 @@
 import * as React from "react";
-import { Table, Spinner, Card } from "@conductionnl/nl-design-system/lib";
+import {
+  Table,
+  Spinner,
+  Card,
+  Modal
+} from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {AlertContext} from "../../context/alertContext";
+import {HeaderContext} from "../../context/headerContext";
 
 export default function AttributeTable({ entityId }) {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const API: APIService = React.useContext(APIContext)
+  const API: APIService = React.useContext(APIContext);
+  const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { handleSetAttributes() }, [API])
+  React.useEffect(() => {
+    handleSetAttributes()
+    handleSetDocumentation()
+    setHeader({title: 'Attributes', subText: 'An overview of your attribute objects'});
+  }, [API]);
 
   const handleSetAttributes = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        setAttributes(res.data)
+        setAttributes(res.data);
       })
       .catch((err) => {
-        throw new Error ('GET attributes from entity error: ' + err)
+        setAlert({message: err, type: 'danger'})
+        throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
+        setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
       })
-  }
+      .catch((err) => {
+        setAlert({message: err, type: 'danger'})
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <Card
-      title={"Attributes"}
-      cardHeader={function () {
+      title={title}
+      cardHeader={function() {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#attributeHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
+              <Modal
+                title="Attribute Documentation"
+                id="attributeHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -43,7 +78,7 @@ export default function AttributeTable({ entityId }) {
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/attributes/new/${entityId}`}>
+            <Link to={`/entities/${entityId}/attributes/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -52,7 +87,7 @@ export default function AttributeTable({ entityId }) {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -63,26 +98,29 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Type",
-                      field: "type",
+                      field: "type"
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/attributes/${item.id}/${entityId}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/entities/${entityId}/attributes/${item.id}`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={attributes}
                 />
@@ -91,12 +129,12 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Type",
-                      field: "type",
-                    },
+                      field: "type"
+                    }
                   ]}
                   rows={[]}
                 />

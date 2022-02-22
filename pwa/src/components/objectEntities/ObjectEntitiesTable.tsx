@@ -1,45 +1,80 @@
 import * as React from "react";
-import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
+import {
+  Table,
+  Card,
+  Spinner,
+  Modal
+} from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 interface ObjectEntitiesTableProps {
-  entityId: string,
+  entityId: string;
 }
 
-const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
+const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
+                                                                   entityId
+                                                                 }) => {
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => { entityId && handleSetObjectEntities() }, [API, entityId])
+  React.useEffect(() => {
+    entityId && handleSetObjectEntities();
+    handleSetDocumentation();
+    setHeader({ title: "Object entities", subText: "An overview of your object entities objects" });
+  }, [API, entityId]);
 
   const handleSetObjectEntities = () => {
-    setShowSpinner(true)
+    setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        setObjectEntities(res.data)
+        setObjectEntities(res.data);
       })
       .catch((err) => {
-        throw new Error ('GET object entities error: ' + err)
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
-        setShowSpinner(false)
-      })
-  }
+        setShowSpinner(false);
+      });
+  };
 
-  return (<>
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
+
+  return (
     <Card
       title={"Object entities"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#ObjectEntityHelpModal"
             >
+              <Modal
+                title="Object Entities Documentation"
+                id="ObjectEntityHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -47,7 +82,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/object_entities/new/${entityId}`}>
+            <Link to={`/entities/${entityId}/object_entities/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -56,7 +91,7 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -67,26 +102,29 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
                   columns={[
                     {
                       headerName: "Uri",
-                      field: "uri",
+                      field: "uri"
                     },
                     {
                       headerName: "Owner",
-                      field: "owner",
+                      field: "owner"
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/object_entities/${item.id}/${entityId}`}>
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/entities/${entityId}/object_entities/${item.id}`}
+                          >
                             <button className="utrecht-button btn-sm btn-success">
                               <i className="fas fa-edit pr-1" />
                               Edit
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={objectEntities}
                 />
@@ -95,12 +133,12 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
                   columns={[
                     {
                       headerName: "Uri",
-                      field: "uri",
+                      field: "uri"
                     },
                     {
                       headerName: "Owner",
-                      field: "owner",
-                    },
+                      field: "owner"
+                    }
                   ]}
                   rows={[]}
                 />
@@ -109,8 +147,8 @@ const ObjectEntitiesTable:React.FC<ObjectEntitiesTableProps> = ({ entityId }) =>
           </div>
         );
       }}
-    /></>
+    />
   );
-}
+};
 
-export default ObjectEntitiesTable
+export default ObjectEntitiesTable;
