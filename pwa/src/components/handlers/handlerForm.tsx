@@ -45,6 +45,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
       handleSetHandlers();
       handleSetHandler();
       handleSetDocumentation();
+      getTableNames()
       setHeader({
         title: "Handler",
         subText: "Manage your handler here"
@@ -90,6 +91,24 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Handlers error: " + err);
       })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const getTableNames = () => {
+    setShowSpinner(true);
+
+    API.Translation.getTableNames()
+      .then((res) => {
+        let names = [];
+        let results = res.data.results;
+        for (let i = 0; i < results.length; i++) {
+          names.push({name: results[i]})
+        }
+        setTableNames(names);
+      })
+      .catch((err) => { throw new Error('GET table names error: ' + err) })
       .finally(() => {
         setShowSpinner(false);
       });
