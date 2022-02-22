@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import {isLoggedIn, logout} from "../../services/auth";
+import { isLoggedIn, validateSession } from "../../services/auth";
 import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
@@ -25,15 +25,6 @@ export default function Layout({ children }) {
   const [alert, setAlert] = React.useState<AlertProps>(null);
   const [header, setHeader] = React.useState<HeaderProps>(null);
 
-  const parseJwt = (token) => {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
-      return null;
-    }
-  };
-  const decodedJwt = parseJwt(sessionStorage.getItem('jwt'));
-
   React.useEffect(() => {
     if (!isLoggedIn()) {
       setAPI(null);
@@ -42,6 +33,7 @@ export default function Layout({ children }) {
 
     const jwt = sessionStorage.getItem("jwt");
     !API && jwt && setAPI(new APIService(jwt));
+    validateSession(jwt)
   }, [API, isLoggedIn()]);
 
   return (
