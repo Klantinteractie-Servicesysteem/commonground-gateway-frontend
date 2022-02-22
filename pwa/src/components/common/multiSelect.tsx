@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SelectInputComponent } from "@conductionnl/nl-design-system";
+import { SelectInputForMultiSelect } from "../utility/selectInput";
 
 interface ElementCreationNewProps {
   id: string;
@@ -13,7 +13,7 @@ interface IValue {
   value: string,
 }
 
-const MultiSelect: React.FC<ElementCreationNewProps> = ({ id, label,  data, options }) => {
+const MultiSelect: React.FC<ElementCreationNewProps> = ({ id, label, data, options }) => {
   const [value, setValue] = React.useState<string>("");
   const [values, setValues] = React.useState<IValue[]>([]);
 
@@ -76,7 +76,7 @@ const MultiSelect: React.FC<ElementCreationNewProps> = ({ id, label,  data, opti
       <div className="row">
         <h5>Create {label}</h5>
         <div className="col-10">
-          <SelectInputComponent
+          <SelectInputForMultiSelect
             options={options !== null && options.length > 0 ? options : []}
             name={id} id={`${id}Input`}
             nameOverride={label}
