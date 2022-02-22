@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Link } from "gatsby";
+import {Link} from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject
 } from "../utility/inputHandler";
-import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import {
   GenericInputComponent,
   Checkbox,
@@ -18,18 +18,19 @@ import {
   Alert, Modal
 } from "@conductionnl/nl-design-system/lib";
 import FlashMessage from "react-flash-message";
-import { navigate } from "gatsby-link";
+import {navigate} from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import {MIMETypes} from "../../data/mimeTypes";
 
 interface AttributeFormProps {
   attributeId: string,
   entityId: string,
 }
 
-export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entityId }) => {
+export const AttributeForm: React.FC<AttributeFormProps> = ({attributeId, entityId}) => {
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -91,6 +92,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     setLoadingOverlay(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
+    let fileTypes = retrieveFormArrayAsOArray(event.target, "fileTypes");
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
     let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
     let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
@@ -116,14 +118,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       writeOnly: event.target.writeOnly.checked,
       readOnly: event.target.readOnly.checked,
       deprecated: event.target.deprecated.checked,
-      defaultValue: event.target.defaultValue.value
-        ? event.target.defaultValue.value : null,
-      fileTypes: [event.target.fileTypes.value] ?? null,
-      example: event.target.example.value
-        ? event.target.example.value : null,
+      defaultValue: event.target.defaultValue.value ?? null,
+      example: event.target.example.value ?? null,
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value) : null,
-      inversedBy: event.target.inversedBy.checked,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value) : null,
       maximum: event.target.maximum.value
@@ -140,14 +138,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         ? parseInt(event.target.maxItems.value) : null,
       minItems: event.target.minItems.value
         ? parseInt(event.target.minItems.value) : null,
-      maxDate: event.target.maxDate.value
-        ? event.target.maxDate.value : null,
-      minDate: event.target.minDate.value
-        ? event.target.minDate.value : null,
+      maxDate: event.target.maxDate.value ?? null,
+      minDate: event.target.minDate.value ?? null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
         ? parseInt(event.target.minProperties.value) : null,
       maxProperties: event.target.maxProperties.value ?? null,
+      fileTypes,
       attributeEnum,
       allOf,
       oneOf,
@@ -161,7 +158,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     if (!checkValues([body["name"], body["type"]])) {
       setAlert(null);
-      setAlert({ type: "danger", message: "Required fields are empty" });
+      setAlert({type: "danger", message: "Required fields are empty"});
       setLoadingOverlay(false);
       return;
     }
@@ -172,7 +169,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
           navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({type: "danger", message: err.message});
           throw new Error("Create application error: " + err);
         })
         .finally(() => {
@@ -186,7 +183,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
           setAttribute(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({type: "danger", message: err.message});
           throw new Error("Update application error: " + err);
         })
         .finally(() => {
@@ -200,15 +197,15 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       {
         alert !== null &&
         <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function() {
+          <Alert alertClass={alert.type} body={function () {
             return (<>{alert.message}</>);
-          }} />
+          }}/>
         </FlashMessage>
       }
       <form id="attributeForm" onSubmit={saveAttribute}>
         <Card
           title={title}
-          cardHeader={function() {
+          cardHeader={function () {
             return (<>
               <button
                 className="utrecht-link button-no-style"
@@ -220,31 +217,31 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                   title="Attribute Documentation"
                   id="attributeHelpModal"
                   body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                    <div dangerouslySetInnerHTML={{__html: documentation}}/>
                   )}
                 />
-                <i className="fas fa-question mr-1" />
+                <i className="fas fa-question mr-1"/>
                 <span className="mr-2">Help</span>
               </button>
               <Link className="utrecht-link" to={`/entities/${entityId}`}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
                 </button>
               </Link>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                <i className="fas fa-save mr-2" />Save
+                <i className="fas fa-save mr-2"/>Save
               </button>
             </>);
           }}
-          cardBody={function() {
+          cardBody={function () {
             return (
               <div className="row">
                 <div className="col-12">
                   {showSpinner === true ? (
-                    <Spinner />
+                    <Spinner/>
                   ) : (
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
+                      {loadingOverlay && <LoadingOverlay/>}
                       <div className="row">
                         <div className="col-6">
                           <GenericInputComponent
@@ -258,24 +255,24 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         <div className="col-6">
                           <SelectInputComponent
                             options={[
-                              { name: "String", value: "string" },
-                              { name: "Array", value: "array" },
-                              { name: "Integer", value: "integer" },
-                              { name: "Boolean", value: "boolean" },
-                              { name: "Object", value: "object" },
-                              { name: "Date", value: "date" },
-                              { name: "Datetime", value: "datetime" },
-                              { name: "Number", value: "number" },
-                              { name: "Float", value: "float" },
-                              { name: "File", value: "file" }
+                              {name: "String", value: "string"},
+                              {name: "Array", value: "array"},
+                              {name: "Integer", value: "integer"},
+                              {name: "Boolean", value: "boolean"},
+                              {name: "Object", value: "object"},
+                              {name: "Date", value: "date"},
+                              {name: "Datetime", value: "datetime"},
+                              {name: "Number", value: "number"},
+                              {name: "Float", value: "float"},
+                              {name: "File", value: "file"}
                             ]}
                             name={"type"}
                             id={"typeInput"}
                             nameOverride={"Type"}
-                            data={attribute && attribute.type && attribute.type} required />
+                            data={attribute && attribute.type && attribute.type} required/>
                         </div>
                       </div>
-                      <br />
+                      <br/>
                       <div className="row">
                         <div className="col-6">
                           {
@@ -304,7 +301,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                               </>
                             ) : (
                               <SelectInputComponent
-                                options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
+                                options={[{name: "Please create a attribute to use inversedBy", value: null}]}
                                 name={"inversedBy"}
                                 id={"inversedByInput"}
                                 nameOverride={"inversedBy"}
@@ -314,18 +311,18 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         <div className="col-6">
                           <SelectInputComponent
                             options={[
-                              { name: "Email", value: "email" },
-                              { name: "Phone", value: "phone" },
-                              { name: "Country code", value: "country code" },
-                              { name: "BSN", value: "bsn" },
-                              { name: "Url", value: "url" },
-                              { name: "UUID", value: "uuid" },
-                              { name: "Json", value: "json" }
+                              {name: "Email", value: "email"},
+                              {name: "Phone", value: "phone"},
+                              {name: "Country code", value: "country code"},
+                              {name: "BSN", value: "bsn"},
+                              {name: "Url", value: "url"},
+                              {name: "UUID", value: "uuid"},
+                              {name: "Json", value: "json"}
                             ]}
                             name={"format"}
                             id={"formatInput"}
                             nameOverride={"Format"}
-                            data={attribute && attribute.format && attribute.format} />
+                            data={attribute && attribute.format && attribute.format}/>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -335,7 +332,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             name={"defaultValue"}
                             id={"defaultValueInput"}
                             data={attribute && attribute.defaultValue && attribute.defaultValue}
-                            nameOverride={"Default Value"} />
+                            nameOverride={"Default Value"}/>
                         </div>
                         <div className="col-6">
                           <GenericInputComponent
@@ -386,7 +383,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                               id={"exclusiveMaximumInput"}
                               nameLabel={"Exclusive Maximum"}
                               nameAttribute={"exclusiveMaximum"}
-                              data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum} />
+                              data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum}/>
                           </div>
                         </div>
                       </div>
@@ -483,17 +480,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         <div className="col-6">
                           <GenericInputComponent
                             type={"text"}
-                            name={"fileTypes"}
-                            id={"fileTypesInput"}
-                            data={attribute && attribute.fileTypes && attribute.fileTypes}
-                            nameOverride={"File Types"}
-                          />
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
                             name={"maxFileSize"}
                             id={"maxFileSizeInput"}
                             data={attribute && attribute.maxFileSize && attribute.maxFileSize}
@@ -511,17 +497,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         </div>
                       </div>
                       <div className="row mt-3">
-                        <div className="col-12 col-sm-6 ">
-                          <div className="form-check">
-                            <Checkbox
-                              type={"checkbox"}
-                              id={"inversedByInput"}
-                              nameLabel={"Inversed By"}
-                              nameAttribute={"inversedBy"}
-                              data={attribute && attribute.inversedBy && attribute.inversedBy}
-                            />
-                          </div>
-                        </div>
                         <div className="col-12 col-sm-6 ">
                           <div className="form-check">
                             <Checkbox
@@ -638,7 +613,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                               nameLabel={"Write Only"}
                               nameAttribute={"writeOnly"}
                               data={attribute && attribute.writeOnly && attribute.writeOnly}
-                              defaultValue={"true"} />
+                              defaultValue={"true"}/>
                           </div>
                         </div>
                         <div className="col-12 col-sm-6">
@@ -656,26 +631,42 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                       </div>
                       <Accordion
                         id="attributeAccordion"
-                        items={[{
-                          title: "Object Config",
-                          id: "objectConfigAccordion",
-                          render: function() {
-                            return (
-                              <MultiDimensionalArrayInput
-                                id={"objectConfig"}
-                                label={"Object Config"}
-                                data={attribute && attribute.objectConfig ? [{
-                                  key: "objectConfig",
-                                  value: attribute.objectConfig
-                                }] : null}
-                              />
-                            );
-                          }
-                        },
+                        items={[
+                          {
+                            title: "Object Config",
+                            id: "objectConfigAccordion",
+                            render: function () {
+                              return (
+                                <MultiDimensionalArrayInput
+                                  id={"objectConfig"}
+                                  label={"Object Config"}
+                                  data={attribute && attribute.objectConfig ? [{
+                                    key: "objectConfig",
+                                    value: attribute.objectConfig
+                                  }] : null}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            title: "File Types",
+                            id: "fileTypesAccordion",
+                            render: function () {
+                              return (
+                                <ElementCreationNew
+                                  id="fileTypes"
+                                  label="File Types"
+                                  data={attribute?.fileTypes}
+                                  select
+                                  options={MIMETypes}
+                                />
+                              );
+                            }
+                          },
                           {
                             title: "Enum",
                             id: "enumAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <ElementCreationNew
                                   id={"enum"}
@@ -688,7 +679,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           {
                             title: "Required If",
                             id: "requiredIfAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <MultiDimensionalArrayInput
                                   id={"requiredIf"}
@@ -704,7 +695,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           {
                             title: "Forbidden If",
                             id: "forbiddenIfAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <ElementCreationNew
                                   id={"forbiddenIf"}
@@ -717,7 +708,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           {
                             title: "All Of",
                             id: "allOfAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <ElementCreationNew
                                   label={"All Of"}
@@ -730,7 +721,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           {
                             title: "Any Of",
                             id: "anyOfAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <ElementCreationNew
                                   label={"Any Of"}
@@ -743,7 +734,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           {
                             title: "One Of",
                             id: "oneOfAccordion",
-                            render: function() {
+                            render: function () {
                               return (
                                 <ElementCreationNew
                                   label={"One Of"}
@@ -752,13 +743,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                 />);
                             }
                           }
-                        ]} />
+                        ]}/>
                     </div>
                   )}
                 </div>
               </div>
             );
-          }} />
+          }}/>
       </form>
     </div>
   );
