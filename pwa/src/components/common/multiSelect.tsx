@@ -1,19 +1,25 @@
+import * as _ from "lodash";
 import * as React from "react";
-import { SelectInputForMultiSelect } from "../utility/selectInput";
 
-interface ElementCreationNewProps {
+interface MultiSelectProps {
   id: string;
   label: string;
+  options: ISelectOption[];
   data?: any;
-  options?: Array<Partial<Record<"value" | "name" | "id" | "selected", any>>>;
+}
+
+interface ISelectOption {
+  id: string,
+  name: string,
+  value: string
 }
 
 interface IValue {
   id: string,
-  value: string,
+  value: string
 }
 
-const MultiSelect: React.FC<ElementCreationNewProps> = ({ id, label, data, options }) => {
+export const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) => {
   const [value, setValue] = React.useState<string>("");
   const [values, setValues] = React.useState<IValue[]>([]);
 
@@ -76,12 +82,21 @@ const MultiSelect: React.FC<ElementCreationNewProps> = ({ id, label, data, optio
       <div className="row">
         <h5>Create {label}</h5>
         <div className="col-10">
-          <SelectInputForMultiSelect
-            options={options !== null && options.length > 0 ? options : []}
-            name={id} id={`${id}Input`}
-            nameOverride={label}
-            onChange={(e) => setValue(e.target.value)}
-          />
+          <div className="input-group">
+            <select
+              id={`${id}Input`}
+              name={id}
+              defaultValue={value ?? data}
+              className="utrecht-select utrecht-select--html-select"
+              onChange={(e) => setValue(e.target.value)}
+            >
+              {options.map((option, idx) => (
+                <option key={idx} value={value ? `${value}${option.id}` : option.value}>
+                  {_.upperFirst(option.name)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="col-2 select-elementCreation-button">
           <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
