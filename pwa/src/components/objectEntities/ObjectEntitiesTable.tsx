@@ -101,8 +101,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "ID",
-                      field: "id"
+                      headerName: "External Id",
+                      field: "externalId"
                     },
                     {
                       headerName: "Owner",
@@ -132,8 +132,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "External Id",
+                      field: "externalId"
                     },
                     {
                       headerName: "Owner",
