@@ -33,7 +33,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                 <td><span className={`dashboardLogsTable-status ${statusClass}`}>{log.responseStatusCode}</span></td>
                 <td>{log.type}</td>
                 <td>{log.requestMethod}</td>
-                <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)})s`}</td>
+                <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                 <td className="dashboardLogsTable-viewLogTd">
                   <button
                     type="button"

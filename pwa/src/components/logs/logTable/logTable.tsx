@@ -31,10 +31,6 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     handleSetDocumentation()
   }, [API, entityId, endpointId, sourceId]);
 
-  function millisecondsToSeconds(millis) {
-    return Math.round(millis / 1000);
-  }
-
   const handleSetLogs = () => {
     setShowSpinner(true);
 
@@ -171,7 +167,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                           field: "responseTime",
                           renderCell: (item) => {
                             return (
-                              item && `${item.responseTime}ms (${msToSeconds(item.responseTime)})`
+                              item && `${item.responseTime}ms (${msToSeconds(item.responseTime)}s)`
                             );
                           }
                         },
