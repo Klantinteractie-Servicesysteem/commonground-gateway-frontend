@@ -5,7 +5,7 @@ import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
-  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId
+  const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
 
   return (
     <main>
@@ -46,34 +46,14 @@ const IndexPage = (props) => {
               <br />
               <EndpointForm {...{ endpointId }} />
             </div>
-            <div className="tab-content">
-              <div
-                className="tab-pane active"
-                id="overview"
-                role="tabpanel"
-                aria-labelledby="overview-tab"
-              >
-                <br />
-                <EndpointForm {...{ endpointId }} />
-              </div>
-              <div
-                className="tab-pane"
-                id="handlers"
-                role="tabpanel"
-                aria-labelledby="handlers-tab"
-              >
-                <br />
-                <HandlersTable {...{ endpointId }} />
-              </div>
-              <div
-                className="tab-pane"
-                id="logs"
-                role="tabpanel"
-                aria-labelledby="logs-tab"
-              >
-                <br />
-                <LogTable {...{endpointId}}/>
-              </div>
+            <div
+              className="tab-pane"
+              id="handlers"
+              role="tabpanel"
+              aria-labelledby="handlers-tab"
+            >
+              <br />
+              <HandlersTable {...{ endpointId }} />
             </div>
             <div
               className="tab-pane"
@@ -82,8 +62,17 @@ const IndexPage = (props) => {
               aria-labelledby="logs-tab"
             >
               <br />
-              <LogTable />
+              <LogTable {...{ endpointId }} />
             </div>
+          </div>
+          <div
+            className="tab-pane"
+            id="logs"
+            role="tabpanel"
+            aria-labelledby="logs-tab"
+          >
+            <br />
+            <LogTable />
           </div>
         </div>
       </div>
