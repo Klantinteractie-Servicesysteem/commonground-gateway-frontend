@@ -14,16 +14,16 @@ interface MultiDimensionalArrayInputProps {
  * This components handles multidimensional array input forms.
  * @returns JSX of the generated form.
  */
-export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProps) {
+const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({ data, id, label, deleteFunction, addFunction}) => {
   const deleteElement = deleteElementFunction;
 
   return (
     <>
-      <div id={`new${_.upperFirst(props.id)}`}>
+      <div id={`new${_.upperFirst(id)}`}>
         <ul style={{ paddingLeft: 0 }}>
-          {props.data !== undefined &&
-          props.data !== null &&
-          props.data.map((item) => (
+          {data !== undefined &&
+          data !== null &&
+          data.map((item) => (
             item.value && Object.entries(item.value).map(([key, value], idx) => {
               return (
                   <div className="d-flex">
@@ -33,8 +33,8 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
                         <input
                           type="text"
                           id="value"
-                          name={`${props.id}[${key}]`}
-                          value={value}
+                          name={`${id}[${key}]`}
+                          value={value.toString()}
                           className="utrecht-textbox utrecht-textbox--html-input mb-2"
                         />
                       </div>
@@ -56,18 +56,18 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
       </div>
       <br />
       <div className="separator-solid" />
-      <h5>Create {props.label ?? props.id}</h5>
+      <h5>Create {label ?? id}</h5>
       <div className="d-flex">
         <div>
           <div className="form-group">
             <span className="utrecht-form-label">Key</span>
-            <input type="text" id={`new${_.upperFirst(props.id)}Key`} className="form-control" />
+            <input type="text" id={`new${_.upperFirst(id)}Key`} className="form-control" />
           </div>
         </div>
         <div className="col-4">
           <div className="form-group">
             <span className="utrecht-form-label">Value</span>
-            <input type="text" id={`new${_.upperFirst(props.id)}Value`} className="form-control" />
+            <input type="text" id={`new${_.upperFirst(id)}Value`} className="form-control" />
           </div>
         </div>
         <div className="col-2 my-auto">
@@ -76,10 +76,10 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
             className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
             onClick={() => {
               addElement(
-                `new${_.upperFirst(props.id)}`,
-                `new${_.upperFirst(props.id)}Key`,
-                `new${_.upperFirst(props.id)}Value`,
-                `${props.id}`,
+                `new${_.upperFirst(id)}`,
+                `new${_.upperFirst(id)}Key`,
+                `new${_.upperFirst(id)}Value`,
+                `${id}`,
                 deleteElement
               );
             }}
@@ -91,3 +91,5 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
     </>
   );
 }
+
+export default MultiDimensionalArrayInput;
