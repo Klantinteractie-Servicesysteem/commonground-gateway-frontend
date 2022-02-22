@@ -1,5 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface MultiSelectProps {
   id: string;
@@ -69,7 +71,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
                     onClick={handleDelete}
                     className="utrecht-button utrecht-button-sm btn-danger"
                   >
-                    Delete
+                    <FontAwesomeIcon icon={faTrash} /> Delete
                   </button>
                 </div>
               </div>
@@ -99,7 +101,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
           </div>
         </div>
         <div className="col-2 select-elementCreation-button">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
+            <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>
       </div>
