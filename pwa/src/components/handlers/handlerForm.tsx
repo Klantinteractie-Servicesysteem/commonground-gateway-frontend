@@ -14,7 +14,6 @@ import {
   Card,
   Modal
 } from "@conductionnl/nl-design-system/lib";
-import {isLoggedIn} from "../../services/auth";
 import {MultiDimensionalArrayInput} from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import {navigate} from "gatsby-link";
