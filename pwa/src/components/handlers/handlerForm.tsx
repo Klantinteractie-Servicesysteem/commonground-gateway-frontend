@@ -25,6 +25,7 @@ import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiSelect from "../common/multiSelect";
 
 interface HandlerFormProps {
   id: string,
@@ -356,12 +357,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsInAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
+                              <MultiSelect
                                 id="translationsIn"
                                 label="Translations In"
                                 data={handler?.translationsIn}
-                                select
-                                selectName={"translationIn"}
                                 options={tableNames}
                               />
                             );
@@ -372,12 +371,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsOutAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
+                              <MultiSelect
                                 id="translationsOut"
                                 label="Translations Out"
                                 data={handler?.translationsOut}
-                                select
-                                selectName={"translationOut"}
                                 options={tableNames}
                               />
                             );
