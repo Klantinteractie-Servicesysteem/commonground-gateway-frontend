@@ -14,7 +14,7 @@ button. Tell GitHub where you want to spin up your prototype and click "create a
 
 ## Spinning up your environment
 
-You will need Node.js (with NPM) or Yarn installed on your machine for this part of the tutorial.
+You will need [Node.js](https://nodejs.org/en/download/) (with [NPM](https://docs.npmjs.com/cli/v7/configuring-npm/install)) or [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable) installed on your machine for this part of the tutorial.
 
 To develop locally, clone your new repository to your local machine. Open the terminal, navigate to the folder
 containing your repository, and start up Gatsby or Next.js in development mode with the following commands.
