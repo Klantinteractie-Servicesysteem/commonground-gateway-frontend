@@ -12,11 +12,9 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import FlashMessage from "react-flash-message";
 import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import { navigate } from "gatsby-link";
@@ -357,12 +355,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsInAccordion",
                           render: function() {
                             return (
-                              <MultiSelect
-                                id="translationsIn"
-                                label="Translations In"
-                                data={handler?.translationsIn}
-                                options={tableNames}
-                              />
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsIn"
+                                  label="Translations In"
+                                  data={handler?.translationsIn}
+                                  options={tableNames}
+                                />
+                                ) : (
+                                  <></>
+                              )
                             );
                           }
                         },
@@ -371,12 +373,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsOutAccordion",
                           render: function() {
                             return (
+                              tableNames ? (
                               <MultiSelect
                                 id="translationsOut"
                                 label="Translations Out"
                                 data={handler?.translationsOut}
                                 options={tableNames}
                               />
+                              ) : (
+                                <></>
+                              )
                             );
                           }
                         },
@@ -449,4 +455,3 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     </form>
   );
 };
-export default HandlerForm;
