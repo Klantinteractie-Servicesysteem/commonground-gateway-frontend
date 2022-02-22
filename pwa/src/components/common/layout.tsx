@@ -35,35 +35,31 @@ export default function Layout({ children, pageContext }) {
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
-  return (
-    API ? (
-      <APIProvider value={API}>
-        <AlertProvider value={[alert, setAlert]}>
-          <HeaderProvider value={[header, setHeader]}>
-            <Alert />
-            <Helmet
-              link={[
-                { rel: "shortcut icon", type: "image/png", href: favicon }
-              ]}
-            >
-              <title>Gateway Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <header className="utrecht-page-header">
-                    <Header pageContext={pageContext} />
-                  </header>
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
+  return API ? (
+    <APIProvider value={API}>
+      <AlertProvider value={[alert, setAlert]}>
+        <HeaderProvider value={[header, setHeader]}>
+          <Alert />
+          <Helmet link={[{ rel: "shortcut icon", type: "image/png", href: favicon }]}>
+            <title>Gateway Admin Dashboard</title>
+          </Helmet>
+          <div className="utrecht-document conduction-theme">
+            <div className="utrecht-page">
+              <MainMenu />
+              <div className="utrecht-page__content">
+                <header className="utrecht-page-header">
+                  <Header pageContext={pageContext} />
+                </header>
+                <div className="container py-4">{children}</div>
               </div>
+              <Footer />
             </div>
-            <WelcomeModal />
-          </HeaderProvider>
-        </AlertProvider>
-      </APIProvider>
-    ) : <Login />
+          </div>
+          <WelcomeModal />
+        </HeaderProvider>
+      </AlertProvider>
+    </APIProvider>
+  ) : (
+    <Login />
   );
 }

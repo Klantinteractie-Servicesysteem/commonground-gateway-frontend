@@ -1,5 +1,5 @@
 require("dotenv").config({
-  path: `.env.${process.env.NODE_ENV}`
+  path: `.env.${process.env.NODE_ENV}`,
 });
 
 module.exports = {
@@ -19,25 +19,17 @@ module.exports = {
           `**/dev-404-page/**`,
           `**/404/**`,
           `**/404.html`,
-          `**/offline-plugin-app-shell-fallback/**`
+          `**/offline-plugin-app-shell-fallback/**`,
         ],
         excludeOptions: {
-          separator: '.'
+          separator: ".",
         },
         autoGenHomeLabel: "Dashboard",
         crumbLabelUpdates: [
-          {
-            pathname: '/entities',
-            crumbLabel: 'Object Types',
-          },
-          {
-            pathname: '/entities/[entityId]',
-            crumbLabel: 'Object Type',
-          },
-          {
-            pathname: '/entities/[entityId]/attributes/[attributeId]',
-            crumbLabel: 'Attribute',
-          }
+          // {
+          //   pathname: '/entities',
+          //   crumbLabel: 'Object Types',
+          // },
         ],
       },
     },
