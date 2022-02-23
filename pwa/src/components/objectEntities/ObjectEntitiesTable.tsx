@@ -124,11 +124,19 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                     },
                     {
                       headerName: "Created",
-                      field: "dateCreated"
+                      field: "dateCreated",
+                      renderCell: (item: { dateCreated: string }) => {
+                        const date = new Date(item.dateCreated.toLocaleString());
+                        return (date)
+                      }
                     },
                     {
                       headerName: "Updated",
-                      field: "dateModified"
+                      field: "dateModified",
+                      renderCell: (item: { dateModified: string }) => {
+                        const date = new Date(item.dateModified.toLocaleString());
+                        return (date)
+                      }
                     },
                     {
                       field: "id",
