@@ -1,13 +1,10 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { Table, Card, Spinner, Alert } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 
 export default function TableNamesTable() {
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
