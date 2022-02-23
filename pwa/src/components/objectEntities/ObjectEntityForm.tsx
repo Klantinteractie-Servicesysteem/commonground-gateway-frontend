@@ -119,7 +119,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     if (!objectId) { // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
-          setAlert({ message: 'Saved object entities', type: "success" });
+          setAlert({ message: "Saved object entities", type: "success" });
           navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
@@ -134,7 +134,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     if (objectEntity) { // set id means we're updating a existing entry
       API.ObjectEntity.update(body, objectId)
         .then((res) => {
-          setAlert({ message: 'Updated object entities', type: "success" });
+          setAlert({ message: "Updated object entities", type: "success" });
           setObjectEntity(res.data);
         })
         .catch((err) => {

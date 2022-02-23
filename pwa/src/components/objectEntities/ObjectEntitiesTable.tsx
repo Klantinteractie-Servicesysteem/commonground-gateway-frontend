@@ -101,12 +101,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "External Id",
-                      field: "externalId"
+                      headerName: "Id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
                       field: "owner"
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated"
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified"
                     },
                     {
                       field: "id",
@@ -132,12 +140,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "External Id",
-                      field: "externalId"
+                      headerName: "Id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
                       field: "owner"
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated"
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified"
                     }
                   ]}
                   rows={[]}
