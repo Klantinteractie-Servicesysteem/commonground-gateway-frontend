@@ -31,12 +31,14 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ tableName }) =
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-    tableName && handleSetTranslation();
     setHeader({
       title: "Translation",
-      subText: "Manage your translations here"
+      subText: "Manage your translation here"
     });
+  }, [setHeader])
+
+  React.useEffect(() => {
+    tableName && handleSetTranslation()
   }, [API, tableName]);
 
   const handleSetTranslation = () => {

@@ -15,7 +15,7 @@ import {
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
+import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
@@ -44,6 +44,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+      setHeader({
+        title: "Handler",
+        subText: "Manage your handler here"
+      });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL
@@ -54,11 +65,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       }
       getEntities();
       getTableNames();
-      handleSetDocumentation()
-      setHeader({
-        title: "Handler",
-        subText: "Manage your handler here"
-      });
     }
   }, [context]);
 

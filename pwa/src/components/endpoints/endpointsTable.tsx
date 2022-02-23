@@ -22,9 +22,15 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetEndpoints();
+    setHeader({title: 'Endpoints', subText: 'An overview of your endpoint objects'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({ title: "Endpoints", subText: "An overview of your endpoint objects" });
+  });
+
+  React.useEffect(() => {
+    handleSetEndpoints();
   }, [API]);
 
   const handleSetEndpoints = () => {

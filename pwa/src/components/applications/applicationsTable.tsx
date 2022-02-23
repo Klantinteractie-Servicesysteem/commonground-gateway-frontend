@@ -22,9 +22,15 @@ export default function ApplicationsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetApplications();
+    setHeader({title: 'Applications', subText: 'An overview of your application objects'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({ title: "Applications", subText: "An overview of your application objects" });
+  });
+
+  React.useEffect(() => {
+    handleSetApplications();
   }, [API]);
 
   const handleSetApplications = (): void => {

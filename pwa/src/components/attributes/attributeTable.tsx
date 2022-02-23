@@ -4,7 +4,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
@@ -16,12 +15,14 @@ export default function AttributeTable({ entityId }) {
   const API: APIService = React.useContext(APIContext);
   const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetAttributes();
-    handleSetDocumentation();
-    setHeader({ title: "Attributes", subText: "An overview of your attribute objects" });
+    handleSetDocumentation()
+  });
+
+  React.useEffect(() => {
+    handleSetAttributes()
+    handleSetDocumentation()
   }, [API]);
 
   const handleSetAttributes = () => {

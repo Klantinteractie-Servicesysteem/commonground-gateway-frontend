@@ -33,13 +33,19 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetSources();
-    handleSetDocumentation();
-    entityId && handleSetEntity();
     setHeader({
       title: "Object type",
       subText: "Manage your object type here"
     });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetSources();
+    entityId && handleSetEntity();
   }, [API, entityId]);
 
   const handleSetEntity = () => {
