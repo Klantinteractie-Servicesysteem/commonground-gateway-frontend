@@ -1,15 +1,13 @@
 import * as React from "react";
-import {
-  Table,
-  Spinner,
-  Card,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
 export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -21,9 +19,9 @@ export default function AttributeTable({ entityId }) {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetAttributes()
-    handleSetDocumentation()
-    setHeader({title: 'Attributes', subText: 'An overview of your attribute objects'});
+    handleSetAttributes();
+    handleSetDocumentation();
+    setHeader({ title: "Attributes", subText: "An overview of your attribute objects" });
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -33,7 +31,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
@@ -47,15 +45,29 @@ export default function AttributeTable({ entityId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteAttribute = (id): void => {
+    if (confirm(`Do you want to delete this attribute?`)) {
+      API.Attribute.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted attribute`, type: "success" });
+          handleSetAttributes();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE attribute error: " + err);
+        });
+    }
   };
 
   return (
     <Card
       title={title}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
             <button
@@ -67,9 +79,7 @@ export default function AttributeTable({ entityId }) {
               <Modal
                 title="Attribute Documentation"
                 id="attributeHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -87,7 +97,7 @@ export default function AttributeTable({ entityId }) {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -98,29 +108,48 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Type",
-                      field: "type"
+                      field: "type",
+                    },
+                    {
+                      headerName: "Format",
+                      field: "format",
+                    },
+                    {
+                      headerName: "Required",
+                      field: "required",
+                      renderCell: (item: { required: boolean }) =>
+                        item.required ? (
+                          <LabelWithBackground label="required" type="primary" />
+                        ) : (
+                          <LabelWithBackground label="optional" type="secondary" />
+                        ),
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/entities/${entityId}/attributes/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteAttribute(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/attributes/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={attributes}
                 />
@@ -129,12 +158,20 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Type",
-                      field: "type"
-                    }
+                      field: "type",
+                    },
+                    {
+                      headerName: "Format",
+                      field: "format",
+                    },
+                    {
+                      headerName: "Required",
+                      field: "required",
+                    },
                   ]}
                   rows={[]}
                 />

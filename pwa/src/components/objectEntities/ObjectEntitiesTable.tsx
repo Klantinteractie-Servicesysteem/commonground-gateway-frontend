@@ -10,6 +10,8 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -55,6 +57,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteObjectEntity = (id): void => {
+    if (confirm(`Do you want to delete this object entity?`)) {
+      API.ObjectEntity.delete(id)
+        .then(() => {
+          setAlert({ message: "Deleted object entity", type: "success" });
+          handleSetObjectEntities();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE object entity error: " + err);
+        });
+    }
   };
 
   return (
@@ -113,15 +129,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/entities/${entityId}/object_entities/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteObjectEntity(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/object_entities/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       }
                     }

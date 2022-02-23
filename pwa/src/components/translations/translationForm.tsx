@@ -14,72 +14,98 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
 
 interface TranslationFormProps {
-  id: string,
+  tableName: string,
 }
 
-export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
-  const [context, setContext] = React.useState(null);
+export const TranslationForm: React.FC<TranslationFormProps> = ({ tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Translation" : "Edit Translation";
+  const title: string = tableName ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    }
+    handleSetDocumentation();
+    tableName && handleSetTranslation();
     setHeader({
       title: "Translation",
-      subText: "Manage your translation here"
+      subText: "Manage your translations here"
     });
-  }, [context]);
+  }, [API, tableName]);
+
+  const handleSetTranslation = () => {
+    setShowSpinner(true);
+
+    API.Translation.getAllWithTableName(tableName)
+      .then((res) => {
+        setTranslation(res.data[0]);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET translation error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
 
   const saveTranslation = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let body = {
-      translationTable: id,
+    let body: {} = {
+      translationTable: tableName ? tableName : event.target.translationTable ? event.target.translationTable.value : null,
       language: event.target.language ? event.target.language.value : null,
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
       translateTo: event.target.translateTo ? event.target.translateTo.value : null
     };
 
-    let url = `${context.adminUrl}/translations`;
-    let method = "POST";
+    // This removes empty values from the body
+    body = removeEmptyObjectValues(body);
 
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sessionStorage.getItem("jwt") },
-      body: JSON.stringify(body)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setTranslation(data);
-        !id && setAlert({ message: 'Saved translations', type: "success" });
-        id && setAlert({ message: 'Updated translations', type: "success" });
-        !id && navigate("/translations");
-      })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET Translations error: " + error);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
+    if (!checkValues([body["translationTable"], body["translateFrom"], body["translateTo"]])) {
+      setAlert({ type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
+      return;
+    }
+
+    if (!tableName) { // unset id means we're creating a new entry
+      API.Translation.create(body)
+        .then(() => {
+          setAlert({ message: "Saved translation", type: "success" });
+          navigate(`/translations`);
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create translation error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
+    }
+
+    if (tableName) {
+      API.Translation.update(body, tableName)
+        .then((res) => {
+          setAlert({ message: "Updated translation", type: "success" });
+          setTranslation(res.data)
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Update translation error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
+    }
+
   };
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
