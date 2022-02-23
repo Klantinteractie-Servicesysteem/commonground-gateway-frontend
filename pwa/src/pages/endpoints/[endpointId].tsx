@@ -4,7 +4,7 @@ import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 
-const IndexPage = (props) => {
+export const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
 
   return (
@@ -12,21 +12,23 @@ const IndexPage = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            endpointId && (
-              <Tabs
-                items={[
-                  { name: "Overview", id: "overview", active: true },
-                  {
-                    name: "Handlers",
-                    id: "handlers"
-                  },
-                  {
-                    name: "Logs",
-                    id: "logs"
-                  }
-                ]}
-              />
-            )
+            {
+              endpointId && (
+                <Tabs
+                  items={[
+                    { name: "Overview", id: "overview", active: true },
+                    {
+                      name: "Handlers",
+                      id: "handlers"
+                    },
+                    {
+                      name: "Logs",
+                      id: "logs"
+                    }
+                  ]}
+                />
+              )
+            }
           </div>
           <div className="tab-content">
             <div
