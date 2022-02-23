@@ -17,11 +17,9 @@ export default function TableNamesTable() {
     setShowSpinner(true);
     API.Translation.getTableNames()
       .then((res) => { 
-        let names = [];
-        let results = res.data.results;
-        for (let i = 0; i < results.length; i++) {
-          names.push({name: results[i]})
-        }
+        const names = res.data.results.map((name) => { 
+          return { name: name }
+        });
         setTableNames(names); 
       })
       .catch((err) => { throw new Error('GET table names error: ' + err) })
