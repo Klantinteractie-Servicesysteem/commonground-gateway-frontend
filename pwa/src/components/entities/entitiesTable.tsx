@@ -131,7 +131,7 @@ export default function EntitiesTable() {
                     },
                     {
                       field: "id",
-                      headerName: "Edit ",
+                      headerName: "",
                       renderCell: (item) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">

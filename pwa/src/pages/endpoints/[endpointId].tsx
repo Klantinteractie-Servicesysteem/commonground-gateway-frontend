@@ -57,15 +57,6 @@ const IndexPage = (props) => {
               <LogTable {...{ endpointId }} />
             </div>
           </div>
-          <div
-            className="tab-pane"
-            id="logs"
-            role="tabpanel"
-            aria-labelledby="logs-tab"
-          >
-            <br />
-            <LogTable />
-          </div>
         </div>
       </div>
     </main>
