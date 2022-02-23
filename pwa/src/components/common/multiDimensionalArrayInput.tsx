@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as _ from "lodash";
 import { deleteElementFunction, addElement } from "./elementCreation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface MultiDimensionalArrayInputProps {
   data: Record<any, any>;
@@ -50,9 +52,20 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
                       </button>
                     </div>
                   </div>
-              );
-            })))}
-        </ul>
+                  <div className="col-2 d-flex mt-auto mb-4">
+                    <button
+                      value={key}
+                      onClick={deleteElement}
+                      type="button"
+                      className="utrecht-button utrecht-button-sm btn-sm btn-danger"
+                    >
+                      <FontAwesomeIcon icon={faTrash} /> Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            );
+          })))}
       </div>
       <br />
       <div className="separator-solid" />
@@ -84,7 +97,7 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
               );
             }}
           >
-            Add
+            <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>
       </div>
