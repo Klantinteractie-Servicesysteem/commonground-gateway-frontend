@@ -190,7 +190,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                       </div>
                       <div className="col-6">
                         {
-                          applications !== null && applications.length > 0 ? (
+                          applications ? (
                             <>
                               {endpoint !== null &&
                               endpoint.application !== undefined &&
