@@ -3,21 +3,26 @@ import {
   Card,
   Table,
   Spinner,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 export default function EndpointsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [endpoints, setEndpoints] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetEndpoints();
     handleSetDocumentation();
+    setHeader({title: 'Endpoints', subText: 'An overview of your endpoint objects'});
   }, [API]);
 
   const handleSetEndpoints = () => {
@@ -27,6 +32,7 @@ export default function EndpointsTable() {
         setEndpoints(res.data);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Endpoints error: " + err);
       })
       .finally(() => {
@@ -40,6 +46,7 @@ export default function EndpointsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({message: err, type: 'danger'})
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -47,17 +54,17 @@ export default function EndpointsTable() {
   return (
     <Card
       title={"Endpoints"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#endpointHelpModal"
             >
               <Modal
-                title="Endpoints Documentation"
-                id="helpModal"
+                title="Endpoint Documentation"
+                id="endpointHelpModal"
                 body={() => (
                   <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}
@@ -78,7 +85,7 @@ export default function EndpointsTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -89,11 +96,11 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Path",
-                      field: "path",
+                      field: "path"
                     },
                     {
                       field: "id",
@@ -110,8 +117,8 @@ export default function EndpointsTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={endpoints}
                 />
@@ -120,18 +127,18 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
-                    },
+                      field: "description"
+                    }
                   ]}
                   rows={[
                     {
                       name: "No results found",
-                      description: " ",
-                    },
+                      description: " "
+                    }
                   ]}
                 />
               )}

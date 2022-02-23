@@ -4,16 +4,21 @@ import Spinner from "../common/spinner";
 import { Table } from "@conductionnl/nl-design-system/lib/Table/src/table";
 import { getUser, isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import { Modal } from "@conductionnl/nl-design-system";
 
 export default function UsersTable() {
   const [context, setContext] = React.useState(null);
   const [users, setUsers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
+  const [documentation, setDocumentation] = React.useState<string>(null);
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: process.env.GATSBY_API_URL,
+        apiUrl: process.env.GATSBY_API_URL
       });
     } else if (isLoggedIn()) {
       getUsers();
@@ -25,8 +30,8 @@ export default function UsersTable() {
     fetch(`${context.apiUrl}/`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -43,18 +48,38 @@ export default function UsersTable() {
       });
   };
 
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get()
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <Card
       title={"Users"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-toggle="modal"
-              data-target="helpModal"
+              data-bs-toggle="modal"
+              data-bs-target="#UserHelpModal"
             >
+              <Modal
+                title="User Documentation"
+                id="UserHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -71,7 +96,7 @@ export default function UsersTable() {
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -82,11 +107,11 @@ export default function UsersTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
+                      field: "description"
                     },
                     {
                       field: "id",
@@ -100,8 +125,8 @@ export default function UsersTable() {
                             </button>
                           </Link>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={users}
                 />
@@ -110,12 +135,12 @@ export default function UsersTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name",
+                      field: "name"
                     },
                     {
                       headerName: "Description",
-                      field: "description",
-                    },
+                      field: "description"
+                    }
                   ]}
                   rows={[]}
                 />
