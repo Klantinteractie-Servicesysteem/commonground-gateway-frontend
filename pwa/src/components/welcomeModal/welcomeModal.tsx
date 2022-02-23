@@ -3,6 +3,7 @@ import { navigate } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { Modal } from "@conductionnl/nl-design-system";
+import "./welcomeModal.css";
 
 const WelcomeModal: React.FC = () => {
   const API: APIService = React.useContext(APIContext);
@@ -34,7 +35,7 @@ const WelcomeModal: React.FC = () => {
           applications.
         </p>
         <p>
-          I’ve this is your first time in Conductor we suggest that you follow the
+          If this is your first time in Conductor we suggest that you follow the
           <a
             className="utrecht--link"
             href="https://docs.conductor-gateway.app/en/latest/getting_started/"
@@ -62,10 +63,9 @@ const WelcomeModal: React.FC = () => {
     <>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary welcomeModal-display--none"
         data-bs-toggle="modal"
         data-bs-target="#welcomeModal"
-        style={{ display: "none" }}
         ref={buttonRef}
       >
         More info
