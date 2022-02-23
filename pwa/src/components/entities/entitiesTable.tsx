@@ -115,7 +115,7 @@ export default function EntitiesTable() {
                     },
                     {
                       field: "id",
-                      headerName: "Edit ",
+                      headerName: "",
                       renderCell: (item) => {
                         return (
                           <Link
