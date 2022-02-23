@@ -1,20 +1,27 @@
+import * as _ from "lodash";
 import * as React from "react";
-import { SelectInputComponent } from "@conductionnl/nl-design-system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-interface ElementCreationNewProps {
+interface MultiSelectProps {
   id: string;
   label: string;
+  options: ISelectOption[];
   data?: any;
+}
+
+interface ISelectOption {
+  id: string,
+  name: string,
+  value: string
 }
 
 interface IValue {
   id: string,
-  value: string,
+  value: string
 }
 
-const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data }) => {
+const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) => {
   const [value, setValue] = React.useState<string>("");
   const [values, setValues] = React.useState<IValue[]>([]);
 
@@ -77,15 +84,23 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
       <div className="row">
         <h5>Create {label}</h5>
         <div className="col-10">
-          <input
-            type="text"
-            value={value}
-            placeholder={`Add ${label}`}
-            onChange={(e) => setValue(e.target.value)}
-            className="utrecht-textbox utrecht-textbox--html-input mb-2"
-          />
+          <div className="input-group">
+            <select
+              id={`${id}Input`}
+              name={id}
+              defaultValue={value ?? data}
+              className="utrecht-select utrecht-select--html-select"
+              onChange={(e) => setValue(e.target.value)}
+            >
+              {options.map((option, idx) => (
+                <option key={idx} value={value ? `${value}${option.id}` : option.value}>
+                  {_.upperFirst(option.name)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="col-2">
+        <div className="col-2 select-elementCreation-button">
           <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
             <FontAwesomeIcon icon={faPlus} /> Add
           </button>
@@ -95,4 +110,4 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
   );
 };
 
-export default ElementCreationNew;
+export default MultiSelect;

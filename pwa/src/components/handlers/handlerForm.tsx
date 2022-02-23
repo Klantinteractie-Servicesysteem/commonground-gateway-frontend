@@ -16,13 +16,14 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
-import ElementCreationNew from "../common/elementCreationNew";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiSelect from "../common/multiSelect";
+import ElementCreationNew from "../common/elementCreationNew";
 
 interface HandlerFormProps {
   id: string,
@@ -358,14 +359,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsInAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
-                                id="translationsIn"
-                                label="Translations In"
-                                data={handler?.translationsIn}
-                                select
-                                selectName={"translationIn"}
-                                options={tableNames}
-                              />
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsIn"
+                                  label="Translations In"
+                                  data={handler?.translationsIn}
+                                  options={tableNames}
+                                />
+                                ) : (
+                                  <><Spinner /></>
+                              )
                             );
                           }
                         },
@@ -374,14 +377,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsOutAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
+                              tableNames ? (
+                              <MultiSelect
                                 id="translationsOut"
                                 label="Translations Out"
                                 data={handler?.translationsOut}
-                                select
-                                selectName={"translationOut"}
                                 options={tableNames}
                               />
+                              ) : (
+                                <><Spinner /></>
+                              )
                             );
                           }
                         },
@@ -454,4 +459,5 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     </form>
   );
 };
+
 export default HandlerForm;

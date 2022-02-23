@@ -9,6 +9,8 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -73,7 +75,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
 
   return (
     <Card
-      title={"Object entities"}
+      title={"Object"}
       cardHeader={function() {
         return (
           <>
@@ -115,12 +117,26 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "Id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
                       field: "owner"
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated",
+                      renderCell: (item: { dateCreated: string }) =>
+                        new Date(item.dateCreated).toLocaleString("nl-NL")
+
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified",
+                      renderCell: (item: { dateModified: string }) => {
+                       new Date(item.dateModified).toLocaleString("nl-NL")
+                      }
                     },
                     {
                       field: "id",
@@ -151,12 +167,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "Id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
                       field: "owner"
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated"
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified"
                     }
                   ]}
                   rows={[]}
