@@ -54,10 +54,10 @@ export default function ApplicationsTable() {
   };
 
   const handleDeleteApplication = (id): void => {
-    if (confirm(`Do you want to delete this application? With id ${id}`)) {
+    if (confirm(`Do you want to delete this application?`)) {
       API.Application.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted application with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted application`, type: "success" });
           handleSetApplications();
         })
         .catch((err) => {

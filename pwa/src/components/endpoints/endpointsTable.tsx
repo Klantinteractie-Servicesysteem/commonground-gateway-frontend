@@ -54,10 +54,10 @@ export default function EndpointsTable() {
   };
 
   const handleDeleteEndpoint = (id): void => {
-    if (confirm(`Do you want to delete this endpoint? With id ${id}`)) {
+    if (confirm(`Do you want to delete this endpoint?`)) {
       API.Endpoint.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted endpoint with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted endpoint`, type: "success" });
           handleSetEndpoints();
         })
         .catch((err) => {

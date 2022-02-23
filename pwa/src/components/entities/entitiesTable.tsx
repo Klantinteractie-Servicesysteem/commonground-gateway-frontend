@@ -54,10 +54,10 @@ export default function EntitiesTable() {
   };
 
   const handleDeleteObjectType = (id): void => {
-    if (confirm(`Do you want to delete this object type? With id ${id}`)) {
+    if (confirm(`Do you want to delete this object type?`)) {
       API.Entity.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted object type with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted object type`, type: "success" });
           handleSetEntities();
         })
         .catch((err) => {

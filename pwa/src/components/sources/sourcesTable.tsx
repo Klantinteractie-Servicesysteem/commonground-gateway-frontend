@@ -54,10 +54,10 @@ export default function SourcesTable() {
   };
 
   const handleDeleteSource = (id): void => {
-    if (confirm(`Do you want to delete this source? With id ${id}`)) {
+    if (confirm(`Do you want to delete this source?`)) {
       API.Source.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted source with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted source`, type: "success" });
           handleSetSources();
         })
         .catch((err) => {

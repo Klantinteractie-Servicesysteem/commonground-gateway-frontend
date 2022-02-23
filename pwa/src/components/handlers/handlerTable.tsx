@@ -52,10 +52,10 @@ export default function HandlersTable({ endpointId }) {
   };
 
   const handleDeleteHandler = (id): void => {
-    if (confirm(`Do you want to delete this handler? With id ${id}`)) {
+    if (confirm(`Do you want to delete this handler?`)) {
       API.Handler.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted handler with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted handler with`, type: "success" });
           handleSetHandlers();
         })
         .catch((err) => {

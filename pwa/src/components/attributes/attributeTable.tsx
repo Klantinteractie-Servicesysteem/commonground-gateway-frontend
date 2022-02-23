@@ -55,10 +55,10 @@ export default function AttributeTable({ entityId }) {
   };
 
   const handleDeleteAttribute = (id): void => {
-    if (confirm(`Do you want to delete this attribute? With id ${id}`)) {
+    if (confirm(`Do you want to delete this attribute?`)) {
       API.Attribute.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted attribute with id: ${id}`, type: "success" });
+          setAlert({ message: `Deleted attribute`, type: "success" });
           handleSetAttributes();
         })
         .catch((err) => {

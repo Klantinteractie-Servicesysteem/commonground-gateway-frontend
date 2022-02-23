@@ -60,7 +60,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   };
 
   const handleDeleteObjectEntity = (id): void => {
-    if (confirm(`Do you want to delete this object entity? With id ${id}`)) {
+    if (confirm(`Do you want to delete this object entity?`)) {
       API.ObjectEntity.delete(id)
         .then(() => {
           setAlert({ message: "Deleted object entity", type: "success" });
