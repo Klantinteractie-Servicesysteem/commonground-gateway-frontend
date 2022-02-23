@@ -28,31 +28,20 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
           data.map((item) => (
             item.value && Object.entries(item.value).map(([key, value], idx) => {
               return (
-                  <div className="d-flex">
-                    <div className="col-10">
-                      <div className="form-group">
-                        <span className="utrecht-form-label">{key}</span>
-                        <input
-                          type="text"
-                          id="value"
-                          name={`${id}[${key}]`}
-                          value={value.toString()}
-                          className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-2 m-auto">
-                      <button
-                        value={key}
-                        onClick={deleteElement}
-                        type="button"
-                        className="utrecht-button utrecht-button-sm btn-sm btn-danger"
-                      >
-                        Delete
-                      </button>
+                <div className="d-flex">
+                  <div className="col-10">
+                    <div className="form-group">
+                      <span className="utrecht-form-label">{key}</span>
+                      <input
+                        type="text"
+                        id="value"
+                        name={`${id}[${key}]`}
+                        value={value.toString()}
+                        className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                      />
                     </div>
                   </div>
-                  <div className="col-2 d-flex mt-auto mb-4">
+                  <div className="col-2 m-auto">
                     <button
                       value={key}
                       onClick={deleteElement}
@@ -63,9 +52,9 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
                     </button>
                   </div>
                 </div>
-              </>
-            );
-          })))}
+              );
+            })))}
+        </ul>
       </div>
       <br />
       <div className="separator-solid" />
