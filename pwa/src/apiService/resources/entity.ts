@@ -22,4 +22,8 @@ export default class Entity {
   public update = (data: any, id: string): Promise<AxiosResponse> => {
     return this._instance.put(`/entities/${id}`, JSON.stringify(data));
   };
+
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/entities/${id}`)
+  }
 }
