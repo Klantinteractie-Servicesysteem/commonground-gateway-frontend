@@ -9,9 +9,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -21,8 +18,11 @@ export default function HandlersTable({ endpointId }) {
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    handleSetHandlers();
-    handleSetDocumentation();
+    handleSetDocumentation()
+  });
+
+  React.useEffect(() => {
+    handleSetHandlers()
   }, [API]);
 
   const handleSetHandlers = () => {

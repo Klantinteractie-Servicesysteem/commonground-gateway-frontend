@@ -22,9 +22,15 @@ export default function EntitiesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetEntities();
+    setHeader({title: 'Object types', subText: 'An overview of your object types'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({ title: "Object types", subText: "An overview of your object types" });
+  });
+
+  React.useEffect(() => {
+    handleSetEntities();
   }, [API]);
 
   const handleSetEntities = () => {

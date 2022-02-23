@@ -22,9 +22,15 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetSources();
+    setHeader({title: 'Sources', subText: 'An overview of your source objects'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({ title: "Sources", subText: "An overview of your source objects" });
+  });
+
+  React.useEffect(() => {
+    handleSetSources();
   }, [API]);
 
   const handleSetSources = () => {

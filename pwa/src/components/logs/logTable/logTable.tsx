@@ -28,12 +28,10 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetLogs()
     handleSetDocumentation()
-    setHeader({ title: "Logs", subText: "An overview of your log objects" });
   }, [API, entityId, endpointId, sourceId]);
 
   const handleSetLogs = () => {

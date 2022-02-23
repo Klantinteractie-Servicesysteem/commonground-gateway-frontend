@@ -22,9 +22,15 @@ export default function TranslationTable({ tableName }) {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation(); // we added this
-    tableName && handleSetTranslation();
     setHeader({ title: "Translations", subText: "An overview of your translation objects" });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation(); // we added this
+  });
+
+  React.useEffect(() => {
+    handleSetTranslation()
   }, [API]);
 
   const handleSetDocumentation = (): void => {

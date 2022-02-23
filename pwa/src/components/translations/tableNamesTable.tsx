@@ -20,8 +20,15 @@ export default function TableNamesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetTableNames();
-    setHeader({ title: "Table names", subText: "An overview of your all table names objects" });
+    setHeader({ title: "Table names", subText: "An overview of your table names" });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetTableNames()
   }, [API]);
 
   const handleSetTableNames = () => {
@@ -41,10 +48,6 @@ export default function TableNamesTable() {
         setShowSpinner(false);
       });
   };
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
