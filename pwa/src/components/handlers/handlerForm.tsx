@@ -12,11 +12,9 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import FlashMessage from "react-flash-message";
 import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
 import ElementCreationNew from "../common/elementCreationNew";
 import { navigate } from "gatsby-link";
@@ -45,6 +43,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+      setHeader({
+        title: "Handler",
+        subText: "Manage your handler here"
+      });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL
@@ -55,10 +64,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       }
       getEntities();
       getTableNames();
-      setHeader({
-        title: "Handler",
-        subText: "Manage your handler here"
-      });
     }
   }, [context]);
 
@@ -119,9 +124,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
         throw new Error("GET handler error: " + error);
       });
   };
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()

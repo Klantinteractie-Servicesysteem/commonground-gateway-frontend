@@ -24,8 +24,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    entityId && handleSetObjectEntities();
     handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    entityId && handleSetObjectEntities();
   }, [API, entityId]);
 
   const handleSetObjectEntities = () => {

@@ -18,8 +18,11 @@ export default function HandlersTable({ endpointId }) {
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    handleSetHandlers()
     handleSetDocumentation()
+  });
+
+  React.useEffect(() => {
+    handleSetHandlers()
   }, [API]);
 
   const handleSetHandlers = () => {

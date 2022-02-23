@@ -23,6 +23,13 @@ export default function TableNamesTable() {
 
   React.useEffect(() => {
     setHeader({ title: "Table names", subText: "An overview of your table names" });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL
@@ -55,10 +62,6 @@ export default function TableNamesTable() {
         throw new Error("GET Table names error: " + error);
       });
   };
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()

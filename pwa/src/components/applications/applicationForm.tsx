@@ -48,6 +48,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
       title: "Applications",
       subText: "Manage your applications here"
     });
+  }, [setHeader])
+
+  React.useEffect(() => {
     id && handleSetApplications();
     handleSetDocumentation();
   }, [API, id]);

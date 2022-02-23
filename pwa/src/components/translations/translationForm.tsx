@@ -31,15 +31,19 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader({
+      title: "Translation",
+      subText: "Manage your translation here"
+    });
+  }, [setHeader])
+
+
+  React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL
       });
     }
-    setHeader({
-      title: "Translation",
-      subText: "Manage your translation here"
-    });
   }, [context]);
 
   const saveTranslation = (event) => {
