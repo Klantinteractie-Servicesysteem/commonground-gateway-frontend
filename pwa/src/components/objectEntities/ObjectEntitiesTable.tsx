@@ -9,6 +9,8 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -125,17 +127,15 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                     {
                       headerName: "Created",
                       field: "dateCreated",
-                      renderCell: (item: { dateCreated: string }) => {
-                        const date = new Date(item.dateCreated.toLocaleString());
-                        return (date)
-                      }
+                      renderCell: (item: { dateCreated: string }) =>
+                        new Date(item.dateCreated).toLocaleString("nl-NL")
+
                     },
                     {
                       headerName: "Updated",
                       field: "dateModified",
                       renderCell: (item: { dateModified: string }) => {
-                        const date = new Date(item.dateModified.toLocaleString());
-                        return (date)
+                       new Date(item.dateModified).toLocaleString("nl-NL")
                       }
                     },
                     {
