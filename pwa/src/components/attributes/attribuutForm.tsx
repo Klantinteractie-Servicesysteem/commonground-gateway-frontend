@@ -24,6 +24,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { MIMETypes } from "../../data/mimeTypes";
 
 interface AttributeFormProps {
   attributeId: string,
@@ -106,6 +107,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     setLoadingOverlay(true);
 
     let attributeEnum = retrieveFormArrayAsOArray(event.target, "enum");
+    let fileTypes = retrieveFormArrayAsOArray(event.target, "fileTypes");
     let allOf = retrieveFormArrayAsOArray(event.target, "allOf");
     let anyOf = retrieveFormArrayAsOArray(event.target, "anyOf");
     let oneOf = retrieveFormArrayAsOArray(event.target, "oneOf");
@@ -116,11 +118,9 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     let body: {} = {
       entity: `/admin/entities/${entityId}`,
       name: event.target.name.value,
-      description: event.target.description.value
-        ? event.target.description.value : null,
+      description: event.target.description.value ?? null,
       type: event.target.type.value,
-      format: event.target.format.value
-        ? event.target.format.value : null,
+      format: event.target.format.value ?? null,
       persistToGateway: event.target.persistToGateway.checked,
       cascade: event.target.cascade.checked,
       searchable: event.target.searchable.checked,
@@ -131,14 +131,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       writeOnly: event.target.writeOnly.checked,
       readOnly: event.target.readOnly.checked,
       deprecated: event.target.deprecated.checked,
-      defaultValue: event.target.defaultValue.value
-        ? event.target.defaultValue.value : null,
-      fileTypes: [event.target.fileTypes.value] ?? null,
-      example: event.target.example.value
-        ? event.target.example.value : null,
+      defaultValue: event.target.defaultValue.value ?? null,
+      example: event.target.example.value ?? null,
       maxFileSize: event.target.maxFileSize.value
         ? parseInt(event.target.maxFileSize.value) : null,
-      inversedBy: event.target.inversedBy.checked,
       multipleOf: event.target.multipleOf.value
         ? parseInt(event.target.multipleOf.value) : null,
       maximum: event.target.maximum.value
@@ -155,14 +151,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         ? parseInt(event.target.maxItems.value) : null,
       minItems: event.target.minItems.value
         ? parseInt(event.target.minItems.value) : null,
-      maxDate: event.target.maxDate.value
-        ? event.target.maxDate.value : null,
-      minDate: event.target.minDate.value
-        ? event.target.minDate.value : null,
+      maxDate: event.target.maxDate.value ?? null,
+      minDate: event.target.minDate.value ?? null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value
         ? parseInt(event.target.minProperties.value) : null,
       maxProperties: event.target.maxProperties.value ?? null,
+      fileTypes,
       attributeEnum,
       allOf,
       oneOf,
@@ -490,17 +485,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
-                          name={"fileTypes"}
-                          id={"fileTypesInput"}
-                          data={attribute && attribute.fileTypes && attribute.fileTypes}
-                          nameOverride={"File Types"}
-                        />
-                      </div>
-                    </div>
-                    <div className="row mt-3">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
                           name={"maxFileSize"}
                           id={"maxFileSizeInput"}
                           data={attribute && attribute.maxFileSize && attribute.maxFileSize}
@@ -518,17 +502,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                       </div>
                     </div>
                     <div className="row mt-3">
-                      <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"inversedByInput"}
-                            nameLabel={"Inversed By"}
-                            nameAttribute={"inversedBy"}
-                            data={attribute && attribute.inversedBy && attribute.inversedBy}
-                          />
-                        </div>
-                      </div>
                       <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           <Checkbox
@@ -679,6 +652,21 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           );
                         }
                       },
+                        {
+                          title: "File Types",
+                          id: "fileTypesAccordion",
+                          render: function() {
+                            return (
+                              <ElementCreationNew
+                                id={"fileTypes"}
+                                label={"File Types"}
+                                data={attribute?.fileTypes}
+                                select
+                                options={MIMETypes}
+                              />
+                            );
+                          }
+                        },
                         {
                           title: "Enum",
                           id: "enumAccordion",
