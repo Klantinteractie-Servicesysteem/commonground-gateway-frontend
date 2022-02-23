@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Table,
-  Spinner,
-  Card,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -12,6 +7,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
 export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -71,7 +67,7 @@ export default function AttributeTable({ entityId }) {
   return (
     <Card
       title={title}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
             <button
@@ -83,9 +79,7 @@ export default function AttributeTable({ entityId }) {
               <Modal
                 title="Attribute Documentation"
                 id="attributeHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -103,7 +97,7 @@ export default function AttributeTable({ entityId }) {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -114,11 +108,25 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Type",
-                      field: "type"
+                      field: "type",
+                    },
+                    {
+                      headerName: "Format",
+                      field: "format",
+                    },
+                    {
+                      headerName: "Required",
+                      field: "required",
+                      renderCell: (item: { required: boolean }) =>
+                        item.required ? (
+                          <LabelWithBackground label="required" type="primary" />
+                        ) : (
+                          <LabelWithBackground label="optional" type="secondary" />
+                        ),
                     },
                     {
                       field: "id",
@@ -140,8 +148,8 @@ export default function AttributeTable({ entityId }) {
                             </Link>
                           </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={attributes}
                 />
@@ -150,12 +158,20 @@ export default function AttributeTable({ entityId }) {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Type",
-                      field: "type"
-                    }
+                      field: "type",
+                    },
+                    {
+                      headerName: "Format",
+                      field: "format",
+                    },
+                    {
+                      headerName: "Required",
+                      field: "required",
+                    },
                   ]}
                   rows={[]}
                 />
