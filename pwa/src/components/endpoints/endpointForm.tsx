@@ -89,8 +89,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
-      application: event.target.application.value ?? null,
-      type: "gateway-endpoint"
+      application: event.target.application.value ?? null
     };
 
     // This removes empty values from the body
