@@ -13,6 +13,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
 
 interface TranslationFormProps {
   id?: string,
@@ -23,7 +24,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = (id === "new") ? "Create Translation" : "Edit Translation";
+  const title: string = tableName ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);

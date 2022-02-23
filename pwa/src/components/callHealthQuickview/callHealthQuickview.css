@@ -1,34 +1,18 @@
 .callHealthQuickview {
-    display: flex;
+  display: flex;
 }
 
 .callHealthQuickview > * {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .callHealthQuickview > *:not(:last-child) {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .callHealthQuickview > .callHealthQuickview--healthy > span,
 .callHealthQuickview > .callHealthQuickview--unhealthy > span {
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    margin-left: 3px;
-    font-size: 10px;
-}
-
-.callHealthQuickview > .callHealthQuickview--healthy > span {
-    background-color: #C3E6CB;
-    color: #155724;
-}
-
-.callHealthQuickview > .callHealthQuickview--unhealthy > span {
-    background-color: #F8D7DA;
-    color: #721C24;
+  margin-left: 3px;
+  font-size: 10px;
 }

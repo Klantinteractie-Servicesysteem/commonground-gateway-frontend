@@ -13,7 +13,7 @@ const IndexPage = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            {props.params.id !== "new" ? (
+            {entityId && (
               <Tabs
                 items={[
                   { name: "Overview", id: "overview", active: true },
@@ -24,10 +24,6 @@ const IndexPage = (props) => {
                   { name: "Objects", id: "data" },
                   { name: "Logs", id: "logs" }
                 ]}
-              />
-            ) : (
-              <Tabs
-                items={[{ name: "Overview", id: "overview", active: true }]}
               />
             )}
           </div>

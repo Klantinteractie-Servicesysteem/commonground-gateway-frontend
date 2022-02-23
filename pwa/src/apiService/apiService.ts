@@ -11,6 +11,7 @@ import Endpoint from "./resources/endpoint";
 import Translation from './resources/translation';
 import Handler from "./resources/handler";
 import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
+import Translation from "./resources/translation";
 
 export default class APIService {
   private _jwtToken: string;
@@ -85,6 +86,10 @@ export default class APIService {
 
   public get Handler(): Handler {
     return new Handler(this.adminClient);
+  }
+
+  public get Translation(): Translation {
+    return new Translation(this.adminClient)
   }
 
   // Services
