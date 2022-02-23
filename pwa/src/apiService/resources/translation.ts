@@ -7,10 +7,6 @@ export default class Translation {
     this._instance = _instance
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get('/translations')
-  }
-
   public getAllFrom = (tableName: string): Promise<AxiosResponse> => {
     return this._instance.get(`/translations?translationTable=${tableName}`)
   }
