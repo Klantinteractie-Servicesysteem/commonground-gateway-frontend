@@ -12,19 +12,18 @@ import {
   Accordion,
   Spinner,
   Card,
-  Alert,
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import FlashMessage from "react-flash-message";
 import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
-import ElementCreationNew from "../common/elementCreationNew";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiSelect from "../common/multiSelect";
+import ElementCreationNew from "../common/elementCreationNew";
 
 interface HandlerFormProps {
   id: string,
@@ -45,6 +44,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+      setHeader({
+        title: "Handler",
+        subText: "Manage your handler here"
+      });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
         adminUrl: process.env.GATSBY_ADMIN_URL
@@ -55,10 +65,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       }
       getEntities();
       getTableNames();
-      setHeader({
-        title: "Handler",
-        subText: "Manage your handler here"
-      });
     }
   }, [context]);
 
@@ -119,9 +125,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
         throw new Error("GET handler error: " + error);
       });
   };
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
@@ -192,9 +195,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       .then((response) => response.json())
       .then((data) => {
         setHandler(data);
-        !id && setAlert({ message: 'Saved translations', type: "success" });
-        id && setAlert({ message: 'Updated translations', type: "success" });
-        id && navigate(`/endpoints/${endpointId}`);
+        !id && setAlert({ message: 'Saved handler', type: "success" });
+        id && setAlert({ message: 'Updated handler', type: "success" });
+        !id && navigate(`/endpoints/${endpointId}`);
       })
       .catch((error) => {
         setAlert({ type: "danger", message: error.message });
@@ -356,14 +359,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsInAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
-                                id="translationsIn"
-                                label="Translations In"
-                                data={handler?.translationsIn}
-                                select
-                                selectName={"translationIn"}
-                                options={tableNames}
-                              />
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsIn"
+                                  label="Translations In"
+                                  data={handler?.translationsIn}
+                                  options={tableNames}
+                                />
+                                ) : (
+                                  <><Spinner /></>
+                              )
                             );
                           }
                         },
@@ -372,14 +377,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           id: "translationsOutAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew
+                              tableNames ? (
+                              <MultiSelect
                                 id="translationsOut"
                                 label="Translations Out"
                                 data={handler?.translationsOut}
-                                select
-                                selectName={"translationOut"}
                                 options={tableNames}
                               />
+                              ) : (
+                                <><Spinner /></>
+                              )
                             );
                           }
                         },
@@ -452,4 +459,5 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     </form>
   );
 };
+
 export default HandlerForm;
