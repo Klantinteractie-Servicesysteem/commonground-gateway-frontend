@@ -6,10 +6,11 @@ import {
 }
   from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import { TransForm } from "./translationForm";
+import LoadingOverlay from "../../loadingOverlay/loadingOverlay";
+import APIService from "../../../apiService/apiService";
+import APIContext from "../../../apiService/apiContext";
+import { TransForm } from "../translationForm";
+import "./translationTableForm.css";
 
 interface TranslationTableFormProps {
   tableName?: string
@@ -96,7 +97,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                       </div>
 
                       <hr />
-                      <h4 className="utrecht-heading-4 utrecht-heading-4--distanced">You need to create at least one translation when creating a new table</h4>
+                      <h5 className="utrecht-heading-5 utrecht-heading-5--distanced h5-translationForm mb-3">You need to create at least one translation when creating a new table</h5>
 
                       <TransForm translation={translation} />
                     </>
