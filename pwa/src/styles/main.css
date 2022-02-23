@@ -1,238 +1,238 @@
 /* These make sure the footer stays at the bottom */
 .utrecht-page {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-color: #F9FBFD;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f9fbfd;
 }
 
 .utrecht-page__content {
-    height: auto;
+  height: auto;
 }
 
 .utrecht-button {
-    padding: 0.65rem 1.4rem;
-    font-size: 14px;
-    opacity: 1;
-    border-radius: 3px;
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border: 1px solid transparent;
+  padding: 0.65rem 1.4rem;
+  font-size: 14px;
+  opacity: 1;
+  border-radius: 3px;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
 }
 
 .utrecht-card {
-    border-radius: 5px !important;
-    background-color: #ffffff !important;
-    margin-bottom: 30px !important;
-    -webkit-box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
-    -moz-box-shadow: 2px 6px 15px 0px rgba(69, 65, 78, 0.1) !important;
-    box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
-    border: 0px !important;
+  border-radius: 5px !important;
+  background-color: #ffffff !important;
+  margin-bottom: 30px !important;
+  -webkit-box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
+  -moz-box-shadow: 2px 6px 15px 0px rgba(69, 65, 78, 0.1) !important;
+  box-shadow: 2px 6px 15px 0px rgb(69 65 78 / 10%) !important;
+  border: 0px !important;
 }
 
 .utrecht-card-header {
-    padding: 1rem 1.25rem !important;
-    background-color: transparent !important;
-    border-bottom: 1px solid #ebecec !important;
+  padding: 1rem 1.25rem !important;
+  background-color: transparent !important;
+  border-bottom: 1px solid #ebecec !important;
 }
 
 .utrecht-card-head-row {
-    display: flex !important;
-    align-items: center !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .utrecht-card-title {
-    margin: 0 !important;
-    color: #2a2f5b !important;
-    font-size: 20px !important;
-    font-weight: 400 !important;
-    line-height: 1.6 !important;
+  margin: 0 !important;
+  color: #2a2f5b !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
 }
 
 .utrecht-html table thead th {
-    border-bottom-width: 2px;
-    font-weight: 600;
-    border-bottom: 0 !important;
-    font-size: 14px;
-    border-top-width: 0px;
-    border-bottom: 1px solid;
-    border-color: #ebedf2 !important;
-    padding: 0 25px !important;
-    height: 60px;
-    vertical-align: middle !important;
-    border-top: 0 !important;
+  border-bottom-width: 2px;
+  font-weight: 600;
+  border-bottom: 0 !important;
+  font-size: 14px;
+  border-top-width: 0px;
+  border-bottom: 1px solid;
+  border-color: #ebedf2 !important;
+  padding: 0 25px !important;
+  height: 60px;
+  vertical-align: middle !important;
+  border-top: 0 !important;
 }
 
 .utrecht-html table tbody {
-    border-top: 1px solid #dee2e6 !important;
+  border-top: 1px solid #dee2e6 !important;
 }
 
 .utrecht-html table tbody td {
-    font-size: 14px;
-    border-top-width: 0px;
-    border-top: 0 !important;
-    border-bottom: 1px solid #dee2e6 !important;
-    border-color: #ebedf2 !important;
-    padding: 0 25px !important;
-    height: 60px;
-    vertical-align: middle !important;
+  font-size: 14px;
+  border-top-width: 0px;
+  border-top: 0 !important;
+  border-bottom: 1px solid #dee2e6 !important;
+  border-color: #ebedf2 !important;
+  padding: 0 25px !important;
+  height: 60px;
+  vertical-align: middle !important;
 }
 
 .btn-success:hover {
-    background-color: #28a745 !important;
-    border-color: #28a745 !important;
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
 }
 
 .btn-danger:hover {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
 }
 
 .utrecht-form-label {
-    margin-bottom: 8px !important;
-    color: #495057 !important;
-    font-weight: 600 !important;
-    white-space: nowrap;
-    font-size: 14px !important;
+  margin-bottom: 8px !important;
+  color: #495057 !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+  font-size: 14px !important;
 }
 
 a:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .utrecht-textbox {
-    font-size: 14px !important;
-    border-color: #ebedf2 !important;
-    padding: 0.6rem 1rem !important;
-    height: inherit !important;
-    display: block !important;
-    width: 100% !important;
-    line-height: 1.5 !important;
-    color: #495057 !important;
-    background-color: #fff !important;
-    background-clip: padding-box !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 0.25rem !important;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  font-size: 14px !important;
+  border-color: #ebedf2 !important;
+  padding: 0.6rem 1rem !important;
+  height: inherit !important;
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.5 !important;
+  color: #495057 !important;
+  background-color: #fff !important;
+  background-clip: padding-box !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
 }
 
 .utrecht-select {
-    font-size: 14px !important;
-    border-color: #ebedf2 !important;
-    padding: 0.6rem 1rem !important;
-    height: inherit !important;
-    display: block !important;
-    width: 100% !important;
-    line-height: 1.5 !important;
-    color: #495057 !important;
-    background-color: #fff !important;
-    background-clip: padding-box !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 0.25rem !important;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  font-size: 14px !important;
+  border-color: #ebedf2 !important;
+  padding: 0.6rem 1rem !important;
+  height: inherit !important;
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.5 !important;
+  color: #495057 !important;
+  background-color: #fff !important;
+  background-clip: padding-box !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
 }
 
 /* Logo height */
 .logo {
-    height: 40px;
+  height: 40px;
 }
 
 .utrecht-page-header * {
-    color: white !important;
+  color: white !important;
 }
 
 /* pushes top item a little over the header */
 .page-top-item {
-    margin-top: -3.5rem;
+  margin-top: -3.5rem;
 }
 
 /* tabs styling */
 .page-navs {
-    position: relative;
-    display: block;
-    padding-right: 1rem;
-    padding-left: 1rem;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07);
-    z-index: 1;
+  position: relative;
+  display: block;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07);
+  z-index: 1;
 }
 
 .page-navs .nav .nav-link {
-    padding: 1rem !important;
+  padding: 1rem !important;
 }
 
 .page-navs .nav-line {
-    border: 0px !important;
+  border: 0px !important;
 }
 
 .page-navs .nav-line .nav-link {
-    border-bottom-width: 3px !important;
+  border-bottom-width: 3px !important;
 }
 
 .nav-link {
-    color: #495057 !important;
+  color: #495057 !important;
 }
 
 .nav-tabs .nav-link.active {
-    border-bottom: 3px solid #1269db !important;
-    border-left: 1px solid transparent !important;
-    border-top: 1px solid transparent !important;
-    border-right: 1px solid transparent !important;
-    color: #1269db !important;
+  border-bottom: 3px solid #1269db !important;
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
+  color: #1269db !important;
 }
 
 .nav-tabs .nav-link.active:hover {
-    border-left: 1px solid transparent !important;
-    border-top: 1px solid transparent !important;
-    border-right: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
 }
 
 .nav-tabs .nav-link.active:focus {
-    border-left: 1px solid transparent !important;
-    border-top: 1px solid transparent !important;
-    border-right: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
 }
 
 .nav-tabs .nav-link:hover {
-    border-left: 1px solid transparent !important;
-    border-top: 1px solid transparent !important;
-    border-right: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
 }
 
 .nav-tabs .nav-link:focus {
-    border-left: 1px solid transparent !important;
-    border-top: 1px solid transparent !important;
-    border-right: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
 }
 
 .nav-scroller .nav {
-    flex-wrap: nowrap;
-    white-space: nowrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 @media (min-width: 992px) {
-    .page-navs {
-        padding-right: 2rem;
-        padding-left: 2rem;
-    }
+  .page-navs {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
 }
 
 .button-no-style {
-    border: none !important;
-    background: inherit !important;
+  border: none !important;
+  background: inherit !important;
 }
 
 .modal {
-    text-align: left;
-    color: black;
+  text-align: left;
+  color: black;
 }
 
 .utrecht-button:disabled {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .utrecht-button:disabled:hover {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }

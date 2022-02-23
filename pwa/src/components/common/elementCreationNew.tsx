@@ -1,5 +1,7 @@
 import * as React from "react";
 import { SelectInputComponent } from "@conductionnl/nl-design-system";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface ElementCreationNewProps {
   id: string;
@@ -65,7 +67,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
                     onClick={handleDelete}
                     className="utrecht-button utrecht-button-sm btn-danger"
                   >
-                    Delete
+                    <FontAwesomeIcon icon={faTrash} /> Delete
                   </button>
                 </div>
               </div>
@@ -100,7 +102,8 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
           }
         </div>
         <div className="col-2">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
+            <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>
       </div>

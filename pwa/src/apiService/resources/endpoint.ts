@@ -22,4 +22,8 @@ export default class Endpoint {
   public update = (data: any, id: string): Promise<AxiosResponse> => {
     return this._instance.put(`/endpoints/${id}`, JSON.stringify(data));
   };
+
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/endpoints/${id}`)
+  }
 }

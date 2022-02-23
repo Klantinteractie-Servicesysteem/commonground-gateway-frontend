@@ -42,14 +42,20 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader({
+      title: "Attribute",
+      subText: "Manage your attribute here"
+    });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
     if (attributeId) {
       handleSetAttributes();
       handleSetAttribute();
-      handleSetDocumentation();
-      setHeader({
-        title: "Attribute",
-        subText: "Manage your attribute here"
-      });
     }
   }, [API]);
 
