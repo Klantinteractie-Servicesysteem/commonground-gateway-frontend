@@ -5,12 +5,11 @@ import {
   Card,
   Modal
 } from "@conductionnl/nl-design-system/lib";
-import {Link} from "gatsby";
+import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 
-
-export default function AttributeTable({entityId}) {
+export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
@@ -27,7 +26,6 @@ export default function AttributeTable({entityId}) {
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
         setAttributes(res.data);
-        console.log(res.data)
       })
       .catch((err) => {
         throw new Error("GET attributes from entity error: " + err);
@@ -50,7 +48,7 @@ export default function AttributeTable({entityId}) {
   return (
     <Card
       title={title}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -63,31 +61,31 @@ export default function AttributeTable({entityId}) {
                 title="Attribute Documentation"
                 id="attributeHelpModal"
                 body={() => (
-                  <div dangerouslySetInnerHTML={{__html: documentation}}/>
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
                 )}
               />
-              <i className="fas fa-question mr-1"/>
+              <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
             <a className="utrecht-link" onClick={handleSetAttributes}>
-              <i className="fas fa-sync-alt mr-1"/>
+              <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
             <Link to={`/entities/${entityId}/attributes/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2"/>
+                <i className="fas fa-plus mr-2" />
                 Create
               </button>
             </Link>
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
               {showSpinner === true ? (
-                <Spinner/>
+                <Spinner />
               ) : attributes ? (
                 <Table
                   columns={[
@@ -106,14 +104,14 @@ export default function AttributeTable({entityId}) {
                     {
                       headerName: "Required",
                       field: "required",
-                      renderCell:(item:{required:boolean}) =>
+                      renderCell: (item: { required: boolean }) =>
                         <>
                           {
                             item.required ?
                               <span className="circle true">required</span>
                               : <span className="circle false">optional</span>
                           }
-                      </>
+                        </>
                     },
                     {
                       field: "id",
@@ -125,7 +123,7 @@ export default function AttributeTable({entityId}) {
                             to={`/entities/${entityId}/attributes/${item.id}`}
                           >
                             <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1"/>
+                              <i className="fas fa-edit pr-1" />
                               Edit
                             </button>
                           </Link>
@@ -152,9 +150,9 @@ export default function AttributeTable({entityId}) {
                     },
                     {
                       headerName: "Required",
-                      field: "required",
+                      field: "required"
 
-                    },
+                    }
                   ]}
                   rows={[]}
                 />
