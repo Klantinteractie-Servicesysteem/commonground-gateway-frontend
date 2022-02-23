@@ -51,8 +51,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   }, [setHeader])
 
   React.useEffect(() => {
-    id && handleSetApplications();
     handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    id && handleSetApplications();
   }, [API, id]);
 
   const handleSetApplications = () => {

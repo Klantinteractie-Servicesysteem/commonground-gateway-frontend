@@ -29,6 +29,10 @@ export default function TranslationTable({ tableName }) {
     handleSetDocumentation(); // we added this
   });
 
+  React.useEffect(() => {
+    handleSetTranslation()
+  }, [API]);
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get()
       .then((res) => {

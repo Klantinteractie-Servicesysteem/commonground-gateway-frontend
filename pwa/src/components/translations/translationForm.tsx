@@ -38,8 +38,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ tableName }) =
   }, [setHeader])
 
   React.useEffect(() => {
-
-  }, [context]);
+    tableName && handleSetTranslation()
+  }, [API, tableName]);
 
   const handleSetTranslation = () => {
     setShowSpinner(true);

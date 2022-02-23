@@ -19,6 +19,10 @@ export default function AttributeTable({ entityId }) {
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
+    handleSetDocumentation()
+  });
+
+  React.useEffect(() => {
     handleSetAttributes()
     handleSetDocumentation()
   }, [API]);

@@ -26,9 +26,10 @@ export default function TableNamesTable() {
   React.useEffect(() => {
     handleSetDocumentation();
   });
-  React.useEffect(() => {
 
-  }, [context]);
+  React.useEffect(() => {
+    handleSetTableNames()
+  }, [API]);
 
   const handleSetTableNames = () => {
     setShowSpinner(true);
