@@ -24,13 +24,11 @@ export const logout = () => {
   setUser({});
   window.sessionStorage.removeItem("jwt");
   window.sessionStorage.removeItem("user");
+  navigate("/login")
 };
 
 export const validateSession = (jwt) => {
   const decodedJwt = jwtDecode<JwtPayload>(jwt);
 
-  if (decodedJwt?.exp >= Date.now()) {
-    logout()
-    navigate("/login");
-  }
+  return !(!decodedJwt || decodedJwt?.exp >= Date.now());
 }
