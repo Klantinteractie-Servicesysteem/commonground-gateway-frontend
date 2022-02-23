@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ layoutClassName }) => {
       <div className="container">
         <ul className="footer-list">
           <li>
-            <a href="https://conductionnl.github.io/commonground-gateway/" target="_blank">
+            <a href="https://conductor-gateway.app/" target="_blank">
               About
             </a>
           </li>
