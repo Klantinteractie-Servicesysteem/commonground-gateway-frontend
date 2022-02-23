@@ -5,6 +5,7 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logs/logModal/LogModal";
 import log, { LogObject } from "../../dummy_data/logs";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
+import msToSeconds from "../../services/msToSeconds";
 
 interface DashboardLogsTableProps {
   logs: LogObject[];
