@@ -140,14 +140,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       });
   };
 
-  const isValidJson = (json: string) => {
-    try {
-      return JSON.parse(json);
-    } catch (e) {
-      return false;
-    }
-  };
-
   const saveHandler = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
@@ -183,12 +175,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
-    }
-
-    body.conditions = isValidJson(body.conditions);
-    if (body.conditions === false) {
-      setLoadingOverlay(false);
-      throw new Error("Conditions input is not valid json");
     }
 
 
@@ -364,7 +350,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                         <TextareaGroup
                           name={"conditions"}
                           id={"conditionsInput"}
-                          defaultValue={JSON.stringify(handler?.conditions)}
+                          defaultValue={handler?.conditions}
                           required={true}
                         />
                       </div>
