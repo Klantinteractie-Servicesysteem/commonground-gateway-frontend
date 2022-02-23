@@ -19,18 +19,30 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ crumbs }) => {
     const _mappedCrumbs = crumbs.map((crumb, idx) => {
       const crumbLabel = crumb.crumbLabel;
       let pathname = "/";
-
       for (let i = 0; i <= idx; i++) {
-        pathname += splitPathname[i] ? `${splitPathname[i]}/` : splitPathname[i];
+        switch(i)
+        {
+          case 0:
+            break;
+          case 1:
+            pathname = splitPathname[0] + "/" + splitPathname[1];
+            break;
+          case 2:
+            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2];
+            break;
+          case 3:
+            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2];
+            break;
+          case 4:
+            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2] + "/" + splitPathname[3] + "/" + splitPathname[4];
+            break;
+        }
       }
-
       return { ...{ pathname, crumbLabel } };
     });
 
     setMappedCrumbs(_mappedCrumbs);
   }, [crumbs]);
-
-  console.log(mappedCrumbs);
 
   return (
     <ul className="breadcrumbs">

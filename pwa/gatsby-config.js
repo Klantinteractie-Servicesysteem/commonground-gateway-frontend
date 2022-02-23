@@ -26,10 +26,46 @@ module.exports = {
         },
         autoGenHomeLabel: "Dashboard",
         crumbLabelUpdates: [
-          // {
-          //   pathname: '/entities',
-          //   crumbLabel: 'Object Types',
-          // },
+          {
+            pathname: '/sources/[id]',
+            crumbLabel: 'Source',
+          },
+          {
+            pathname: '/entities',
+            crumbLabel: 'Object Types',
+          },
+          {
+            pathname: '/entities/[entityId]',
+            crumbLabel: 'Object Type',
+          },
+          {
+            pathname: '/entities/[entityId]/attributes/[attributeId]',
+            crumbLabel: 'Attribute',
+          },
+          {
+            pathname: '/entities/[entityId]/object_entities',
+            crumbLabel: 'Object Entities',
+          },
+          {
+            pathname: '/entities/[entityId]/object_entities/[objectId]',
+            crumbLabel: 'Object Entity',
+          },
+          {
+            pathname: '/endpoints/[endpointId]',
+            crumbLabel: 'Endpoint',
+          },
+          {
+            pathname: '/endpoints/[endpointId]/handlers/[handlerId]',
+            crumbLabel: 'Handler',
+          },
+          {
+            pathname: '/applications/[id]',
+            crumbLabel: 'Application',
+          },
+          {
+            pathname: '/translations/[id]',
+            crumbLabel: 'Translation',
+          },
         ],
       },
     },

@@ -17,10 +17,7 @@ const IndexPage = (props) => {
               <Tabs
                 items={[
                   { name: "Overview", id: "overview", active: true },
-                  {
-                    name: "Attributes",
-                    id: "attributes"
-                  },
+                  { name: "Attributes",id: "attributes"},
                   { name: "Objects", id: "data" },
                   { name: "Logs", id: "logs" }
                 ]}
