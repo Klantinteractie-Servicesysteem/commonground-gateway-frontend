@@ -3,6 +3,10 @@ import { Table, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib"
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 import {AlertContext} from "../../context/alertContext";
 
@@ -26,7 +30,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
@@ -40,9 +44,23 @@ export default function AttributeTable({ entityId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteAttribute = (id): void => {
+    if (confirm(`Do you want to delete this attribute?`)) {
+      API.Attribute.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted attribute`, type: "success" });
+          handleSetAttributes();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE attribute error: " + err);
+        });
+    }
   };
 
   return (
@@ -114,15 +132,20 @@ export default function AttributeTable({ entityId }) {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/entities/${entityId}/attributes/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteAttribute(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/attributes/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       },
                     },
