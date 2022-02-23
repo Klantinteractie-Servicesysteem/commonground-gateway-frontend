@@ -52,10 +52,10 @@ export default function TranslationTable({ tableName }) {
 
   const handleDeleteTranslation = (id): void => {
     if (confirm(`Do you want to delete this translation? With id ${id}`)) {
-      API.Endpoint.delete(id)
+      API.Translation.delete(id)
         .then(() => {
           setAlert({ message: `Deleted translation with id: ${id}`, type: "success" });
-          handleSetTranslation();
+          getTranslations();
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -74,7 +74,7 @@ export default function TranslationTable({ tableName }) {
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={handleSetTranslation}>
+            <a className="utrecht-link" onClick={getTranslations}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>

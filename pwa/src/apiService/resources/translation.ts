@@ -23,6 +23,10 @@ export default class Translation {
     return this._instance.put(`/translations/${id}`, JSON.stringify(data))
   }
 
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/translations/${id}`)
+  }
+
   public getTableNames = (): Promise<AxiosResponse> => {
     return this._instance.get("/table_names")
   }
