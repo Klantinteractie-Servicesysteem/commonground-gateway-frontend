@@ -4,11 +4,9 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
-import {AlertContext} from "../../context/alertContext";
 
 export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
