@@ -29,8 +29,6 @@ export default function EntitiesTable() {
 
   React.useEffect(() => {
     handleSetEntities();
-    handleSetDocumentation();
-    setHeader({title: 'Object types', subText: 'An overview of your object types'});
   }, [API]);
 
   const handleSetEntities = () => {
