@@ -36,12 +36,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-    id && handleSetSource();
     setHeader({
       title: "Source",
       subText: "Manage your source here"
     });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    id && handleSetSource();
   }, [API, id]);
 
   const handleSetSource = () => {
@@ -261,6 +267,33 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             />
                           )}
                       </div>
+                      <div className="col-6">
+                        {source !== null && source.auth !== null ? (
+                          <SelectInputComponent
+                            options={[{ name: "apikey", value: "apikey" },
+                              { name: "jwt", value: "jwt" },
+                              { name: "username-password", value: "username-password" }
+                            ]}
+                            name={"auth"}
+                            id={"authInput"}
+                            nameOverride={"Auth"}
+                            required={true}
+                            data={source.auth}
+                          />
+                        ) : (
+                          <SelectInputComponent
+                            options={[
+                              { name: "apikey", value: "apikey" },
+                              { name: "jwt", value: "jwt" },
+                              { name: "username-password", value: "username-password" }
+                            ]}
+                            name={"auth"}
+                            id={"authInput"}
+                            nameOverride={"Auth"}
+                            required={true}
+                          />
+                        )}
+                      </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
@@ -296,35 +329,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             nameOverride={"Locale"}
                             name={"locale"}
                             id={"localeInput"}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        {source !== null && source.auth !== null ? (
-                          <SelectInputComponent
-                            options={[{ name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
-                            ]}
-                            name={"auth"}
-                            id={"authInput"}
-                            nameOverride={"Auth"}
-                            required={true}
-                            data={source.auth}
-                          />
-                        ) : (
-                          <SelectInputComponent
-                            options={[
-                              { name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
-                            ]}
-                            name={"auth"}
-                            id={"authInput"}
-                            nameOverride={"Auth"}
-                            required={true}
                           />
                         )}
                       </div>
