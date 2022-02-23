@@ -24,6 +24,6 @@ export default class Translation {
   }
 
   public getTableNames = (): Promise<AxiosResponse> => {
-    return this._instance.get(`/table_names`)
+    return this._instance.get("/table_names")
   }
 }
