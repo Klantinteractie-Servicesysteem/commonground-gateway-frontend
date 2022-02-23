@@ -6,6 +6,7 @@ import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
+  const activeTab: string = props.location.state.activeTab;
 
   return (
     <main>
@@ -15,30 +16,33 @@ const IndexPage = (props) => {
             {props.params.id !== "new" ? (
               <Tabs
                 items={[
-                  { name: "Overview", id: "overview", active: true },
+                  { name: "Overview", id: "overview", active: activeTab !== "handlers" },
                   {
                     name: "Handlers",
-                    id: "handlers"
+                    id: "handlers",
+                    active: activeTab === "handlers",
                   },
                   {
                     name: "Logs",
-                    id: "logs"
-                  }
+                    id: "logs",
+                  },
                 ]}
               />
             ) : (
               <Tabs
-                items={[{ name: "Overview", id: "overview", active: true },
+                items={[
+                  { name: "Overview", id: "overview", active: true },
                   {
                     name: "Logs",
-                    id: "logs"
-                  }]}
+                    id: "logs",
+                  },
+                ]}
               />
             )}
           </div>
           <div className="tab-content">
             <div
-              className="tab-pane active"
+              className={`tab-pane ${!activeTab && "active"}`}
               id="overview"
               role="tabpanel"
               aria-labelledby="overview-tab"
@@ -47,7 +51,7 @@ const IndexPage = (props) => {
               <EndpointForm {...{ endpointId }} />
             </div>
             <div
-              className="tab-pane"
+              className={`tab-pane ${activeTab === "handlers" && "active"}`}
               id="handlers"
               role="tabpanel"
               aria-labelledby="handlers-tab"
@@ -55,22 +59,12 @@ const IndexPage = (props) => {
               <br />
               <HandlersTable {...{ endpointId }} />
             </div>
-            <div
-              className="tab-pane"
-              id="logs"
-              role="tabpanel"
-              aria-labelledby="logs-tab"
-            >
+            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
               <LogTable {...{ endpointId }} />
             </div>
           </div>
-          <div
-            className="tab-pane"
-            id="logs"
-            role="tabpanel"
-            aria-labelledby="logs-tab"
-          >
+          <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
             <br />
             <LogTable />
           </div>

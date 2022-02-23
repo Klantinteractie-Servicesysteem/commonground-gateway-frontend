@@ -7,6 +7,7 @@ import LogTable from "../../components/logs/logTable/logTable";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
+  const activeTab: string = props.location.state.activeTab;
 
   return (
     <main>
@@ -16,21 +17,19 @@ const IndexPage = (props) => {
             {props.params.id !== "new" ? (
               <Tabs
                 items={[
-                  { name: "Overview", id: "overview", active: true },
-                  { name: "Attributes",id: "attributes"},
-                  { name: "Objects", id: "data" },
-                  { name: "Logs", id: "logs" }
+                  { name: "Overview", id: "overview", active: !activeTab },
+                  { name: "Attributes", id: "attributes", active: activeTab === "attributes" },
+                  { name: "Objects", id: "data", active: activeTab === "objects" },
+                  { name: "Logs", id: "logs" },
                 ]}
               />
             ) : (
-              <Tabs
-                items={[{ name: "Overview", id: "overview", active: true }]}
-              />
+              <Tabs items={[{ name: "Overview", id: "overview", active: true }]} />
             )}
           </div>
           <div className="tab-content">
             <div
-              className="tab-pane active"
+              className={`tab-pane ${!activeTab && "active"}`}
               id="overview"
               role="tabpanel"
               aria-labelledby="overview-tab"
@@ -39,7 +38,7 @@ const IndexPage = (props) => {
               <EntityForm {...{ entityId }} />
             </div>
             <div
-              className="tab-pane"
+              className={`tab-pane ${activeTab === "attributes" && "active"}`}
               id="attributes"
               role="tabpanel"
               aria-labelledby="attributes-tab"
@@ -48,7 +47,7 @@ const IndexPage = (props) => {
               <AttributeTable {...{ entityId }} />
             </div>
             <div
-              className="tab-pane"
+              className={`tab-pane ${activeTab === "objects" && "active"}`}
               id="data"
               role="tabpanel"
               aria-labelledby="data-tab"
@@ -56,12 +55,7 @@ const IndexPage = (props) => {
               <br />
               <ObjectEntitiesTable {...{ entityId }} />
             </div>
-            <div
-              className="tab-pane"
-              id="logs"
-              role="tabpanel"
-              aria-labelledby="logs-tab"
-            >
+            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
               <LogTable {...{ entityId }} />
             </div>

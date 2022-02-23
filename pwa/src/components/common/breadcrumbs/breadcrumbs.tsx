@@ -20,23 +20,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ crumbs }) => {
       const crumbLabel = crumb.crumbLabel;
       let pathname = "/";
       for (let i = 0; i <= idx; i++) {
-        switch(i)
-        {
-          case 0:
-            break;
-          case 1:
-            pathname = splitPathname[0] + "/" + splitPathname[1];
-            break;
-          case 2:
-            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2];
-            break;
-          case 3:
-            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2];
-            break;
-          case 4:
-            pathname = splitPathname[0] + "/" + splitPathname[1] + "/" + splitPathname[2] + "/" + splitPathname[3] + "/" + splitPathname[4];
-            break;
-        }
+        pathname += splitPathname[i] ? `${splitPathname[i]}/` : splitPathname[i];
       }
       return { ...{ pathname, crumbLabel } };
     });
