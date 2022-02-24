@@ -8,8 +8,10 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function SourcesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -20,9 +22,15 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetSources();
-    handleSetDocumentation();
     setHeader({title: 'Sources', subText: 'An overview of your source objects'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetSources();
   }, [API]);
 
   const handleSetSources = () => {
@@ -32,7 +40,7 @@ export default function SourcesTable() {
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Sources error: " + err);
       })
       .finally(() => {
@@ -46,9 +54,23 @@ export default function SourcesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteSource = (id): void => {
+    if (confirm(`Do you want to delete this source?`)) {
+      API.Source.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted source`, type: "success" });
+          handleSetSources();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE Sources error: " + err);
+        });
+    }
   };
 
   return (
@@ -107,15 +129,19 @@ export default function SourcesTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/sources/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteSource(item.id)} className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/sources/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       }
                     }
