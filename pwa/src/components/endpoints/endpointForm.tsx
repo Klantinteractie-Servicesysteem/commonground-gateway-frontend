@@ -196,28 +196,14 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                       <div className="col-6">
                         {
                           applications ? (
-                            <>
-                              {endpoint !== null &&
-                              endpoint.application !== undefined &&
-                              endpoint.application !== null ? (
                                 <SelectInputComponent
                                   options={applications}
-                                  data={endpoint.application.name}
+                                  data={endpoint?.application?.name}
                                   name={"application"}
                                   id={"applicationInput"}
                                   nameOverride={"Applications"}
                                   value={"/admin/applications/"}
                                 />
-                              ) : (
-                                <SelectInputComponent
-                                  options={applications}
-                                  name={"application"}
-                                  id={"applicationInput"}
-                                  nameOverride={"Applications"}
-                                  value={"/admin/applications/"}
-                                />
-                              )}
-                            </>
                           ) : (
                             <SelectInputComponent
                               data="Please wait, gettings applications from the Gateway..."
