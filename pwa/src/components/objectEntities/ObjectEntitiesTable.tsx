@@ -160,7 +160,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               id="objectModal"
               body={() => (
                 <>
-                  {formIOSchema && typeof window !== 'undefined' && (
+                  {formIOSchema  && typeof window !== 'undefined' && typeof window.navigator !== 'undefined' && typeof navigator !== 'undefined' && (
                     <Form
                       key={0}
                       src={formIOSchema}
