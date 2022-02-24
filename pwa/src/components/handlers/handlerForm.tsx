@@ -15,7 +15,7 @@ import {
   Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
-import { MultiDimensionalArrayInput } from "../common/multiDimensionalArrayInput";
+import  MultiDimensionalArrayInput  from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
