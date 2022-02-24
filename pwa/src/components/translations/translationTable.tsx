@@ -4,6 +4,8 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
@@ -78,12 +80,14 @@ export default function TranslationTable({ tableName }) {
                 Back
               </button>
             </Link>
-            <Link to={`/translation-tables/${tableName}/translations/new`}>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                <i className="fas fa-plus mr-2" />
-                Create new
-              </button>
-            </Link>
+            {translations && (
+                <Link to={`/translation-tables/${translations[0].id}/translations/new`}>
+                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                    <i className="fas fa-plus mr-2" />
+                    Create
+                  </button>
+                </Link>
+              )}
           </div>
         );
       }}
@@ -113,15 +117,20 @@ export default function TranslationTable({ tableName }) {
                       headerName: " ",
                       renderCell: (item: { id: string; translationTable: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/translation-tables/${item.translationTable}/translations/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-primary">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteTranslation(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/translation-tables/${item.id}/translations/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       },
                     },

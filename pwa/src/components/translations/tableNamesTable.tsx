@@ -59,7 +59,7 @@ export default function TableNamesTable() {
             <Link to="/translation-tables/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
-                Create new
+                Create
               </button>
             </Link>
           </>
