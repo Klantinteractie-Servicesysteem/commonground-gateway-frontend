@@ -55,10 +55,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   });
 
   React.useEffect(() => {
-    if (attributeId) {
-      handleSetAttributes();
-      handleSetAttribute();
-    }
+    handleSetAttributes();
+    attributeId && handleSetAttribute();
   }, [API]);
 
   const handleSetAttribute = () => {
@@ -89,9 +87,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const handleSetAttributes = () => {
     setShowSpinner(true);
 
-    API.Attribute.getAllFromEntity(entityId)
+    API.Attribute.getAll()
       .then((res) => {
-        console.log(res.data);
         setAttributes(res.data);
       })
       .catch((err) => {
