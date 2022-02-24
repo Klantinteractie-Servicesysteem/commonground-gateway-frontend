@@ -65,6 +65,7 @@ App\Entity\Handler:
     weatherHandler:
         name: Weather handler
         sequence: 0
+        conditions: "{}"
         mappingIn:
             monday: maandag
             tuesday: dinsdag

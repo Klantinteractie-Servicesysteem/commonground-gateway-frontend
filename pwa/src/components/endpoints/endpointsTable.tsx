@@ -10,6 +10,8 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function EndpointsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -20,9 +22,15 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetEndpoints();
-    handleSetDocumentation();
     setHeader({title: 'Endpoints', subText: 'An overview of your endpoint objects'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetEndpoints();
   }, [API]);
 
   const handleSetEndpoints = () => {
@@ -32,7 +40,7 @@ export default function EndpointsTable() {
         setEndpoints(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Endpoints error: " + err);
       })
       .finally(() => {
@@ -46,9 +54,23 @@ export default function EndpointsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteEndpoint = (id): void => {
+    if (confirm(`Do you want to delete this endpoint?`)) {
+      API.Endpoint.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted endpoint`, type: "success" });
+          handleSetEndpoints();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE endpoint error: " + err);
+        });
+    }
   };
 
   return (
@@ -107,15 +129,20 @@ export default function EndpointsTable() {
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/endpoints/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteEndpoint(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/endpoints/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       }
                     }

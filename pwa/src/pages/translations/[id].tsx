@@ -4,31 +4,19 @@ import {Tabs} from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import TranslationTable from "../../components/translations/translationTable";
 
 const IndexPage = (props) => {
-  const [context, setContext] = React.useState(null);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    }
-  }, [context]);
+  const tableName: string = props.params.id === "new" ? null : props.params.id;
 
   return (
     <main>
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            {props.params.id !== "new" ? (
+            {tableName && (
               <Tabs
                 items={[
                   {name: "Add", id: "overview", active: true},
                   {name: "Translations", id: "translations"}
                 ]}
-              />
-            ) : (
-              <Tabs
-                items={[{name: "Overview", id: "overview", active: true}]}
               />
             )}
 
@@ -41,7 +29,7 @@ const IndexPage = (props) => {
               aria-labelledby="overview-tab"
             >
               <br/>
-              <TranslationForm id={props.params.id}/>
+              <TranslationForm {...{ tableName }}/>
             </div>
             <div
               className="tab-pane"
@@ -51,7 +39,7 @@ const IndexPage = (props) => {
             >
               <br/>
 
-              <TranslationTable id={props.params.id}/>
+              <TranslationTable {...{ tableName }}/>
             </div>
           </div>
         </div>

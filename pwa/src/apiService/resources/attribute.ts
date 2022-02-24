@@ -26,4 +26,8 @@ export default class Entity {
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
     return this._instance.get(`/attributes?entity.id=${entityId}`);
   };
+
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/attributes/${id}`)
+  }
 }
