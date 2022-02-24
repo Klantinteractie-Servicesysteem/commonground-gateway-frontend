@@ -47,7 +47,7 @@ export default function Layout({ children }) {
                 { rel: "shortcut icon", type: "image/png", href: favicon }
               ]}
             >
-              <title>Gateway Admin Dashboard</title>
+              <title>Conductor Admin Dashboard</title>
             </Helmet>
             <div className="utrecht-document conduction-theme">
               <div className="utrecht-page">

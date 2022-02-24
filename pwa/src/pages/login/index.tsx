@@ -84,7 +84,7 @@ const Login: React.FC = () => {
       } />
 
       <div className="login-container">
-        <h1>Welcome to your gateway admin dashboard</h1>
+        <h1>Welcome to your Conductor admin dashboard</h1>
 
         <form className="login-form">
           <h2>Login</h2>
