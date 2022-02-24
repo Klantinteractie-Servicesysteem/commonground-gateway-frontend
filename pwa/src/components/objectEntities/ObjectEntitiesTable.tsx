@@ -8,6 +8,9 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Form } from '@formio/react';
 
 interface ObjectEntitiesTableProps {
@@ -23,6 +26,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     setShowSpinner(true);
@@ -32,6 +36,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     }
     handleSetDocumentation();
     setShowSpinner(false);
+    handleSetDocumentation();
   }, [API, entityId]);
 
   React.useEffect(() => {
@@ -89,6 +94,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
           setObjectEntities(res.data)
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
@@ -102,8 +108,23 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteObjectEntity = (id): void => {
+    if (confirm(`Do you want to delete this object entity?`)) {
+      API.ObjectEntity.delete(id)
+        .then(() => {
+          setAlert({ message: "Deleted object entity", type: "success" });
+          handleSetObjectEntities();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE object entity error: " + err);
+        });
+    }
   };
 
   return (
@@ -178,46 +199,45 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                               className="utrecht-link d-flex justify-content-end"
                               to={`/entities/${entityId}/objects/${item.id}`}
                             >
-                              <button className="utrecht-button btn-sm btn-primary">
-                                <i className="fas fa-eye pr-1" />
-                                View
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
                             </Link>
-                          );
-                        }
+                          </div>
+                        );
                       }
-                    ]}
-                    rows={objectEntities}
-                  />
-                ) : (
-                  <Table
-                    columns={[
-                      {
-                        headerName: "ID",
-                        field: "id",
-                      },
-                      {
-                        headerName: "Owner",
-                        field: "owner",
-                      },
-                      {
-                        headerName: "",
-                        field: "",
-                      },
-                      {
-                        headerName: "",
-                        field: "",
-                      }
-                    ]}
-                    rows={[{ id: 'No results found', owner: '' }]}
-                  />
-                )}
-              </div>
+                    }
+                  ]}
+                  rows={objectEntities}
+                />
+              ) : (
+                <Table
+                  columns={[
+                    {
+                      headerName: "Id",
+                      field: "id"
+                    },
+                    {
+                      headerName: "Owner",
+                      field: "owner"
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated"
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified"
+                    }
+                  ]}
+                  rows={[]}
+                />
+              )}
             </div>
-          );
-        }}
-      />
-    </>
+          </div>
+        );
+      }}
+    />
   );
 };
 

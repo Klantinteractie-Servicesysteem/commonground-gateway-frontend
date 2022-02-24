@@ -8,16 +8,29 @@ import {
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function EntitiesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [entities, setEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
+
+  React.useEffect(() => {
+    setHeader({title: 'Object types', subText: 'An overview of your object types'});
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
 
   React.useEffect(() => {
     handleSetEntities();
-    handleSetDocumentation();
   }, [API]);
 
   const handleSetEntities = () => {
@@ -27,6 +40,7 @@ export default function EntitiesTable() {
         setEntities(res.data);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Entities error: " + err);
       })
       .finally(() => {
@@ -40,8 +54,23 @@ export default function EntitiesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteObjectType = (id): void => {
+    if (confirm(`Do you want to delete this object type?`)) {
+      API.Entity.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted object type`, type: "success" });
+          handleSetEntities();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE Sources error: " + err);
+        });
+    }
   };
 
   return (
@@ -108,18 +137,23 @@ export default function EntitiesTable() {
                     },
                     {
                       field: "id",
-                      headerName: "Edit ",
+                      headerName: "",
                       renderCell: (item) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/entities/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button onClick={() => handleDeleteObjectType(item.id)}
+                                    className="utrecht-button btn-sm btn-danger mr-2">
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       }
                     }
