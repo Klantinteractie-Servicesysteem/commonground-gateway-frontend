@@ -76,35 +76,24 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       </Link>
                     </td>
                   </tr>
+                  <tr>
+                    <th>Session</th>
+                    <td>
+                      {log.session && (
+                        <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
+                          {log.session && log.session}
+                        </h5>
+                      )}
+                      {log.sessionValues ? (
+                        JSON.stringify(log.sessionValues)
+                      ) : (
+                        <p className="utrecht-paragraph">
+                          No session values found
+                        </p>
+                      )}
+                    </td>
+                  </tr>
                 </table>
-
-                <Accordion
-                  id="logGeneralAccordion"
-                  items={[
-                    {
-                      title: "Session",
-                      id: "logRequestSession",
-                      render: function() {
-                        return (
-                          <>
-                            {log.session && (
-                              <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-                                Session: {log.session && log.session}
-                              </h5>
-                            )}
-                            {log.sessionValues ? (
-                              JSON.stringify(log.sessionValues)
-                            ) : (
-                              <p className="utrecht-paragraph">
-                                No session values found
-                              </p>
-                            )}
-                          </>
-                        );
-                      }
-                    }
-                  ]}
-                />
               </div>
               <div
                 className="tab-pane"
@@ -125,44 +114,34 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <th>Languages</th>
                     <td>{log?.requestLanguages}</td>
                   </tr>
+                  <tr>
+                    <th>Request</th>
+                    <td>
+                      {log.requestHeaders ? (
+                        JSON.stringify(log.requestHeaders)
+                      ) : (
+                        <p className="utrecht-paragraph">
+                          No headers found
+                        </p>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Parameters Query</th>
+                    <td>
+                      {log.requestQuery ? (
+                        JSON.stringify(log.requestQuery)
+                      ) : (
+                        <p className="utrecht-paragraph">
+                          No parameters found
+                        </p>
+                      )}
+                    </td>
+                  </tr>
                 </table>
                 <Accordion
                   id="logRequestAccordion"
                   items={[
-                    {
-                      title: "Headers",
-                      id: "logRequestHeaders",
-                      render: function() {
-                        return (
-                          <>
-                            {log.requestHeaders ? (
-                              JSON.stringify(log.requestHeaders)
-                            ) : (
-                              <p className="utrecht-paragraph">
-                                No headers found
-                              </p>
-                            )}
-                          </>
-                        );
-                      }
-                    },
-                    {
-                      title: "Query paramaters",
-                      id: "logRequestQueryparamters",
-                      render: function() {
-                        return (
-                          <>
-                            {log.requestQuery ? (
-                              JSON.stringify(log.requestQuery)
-                            ) : (
-                              <p className="utrecht-paragraph">
-                                No parameters found
-                              </p>
-                            )}
-                          </>
-                        );
-                      }
-                    },
                     {
                       title: "Content",
                       id: "logRequestContent",
