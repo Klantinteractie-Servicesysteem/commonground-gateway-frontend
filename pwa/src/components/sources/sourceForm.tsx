@@ -36,12 +36,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-    id && handleSetSource();
     setHeader({
       title: "Source",
       subText: "Manage your source here"
     });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    id && handleSetSource();
   }, [API, id]);
 
   const handleSetSource = () => {

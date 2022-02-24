@@ -10,7 +10,7 @@ import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
 import { AlertContext } from "../../../context/alertContext";
@@ -28,12 +28,10 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetLogs()
     handleSetDocumentation()
-    setHeader({ title: "Logs", subText: "An overview of your log objects" });
   }, [API, entityId, endpointId, sourceId]);
 
   const handleSetLogs = () => {
@@ -196,7 +194,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                     ""
                                   )}`}
                                 >
-                                  View log
+                                  <FontAwesomeIcon icon={faEye} />View log
                                 </button>
                               </div>
                             );

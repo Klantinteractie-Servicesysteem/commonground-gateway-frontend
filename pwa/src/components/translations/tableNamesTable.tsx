@@ -1,102 +1,62 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
+import {navigate} from "gatsby";
 
 export default function TableNamesTable() {
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
-
+  
   React.useEffect(() => {
-    setHeader({ title: "Table names", subText: "An overview of your table names" });
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    } else if (isLoggedIn()) {
-      getTranslations(context);
-    }
-  }, [context]);
+    getTableNames()
+  }, [API]);
 
-  const getTranslations = (context) => {
+  const getTableNames = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/table_names`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // convert array to array objects
-        const convertedArray = data["results"].map((value) => ({
-          name: value
-        }));
-        setShowSpinner(false);
-        setTableNames(convertedArray);
+    API.Translation.getTableNames()
+      .then((res) => { 
+        const names = res.data.results.map((name) => { 
+          return { name: name }
+        });
+        setTableNames(names); 
       })
-      .catch((error) => {
+      .catch((err) => { throw new Error('GET table names error: ' + err) })
+      .finally(() => {
         setShowSpinner(false);
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET Table names error: " + error);
       });
   };
 
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
+  const linkToTableWithTranslation = (tableName: string) => {
+    setShowSpinner(true);
+    API.Translation.getAllFrom(tableName)
+      .then((res) => { 
+        navigate(`/translation-tables/${res?.data[0]?.id}/translations`);
       })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error("GET Documentation error: " + err);
-      });
+      .catch((err) => { throw new Error('GET translation error: ' + err) });
   };
 
-  return (
+  return (<>
     <Card
-      title={"Translations"}
-      cardHeader={function() {
+      title={"Translation tables"}
+      cardHeader={function () {
         return (
           <>
             <button
               className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-toggle="modal"
+              data-target="helpModal"
             >
-              <Modal
-                title="Translations Documentation"
-                id="helpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <a className="utrecht-link" onClick={getTranslations}>
+            <a className="utrecht-link" onClick={getTableNames}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/translations/new">
+            <Link to="/translation-tables/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -105,7 +65,7 @@ export default function TableNamesTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -116,43 +76,41 @@ export default function TableNamesTable() {
                   columns={[
                     {
                       headerName: "Tables",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       field: "name",
                       headerName: " ",
                       renderCell: (tables: { name: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/translations/${tables.name}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <a className="utrecht-link d-flex justify-content-end" onClick={() => linkToTableWithTranslation(tables.name)}>
+                            <button className="utrecht-button btn-sm btn-primary">
+                              <i className="fas fa-eye pr-1" />
+                              View
                             </button>
-                          </Link>
+                          </a>
                         );
-                      }
+                      },
                     }
                   ]}
                   rows={tableNames}
                 />
-              ) : (
+               ) : (
                 <Table
                   columns={[
                     {
                       headerName: "Tables",
-                      field: "name"
+                      field: "name",
                     }
                   ]}
-                  rows={[{ name: "No results found" }]}
+                  rows={[{ name: 'No results found' }]}
                 />
-              )}
+              )} 
             </div>
           </div>
         );
       }}
     />
-  );
+  </>
+  )
 }

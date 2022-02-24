@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as _ from "lodash";
 import { deleteElementFunction, addElement } from "./elementCreation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface MultiDimensionalArrayInputProps {
   data: Record<any, any>;
@@ -14,63 +16,60 @@ interface MultiDimensionalArrayInputProps {
  * This components handles multidimensional array input forms.
  * @returns JSX of the generated form.
  */
-export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProps) {
+const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({ data, id, label, deleteFunction, addFunction}) => {
   const deleteElement = deleteElementFunction;
 
   return (
     <>
-      <span className="utrecht-form-label">{_.upperFirst(props.label ?? props.id)}</span>
-      <div id={`new${_.upperFirst(props.id)}`}>
-        {props.data !== undefined &&
-        props.data !== null &&
-        props.data.map((item) => (
-          item.value && Object.entries(item.value).map(([key, value]) => {
-            return (
-              <>
-                <div key={value} className={`row ${key}`}>
-                  <div className="col-5">
+      <div id={`new${_.upperFirst(id)}`}>
+        <ul style={{ paddingLeft: 0 }}>
+          {data !== undefined &&
+          data !== null &&
+          data.map((item) => (
+            item.value && Object.entries(item.value).map(([key, value], idx) => {
+              return (
+                <div className="d-flex">
+                  <div className="col-10">
                     <div className="form-group">
-                      <label htmlFor={value} className="utrecht-form-label">
-                        {key}
-                      </label>
+                      <span className="utrecht-form-label">{key}</span>
                       <input
                         type="text"
                         id="value"
-                        name={`${props.id}[${key}]`}
-                        defaultValue={value}
+                        name={`${id}[${key}]`}
+                        value={value.toString()}
                         className="utrecht-textbox utrecht-textbox--html-input mb-2"
                       />
                     </div>
                   </div>
-                  <div className="col-2 d-flex mt-auto mb-4">
+                  <div className="col-2 m-auto">
                     <button
                       value={key}
                       onClick={deleteElement}
                       type="button"
                       className="utrecht-button utrecht-button-sm btn-sm btn-danger"
                     >
-                      Delete
+                      <FontAwesomeIcon icon={faTrash} /> Delete
                     </button>
                   </div>
                 </div>
-              </>
-            );
-          })))}
+              );
+            })))}
+        </ul>
       </div>
       <br />
       <div className="separator-solid" />
-      <h5>Create {props.label ?? props.id}</h5>
+      <h5>Create {label ?? id}</h5>
       <div className="d-flex">
         <div>
           <div className="form-group">
             <span className="utrecht-form-label">Key</span>
-            <input type="text" id={`new${_.upperFirst(props.id)}Key`} className="form-control" />
+            <input type="text" id={`new${_.upperFirst(id)}Key`} className="form-control" />
           </div>
         </div>
         <div className="col-4">
           <div className="form-group">
             <span className="utrecht-form-label">Value</span>
-            <input type="text" id={`new${_.upperFirst(props.id)}Value`} className="form-control" />
+            <input type="text" id={`new${_.upperFirst(id)}Value`} className="form-control" />
           </div>
         </div>
         <div className="col-2 my-auto">
@@ -79,18 +78,20 @@ export function MultiDimensionalArrayInput(props: MultiDimensionalArrayInputProp
             className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
             onClick={() => {
               addElement(
-                `new${_.upperFirst(props.id)}`,
-                `new${_.upperFirst(props.id)}Key`,
-                `new${_.upperFirst(props.id)}Value`,
-                `${props.id}`,
+                `new${_.upperFirst(id)}`,
+                `new${_.upperFirst(id)}Key`,
+                `new${_.upperFirst(id)}Value`,
+                `${id}`,
                 deleteElement
               );
             }}
           >
-            Add
+            <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>
       </div>
     </>
   );
 }
+
+export default MultiDimensionalArrayInput;
