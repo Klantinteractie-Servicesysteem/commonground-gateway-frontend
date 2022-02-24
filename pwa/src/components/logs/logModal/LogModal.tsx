@@ -53,7 +53,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <td>{log?.callId}</td>
                   </tr>
                   <tr>
-                    <th>Session</th>
+                    <th>Session ID</th>
                     <td className="overflow-y: scroll">
                       {log.session && (
                         <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
@@ -96,7 +96,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       backgroundColor: "black",
                       render: function() {
                         return (
-                          <div className="logModalCodeBlock">
+                          <>
                             {log.sessionValues ? (
                               <CodeBlock
                                 code={JSON.stringify(log.sessionValues)}
@@ -107,7 +107,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                                 No session values found
                               </p>
                             )}
-                          </div>
+                          </>
                         );
                       }
                     }
@@ -144,7 +144,21 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.requestHeaders ? (
-                              JSON.stringify(log.requestHeaders)
+                              <table className="mt-3 logTable-table">
+                                {log.requestHeaders.map((requestHeader, idx) => {
+                                    return (
+                                      <tr key={Object.keys(requestHeader)[0] + idx}>
+                                        <th>
+                                          {Object.keys(requestHeader)[0]}
+                                        </th>
+                                        <td>
+                                          {Object.values(requestHeader)[0]}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
+                                )}
+                              </table>
                             ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
@@ -161,7 +175,21 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.requestQuery ? (
-                              JSON.stringify(log.requestQuery)
+                              <table className="mt-3 logTable-table">
+                                {log.requestQuery.map((queryParamaters, idx) => {
+                                    return (
+                                      <tr key={Object.keys(queryParamaters)[0] + idx}>
+                                        <th>
+                                          {Object.keys(queryParamaters)[0]}
+                                        </th>
+                                        <td>
+                                          {Object.values(queryParamaters)[0]}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
+                                )}
+                              </table>
                             ) : (
                               <p className="utrecht-paragraph">
                                 No parameters found
@@ -177,7 +205,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       backgroundColor: "black",
                       render: function() {
                         return (
-                          <div className="logModalCodeBlock">
+                          <>
                             {log.requestContent ? (
                               <CodeBlock
                                 code={log.requestContent}
@@ -188,9 +216,9 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                                 No content found
                               </p>
                             )}
-                          </div>
+                          </>
                         );
-                      },
+                      }
                     }
                   ]}
                 />
@@ -211,7 +239,21 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.responseHeaders ? (
-                              JSON.stringify(log.responseHeaders)
+                              <table className="mt-3 logTable-table">
+                                {log.requestHeaders.map((requestHeader, idx) => {
+                                    return (
+                                      <tr key={Object.keys(requestHeader)[0] + idx}>
+                                        <th>
+                                          {Object.keys(requestHeader)[0]}
+                                        </th>
+                                        <td>
+                                          {Object.values(requestHeader)[0]}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
+                                )}
+                              </table>
                             ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
@@ -226,7 +268,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       id: "logResponseContent",
                       render: function() {
                         return (
-                          <div className="logModalCodeBlock">
+                          <>
                             {log.responseContent ? (
                               <CodeBlock
                                 code={log.responseContent}
@@ -237,7 +279,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                                 No content found
                               </p>
                             )}
-                          </div>
+                          </>
                         );
                       },
                       backgroundColor: "black"
@@ -245,10 +287,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   ]}
                 />
               </div>
+              ;
             </div>
           </>
-        );
-      }}
+        )
+          ;
+      }
+      }
     />
   );
 };

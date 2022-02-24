@@ -69,7 +69,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   return (
     <Card
       title={"Object"}
-      cardHeader={function () {
+      cardHeader={function() {
         return (
           <>
             <button
@@ -98,7 +98,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
           </>
         );
       }}
-      cardBody={function () {
+      cardBody={function() {
         return (
           <div className="row">
             <div className="col-12">
@@ -109,23 +109,23 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                   columns={[
                     {
                       headerName: "Id",
-                      field: "id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
-                      field: "owner",
+                      field: "owner"
                     },
                     {
                       headerName: "Created",
                       field: "dateCreated",
-                      renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
+                      renderCell: (item: { dateCreated: string }) =>
+                        new Date(item.dateCreated).toLocaleString("nl-NL")
                     },
                     {
                       headerName: "Updated",
                       field: "dateModified",
-                      renderCell: (item: { dateModified: string }) => {
-                        new Date(item.dateModified).toLocaleString("nl-NL");
-                      },
+                      renderCell: (item: { dateModified: string }) =>
+                        new Date(item.dateModified).toLocaleString("nl-NL")
                     },
                     {
                       field: "id",
@@ -149,8 +149,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                             </Link>
                           </div>
                         );
-                      },
-                    },
+                      }
+                    }
                   ]}
                   rows={objectEntities}
                 />
@@ -159,20 +159,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                   columns={[
                     {
                       headerName: "Id",
-                      field: "id",
+                      field: "id"
                     },
                     {
                       headerName: "Owner",
-                      field: "owner",
+                      field: "owner"
                     },
                     {
                       headerName: "Created",
-                      field: "dateCreated",
+                      field: "dateCreated"
                     },
                     {
                       headerName: "Updated",
-                      field: "dateModified",
-                    },
+                      field: "dateModified"
+                    }
                   ]}
                   rows={[]}
                 />

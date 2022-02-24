@@ -9,4 +9,7 @@
 .codeBlock {
     background-color: 'black';
     overflow-wrap: 'break-word';
+    max-height: 500px;
+    overflow-y: scroll;
 }
+

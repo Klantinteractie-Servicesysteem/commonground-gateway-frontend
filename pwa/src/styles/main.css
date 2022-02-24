@@ -237,7 +237,3 @@ a:hover {
   cursor: not-allowed;
 }
 
-.logModalCodeBlock{
-   max-height: 300px;
-    overflow-y: scroll
-}
