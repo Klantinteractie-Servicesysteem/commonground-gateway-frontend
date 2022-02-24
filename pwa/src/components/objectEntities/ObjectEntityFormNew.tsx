@@ -145,7 +145,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
               {showSpinner === true ? (
                 <Spinner />
               ) : (
-                formIOSchema && window !== undefined &&
+                formIOSchema && typeof window !== 'undefined' &&
                 <Form src={formIOSchema} onSubmit={saveObject} />
               )} 
             </div>
