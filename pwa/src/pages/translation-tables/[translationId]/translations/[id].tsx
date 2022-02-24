@@ -9,8 +9,8 @@ const IndexPage = (props) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: 'Translation', subText: 'View or edit this translation'});
-  });
+    setHeader({title: 'Translation', subText: subtext});
+  }, [setHeader]);
 
   return (
     <main>

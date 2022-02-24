@@ -8,7 +8,7 @@ const IndexPage = () => {
   
   React.useEffect(() => {
     setHeader({title: 'Translation table', subText: 'Create a new translation table'});
-  });
+  }, [setHeader]);
 
   return (
       <main>

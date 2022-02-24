@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import {navigate} from "gatsby";
 
 export default function TableNamesTable() {
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
@@ -26,6 +27,15 @@ export default function TableNamesTable() {
       .finally(() => {
         setShowSpinner(false);
       });
+  };
+
+  const linkToTableWithTranslation = (tableName: string) => {
+    setShowSpinner(true);
+    API.Translation.getAllFrom(tableName)
+      .then((res) => { 
+        navigate(`/translation-tables/${res?.data[0]?.id}/translations`);
+      })
+      .catch((err) => { throw new Error('GET translation error: ' + err) });
   };
 
   return (<>
@@ -73,12 +83,12 @@ export default function TableNamesTable() {
                       headerName: " ",
                       renderCell: (tables: { name: string }) => {
                         return (
-                          <Link className="utrecht-link d-flex justify-content-end" to={`/translation-tables/${tables.name}/translations`}>
+                          <a className="utrecht-link d-flex justify-content-end" onClick={() => linkToTableWithTranslation(tables.name)}>
                             <button className="utrecht-button btn-sm btn-primary">
                               <i className="fas fa-eye pr-1" />
                               View
                             </button>
-                          </Link>
+                          </a>
                         );
                       },
                     }

@@ -4,7 +4,6 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
@@ -12,11 +11,6 @@ export default function TranslationTable({ tableName }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
-  
-  React.useEffect(() => {
-    setHeader({title: 'Translations', subText: 'An overview of your translations'});
-  });
 
 
   React.useEffect(() => {
