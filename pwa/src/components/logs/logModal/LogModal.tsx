@@ -78,7 +78,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   </tr>
                   <tr>
                     <th>Session</th>
-                    <td>
+                    <td className="overflow-y: scroll">
                       {log.session && (
                         <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
                           {log.session && log.session}
