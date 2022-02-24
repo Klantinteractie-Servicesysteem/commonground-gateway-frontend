@@ -236,3 +236,8 @@ a:hover {
 .utrecht-button:disabled:hover {
   cursor: not-allowed;
 }
+
+.logModalCodeBlock{
+   max-height: 300px;
+    overflow-y: scroll
+}
