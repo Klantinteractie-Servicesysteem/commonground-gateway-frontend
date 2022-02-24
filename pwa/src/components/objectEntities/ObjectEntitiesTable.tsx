@@ -155,7 +155,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               <i className="fas fa-plus mr-2" />
               Create
             </button>
-            <Modal
+            {/* <Modal
               title={`Create a new ${entity?.name} object`}
               id="objectModal"
               body={() => (
@@ -169,7 +169,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                   )}
                 </>
               )}
-            />
+            /> */}
           </>
         );
       }}
