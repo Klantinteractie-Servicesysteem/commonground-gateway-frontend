@@ -226,7 +226,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           <GenericInputComponent
                             nameOverride={"Path"}
                             name={"path"}
-                            data={endpoint && endpoint.path && endpoint.path}
+                            data={endpoint?.path}
                             type={"text"}
                             id={"pathInput"}
                             required={true}
