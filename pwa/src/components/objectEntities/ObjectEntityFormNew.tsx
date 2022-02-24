@@ -20,7 +20,6 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const [object, setObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
-  const [filledFormIOSchema, setFilledFormIOSchema] = React.useState(null);
   const title = 'Edit';
 
   React.useEffect(() => {
@@ -146,7 +145,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
               {showSpinner === true ? (
                 <Spinner />
               ) : (
-                formIOSchema &&
+                formIOSchema && window !== undefined &&
                 <Form src={formIOSchema} onSubmit={saveObject} />
               )}
             </div>
