@@ -1,5 +1,5 @@
 import * as React from "react";
-import TranslationTableForm from "../../components/translations/TranslationTableForm/TranslationTableForm";
+import TranslationTableForm from "../../components/translations/translationTableForm/translationTableForm";
 import { HeaderContext } from "../../context/headerContext";
 
 const IndexPage = () => {
