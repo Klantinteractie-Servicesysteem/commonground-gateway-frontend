@@ -1,0 +1,28 @@
+.LabelWithBackground {
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+  border-radius: 2px;
+  padding: 6px 10px;
+  width: fit-content;
+}
+
+.LabelWithBackground.LabelWithBackground--secondary {
+  color: #818182;
+  background-color: #e6e6e6;
+}
+
+.LabelWithBackground.LabelWithBackground--primary {
+  color: #004085;
+  background-color: #cce5ff;
+}
+
+.LabelWithBackground.LabelWithBackground--success {
+  background-color: #c3e6cb;
+  color: #155724;
+}
+
+.LabelWithBackground.LabelWithBackground--danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}

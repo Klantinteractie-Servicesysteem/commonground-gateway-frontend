@@ -22,4 +22,8 @@ export default class Source {
   public update = (data: any, id: string): Promise<AxiosResponse> => {
     return this._instance.put(`/gateways/${id}`, JSON.stringify(data));
   };
+
+  public delete = (id: string): Promise<AxiosResponse> => {
+    return this._instance.delete(`/gateways/${id}`)
+  }
 }
