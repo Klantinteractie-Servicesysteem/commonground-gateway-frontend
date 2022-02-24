@@ -17,9 +17,7 @@ interface ObjectEntitiesTableProps {
   entityId: string;
 }
 
-const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
-  entityId,
-}) => {
+const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
@@ -140,9 +138,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
               <Modal
                 title="Object Entities Documentation"
                 id="ObjectEntityHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -193,6 +189,18 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                     {
                       headerName: "Owner",
                       field: "owner",
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated",
+                      renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified",
+                      renderCell: (item: { dateModified: string }) => {
+                        new Date(item.dateModified).toLocaleString("nl-NL");
+                      },
                     },
                     {
                       field: "id",
