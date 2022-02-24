@@ -87,10 +87,6 @@ export default class APIService {
     return new Handler(this.adminClient);
   }
 
-  public get Translation(): Translation {
-    return new Translation(this.adminClient)
-  }
-
   // Services
   public get Login(): Login {
     return new Login(this.apiClient);
