@@ -1,14 +1,18 @@
 import * as React from "react";
-import Layout from "../../../../components/common/layout";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import ObjectEntityFormNew from "../../../../components/objectEntities/ObjectEntityFormNew";
+import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.id === "new" ? null : props.params.id;
   const objectEntityId: string = props.params.objectEntityId === "new" ? null : props.params.objectEntityId;
+  const [__, setHeader] = React.useContext(HeaderContext);
+
+  React.useEffect(() => {
+    setHeader({title: "Object", subText: "Edit or view your object"})
+  });
 
   return (
-    <Layout title={"Object"} subtext={"View or edit this object"}>
       <main>
         <div className="row">
           <div className="col-12">
@@ -39,7 +43,6 @@ const IndexPage = (props) => {
           </div>
         </div>
       </main>
-    </Layout>
   );
 };
 

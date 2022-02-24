@@ -3,23 +3,23 @@ import {
   Table,
   Card,
   Spinner,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Form } from '@formio/react';
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Form } from "@formio/react";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
 }
 
 const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
-                                                                   entityId
-                                                                 }) => {
+  entityId,
+}) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
@@ -49,16 +49,16 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     if (!objectEntity) {
       API.FormIO.getSchema(entity.endpoint)
         .then((res) => {
-          console.log('schema with call: ', res.data)
+          console.log("schema with call: ", res.data);
           setFormIOSchema(res.data);
         })
         .catch((err) => {
           throw new Error("GET form.io schema error: " + err);
-        })
+        });
     }
-  }
+  };
 
-  const saveObject = id => event => {
+  const saveObject = (id) => (event) => {
     setShowSpinner(true);
     let body = event.data;
     body.submit = undefined;
@@ -90,8 +90,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
     setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        res?.data?.length > 0 &&
-          setObjectEntities(res.data)
+        res?.data?.length > 0 && setObjectEntities(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -128,85 +127,89 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
   };
 
   return (
-    <>
-      <Card
-        title={"Objects"}
-        cardHeader={function () {
-          return (
-            <>
-              <button
-                className="utrecht-link button-no-style"
-                data-bs-toggle="modal"
-                data-bs-target="#ObjectEntityHelpModal"
-              >
-                <Modal
-                  title="Object Entities Documentation"
-                  id="ObjectEntityHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
-                />
-                <i className="fas fa-question mr-1" />
-                <span className="mr-2">Help</span>
-              </button>
-              <a className="utrecht-link" onClick={handleSetObjectEntities}>
-                <i className="fas fa-sync-alt mr-1" />
-                <span className="mr-2">Refresh</span>
-              </a>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                data-bs-toggle="modal"
-                data-bs-target="#objectModal">
-                <i className="fas fa-plus mr-2" />
-                Create
-              </button>
+    <Card
+      title={"Objects"}
+      cardHeader={function () {
+        return (
+          <>
+            <button
+              className="utrecht-link button-no-style"
+              data-bs-toggle="modal"
+              data-bs-target="#ObjectEntityHelpModal"
+            >
               <Modal
-                title={`Create a new ${entity?.name} object`}
-                id="objectModal"
-                body={() => (<>
-                  {
-                    formIOSchema &&
-                    <Form key={0} src={formIOSchema} onSubmit={saveObject(null)} />
-                  }
-                </>)}
+                title="Object Entities Documentation"
+                id="ObjectEntityHelpModal"
+                body={() => (
+                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
+                )}
               />
-            </>
-          );
-        }}
-        cardBody={function() {
-          return (
-            <div className="row">
-              <div className="col-12">
-                {showSpinner === true ? (
-                  <Spinner />
-                ) : objectEntities ? (
-                  <Table
-                    columns={[
-                      {
-                        headerName: "ID",
-                        field: "id",
-                      },
-                      {
-                        headerName: "Owner",
-                        field: "owner"
-                      },
-                      {
-                        field: "id",
-                        headerName: " ",
-                        renderCell: (item: { id: string }) => {
-                          return (
-                            <Link
-                              className="utrecht-link d-flex justify-content-end"
-                              to={`/entities/${entityId}/objects/${item.id}`}
-                            >
-                              <button className="utrecht-button btn-sm btn-success">
-                                <FontAwesomeIcon icon={faEdit} /> Edit
-                              </button>
-                            </Link>
-                          </div>
+              <i className="fas fa-question mr-1" />
+              <span className="mr-2">Help</span>
+            </button>
+            <a className="utrecht-link" onClick={handleSetObjectEntities}>
+              <i className="fas fa-sync-alt mr-1" />
+              <span className="mr-2">Refresh</span>
+            </a>
+            <button
+              className="utrecht-button utrecht-button-sm btn-sm btn-success"
+              data-bs-toggle="modal"
+              data-bs-target="#objectModal"
+            >
+              <i className="fas fa-plus mr-2" />
+              Create
+            </button>
+            <Modal
+              title={`Create a new ${entity?.name} object`}
+              id="objectModal"
+              body={() => (
+                <>
+                  {formIOSchema && (
+                    <Form
+                      key={0}
+                      src={formIOSchema}
+                      onSubmit={saveObject(null)}
+                    />
+                  )}
+                </>
+              )}
+            />
+          </>
+        );
+      }}
+      cardBody={function () {
+        return (
+          <div className="row">
+            <div className="col-12">
+              {showSpinner === true ? (
+                <Spinner />
+              ) : objectEntities ? (
+                <Table
+                  columns={[
+                    {
+                      headerName: "ID",
+                      field: "id",
+                    },
+                    {
+                      headerName: "Owner",
+                      field: "owner",
+                    },
+                    {
+                      field: "id",
+                      headerName: " ",
+                      renderCell: (item: { id: string }) => {
+                        return (
+                          <Link
+                            className="utrecht-link d-flex justify-content-end"
+                            to={`/entities/${entityId}/objects/${item.id}`}
+                          >
+                            <button className="utrecht-button btn-sm btn-success">
+                              <FontAwesomeIcon icon={faEdit} /> Edit
+                            </button>
+                          </Link>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={objectEntities}
                 />
@@ -215,20 +218,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                   columns={[
                     {
                       headerName: "Id",
-                      field: "id"
+                      field: "id",
                     },
                     {
                       headerName: "Owner",
-                      field: "owner"
+                      field: "owner",
                     },
                     {
                       headerName: "Created",
-                      field: "dateCreated"
+                      field: "dateCreated",
                     },
                     {
                       headerName: "Updated",
-                      field: "dateModified"
-                    }
+                      field: "dateModified",
+                    },
                   ]}
                   rows={[]}
                 />
