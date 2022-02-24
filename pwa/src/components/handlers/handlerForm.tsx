@@ -4,7 +4,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -13,10 +13,11 @@ import {
   Accordion,
   Spinner,
   Card,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
+import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
@@ -46,7 +47,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   React.useEffect(() => {
     setHeader({
       title: "Handler",
-      subText: "Manage your handler here"
+      subText: "Manage your handler here",
     });
   }, [setHeader]);
 
@@ -57,7 +58,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     } else if (isLoggedIn()) {
       if (id) {
@@ -78,8 +79,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -97,8 +98,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -116,8 +117,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -166,7 +167,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       mappingIn,
       mappingOut,
       translationsIn,
-      translationsOut
+      translationsOut,
     };
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
@@ -193,13 +194,14 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     })
       .then((response) => response.json())
       .then((data) => {
         setHandler(data);
         !id && setAlert({ message: "Saved handler", type: "success" });
         id && setAlert({ message: "Updated handler", type: "success" });
+        !id && navigate(`/endpoints/${endpointId}`);
       })
       .catch((error) => {
         setAlert({ type: "danger", message: error.message });
@@ -214,7 +216,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     <form id="handlerForm" onSubmit={saveHandler}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -244,7 +246,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
             </>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -291,7 +293,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           options={[
                             { name: "twig", value: "twig" },
                             { name: "markdown", value: "markdown" },
-                            { name: "restructuredText", value: "restructuredText" }
+                            { name: "restructuredText", value: "restructuredText" },
                           ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
@@ -374,7 +376,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 <><Spinner /></>
                               )
                             );
-                          }
+                          },
                         },
                         {
                           title: "Translations Out",
@@ -392,12 +394,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 <><Spinner /></>
                               )
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping In",
                           id: "mappingInAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
@@ -414,12 +416,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
@@ -436,26 +438,27 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Skeleton Out",
                           id: "skeletonOutAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
                             );
                           }
                         }
+
                       ]}
                     />
                   </>
