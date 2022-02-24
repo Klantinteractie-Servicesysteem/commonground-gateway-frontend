@@ -10,6 +10,7 @@ import Documentation from "./services/documentation";
 import Endpoint from "./resources/endpoint";
 import Translation from './resources/translation';
 import FormIO from "./resources/formIO";
+import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
@@ -36,7 +37,7 @@ export default class APIService {
     return axios.create({
       baseURL: GATSBY_API_URL,
       headers: {
-        Accept: "application/json",
+        Accept: "application/form.io",
         "Content-Type": "application/json",
         Authorization: "Bearer " + this._jwtToken,
       },
@@ -111,6 +112,14 @@ export default class APIService {
     return new Handler(this.adminClient);
   }
 
+  public get Test(): Test {
+    return new Test(this.apiClient);
+  }
+
+  public get FormIO(): FormIO {
+    return new FormIO(this.formIOClient);
+  }
+
   // Services
   public get Login(): Login {
     return new Login(this.loginClient);
@@ -119,9 +128,7 @@ export default class APIService {
   public get Documentation(): Documentation {
     return new Documentation(this.documentationClient);
   }
-  public get FormIO(): FormIO {
-    return new FormIO(this.formIOClient);
-  }
+
   public get ApiCalls(): ApiCalls {
     return new ApiCalls(this.apiClient);
   }

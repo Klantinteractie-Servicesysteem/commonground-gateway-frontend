@@ -11,7 +11,6 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Form } from "@formio/react";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -21,8 +20,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
-  const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [FormIO, setFormIO] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
@@ -43,20 +42,35 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     setShowSpinner(false);
   }, [API, entity]);
 
-  const getFormIOSchema = (objectEntity?: any) => {
-    if (!objectEntity) {
-      API.FormIO.getSchema(entity.endpoint)
+  React.useEffect(() => {
+    if (FormIO || !entity) return;
+    setShowSpinner(true);
+
+    import("@formio/react").then((formio) => {
+      const { Form } = formio;
+      console.log('getFormIOSchema', getFormIOSchema());
+      setFormIO(
+        <Form
+          src={getFormIOSchema()}
+          onSubmit={saveObject}
+        />,
+      );
+    });
+    setShowSpinner(false);
+  }, [FormIO, entity]);
+
+  const getFormIOSchema = () => {
+      API.Test.test('weer')
         .then((res) => {
-          console.log("schema with call: ", res.data);
-          setFormIOSchema(res.data);
+          console.log('formio schema', res.data);
+          return res.data;
         })
         .catch((err) => {
           throw new Error("GET form.io schema error: " + err);
         });
-    }
   };
 
-  const saveObject = (id) => (event) => {
+  const saveObject = (event) => {
     setShowSpinner(true);
     let body = event.data;
     body.submit = undefined;
@@ -89,6 +103,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
         res?.data?.length > 0 && setObjectEntities(res.data);
+        console.log(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -160,13 +175,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               id="objectModal"
               body={() => (
                 <>
-                  {formIOSchema  && typeof window !== 'undefined' && typeof window.navigator !== 'undefined' && typeof navigator !== 'undefined' && (
-                    <Form
-                      key={0}
-                      src={formIOSchema}
-                      onSubmit={saveObject(null)}
-                    />
-                  )}
+                {
+                  console.log(FormIO)
+                }
+                  {FormIO && FormIO
+                  }
                 </>
               )}
             />
@@ -198,9 +211,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                     {
                       headerName: "Updated",
                       field: "dateModified",
-                      renderCell: (item: { dateModified: string }) => {
-                        new Date(item.dateModified).toLocaleString("nl-NL");
-                      },
+                      renderCell: (item: { dateModified: string }) => new Date(item.dateModified).toLocaleString("nl-NL"),
                     },
                     {
                       field: "id",
