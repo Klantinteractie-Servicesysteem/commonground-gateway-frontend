@@ -142,12 +142,12 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         return (
           <div className="row">
             <div className="col-12">
-              {/* {showSpinner === true ? (
+              {showSpinner === true ? (
                 <Spinner />
               ) : (
                 formIOSchema && window !== undefined &&
                 <Form src={formIOSchema} onSubmit={saveObject} />
-              )} */}
+              )} 
             </div>
           </div>
         )
