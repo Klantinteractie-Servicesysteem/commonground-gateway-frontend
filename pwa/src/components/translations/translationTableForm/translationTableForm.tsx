@@ -95,9 +95,9 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                           </div>
                         </div>
                       </div>
-
                       <hr />
-                      <h5 className="utrecht-heading-5 utrecht-heading-5--distanced TranslationTableForm-h5 mb-3">You need to create at least one translation when creating a new table</h5>
+                      <h2 className="utrecht-heading-2 utrecht-heading-2--distanced TranslationTableForm-heading TranslationTableForm-heading-h2 mb-1">Add your first translation to this table</h2>
+                      <h4 className="utrecht-heading-4 utrecht-heading-4--distanced TranslationTableForm-heading TranslationTableForm-heading-h4 TranslationTableForm-h4 mb-2">You need to create at least one translation when creating a new table</h4>
 
                       <TransForm translation={translation} />
                     </>
