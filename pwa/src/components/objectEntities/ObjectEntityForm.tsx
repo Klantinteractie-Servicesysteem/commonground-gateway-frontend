@@ -20,6 +20,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { isValidUUIDV4 } from 'is-valid-uuid-v4';
 
 interface ObjectEntityFormProps {
   objectId: string,
@@ -99,7 +100,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     let body: {} = {
       uri: event.target.uri.value,
-      externalId: event.target.externalId ?? null,
+      externalId: isValidUUIDV4(event.target.externalId.value) ? event.target.externalId.value : null,
       application: event.target.application.value
         ? event.target.application.value
         : null,
@@ -118,6 +119,12 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     if (!checkValues([body["uri"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
+      return;
+    }
+
+    if (body["externalId"] !== null && !isValidUUIDV4(body["externalId"])) {
+      setAlert({ type: "danger", message: "External Id is not a valid UUID" });
       setLoadingOverlay(false);
       return;
     }
