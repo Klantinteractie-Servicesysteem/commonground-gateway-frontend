@@ -5,7 +5,7 @@ import {
   TextareaGroup,
   Spinner,
   Card,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
@@ -16,9 +16,8 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 
-
 interface EndpointFormProps {
-  endpointId: string,
+  endpointId: string;
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
@@ -35,13 +34,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   React.useEffect(() => {
     setHeader({
       title: "Endpoint",
-      subText: "Manage your endpoint here"
+      subText: "Manage your endpoint here",
     });
-  }, [setHeader])
+  }, [setHeader]);
 
   React.useEffect(() => {
     handleSetDocumentation();
-  })
+  });
 
   React.useEffect(() => {
     handleSetApplications();
@@ -76,7 +75,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("endpoints")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -86,7 +85,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       });
   };
 
-
   const saveEndpoint = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
@@ -95,7 +93,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
-      application: event.target.application.value ?? null
+      application: event.target.application.value ?? null,
     };
 
     // This removes empty values from the body
@@ -105,7 +103,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       return;
     }
 
-    if (!endpointId) { // unset id means we're creating a new entry
+    if (!endpointId) {
+      // unset id means we're creating a new entry
       API.Endpoint.create(body)
         .then(() => {
           setAlert({ message: "Saved endpoint", type: "success" });
@@ -120,7 +119,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         });
     }
 
-    if (endpointId) { // set id means we're updating a existing entry
+    if (endpointId) {
+      // set id means we're updating a existing entry
       API.Endpoint.update(body, endpointId)
         .then((res) => {
           setAlert({ message: "Updated endpoint", type: "success" });
@@ -140,7 +140,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     <form id="dataForm" onSubmit={saveEndpoint}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <div>
               <button
@@ -152,16 +152,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                 <Modal
                   title="Endpoint Documentation"
                   id="endpointHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
               <Link className="utrecht-link" to={"/endpoints"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
               </Link>
               <button
@@ -169,12 +168,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                 type="submit"
                 disabled={!applications}
               >
-                <i className="fas fa-save mr-2" />Save
+                <i className="fas fa-save mr-2" />
+                Save
               </button>
             </div>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -194,29 +194,30 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         />
                       </div>
                       <div className="col-6">
-                        {
-                          applications ? (
-                                <SelectInputComponent
-                                  options={applications}
-                                  data={endpoint?.application?.name}
-                                  name={"application"}
-                                  id={"applicationInput"}
-                                  nameOverride={"Applications"}
-                                  value={"/admin/applications/"}
-                                />
-                          ) : (
-                            <SelectInputComponent
-                              data="Please wait, gettings applications from the Gateway..."
-                              options={[{
+                        {applications ? (
+                          <SelectInputComponent
+                            options={applications}
+                            data={endpoint?.application?.name}
+                            name={"application"}
+                            id={"applicationInput"}
+                            nameOverride={"Applications"}
+                            value={"/admin/applications/"}
+                          />
+                        ) : (
+                          <SelectInputComponent
+                            data="Please wait, gettings applications from the Gateway..."
+                            options={[
+                              {
                                 name: "Please wait, gettings applications from the Gateway...",
-                                value: "Please wait, gettings applications from the Gateway..."
-                              }]}
-                              name={"application"}
-                              id={"applicationInput"}
-                              nameOverride={"Applications"}
-                              disabled
-                            />
-                          )}
+                                value: "Please wait, gettings applications from the Gateway...",
+                              },
+                            ]}
+                            name={"application"}
+                            id={"applicationInput"}
+                            nameOverride={"Applications"}
+                            disabled
+                          />
+                        )}
                       </div>
                     </div>
                     <br />
