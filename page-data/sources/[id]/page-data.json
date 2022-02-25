@@ -1,0 +1,6 @@
+{
+    "componentChunkName": "component---src-pages-sources-[id]-tsx",
+    "path": "/sources/[id]/",
+    "result": {"pageContext":{}},
+    "staticQueryHashes": [],
+    "matchPath": "/sources/:id"}

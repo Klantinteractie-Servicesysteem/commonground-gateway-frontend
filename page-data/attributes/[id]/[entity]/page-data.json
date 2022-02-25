@@ -1,0 +1,6 @@
+{
+    "componentChunkName": "component---src-pages-attributes-[id]-[entity]-tsx",
+    "path": "/attributes/[id]/[entity]/",
+    "result": {"pageContext":{}},
+    "staticQueryHashes": [],
+    "matchPath": "/attributes/:id/:entity"}

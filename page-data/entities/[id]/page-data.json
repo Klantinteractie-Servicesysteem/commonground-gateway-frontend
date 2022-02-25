@@ -1,0 +1,6 @@
+{
+    "componentChunkName": "component---src-pages-entities-[id]-tsx",
+    "path": "/entities/[id]/",
+    "result": {"pageContext":{}},
+    "staticQueryHashes": [],
+    "matchPath": "/entities/:id"}

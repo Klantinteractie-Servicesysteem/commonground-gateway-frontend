@@ -1,0 +1,6 @@
+{
+    "componentChunkName": "component---src-pages-configurations-[id]-js",
+    "path": "/configurations/[id]/",
+    "result": {"pageContext":{}},
+    "staticQueryHashes": [],
+    "matchPath": "/configurations/:id"}

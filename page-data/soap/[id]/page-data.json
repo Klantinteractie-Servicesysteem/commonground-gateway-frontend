@@ -1,0 +1,6 @@
+{
+    "componentChunkName": "component---src-pages-soap-[id]-tsx",
+    "path": "/soap/[id]/",
+    "result": {"pageContext":{}},
+    "staticQueryHashes": [],
+    "matchPath": "/soap/:id"}
