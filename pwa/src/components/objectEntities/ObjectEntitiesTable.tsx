@@ -44,7 +44,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   }, [API, entity]);
 
   React.useEffect(() => {
-    if (!entity || !formIOSchema) return;
+    if (!formIOSchema) return;
     setShowSpinner(true);
 
     import("@formio/react").then((formio) => {
@@ -57,7 +57,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
       );
     });
     setShowSpinner(false);
-  }, [entity]);
+  }, [formIOSchema]);
 
   const getFormIOSchema = () => {
       API.FormIO.getSchema('weer')

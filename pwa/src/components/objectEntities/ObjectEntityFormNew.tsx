@@ -6,7 +6,6 @@ import {
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { Form } from '@formio/react';
 import { Link } from 'gatsby';
 
 interface ObjectEntityFormNewProps {
@@ -20,6 +19,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const [object, setObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
+  const [formIO, setFormIO] = React.useState(null);
   const title = 'Edit';
 
   React.useEffect(() => {
@@ -28,8 +28,27 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   }, [API]);
 
   React.useEffect(() => {
-    object && entity && getFormIOSchema();
-  }, [API, object, entity]);
+    setShowSpinner(true);
+    entity && object && getFormIOSchema();
+    setShowSpinner(false);
+  }, [entity, object]);
+
+  React.useEffect(() => {
+    if (!formIOSchema) return;
+    setShowSpinner(true);
+
+    import("@formio/react").then((formio) => {
+      const { Form } = formio;
+      setFormIO(
+        <Form
+          src={formIOSchema}
+          onSubmit={saveObject}
+        />,
+      );
+    });
+    setShowSpinner(false);
+  }, [formIOSchema]);
+
 
   const getObject = () => {
     setShowSpinner(true);
@@ -60,7 +79,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   };
 
   const getFormIOSchema = () => {
-    if (formIOSchema && object) return fillFormIOSchema(formIOSchema);
+    if (formIOSchema && object) setFormIOSchema(fillFormIOSchema(formIOSchema));
     setShowSpinner(true); 
     API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
@@ -146,8 +165,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
               {showSpinner === true ? (
                 <Spinner />
               ) : (
-                formIOSchema && typeof window !== 'undefined' && typeof window.navigator !== 'undefined' && typeof navigator !== 'undefined' &&
-                <Form src={formIOSchema} onSubmit={saveObject} />
+                formIO && formIO
               )} 
             </div>
           </div>
