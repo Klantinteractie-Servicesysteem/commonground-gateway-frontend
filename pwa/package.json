@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@conductionnl/nl-design-system": "^1.0.122",
+    "@formio/react": "^5.2.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@nl-design-system-unstable/theme-switcher": "1.0.0-alpha.6",
     "@utrecht/design-tokens": "1.0.0-alpha.51",
@@ -24,6 +25,7 @@
     "axios": "^0.25.0",
     "bootstrap": "^4.5.3",
     "dotenv": "^10.0.0",
+    "formiojs": "^4.13.12",
     "gatsby": "^4.1.6",
     "gatsby-plugin-breadcrumb": "^12.3.1",
     "gatsby-plugin-layout": "^3.6.0",
