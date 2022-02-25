@@ -261,10 +261,9 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                               </>
                             ) : (
                               <SelectInputComponent
-                                data="Please wait, gettings applications from the Gateway..."
                                 options={[{
                                   name: "Please wait, gettings applications from the Gateway...",
-                                  value: "Please wait, gettings applications from the Gateway..."
+                                  value: null
                                 }]}
                                 name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
                             )}
