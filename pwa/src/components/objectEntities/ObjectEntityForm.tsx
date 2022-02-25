@@ -20,6 +20,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { isValidUUIDV4 } from 'is-valid-uuid-v4';
 
 interface ObjectEntityFormProps {
   objectId: string,
@@ -99,7 +100,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     let body: {} = {
       uri: event.target.uri.value,
-      externalId: event.target.externalId ?? null,
+      externalId: isValidUUIDV4(event.target.externalId.value) ? event.target.externalId.value : null,
       application: event.target.application.value
         ? event.target.application.value
         : null,
@@ -118,6 +119,12 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     if (!checkValues([body["uri"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
+      return;
+    }
+
+    if (body["externalId"] !== null && !isValidUUIDV4(body["externalId"])) {
+      setAlert({ type: "danger", message: "External Id is not a valid UUID" });
       setLoadingOverlay(false);
       return;
     }
@@ -222,7 +229,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                             name={"externalId"}
                             id={"externalIdInput"}
                             data={objectEntity && objectEntity.externalId && objectEntity.externalId}
-                            nameOverride={"External Id"}
+                            nameOverride={"External Id (UUID)"}
                           />
                         </div>
                       </div>
@@ -254,10 +261,9 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                               </>
                             ) : (
                               <SelectInputComponent
-                                data="Please wait, gettings applications from the Gateway..."
                                 options={[{
                                   name: "Please wait, gettings applications from the Gateway...",
-                                  value: "Please wait, gettings applications from the Gateway..."
+                                  value: null
                                 }]}
                                 name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
                             )}
