@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -14,14 +14,16 @@ export default function TranslationTable({ tableName }) {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
 
   React.useEffect(() => {
-    handleSetDocumentation(); // we added this
     getTranslations();
   }, [API]);
-  
+
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("translations")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -66,7 +68,17 @@ export default function TranslationTable({ tableName }) {
       cardHeader={function () {
         return (
           <div>
-            <button className="utrecht-link button-no-style" data-toggle="modal" data-target="helpModal">
+            <button
+              className="utrecht-link button-no-style"
+              data-bs-toggle="modal"
+              data-bs-target="#translationHelpModal"
+              onClick={(e) => e.preventDefault()}
+            >
+              <Modal
+                title="Translation Documentation"
+                id="translationHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -81,13 +93,13 @@ export default function TranslationTable({ tableName }) {
               </button>
             </Link>
             {translations && (
-                <Link to={`/translation-tables/${translations[0].id}/translations/new`}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
-                    <i className="fas fa-plus mr-2" />
-                    Create
-                  </button>
-                </Link>
-              )}
+              <Link to={`/translation-tables/${translations[0].id}/translations/new`}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                  <i className="fas fa-plus mr-2" />
+                  Create
+                </button>
+              </Link>
+            )}
           </div>
         );
       }}
@@ -118,8 +130,10 @@ export default function TranslationTable({ tableName }) {
                       renderCell: (item: { id: string; translationTable: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteTranslation(item.id)}
-                                    className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteTranslation(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <Link
