@@ -229,7 +229,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                             name={"externalId"}
                             id={"externalIdInput"}
                             data={objectEntity && objectEntity.externalId && objectEntity.externalId}
-                            nameOverride={"External Id"}
+                            nameOverride={"External Id (UUID)"}
                           />
                         </div>
                       </div>
