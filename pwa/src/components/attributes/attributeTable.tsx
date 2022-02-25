@@ -13,16 +13,15 @@ export default function AttributeTable({ entityId }) {
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = (entityId === "new") ? "Create Attribute" : "Edit Attribute";
+  const title: string = entityId === "new" ? "Create Attribute" : "Edit Attribute";
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    handleSetDocumentation()
+    handleSetDocumentation();
   });
 
   React.useEffect(() => {
-    handleSetAttributes()
-    handleSetDocumentation()
+    handleSetAttributes();
   }, [API]);
 
   const handleSetAttributes = () => {
@@ -41,7 +40,7 @@ export default function AttributeTable({ entityId }) {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("attributes")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -135,8 +134,10 @@ export default function AttributeTable({ entityId }) {
                       renderCell: (item: { id: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteAttribute(item.id)}
-                                    className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteAttribute(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <Link
