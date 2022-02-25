@@ -60,7 +60,8 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   };
 
   const getFormIOSchema = () => {
-    setShowSpinner(true);
+    if (formIOSchema && object) return fillFormIOSchema(formIOSchema);
+    setShowSpinner(true); 
     API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
         setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
@@ -76,7 +77,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const fillFormIOSchema = (schema: any) => {
     let schemaWithData = schema;
     for (let i = 0; i < schemaWithData.components.length; i++) {
-      for (let i = 0; i < object.objectValues.length; i++) {
+      for (let i = 0; i < object?.objectValues?.length; i++) {
         if (schemaWithData.components[i].key = object.objectValues[i].attribute.name) {
           let type = object.objectValues[i].attribute.type;
           schemaWithData.components[i].defaultValue = object.objectValues[i][`${type}Value`];

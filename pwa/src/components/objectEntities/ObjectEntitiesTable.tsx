@@ -22,6 +22,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   const [entity, setEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [FormIO, setFormIO] = React.useState(null);
+  const [formIOSchema, setFormIOSchema] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
@@ -43,27 +44,25 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   }, [API, entity]);
 
   React.useEffect(() => {
-    if (FormIO || !entity) return;
+    if (!entity || !formIOSchema) return;
     setShowSpinner(true);
 
     import("@formio/react").then((formio) => {
       const { Form } = formio;
-      console.log('getFormIOSchema', getFormIOSchema());
       setFormIO(
         <Form
-          src={getFormIOSchema()}
+          src={formIOSchema}
           onSubmit={saveObject}
         />,
       );
     });
     setShowSpinner(false);
-  }, [FormIO, entity]);
+  }, [entity]);
 
   const getFormIOSchema = () => {
-      API.Test.test('weer')
+      API.FormIO.getSchema('weer')
         .then((res) => {
-          console.log('formio schema', res.data);
-          return res.data;
+          setFormIOSchema(res.data);
         })
         .catch((err) => {
           throw new Error("GET form.io schema error: " + err);
@@ -103,7 +102,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
         res?.data?.length > 0 && setObjectEntities(res.data);
-        console.log(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -174,12 +172,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               title={`Create a new ${entity?.name} object`}
               id="objectModal"
               body={() => (
-                <>
-                {
-                  console.log(FormIO)
-                }
-                  {FormIO && FormIO
-                  }
+                <>  
+                  {FormIO && FormIO }
                 </>
               )}
             />
