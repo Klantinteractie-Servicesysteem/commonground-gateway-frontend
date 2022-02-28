@@ -1,27 +1,25 @@
 import * as React from "react";
-import {
-  GenericInputComponent,
-  Card,
-  Spinner
-}
-  from "@conductionnl/nl-design-system/lib";
+import { GenericInputComponent, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
 import LoadingOverlay from "../../loadingOverlay/loadingOverlay";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
+import { AlertContext } from "../../../context/alertContext";
 import { TransForm } from "../translationForm";
 import "./translationTableForm.css";
 
 interface TranslationTableFormProps {
-  tableName?: string
+  tableName?: string;
 }
 
 export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = 'Create table';
+  const title: string = "Create table";
   const API: APIService = React.useContext(APIContext);
+  const [documentation, setDocumentation] = React.useState<string>(null);
+  const [_, setAlert] = React.useContext(AlertContext);
 
   const saveTranslation = (event) => {
     event.preventDefault();
@@ -35,14 +33,33 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
     };
 
     API.Translation.create(body)
-      .then((res) => { setTranslation(res.data); })
-      .catch((err) => { throw new Error('Save translation table error: ' + err) })
+      .then((res) => {
+        setTranslation(res.data);
+      })
+      .catch((err) => {
+        throw new Error("Save translation table error: " + err);
+      })
       .finally(() => {
         setShowSpinner(false);
         setLoadingOverlay(false);
-        navigate('/translation-tables');
+        navigate("/translation-tables");
       });
-  }
+  };
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("translations")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err });
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <>
@@ -54,24 +71,30 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
               <>
                 <button
                   className="utrecht-link button-no-style"
-                  data-toggle="modal"
-                  data-target="helpModal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#translationHelpModal"
+                  onClick={(e) => e.preventDefault()}
                 >
+                  <Modal
+                    title="Translation Documentation"
+                    id="translationHelpModal"
+                    body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                  />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>
                 <Link className="utrecht-link" to={`/translation-tables`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                    <i className="fas fa-long-arrow-alt-left mr-2" />
+                    Back
                   </button>
                 </Link>
-                <button
-                  className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
-                  type="submit"
-                >
-                  <i className="fas fa-save mr-2" />Save
+                <button className="utrecht-button utrec`ht-button-sm btn-sm btn-success" type="submit">
+                  <i className="fas fa-save mr-2" />
+                  Save
                 </button>
-              </>)
+              </>
+            );
           }}
           cardBody={function () {
             return (
@@ -91,23 +114,29 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                               id={"translationTableInput"}
                               data={translation && translation.translationTable && translation.translationTable}
                               nameOverride={"Name"}
-                              required />
+                              required
+                            />
                           </div>
                         </div>
                       </div>
                       <hr />
-                      <h2 className="utrecht-heading-2 utrecht-heading-2--distanced TranslationTableForm-heading TranslationTableForm-heading-h2 mb-1">Add your first translation to this table</h2>
-                      <h4 className="utrecht-heading-4 utrecht-heading-4--distanced TranslationTableForm-heading TranslationTableForm-heading-h4 TranslationTableForm-h4 mb-2">You need to create at least one translation when creating a new table</h4>
+                      <h2 className="utrecht-heading-2 utrecht-heading-2--distanced TranslationTableForm-heading TranslationTableForm-heading-h2 mb-1">
+                        Add your first translation to this table
+                      </h2>
+                      <h4 className="utrecht-heading-4 utrecht-heading-4--distanced TranslationTableForm-heading TranslationTableForm-heading-h4 TranslationTableForm-h4 mb-2">
+                        You need to create at least one translation when creating a new table
+                      </h4>
 
                       <TransForm translation={translation} />
                     </>
                   )}
                 </div>
               </div>
-            )
-          }} />
+            );
+          }}
+        />
       </form>
     </>
   );
-}
+};
 export default TranslationTableForm;

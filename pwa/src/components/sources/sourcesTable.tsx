@@ -1,11 +1,6 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import {
-  Table,
-  Card,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
@@ -22,7 +17,7 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: 'Sources', subText: 'An overview of your source objects'});
+    setHeader({ title: "Sources", subText: "An overview of your source objects" });
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -49,7 +44,7 @@ export default function SourcesTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("sources")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -76,20 +71,14 @@ export default function SourcesTable() {
   return (
     <Card
       title={"Sources"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#sourceHelpModal"
-            >
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#sourceHelpModal">
               <Modal
                 title="Source Documentation"
                 id="sourceHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -107,7 +96,7 @@ export default function SourcesTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -118,11 +107,11 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Location",
-                      field: "location"
+                      field: "location",
                     },
                     {
                       field: "id",
@@ -130,21 +119,21 @@ export default function SourcesTable() {
                       renderCell: (item: { id: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteSource(item.id)} className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteSource(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link
-                              className="utrecht-link d-flex justify-content-end"
-                              to={`/sources/${item.id}`}
-                            >
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
                             </Link>
                           </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={sources}
                 />
@@ -153,12 +142,12 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Location",
-                      field: "location"
-                    }
+                      field: "location",
+                    },
                   ]}
                   rows={[]}
                 />

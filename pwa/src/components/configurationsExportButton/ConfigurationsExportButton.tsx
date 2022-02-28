@@ -13,7 +13,7 @@ export default function ConfigurationsExportButton() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
     }
   }, [context]);
@@ -23,11 +23,11 @@ export default function ConfigurationsExportButton() {
     fetch(`${context.adminUrl}/export/all`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => {
-        response.text().then(function(text) {
+        response.text().then(function (text) {
           download("export.yaml", text, "text/yaml");
         });
       })
@@ -43,7 +43,7 @@ export default function ConfigurationsExportButton() {
   });
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("configurations")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -53,25 +53,14 @@ export default function ConfigurationsExportButton() {
   };
   return (
     <div>
-      <button
-        className="utrecht-button text-center"
-        type="button"
-        onClick={handleExport}
-        disabled={loading}
-      >
+      <button className="utrecht-button text-center" type="button" onClick={handleExport} disabled={loading}>
         {loading ? "Preparing your download..." : "Export Configuration"}
       </button>
-      <button
-        className="utrecht-link button-no-style"
-        data-bs-toggle="modal"
-        data-bs-target="#configurationsHelpModal"
-      >
+      <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#configurationsHelpModal">
         <Modal
           title="Configuration Documentation"
           id="configurationsHelpModal"
-          body={() => (
-            <div dangerouslySetInnerHTML={{ __html: documentation }} />
-          )}
+          body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
         />
         <i className="fas fa-question mr-1" />
         <span className="mr-2">Help</span>

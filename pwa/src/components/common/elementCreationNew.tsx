@@ -19,7 +19,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
   const [values, setValues] = React.useState<IValue[]>([]);
 
   React.useEffect(() => {
-    if (!data) return;
+    if (!data || !Array.isArray(data)) return;
 
     const loadedValues: IValue[] = data?.map((value) => {
       return { id: generateId(), value: value };
