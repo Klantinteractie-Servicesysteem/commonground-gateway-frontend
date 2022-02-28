@@ -77,7 +77,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       });
   };
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("attributes")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -91,7 +91,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        console.log(res.data);
         setAttributes(res.data);
       })
       .catch((err) => {
