@@ -26,96 +26,115 @@ import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
 
 interface HandlerFormProps {
-  handlerId: string,
-  endpointId: string,
+  id: string;
+  endpointId: string;
 }
 
-export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId}) => {
+export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
+  const [context, setContext] = React.useState(null);
   const [handler, setHandler] = React.useState(null);
-  const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = handlerId ? "Edit Handler" : "Create Handler";
+  const title: string = id ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    if (handlerId) {
-      handleSetHandlers();
-      handleSetHandler();
-      handleSetDocumentation();
-      getTableNames()
-      setHeader({
-        title: "Handler",
-        subText: "Manage your handler here"
+    setHeader({
+      title: "Handler",
+      subText: "Manage your handler here",
+    });
+  }, [setHeader]);
+
+  // React.useEffect(() => {
+  //   handleSetDocumentation();
+  // });
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && context === null) {
+      setContext({
+        adminUrl: process.env.GATSBY_ADMIN_URL,
       });
+    } else if (isLoggedIn()) {
+      if (id) {
+        getHandler();
+      }
+      getEntities();
+      getTableNames();
     }
-  }, [API]);
+  }, [context]);
 
-  const handleSetHandler = () => {
+  const getHandler = () => {
     setShowSpinner(true);
-
-    API.Handler.getOne(handlerId)
-      .then((res) => {
-        setHandler(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Handler error: " + err);
-      })
-      .finally(() => {
+    fetch(`${context.adminUrl}/handlers/${id}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setHandler(data);
         setShowSpinner(false);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
+  const getEntities = () => {
+    fetch(`${context.adminUrl}/entities`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
+          setEntities(data["hydra:member"]);
+        }
       })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleSetHandlers = () => {
-    setShowSpinner(true);
-
-    API.Handler.getAllFromEndpoint(endpointId)
-      .then((res) => {
-        setHandlers(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Handlers error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
+      .catch((error) => {
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
 
   const getTableNames = () => {
-    setShowSpinner(true);
-
-    API.Translation.getTableNames()
-      .then((res) => {
-        let names = [];
-        let results = res.data.results;
-        for (let i = 0; i < results.length; i++) {
-          names.push({name: results[i]})
-        }
-        setTableNames(names);
+    fetch(`${context.adminUrl}/table_names`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const convertedArray = data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
+        setTableNames(convertedArray);
       })
-      .catch((err) => { throw new Error('GET table names error: ' + err) })
-      .finally(() => {
-        setShowSpinner(false);
+      .catch((error) => {
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
       });
   };
+
+  // const handleSetDocumentation = (): void => {
+  //   API.Documentation.get()
+  //     .then((res) => {
+  //       setDocumentation(res.data.content);
+  //     })
+  //     .catch((err) => {
+  //       throw new Error("GET Documentation error: " + err);
+  //     });
+  // };
 
   const saveHandler = (event) => {
     event.preventDefault();
@@ -147,42 +166,40 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
-
     if (!checkValues([body["name"]])) {
-      setAlert({type: "danger", message: "Required fields are empty"});
+      setAlert(null);
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!handlerId) { // unset id means we're creating a new entry
-      API.Handler.create(body)
-        .then(() => {
-          setAlert({ message: "Saved handler", type: "success" });
-          navigate(`/entities/${endpointId}`);
-        })
-        .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
-          throw new Error("Create application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
+    let url = `${context.adminUrl}/handlers`;
+    let method = "POST";
+    if (id) {
+      url = `${url}/${id}`;
+      method = "PUT";
     }
 
-    if (handlerId) { // set id means we're updating a existing entry
-      API.Attribute.update(body, handlerId)
-        .then((res) => {
-          setAlert({ message: "Updated handler", type: "success" });
-          setHandler(res.data);
-        })
-        .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
-          throw new Error("Update application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    fetch(url, {
+      method: method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionStorage.getItem("jwt") },
+      body: JSON.stringify(body),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setHandler(data);
+        !id && setAlert({ message: "Saved handler", type: "success" });
+        id && setAlert({ message: "Updated handler", type: "success" });
+        !id && navigate(`/endpoints/${endpointId}`);
+      })
+      .catch((error) => {
+        setAlert({ type: "danger", message: error.message });
+        throw new Error("GET handler error: " + error);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -201,32 +218,33 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{__html: documentation}}/>
-                  )}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
-                <i className="fas fa-question mr-1"/>
+                <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <Link className="utrecht-link" to={`/endpoints/${endpointId}`}>
+              <Link className="utrecht-link" to={`/endpoints/${endpointId}`} state={{activeTab: "handlers"}}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2"/>Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
               </Link>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
-                <i className="fas fa-save mr-2"/>Save
+                <i className="fas fa-save mr-2" />
+                Save
               </button>
-            </>);
+            </>
+          );
         }}
         cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner/>
+                  <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay/>}
+                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -248,7 +266,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -263,9 +281,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                       <div className="col-6">
                         <SelectInputComponent
                           options={[
-                            {name: "twig", value: "twig"},
-                            {name: "markdown", value: "markdown"},
-                            {name: "restructuredText", value: "restructuredText"}
+                            { name: "twig", value: "twig" },
+                            { name: "markdown", value: "markdown" },
+                            { name: "restructuredText", value: "restructuredText" },
                           ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
@@ -275,7 +293,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -287,32 +305,36 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                         />
                       </div>
                       <div className="col-6">
-                        {
-                          handlers !== null && handlers.length > 0 ? (
-                            <div className="form-group">
-                              {handler !== null &&
-                              handler.entity !== undefined &&
-                              handler.entity !== null ? (
-                                  <SelectInputComponent
-                                    options={handlers}
-                                    data={handler.entity}
-                                    name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                    value={"/admin/entities/"}/>
-                                )
-                                : (
-                                  <SelectInputComponent
-                                    options={handlers}
-                                    name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                                    value={"/admin/entities/"}/>
-                                )}
-                            </div>
-                          ) : (
-                            <SelectInputComponent
-                              options={[]}
-                              name={"entity"} id={"entityInput"} nameOverride={"Entity"}
-                              value={"/admin/entities/"}/>
-                          )
-                        }
+                        {entities !== null && entities.length > 0 ? (
+                          <div className="form-group">
+                            {handler !== null && handler.entity !== undefined && handler.entity !== null ? (
+                              <SelectInputComponent
+                                options={entities}
+                                data={handler.entity}
+                                name={"entity"}
+                                id={"entityInput"}
+                                nameOverride={"Entity"}
+                                value={"/admin/entities/"}
+                              />
+                            ) : (
+                              <SelectInputComponent
+                                options={entities}
+                                name={"entity"}
+                                id={"entityInput"}
+                                nameOverride={"Entity"}
+                                value={"/admin/entities/"}
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          <SelectInputComponent
+                            options={[]}
+                            name={"entity"}
+                            id={"entityInput"}
+                            nameOverride={"Entity"}
+                            value={"/admin/entities/"}
+                          />
+                        )}
                       </div>
                     </div>
                     <Accordion
@@ -322,46 +344,44 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                           title: "Conditions *",
                           id: "conditionsAccordion",
                           render: function () {
-                            return (
-                              <ElementCreationNew
-                                id="conditions"
-                                label="Conditions"
-                                data={handler?.conditions}
-                              />
-                            );
-                          }
+                            return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
+                          },
                         },
                         {
                           title: "Translations In",
                           id: "translationsInAccordion",
                           render: function () {
-                            return (
-                              <ElementCreationNew
+                            return tableNames ? (
+                              <MultiSelect
                                 id="translationsIn"
                                 label="Translations In"
                                 data={handler?.translationsIn}
-                                select
-                                selectName={"translationIn"}
                                 options={tableNames}
                               />
+                            ) : (
+                              <>
+                                <Spinner />
+                              </>
                             );
-                          }
+                          },
                         },
                         {
                           title: "Translations Out",
                           id: "translationsOutAccordion",
                           render: function () {
-                            return (
-                              <ElementCreationNew
+                            return tableNames ? (
+                              <MultiSelect
                                 id="translationsOut"
                                 label="Translations Out"
                                 data={handler?.translationsOut}
-                                select
-                                selectName={"translationOut"}
                                 options={tableNames}
                               />
+                            ) : (
+                              <>
+                                <Spinner />
+                              </>
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping In",
@@ -383,7 +403,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({handlerId, endpointId})
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping Out",
