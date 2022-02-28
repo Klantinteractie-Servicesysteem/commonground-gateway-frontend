@@ -1,25 +1,23 @@
 import * as React from "react";
-import {HeaderContext} from "../../context/headerContext";
+import { HeaderContext } from "../../context/headerContext";
+import Breadcrumbs from "./breadcrumbs/breadcrumbs";
 
-const Header = () => {
-  const [header] = React.useContext(HeaderContext)
+export default function Header({ pageContext }) {
+  const {
+    breadcrumb: { crumbs },
+  } = pageContext;
+  const [header] = React.useContext(HeaderContext);
 
-  return (
-    header ? (
-      <>
-        <header className="utrecht-page-header">
+  return header ? (
+    <>
+      <header className="utrecht-page-header">
         <div className="container">
-          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">
-            {header.title}
-          </h1>
-          <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-            {header.subText}
-          </h5>
+          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">{header.title}</h1>
+          <Breadcrumbs {...{ crumbs }} />
         </div>
-        </header>
-      </>
-      ) : <></>
+      </header>
+    </>
+  ) : (
+    <></>
   );
 }
-
-export default Header
