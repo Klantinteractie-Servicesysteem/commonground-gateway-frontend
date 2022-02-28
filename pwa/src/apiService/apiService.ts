@@ -14,6 +14,7 @@ import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
+import Subscriber from "./resources/subscriber";
 
 export default class APIService {
   private _jwtToken: string;
@@ -103,13 +104,17 @@ export default class APIService {
   public get Endpoint(): Endpoint {
     return new Endpoint(this.adminClient);
   }
-  
+
   public get Translation(): Translation {
     return new Translation(this.adminClient)
   }
 
   public get Handler(): Handler {
     return new Handler(this.adminClient);
+  }
+
+  public get Subscriber(): Subscriber {
+    return new Subscriber(this.adminClient);
   }
 
   public get Test(): Test {
