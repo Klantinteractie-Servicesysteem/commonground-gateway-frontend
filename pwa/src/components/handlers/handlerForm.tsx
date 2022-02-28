@@ -50,9 +50,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     });
   }, [setHeader]);
 
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
+  // React.useEffect(() => {
+  //   handleSetDocumentation();
+  // });
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
@@ -126,15 +126,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
+  // const handleSetDocumentation = (): void => {
+  //   API.Documentation.get()
+  //     .then((res) => {
+  //       setDocumentation(res.data.content);
+  //     })
+  //     .catch((err) => {
+  //       throw new Error("GET Documentation error: " + err);
+  //     });
+  // };
 
   const saveHandler = (event) => {
     event.preventDefault();
