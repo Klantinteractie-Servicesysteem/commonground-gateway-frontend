@@ -4,8 +4,6 @@ import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
 import { StatusCode } from "../logTable/logTable";
 import msToSeconds from "../../../services/msToSeconds";
-import Prism from "prismjs";
-import "../../../styles/prism.css";
 
 interface LogModalProps {
   log: any;
@@ -13,30 +11,9 @@ interface LogModalProps {
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
 
-  React.useEffect(() => {
-    Prism.highlightAll();
-  }, [Prism])
 
   return (<>
-  {/* <pre>
-  <code className="language-css">
-    {`.btn--green {background-color: #bada55;}`}
-    </code>
-    </pre> */}
 
-  <pre>
-  <code className="language-html">
-  {`
-    onSubmit(e) {
-      e.preventDefault();
-      const job = {
-        title: 'Developer',
-        company: 'Facebook' 
-        };
-      }
-  `}
-    </code>
-    </pre>
     <Modal
       key={log.id}
       title={"Call log"}
@@ -207,8 +184,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
-                      backgroundColor: "black"
+                            },
+                            backgroundColor: "#272822"
                     }
                   ]}
                 />
@@ -258,7 +235,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           </>
                         );
                       },
-                      backgroundColor: "black"
+                      backgroundColor: "#272822"
                     }
                   ]}
                 />
