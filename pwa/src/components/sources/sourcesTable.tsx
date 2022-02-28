@@ -1,15 +1,12 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import {
-  Table,
-  Card,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import {AlertContext} from "../../context/alertContext";
-import {HeaderContext} from "../../context/headerContext";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function SourcesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -20,9 +17,15 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetSources();
+    setHeader({ title: "Sources", subText: "An overview of your source objects" });
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({title: 'Sources', subText: 'An overview of your source objects'});
+  });
+
+  React.useEffect(() => {
+    handleSetSources();
   }, [API]);
 
   const handleSetSources = () => {
@@ -32,7 +35,7 @@ export default function SourcesTable() {
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Sources error: " + err);
       })
       .finally(() => {
@@ -41,33 +44,41 @@ export default function SourcesTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("sources")
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteSource = (id): void => {
+    if (confirm(`Do you want to delete this source?`)) {
+      API.Source.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted source`, type: "success" });
+          handleSetSources();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE Sources error: " + err);
+        });
+    }
   };
 
   return (
     <Card
       title={"Sources"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#sourceHelpModal"
-            >
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#sourceHelpModal">
               <Modal
                 title="Source Documentation"
                 id="sourceHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -85,7 +96,7 @@ export default function SourcesTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -96,29 +107,33 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Location",
-                      field: "location"
+                      field: "location",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/sources/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              onClick={() => handleDeleteSource(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={sources}
                 />
@@ -127,12 +142,12 @@ export default function SourcesTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Location",
-                      field: "location"
-                    }
+                      field: "location",
+                    },
                   ]}
                   rows={[]}
                 />

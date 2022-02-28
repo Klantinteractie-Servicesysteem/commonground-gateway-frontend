@@ -1,15 +1,12 @@
 import * as React from "react";
-import {
-  Card,
-  Table,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function EndpointsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -20,9 +17,15 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetEndpoints();
+    setHeader({ title: "Endpoints", subText: "An overview of your endpoint objects" });
+  }, [setHeader]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
-    setHeader({title: 'Endpoints', subText: 'An overview of your endpoint objects'});
+  });
+
+  React.useEffect(() => {
+    handleSetEndpoints();
   }, [API]);
 
   const handleSetEndpoints = () => {
@@ -32,7 +35,7 @@ export default function EndpointsTable() {
         setEndpoints(res.data);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Endpoints error: " + err);
       })
       .finally(() => {
@@ -41,33 +44,41 @@ export default function EndpointsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("endpoints")
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({message: err, type: 'danger'})
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
+  };
+
+  const handleDeleteEndpoint = (id): void => {
+    if (confirm(`Do you want to delete this endpoint?`)) {
+      API.Endpoint.delete(id)
+        .then(() => {
+          setAlert({ message: `Deleted endpoint`, type: "success" });
+          handleSetEndpoints();
+        })
+        .catch((err) => {
+          setAlert({ message: err, type: "danger" });
+          throw new Error("DELETE endpoint error: " + err);
+        });
+    }
   };
 
   return (
     <Card
       title={"Endpoints"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#endpointHelpModal"
-            >
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#endpointHelpModal">
               <Modal
                 title="Endpoint Documentation"
                 id="endpointHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -85,7 +96,7 @@ export default function EndpointsTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -96,29 +107,33 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Path",
-                      field: "path"
+                      field: "path",
                     },
                     {
                       field: "id",
                       headerName: " ",
                       renderCell: (item: { id: string }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/endpoints/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <i className="fas fa-edit pr-1" />
-                              Edit
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              onClick={() => handleDeleteEndpoint(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                          </Link>
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={endpoints}
                 />
@@ -127,18 +142,18 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
-                    }
+                      field: "description",
+                    },
                   ]}
                   rows={[
                     {
                       name: "No results found",
-                      description: " "
-                    }
+                      description: " ",
+                    },
                   ]}
                 />
               )}

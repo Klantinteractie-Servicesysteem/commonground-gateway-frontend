@@ -1,17 +1,13 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArray
-} from "../utility/inputHandler";
+import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
 import {
   GenericInputComponent,
   Accordion,
   Card,
   Spinner,
   SelectInputComponent,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -22,7 +18,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 
 interface SourceFormProps {
-  id: string,
+  id: string;
 }
 
 export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
@@ -36,12 +32,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-    id && handleSetSource();
     setHeader({
       title: "Source",
-      subText: "Manage your source here"
+      subText: "Manage your source here",
     });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    id && handleSetSource();
   }, [API, id]);
 
   const handleSetSource = () => {
@@ -60,7 +62,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       });
   };
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("sources")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -80,9 +82,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description
-        ? event.target.description.value
-        : null,
+      description: event.target.description ? event.target.description.value : null,
       type: event.target.type.value,
       auth: event.target.auth.value,
       locale: event.target.locale.value,
@@ -98,9 +98,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       authorizationHeader: event.target.authorizationHeader.value,
       headers,
       oas,
-      paths
+      paths,
     };
-
 
     body = removeEmptyObjectValues(body);
 
@@ -110,10 +109,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!id) {
+      // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
-          setAlert({ type: "success", message: 'Saved source' });
+          setAlert({ type: "success", message: "Saved source" });
           navigate("/sources");
         })
         .catch((err) => {
@@ -125,10 +125,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) { // set id means we're updating a existing entry
+    if (id) {
+      // set id means we're updating a existing entry
       API.Source.update(body, id)
         .then((res) => {
-          setAlert({ type: "success", message: 'Updated source' });
+          setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
         })
         .catch((err) => {
@@ -141,12 +142,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     }
   };
 
-
   return (
     <form id="dataForm" onSubmit={saveSource}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -158,28 +158,25 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                 <Modal
                   title="Source Documentation"
                   id="sourceHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
-                type="submit"
-              >
-                <i className="fas fa-save mr-2" />Save
+              <button className="utrecht-button utrecht`ht-button-sm btn-sm btn-success" type="submit">
+                <i className="fas fa-save mr-2" />
+                Save
               </button>
             </>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -199,12 +196,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             nameOverride={"Name"}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            nameOverride={"Name"}
-                          />
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} nameOverride={"Name"} />
                         )}
                       </div>
                       <div className="col-6">
@@ -230,43 +222,43 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                     <div className="row">
                       <div className="col-6">
                         {source !== null && source.type !== null ? (
-                            <SelectInputComponent
-                              options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              data={source.type}
-                              required={true}
-                            />
-                          ) :
-                          (
-                            <SelectInputComponent
-                              options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              required={true}
-                            />
-                          )}
+                          <SelectInputComponent
+                            options={[
+                              { name: "json", value: "json" },
+                              { name: "xml", value: "xml" },
+                              { name: "soaps", value: "soaps" },
+                              { name: "ftp", value: "ftp" },
+                              { name: "sftp", value: "sftp" },
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            data={source.type}
+                            required={true}
+                          />
+                        ) : (
+                          <SelectInputComponent
+                            options={[
+                              { name: "json", value: "json" },
+                              { name: "xml", value: "xml" },
+                              { name: "soaps", value: "soaps" },
+                              { name: "ftp", value: "ftp" },
+                              { name: "sftp", value: "sftp" },
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            required={true}
+                          />
+                        )}
                       </div>
                       <div className="col-6">
                         {source !== null && source.auth !== null ? (
                           <SelectInputComponent
-                            options={[{ name: "apikey", value: "apikey" },
+                            options={[
+                              { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                              { name: "username-password", value: "username-password" },
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -279,7 +271,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             options={[
                               { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                              { name: "username-password", value: "username-password" },
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -338,12 +330,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.jwt}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Jwt"}
-                            name={"jwt"}
-                            id={"jwtInput"}
-                          />
+                          <GenericInputComponent type={"text"} nameOverride={"Jwt"} name={"jwt"} id={"jwtInput"} />
                         )}
                       </div>
                       <div className="col-6">
@@ -470,55 +457,34 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.password}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"password"}
-                            id={"passwordInput"}
-                          />
+                          <GenericInputComponent type={"text"} name={"password"} id={"passwordInput"} />
                         )}
                       </div>
                     </div>
                     <Accordion
                       id="sourceAccordion"
-                      items={[{
-                        title: "Headers",
-                        id: "headersAccordion",
-                        render: function() {
-                          return (
-                            <ElementCreationNew
-                              id="headers"
-                              label="Headers"
-                              data={source?.headers}
-                            />
-                          );
-                        }
-                      },
+                      items={[
+                        {
+                          title: "Headers",
+                          id: "headersAccordion",
+                          render: function () {
+                            return <ElementCreationNew id="headers" label="Headers" data={source?.headers} />;
+                          },
+                        },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function() {
-                            return (
-                              <ElementCreationNew
-                                id="oas"
-                                label="OAS"
-                                data={source?.oas}
-                              />
-                            );
-                          }
+                          render: function () {
+                            return <ElementCreationNew id="oas" label="OAS" data={source?.oas} />;
+                          },
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function() {
-                            return (
-                              <ElementCreationNew
-                                id="paths"
-                                label="Paths"
-                                data={source?.paths}
-                              />
-                            );
-                          }
-                        }
+                          render: function () {
+                            return <ElementCreationNew id="paths" label="Paths" data={source?.paths} />;
+                          },
+                        },
                       ]}
                     />
                   </>
