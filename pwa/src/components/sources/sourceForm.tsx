@@ -1,13 +1,18 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject
+} from "../utility/inputHandler";
 import {
   GenericInputComponent,
   Accordion,
   Card,
   Spinner,
   SelectInputComponent,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -16,6 +21,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
   id: string;
@@ -32,19 +38,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    handleSetDocumentation();
+    id && handleSetSource();
     setHeader({
       title: "Source",
-      subText: "Manage your source here",
+      subText: "Manage your source here"
     });
-  }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    id && handleSetSource();
-  }, [API, id]);
+  }, [setHeader, id, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
@@ -76,7 +76,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
@@ -98,7 +98,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       authorizationHeader: event.target.authorizationHeader.value,
       headers,
       oas,
-      paths,
+      paths
     };
 
     body = removeEmptyObjectValues(body);
@@ -146,7 +146,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     <form id="dataForm" onSubmit={saveSource}>
       <Card
         title={title}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -176,7 +176,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -196,7 +196,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             nameOverride={"Name"}
                           />
                         ) : (
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} nameOverride={"Name"} />
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"name"}
+                            id={"nameInput"}
+                            nameOverride={"Name"}
+                          />
                         )}
                       </div>
                       <div className="col-6">
@@ -207,7 +212,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             id={"locationInput"}
                             data={source.location}
                             nameOverride={"Location (url)"}
-                            infoTooltip={{ content: <p>Enter the source location here</p> }}
+                            infoTooltip=
+                              {
+                                {
+                                  content: <p>Enter the source location here</p>
+                                }
+                              }
                           />
                         ) : (
                           <GenericInputComponent
@@ -228,7 +238,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                               { name: "xml", value: "xml" },
                               { name: "soaps", value: "soaps" },
                               { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" },
+                              { name: "sftp", value: "sftp" }
                             ]}
                             name={"type"}
                             id={"typeInput"}
@@ -243,7 +253,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                               { name: "xml", value: "xml" },
                               { name: "soaps", value: "soaps" },
                               { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" },
+                              { name: "sftp", value: "sftp" }
                             ]}
                             name={"type"}
                             id={"typeInput"}
@@ -258,7 +268,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             options={[
                               { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" },
+                              { name: "username-password", value: "username-password" }
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -271,7 +281,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             options={[
                               { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" },
+                              { name: "username-password", value: "username-password" }
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -330,7 +340,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.jwt}
                           />
                         ) : (
-                          <GenericInputComponent type={"text"} nameOverride={"Jwt"} name={"jwt"} id={"jwtInput"} />
+                          <GenericInputComponent
+                            type={"text"}
+                            nameOverride={"Jwt"}
+                            name={"jwt"}
+                            id={"jwtInput"}
+                          />
                         )}
                       </div>
                       <div className="col-6">
@@ -457,7 +472,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.password}
                           />
                         ) : (
-                          <GenericInputComponent type={"text"} name={"password"} id={"passwordInput"} />
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"password"}
+                            id={"passwordInput"}
+                          />
                         )}
                       </div>
                     </div>
@@ -467,24 +486,50 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         {
                           title: "Headers",
                           id: "headersAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="headers" label="Headers" data={source?.headers} />;
-                          },
+                          render: function() {
+                            return (
+                              <MultiDimensionalArrayInput
+                                id="headers"
+                                label="Headers"
+                                data=
+                                  {source && source.headers
+                                    ? [
+                                      {
+                                        key: "headers",
+                                        value: source.headers
+                                      }
+                                    ] : null
+                                  }
+                              />
+                            );
+                          }
                         },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="oas" label="OAS" data={source?.oas} />;
-                          },
+                          render: function() {
+                            return (
+                              <ElementCreationNew
+                                id="oas"
+                                label="OAS"
+                                data={source?.oas}
+                              />
+                            );
+                          }
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="paths" label="Paths" data={source?.paths} />;
-                          },
-                        },
+                          render: function() {
+                            return (
+                              <ElementCreationNew
+                                id="paths"
+                                label="Paths"
+                                data={source?.paths}
+                              />
+                            );
+                          }
+                        }
                       ]}
                     />
                   </>
