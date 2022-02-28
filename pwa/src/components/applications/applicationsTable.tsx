@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Card,
-  Table,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -22,7 +17,7 @@ export default function ApplicationsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: 'Applications', subText: 'An overview of your application objects'});
+    setHeader({ title: "Applications", subText: "An overview of your application objects" });
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -49,7 +44,7 @@ export default function ApplicationsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("applications")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -76,7 +71,7 @@ export default function ApplicationsTable() {
   return (
     <Card
       title={"Applications"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
             <button
@@ -87,9 +82,7 @@ export default function ApplicationsTable() {
               <Modal
                 title="Application Documentation"
                 id="applicationHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -107,7 +100,7 @@ export default function ApplicationsTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -118,11 +111,11 @@ export default function ApplicationsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
+                      field: "description",
                     },
                     {
                       field: "id",
@@ -130,21 +123,21 @@ export default function ApplicationsTable() {
                       renderCell: (item: { id: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteApplication(item.id)}
-                                    className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteApplication(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link
-                              to={`/applications/${item.id}`}
-                            >
+                            <Link to={`/applications/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
                             </Link>
                           </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={applications}
                 />
@@ -153,12 +146,12 @@ export default function ApplicationsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
-                    }
+                      field: "description",
+                    },
                   ]}
                   rows={[{ name: "No results found", description: " " }]}
                 />

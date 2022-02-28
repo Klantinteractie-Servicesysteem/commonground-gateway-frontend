@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Card,
-  Table,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -22,7 +17,7 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: 'Endpoints', subText: 'An overview of your endpoint objects'});
+    setHeader({ title: "Endpoints", subText: "An overview of your endpoint objects" });
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -49,7 +44,7 @@ export default function EndpointsTable() {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("endpoints")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -76,20 +71,14 @@ export default function EndpointsTable() {
   return (
     <Card
       title={"Endpoints"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#endpointHelpModal"
-            >
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#endpointHelpModal">
               <Modal
                 title="Endpoint Documentation"
                 id="endpointHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -107,7 +96,7 @@ export default function EndpointsTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -118,11 +107,11 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Path",
-                      field: "path"
+                      field: "path",
                     },
                     {
                       field: "id",
@@ -130,22 +119,21 @@ export default function EndpointsTable() {
                       renderCell: (item: { id: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteEndpoint(item.id)}
-                                    className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteEndpoint(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link
-                              className="utrecht-link d-flex justify-content-end"
-                              to={`/endpoints/${item.id}`}
-                            >
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
                             </Link>
                           </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={endpoints}
                 />
@@ -154,18 +142,18 @@ export default function EndpointsTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
-                    }
+                      field: "description",
+                    },
                   ]}
                   rows={[
                     {
                       name: "No results found",
-                      description: " "
-                    }
+                      description: " ",
+                    },
                   ]}
                 />
               )}
