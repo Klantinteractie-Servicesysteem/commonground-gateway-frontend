@@ -12,10 +12,12 @@ export default function HandlersTable({ endpointId }) {
   const [handlers, setHandlers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const title: string = endpointId === "new" ? "Create Handler" : "Edit Handler";
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     handleSetHandlers();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetHandlers = () => {
@@ -30,6 +32,17 @@ export default function HandlersTable({ endpointId }) {
       })
       .finally(() => {
         setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("attributes")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET Documentation error: " + err);
       });
   };
 
@@ -49,7 +62,7 @@ export default function HandlersTable({ endpointId }) {
 
   return (
     <Card
-      title="Handlers"
+      title={title}
       cardHeader={function () {
         return (
           <>
