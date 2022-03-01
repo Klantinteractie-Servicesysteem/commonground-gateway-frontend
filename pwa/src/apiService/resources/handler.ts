@@ -25,7 +25,6 @@ export default class Handler {
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/handlers/${id}`)
-
-  }
+    return this._instance.delete(`/handlers/${id}`);
+  };
 }
