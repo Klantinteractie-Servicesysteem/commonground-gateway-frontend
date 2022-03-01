@@ -9,7 +9,7 @@ const IndexPage = (props) => {
     <main>
       <div className="row">
         <div className="col-12">
-          <HandlerForm id={handlerId} endpointId={endpointId} />
+          <HandlerForm {...{ handlerId, endpointId }} />
         </div>
       </div>
     </main>
