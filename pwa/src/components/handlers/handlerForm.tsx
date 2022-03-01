@@ -4,7 +4,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -13,7 +13,7 @@ import {
   Accordion,
   Spinner,
   Card,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import { isLoggedIn } from "../../services/auth";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
@@ -40,25 +40,20 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = id ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     setHeader({
       title: "Handler",
-      subText: "Manage your handler here",
+      subText: "Manage your handler here"
     });
   }, [setHeader]);
-
-  // React.useEffect(() => {
-  //   handleSetDocumentation();
-  // });
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
+        adminUrl: process.env.GATSBY_ADMIN_URL
       });
     } else if (isLoggedIn()) {
       if (id) {
@@ -79,8 +74,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -98,8 +93,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     fetch(`${context.adminUrl}/entities`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -117,8 +112,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     fetch(`${context.adminUrl}/table_names`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
+        Authorization: "Bearer " + sessionStorage.getItem("jwt")
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -130,16 +125,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
         throw new Error("GET handler error: " + error);
       });
   };
-
-  // const handleSetDocumentation = (): void => {
-  //   API.Documentation.get()
-  //     .then((res) => {
-  //       setDocumentation(res.data.content);
-  //     })
-  //     .catch((err) => {
-  //       throw new Error("GET Documentation error: " + err);
-  //     });
-  // };
 
   const saveHandler = (event) => {
     event.preventDefault();
@@ -167,8 +152,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       mappingIn,
       mappingOut,
       translationsIn,
-      translationsOut,
+      translationsOut
     };
+
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
     if (!checkValues([body["name"]])) {
@@ -194,7 +180,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       method: method,
       credentials: "include",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     })
       .then((response) => response.json())
       .then((data) => {
@@ -216,7 +202,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     <form id="handlerForm" onSubmit={saveHandler}>
       <Card
         title={title}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -228,12 +214,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <Link className="utrecht-link" to={`/endpoints/${endpointId}`} state={{activeTab: "handlers"}}>
+              <Link className="utrecht-link" to={`/endpoints/${endpointId}`} state={{ activeTab: "handlers" }}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
@@ -246,7 +232,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -293,7 +279,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           options={[
                             { name: "twig", value: "twig" },
                             { name: "markdown", value: "markdown" },
-                            { name: "restructuredText", value: "restructuredText" },
+                            { name: "restructuredText", value: "restructuredText" }
                           ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
@@ -351,9 +337,20 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                       <div className="col-6">
                         <TextareaGroup
                           name={"conditions"}
+                          label={"Conditions (JSON)"}
                           id={"conditionsInput"}
                           defaultValue={handler?.conditions}
                           required={true}
+                          infoTooltip={{
+                            content: <p>
+                              This field expects a<br/>
+                              <a
+                                target="_blank" href="https://jsonlint.com/"
+                              >
+                                valid JSON object
+                              </a>
+                            </p>
+                          }}
                         />
                       </div>
                     </div>
@@ -376,7 +373,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 <><Spinner /></>
                               )
                             );
-                          },
+                          }
                         },
                         {
                           title: "Translations Out",
@@ -394,12 +391,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 <><Spinner /></>
                               )
                             );
-                          },
+                          }
                         },
                         {
                           title: "Mapping In",
                           id: "mappingInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
@@ -416,12 +413,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 }
                               />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
@@ -438,21 +435,21 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 }
                               />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Skeleton Out",
                           id: "skeletonOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
                             );
