@@ -35,14 +35,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
     if (!data) return;
 
     const loadedValues: IValue[] = data?.map((value) => {
-      console.log({ value })
       return { id: generateId(), value: value.value, name: value.name };
     });
 
     setValues([...loadedValues]);
   }, [data]);
 
-  const handleAdd = () => {
+  const handleAdd = (e) => {
+    e.preventDefault();
     setValues([...values, { id: generateId(), value: value.value,  name: value.name}]);
     setValue({ name: "", value: "" });
   };
@@ -50,6 +50,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
   const handleDelete = (e) => {
     e.preventDefault();
     setValues(values.filter(value => value.id !== e.target.id));
+  };
+
+  const handleChange = (event, index: number, value: string) => {
+    setValue({ name:  event.target[index].text, value: value});
   };
 
   const generateId = (): string => Math.random().toString(36);
@@ -93,15 +97,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
         <div className="col-10">
           <div className="input-group">
             <select
-              id={`${id}Input`}
               name={id}
               defaultValue={value ?? data}
               className="utrecht-select utrecht-select--html-select"
-              onChange={(e) => setValue({ name: e.target.name, value: e.target.value })}
+              onChange={(e) => handleChange(e, e.target.selectedIndex, e.target.value)}
             >
               <option/>
               {options.map((option, idx) => (
-                <option key={idx} value={option.value}>
+                <option key={idx} value={option.value} id={option.id} >
                   {_.upperFirst(option.name)}
                 </option>
               ))}
@@ -109,7 +112,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
           </div>
         </div>
         <div className="col-2 select-elementCreation-button">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={(e) => handleAdd(e)} disabled={!value.name}>
             <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>

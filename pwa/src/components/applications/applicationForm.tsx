@@ -13,7 +13,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject, retrieveFormObjectAsArray
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -22,7 +22,6 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
 import MultiSelect from "../common/multiSelect";
-import ObjectMultiSelect from "../common/objectMultiSelect";
 
 interface IApplication {
   name: string;
@@ -70,7 +69,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
     API.Application.getOne(id)
       .then((res) => {
-        console.log("application", application)
+        res.data.endpoints = res.data.endpoints.map((endpoint) => {
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
+        })
+
         setApplication(res.data);
       })
       .catch((err) => {
@@ -109,10 +111,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     setLoadingOverlay(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
-    let endpoints = retrieveFormArrayAsOArray(event.target, "endpoints");
+    let endpoints = retrieveFormArrayAsOArray(event.target, "endpoints", true);
 
-    // console.log("endpoints", endpoints)
-    // console.log("domains", domains)
+    console.log({endpoints})
 
     let body: {} = {
       name: event.target.name.value,
@@ -274,20 +275,17 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            console.log(endpoints)
-                           const _endpoints = endpoints?.map((endpoint) => {
-                             return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-                           })
-                            const _data = application?.endpoints.map((endpoint) => {
+                            const _endpoints = endpoints?.map((endpoint) => {
                               return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
                             })
-                            console.log({_data})
+
+                            // console.log({_data})
                             console.log({ _endpoints })
                             return endpoints ? (
                               <MultiSelect
-                                id="endpoints"
+                                id=""
                                 label="endpoints"
-                                data={_data}
+                                data={application.endpoints}
                                 options={_endpoints}
                               />
                             ) : (
