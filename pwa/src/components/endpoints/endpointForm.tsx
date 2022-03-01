@@ -5,16 +5,18 @@ import {
   TextareaGroup,
   Spinner,
   Card,
-  Modal,
+  Modal, Accordion
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
+import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import ElementCreationNew from "../common/elementCreationNew";
+import MultiSelect from "../common/multiSelect";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -23,7 +25,7 @@ interface EndpointFormProps {
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [endpoint, setEndpoint] = React.useState<any>(null);
-  const [applications, setApplications] = React.useState<any>(null);
+  const [applicationOptions, setApplicationOptions] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
@@ -52,6 +54,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
 
     API.Endpoint.getOne(endpointId)
       .then((res) => {
+        console.log(res.data, "endpoint")
         setEndpoint(res.data);
       })
       .catch((err) => {
@@ -66,7 +69,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        setApplications(res.data);
+        console.log(res.data, "app")
+        setApplicationOptions(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -89,12 +93,16 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
+    let applications: any[] = retrieveFormArrayAsOArray(event.target, "applications");
+
     let body: {} = {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
-      application: event.target.application.value ?? null,
+      applications
     };
+
+    console.log(body, "body")
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
@@ -166,7 +174,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
               <button
                 className="utrecht-button utrecht-button-sm btn-sm btn-success"
                 type="submit"
-                disabled={!applications}
+                disabled={!applicationOptions}
               >
                 <i className="fas fa-save mr-2" />
                 Save
@@ -194,30 +202,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         />
                       </div>
                       <div className="col-6">
-                        {applications ? (
-                          <SelectInputComponent
-                            options={applications}
-                            data={endpoint?.application?.name}
-                            name={"application"}
-                            id={"applicationInput"}
-                            nameOverride={"Applications"}
-                            value={"/admin/applications/"}
-                          />
-                        ) : (
-                          <SelectInputComponent
-                            data="Please wait, gettings applications from the Gateway..."
-                            options={[
-                              {
-                                name: "Please wait, gettings applications from the Gateway...",
-                                value: "Please wait, gettings applications from the Gateway...",
-                              },
-                            ]}
-                            name={"application"}
-                            id={"applicationInput"}
-                            nameOverride={"Applications"}
-                            disabled
-                          />
-                        )}
+                        <TextareaGroup
+                          name={"description"}
+                          id={"descriptionInput"}
+                          defaultValue={endpoint?.description}
+                        />
                       </div>
                     </div>
                     <br />
@@ -234,14 +223,28 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           />
                         </div>
                       </div>
-                      <div className="col-6">
-                        <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
-                          defaultValue={endpoint?.description}
-                        />
-                      </div>
                     </div>
+                    <Accordion
+                      id="endpointAccordion"
+                      items={[
+                        {
+                          title: "Applications",
+                          id: "applicationsAccordion",
+                          render: function() {
+                            return (
+                              <>
+                                <MultiSelect
+                                  id="applications"
+                                  label="Applications"
+                                  data={endpoint?.applications}
+                                  options={applicationOptions ?? null}
+                                />
+                              </>
+                            );
+                          }
+                        }
+                      ]}
+                    />
                   </div>
                 )}
               </div>

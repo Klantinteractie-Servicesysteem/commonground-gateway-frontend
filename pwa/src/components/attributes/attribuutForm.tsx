@@ -664,6 +664,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           title: "File Types",
                           id: "fileTypesAccordion",
                           render: function () {
+                            console.log(attribute?.fileTypes)
                             return (
                               <MultiSelect
                                 id="fileTypes"

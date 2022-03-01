@@ -119,6 +119,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       .then((data) => {
         const convertedArray = data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
         setTableNames(convertedArray);
+        console.log(convertedArray)
       })
       .catch((error) => {
         setAlert({ type: "danger", message: error.message });
@@ -163,6 +164,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
       translationsIn,
       translationsOut,
     };
+
+    console.log("body", body)
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
@@ -340,13 +343,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                     <Accordion
                       id="handlerAccordion"
                       items={[
-                        {
-                          title: "Conditions *",
-                          id: "conditionsAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
-                          },
-                        },
+                        // {
+                        //   title: "Conditions *",
+                        //   id: "conditionsAccordion",
+                        //   render: function () {
+                        //     return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
+                        //   },
+                        // },
                         {
                           title: "Translations In",
                           id: "translationsInAccordion",
@@ -405,28 +408,28 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                             );
                           },
                         },
-                        {
-                          title: "Mapping Out",
-                          id: "mappingOutAccordion",
-                          render: function () {
-                            return (
-                              <MultiDimensionalArrayInput
-                                id={"mappingOut"}
-                                label={"Mapping Out"}
-                                data={
-                                  handler && handler.mappingOut
-                                    ? [
-                                        {
-                                          key: "mappingOut",
-                                          value: `${handler.mappingOut}`,
-                                        },
-                                      ]
-                                    : null
-                                }
-                              />
-                            );
-                          },
-                        },
+                        // {
+                        //   title: "Mapping Out",
+                        //   id: "mappingOutAccordion",
+                        //   render: function () {
+                        //     return (
+                        //       <MultiDimensionalArrayInput
+                        //         id={"mappingOut"}
+                        //         label={"Mapping Out"}
+                        //         data={
+                        //           handler && handler.mappingOut
+                        //             ? [
+                        //                 {
+                        //                   key: "mappingOut",
+                        //                   value: `${handler.mappingOut}`,
+                        //                 },
+                        //               ]
+                        //             : null
+                        //         }
+                        //       />
+                        //     );
+                        //   },
+                        // },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
