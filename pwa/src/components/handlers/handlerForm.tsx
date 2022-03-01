@@ -15,7 +15,6 @@ import {
   Card,
   Modal
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
@@ -27,103 +26,70 @@ import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
 
 interface HandlerFormProps {
-  id: string;
+  handlerId: string;
   endpointId: string;
 }
 
-export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
-  const [context, setContext] = React.useState(null);
+export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = id ? "Edit Handler" : "Create Handler";
+  const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    getTableNames();
+    handlerId && handleSetHandler();
+    handleSetEntities();
     setHeader({
       title: "Handler",
       subText: "Manage your handler here"
     });
-  }, [setHeader]);
+  }, [setHeader, API, handlerId]);
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL
-      });
-    } else if (isLoggedIn()) {
-      if (id) {
-        getHandler();
-      }
-      getEntities();
-      getTableNames();
-      setHeader({
-        title: "Handler",
-        subText: "Manage your handler here"
-      });
-    }
-  }, [context]);
-
-  const getHandler = () => {
+  const handleSetHandler = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers/${id}`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setHandler(data);
-        setShowSpinner(false);
+
+    API.Handler.getOne(handlerId)
+      .then((res) => {
+        setHandler(res.data);
       })
-      .catch((error) => {
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET handler error: " + err);
+      })
+      .finally(() => {
         setShowSpinner(false);
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
       });
   };
 
-  const getEntities = () => {
-    fetch(`${context.adminUrl}/entities`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
-          setEntities(data["hydra:member"]);
-        }
+  const handleSetEntities = () => {
+    API.Entity.getAll()
+      .then((res) => {
+        setEntities(res.data);
       })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
-      });
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET entities error: " + err);
+      })
+
   };
 
   const getTableNames = () => {
-    fetch(`${context.adminUrl}/table_names`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const convertedArray = data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
-        setTableNames(convertedArray);
+    API.Translation.getTableNames()
+      .then((res) => {
+        const names = res.data.results.map((name) => {
+          return { name: name };
+        });
+        setTableNames(names);
       })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
-      });
+      .catch((err) => {
+        throw new Error("GET table names error: " + err);
+      })
   };
 
   const saveHandler = (event) => {
@@ -157,45 +123,44 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
+
     if (!checkValues([body["name"]])) {
-      setAlert(null);
       setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-
-    let url = `${context.adminUrl}/handlers`;
-    let method = "POST";
-    if (id) {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!handlerId) {
+      // unset id means we're creating a new entry
+      API.Handler.create(body)
+        .then(() => {
+          setAlert({ message: "Saved Handler", type: "success" });
+          navigate("/handlers");
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create handler error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
     }
 
-
-    console.log(body);
-    setLoadingOverlay(false);
-
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-      body: JSON.stringify(body)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setHandler(data);
-        !id && setAlert({ message: "Saved handler", type: "success" });
-        id && setAlert({ message: "Updated handler", type: "success" });
-        !id && navigate(`/endpoints/${endpointId}`);
-      })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
+    if (handlerId) {
+      // set id means we're updating a existing entry
+      API.Handler.update(body, handlerId)
+        .then((res) => {
+          setAlert({ message: "Updated handler", type: "success" });
+          setHandler(res.data);
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Update handler error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
+    }
   };
 
   return (
@@ -214,7 +179,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html":  ""}} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -455,7 +420,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                             );
                           }
                         }
-
                       ]}
                     />
                   </>
