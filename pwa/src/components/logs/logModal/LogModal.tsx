@@ -111,10 +111,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               </h5>
                             )}
                             {log.sessionValues ? (
-                              <CodeBlock
-                              code={JSON.stringify(log.sessionValues, null, 4)}
-                                language="json"
-                              />
+                              JSON.stringify(log.sessionValues)
                             ) : (
                               <p className="utrecht-paragraph">
                                 No session values found
@@ -122,8 +119,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
-                      backgroundColor: "#272822"
+                      }
                     }
                   ]}
                 />
@@ -157,20 +153,16 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       render: function() {
                         return (
                           <>
-                          {log.requestHeaders ? (
-                            <CodeBlock
-                            code={JSON.stringify(log.requestHeaders, null, 4)}
-                              language="json"
-                            />
-                          ) : (
+                            {log.requestHeaders ? (
+                              JSON.stringify(log.requestHeaders, null, 4)
+                            ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
                               </p>
                             )}
                           </>
                         );
-                      },
-                      backgroundColor: "#272822"
+                      }
                     },
                     {
                       title: "Query parameters",
@@ -179,10 +171,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.requestQuery ? (
-                            <CodeBlock
-                            code={JSON.stringify(log.requestQuery, null, 4)}
-                              language="json"
-                            />
+                              JSON.stringify(log.requestQuery)
                             ) : (
                               <p className="utrecht-paragraph">
                                 No parameters found
@@ -190,8 +179,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
-                      backgroundColor: "#272822"
+                      }
                     },
                     {
                       title: "Content",
@@ -233,10 +221,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.responseHeaders ? (
-                              <CodeBlock
-                              code={JSON.stringify(log.responseHeaders, null, 4)}
-                                language="json"
-                              />
+                              JSON.stringify(log.responseHeaders)
                             ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
@@ -244,8 +229,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      },
-                      backgroundColor: "#272822"
+                      }
                     },
                     {
                       title: "Content",
