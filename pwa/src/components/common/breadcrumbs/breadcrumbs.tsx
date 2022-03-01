@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./breadcrumbs.css";
 import { Link } from "gatsby";
+import * as _ from "lodash";
 
 interface BreadcrumbsProps {
   crumbs: {
@@ -33,7 +34,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ crumbs }) => {
       {mappedCrumbs?.map((crumb, idx) => {
         return (
           <li key={idx}>
-            <Link to={crumb.pathname}>{crumb.crumbLabel.charAt(0).toUpperCase() + crumb.crumbLabel.slice(1)}</Link>
+            <Link to={crumb.pathname}>{_.upperFirst(crumb.crumbLabel)}</Link>
             {idx !== crumbsLength && <span className="divider">/</span>}
           </li>
         );

@@ -49,7 +49,7 @@ export default function Layout({ children, pageContext }) {
               <MainMenu />
               <div className="utrecht-page__content">
                 <header className="utrecht-page-header">
-                  <Header pageContext={pageContext} />
+                  <Header { ...{ pageContext } } />
                 </header>
                 <div className="container py-4">{children}</div>
               </div>

@@ -1,22 +1,17 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Modal
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
 }
 
-const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
-                                                                   entityId
-                                                                 }) => {
+const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
@@ -73,8 +68,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
 
   return (
     <Card
-      title={"Object entities"}
-      cardHeader={function() {
+      title={"Object"}
+      cardHeader={function () {
         return (
           <>
             <button
@@ -85,9 +80,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
               <Modal
                 title="Object Entities Documentation"
                 id="ObjectEntityHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
@@ -105,7 +98,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -115,12 +108,24 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "Id",
+                      field: "id",
                     },
                     {
                       headerName: "Owner",
-                      field: "owner"
+                      field: "owner",
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated",
+                      renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified",
+                      renderCell: (item: { dateModified: string }) => {
+                        new Date(item.dateModified).toLocaleString("nl-NL");
+                      },
                     },
                     {
                       field: "id",
@@ -128,8 +133,10 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                       renderCell: (item: { id: string }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            <button onClick={() => handleDeleteObjectEntity(item.id)}
-                                    className="utrecht-button btn-sm btn-danger mr-2">
+                            <button
+                              onClick={() => handleDeleteObjectEntity(item.id)}
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                            >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <Link
@@ -142,8 +149,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                             </Link>
                           </div>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={objectEntities}
                 />
@@ -151,13 +158,21 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({
                 <Table
                   columns={[
                     {
-                      headerName: "Uri",
-                      field: "uri"
+                      headerName: "Id",
+                      field: "id",
                     },
                     {
                       headerName: "Owner",
-                      field: "owner"
-                    }
+                      field: "owner",
+                    },
+                    {
+                      headerName: "Created",
+                      field: "dateCreated",
+                    },
+                    {
+                      headerName: "Updated",
+                      field: "dateModified",
+                    },
                   ]}
                   rows={[]}
                 />

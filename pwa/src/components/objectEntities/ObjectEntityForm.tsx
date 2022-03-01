@@ -39,8 +39,8 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
   React.useEffect(() => {
     setHeader({
-      title: "Object entity",
-      subText: "Manage your object entity here"
+      title: "Object",
+      subText: "Manage your object here"
     });
   }, [setHeader]);
 
@@ -99,14 +99,14 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     let body: {} = {
       uri: event.target.uri.value,
-      externalId: event.target.externalId ? event.target.externalId.value : null,
+      externalId: event.target.externalId ?? null,
       application: event.target.application.value
         ? event.target.application.value
         : null,
       organization: event.target.organization.value
         ? event.target.organization.value
         : null,
-      owner: event.target.owner.value ? event.target.owner.value : null,
+      owner: event.target.owner.value ?? null,
       entity: `/admin/entities/${entityId}`,
       errors,
       promises,
@@ -125,7 +125,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     if (!objectId) { // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
-          setAlert({ message: 'Saved object entities', type: "success" });
+          setAlert({ message: "Saved object entities", type: "success" });
           navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
@@ -140,7 +140,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     if (objectEntity) { // set id means we're updating a existing entry
       API.ObjectEntity.update(body, objectId)
         .then((res) => {
-          setAlert({ message: 'Updated object entities', type: "success" });
+          setAlert({ message: "Updated object entities", type: "success" });
           setObjectEntity(res.data);
         })
         .catch((err) => {
@@ -183,7 +183,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                 </button>
               </Link>
               <button
-                className="utrecht-button utrec`ht-button-sm btn-sm btn-success"
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
                 type="submit"
                 disabled={!applications}
               >
