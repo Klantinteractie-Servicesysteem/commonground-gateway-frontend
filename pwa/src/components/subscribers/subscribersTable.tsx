@@ -1,15 +1,13 @@
 import * as React from "react";
-import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function SubscribersTable({ entityId }) {
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [subscribers, setSubscribers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -22,10 +20,9 @@ export default function SubscribersTable({ entityId }) {
 
   const handleSetSubscribers = () => {
     setShowSpinner(true);
-    API.Attribute.getAllFromEntity(entityId)
+    API.Subscriber.getAllFromEntity(entityId)
       .then((res) => {
-        // setSubscribers(res.data);
-        setSubscribers([]);
+        setSubscribers(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -109,7 +106,7 @@ export default function SubscribersTable({ entityId }) {
                             >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${entityId}/subscribers/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>

@@ -1,5 +1,4 @@
 import * as React from "react";
-import AttributeForm from "../../../../components/attributes/attribuutForm";
 import SubscriberForm from "../../../../components/subscribers/subscriberForm";
 
 const IndexPage = (props) => {

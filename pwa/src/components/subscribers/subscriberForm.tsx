@@ -62,7 +62,7 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
   const handleSetSubscriber= () => {
     setShowSpinner(true);
 
-    API.Attribute.getOne(subscriberId)
+    API.Subscriber.getOne(subscriberId)
       .then((res) => {
         setSubscriber(res.data);
       })
@@ -128,14 +128,16 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let headers: any[] = retrieveFormArrayAsOArray(event.target, "headers");
-    let queryParameters: any[] = retrieveFormArrayAsOArray(event.target, "queryParameters");
+    let headers: {} = retrieveFormArrayAsObject(event.target, "headers");
+    let queryParameters: {} = retrieveFormArrayAsObject(event.target, "queryParameters");
     let mappingIn: {} = retrieveFormArrayAsObject(event.target, "mappingIn");
     let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
     let body: {} = {
+      name: event.target.name.value ? event.target.name.value : null,
+      description: event.target.description.value ? event.target.description.value : null,
       entity: `admin/entities/${entityId}`,
       endpoint: event.target.endpoint.value ? event.target.endpoint.value : null,
       source: event.target.source.value ? event.target.source.value : null,
@@ -216,6 +218,26 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={subscriber && subscriber.name && subscriber.name}
+                          nameOverride={"Name"}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"description"}
+                          id={"descriptionInput"}
+                          data={subscriber && subscriber.description && subscriber.description}
+                          nameOverride={"Description"}
+                        />
+                      </div>
+                    </div>
                     <div className="row">
                       <div className="col-6">
                         <SelectInputComponent
@@ -437,7 +459,20 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
                           id: "headersAccordion",
                           render: function () {
                             return (
-                              <ElementCreationNew id="headers" label="Headers" data={subscriber?.headers} />
+                              <MultiDimensionalArrayInput
+                                id={"headers"}
+                                label={"Headers"}
+                                data={
+                                  subscriber && subscriber.headers
+                                    ? [
+                                      {
+                                        key: "headers",
+                                        value: `${subscriber.headers}`,
+                                      },
+                                    ]
+                                    : null
+                                }
+                              />
                             );
                           },
                         },
@@ -446,7 +481,20 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
                           id: "queryParametersAccordion",
                           render: function () {
                             return (
-                              <ElementCreationNew id="queryParameters" label="Query Parameters" data={subscriber?.queryParameters} />
+                              <MultiDimensionalArrayInput
+                                id={"queryParameters"}
+                                label={"Query Parameters"}
+                                data={
+                                  subscriber && subscriber.queryParameters
+                                    ? [
+                                      {
+                                        key: "queryParameters",
+                                        value: `${subscriber.queryParameters}`,
+                                      },
+                                    ]
+                                    : null
+                                }
+                              />
                             );
                           },
                         },
