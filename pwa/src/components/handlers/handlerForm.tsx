@@ -37,12 +37,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    // handleSetDocumentation();
     getTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
@@ -92,16 +90,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         throw new Error("GET table names error: " + err);
       })
   };
-
-  // const handleSetDocumentation = (): void => {
-  //   API.Documentation.get()
-  //     .then((res) => {
-  //       setDocumentation(res.data.content);
-  //     })
-  //     .catch((err) => {
-  //       throw new Error("GET Documentation error: " + err);
-  //     });
-  // };
 
   const saveHandler = (event) => {
     event.preventDefault();
@@ -189,7 +177,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html":  ""}} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
