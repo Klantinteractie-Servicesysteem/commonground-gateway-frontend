@@ -81,5 +81,16 @@ module.exports = {
         ],
       },
     },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        icon: `src/images/conduction_logo_blauw.svg`,
+        name: `Conductor`,
+        short_name: `Conductor`,
+        start_url: `/`,
+        display: `standalone`,
+        theme_color_in_head: false, 
+      },
+    },
   ],
 };
