@@ -76,8 +76,8 @@ export default function SubscribersTable({ entityId }) {
                 <Table
                   columns={[
                     {
-                      headerName: "Asynchronous",
-                      field: "asynchronous",
+                      headerName: "Name",
+                      field: "name",
                     },
                     {
                       headerName: "Method",
@@ -86,13 +86,6 @@ export default function SubscribersTable({ entityId }) {
                     {
                       headerName: "Endpoint",
                       field: "endpoint",
-                    },
-                    {
-                      headerName: "Source",
-                      field: "gateway",
-                      valueFormatter: (item) => {
-                        return item ? item.name : "";
-                      },
                     },
                     {
                       field: "id",
@@ -122,8 +115,8 @@ export default function SubscribersTable({ entityId }) {
                 <Table
                   columns={[
                     {
-                      headerName: "Asynchronous",
-                      field: "asynchronous",
+                      headerName: "Name",
+                      field: "name",
                     },
                     {
                       headerName: "Method",
@@ -132,10 +125,6 @@ export default function SubscribersTable({ entityId }) {
                     {
                       headerName: "Endpoint",
                       field: "endpoint",
-                    },
-                    {
-                      headerName: "Source",
-                      field: "gateway.name",
                     },
                   ]}
                   rows={[{ name: "No results found" }]}

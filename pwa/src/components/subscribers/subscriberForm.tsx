@@ -141,9 +141,9 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
       entity: `admin/entities/${entityId}`,
       endpoint: event.target.endpoint.value ? event.target.endpoint.value : null,
       source: event.target.source.value ? event.target.source.value : null,
-      method: event.target.method.value ? event.target.method.value : null,
+      method: event.target.method.value,
       conditions: event.target.conditions.value ? event.target.conditions.value : null,
-      order: event.target.order.value ? event.target.order.value : null,
+      order: event.target.order.value ? parseInt(event.target.order.value) : null,
       asynchronous: event.target.checked,
       blocking: event.target.checked,
       mappingIn,
@@ -229,12 +229,10 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
                         />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
+                        <TextareaGroup
                           name={"description"}
                           id={"descriptionInput"}
-                          data={subscriber && subscriber.description && subscriber.description}
-                          nameOverride={"Description"}
+                          defaultValue={subscriber?.description}
                         />
                       </div>
                     </div>
@@ -250,11 +248,12 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
                           id={"methodInput"}
                           nameOverride={"Method"}
                           data={subscriber && subscriber.method && subscriber.method}
+                          required
                         />
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
-                          type={"text"}
+                          type={"number"}
                           name={"order"}
                           id={"orderInput"}
                           data={subscriber && subscriber.order && subscriber.order}
