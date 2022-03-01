@@ -17,8 +17,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   }, [Prism])
 
   return (<>
-    <pre className="">
-      <code className={`language-json`}>
+    <pre>
+      <code className={`language-${language}`}>
         {code}
       </code>
     </pre>

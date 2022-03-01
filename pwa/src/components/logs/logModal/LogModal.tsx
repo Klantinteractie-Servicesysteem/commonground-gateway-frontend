@@ -10,6 +10,21 @@ interface LogModalProps {
 }
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
+  const [requestCodeLanguage, setRequestCodeLanguage] = React.useState(null);
+  const [responseCodeLanguage, setResponseCodeLanguage] = React.useState(null);
+
+  React.useEffect(() => {
+    log?.requestHeaders?.accept && setRequestCodeLanguage(getCodeLanguage(log?.requestHeaders?.accept[0]));
+    log?.requestHeaders['content-type'] && setResponseCodeLanguage(getCodeLanguage(log?.requestHeaders['content-type'][0]));
+  }, [log]);
+
+  const getCodeLanguage = (header: string) => {
+    if (header === 'application/form.io') {
+      return 'json'
+    } 
+    
+    return header.replace('application/', '')
+  };
 
 
   return (<>
@@ -96,7 +111,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               </h5>
                             )}
                             {log.sessionValues ? (
-                              JSON.stringify(log.sessionValues)
+                              <CodeBlock
+                              code={JSON.stringify(log.sessionValues, null, 4)}
+                                language="json"
+                              />
                             ) : (
                               <p className="utrecht-paragraph">
                                 No session values found
@@ -104,7 +122,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      }
+                      },
+                      backgroundColor: "#272822"
                     }
                   ]}
                 />
@@ -138,25 +157,32 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       render: function() {
                         return (
                           <>
-                            {log.requestHeaders ? (
-                              JSON.stringify(log.requestHeaders)
-                            ) : (
+                          {log.requestHeaders ? (
+                            <CodeBlock
+                            code={JSON.stringify(log.requestHeaders, null, 4)}
+                              language="json"
+                            />
+                          ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
                               </p>
                             )}
                           </>
                         );
-                      }
+                      },
+                      backgroundColor: "#272822"
                     },
                     {
-                      title: "Query paramaters",
+                      title: "Query parameters",
                       id: "logRequestQueryparamters",
                       render: function() {
                         return (
                           <>
                             {log.requestQuery ? (
-                              JSON.stringify(log.requestQuery)
+                            <CodeBlock
+                            code={JSON.stringify(log.requestQuery, null, 4)}
+                              language="json"
+                            />
                             ) : (
                               <p className="utrecht-paragraph">
                                 No parameters found
@@ -164,7 +190,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      }
+                      },
+                      backgroundColor: "#272822"
                     },
                     {
                       title: "Content",
@@ -172,10 +199,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       render: function() {
                         return (
                           <>
-                            {log.requestContent ? (
+                            {log.requestContent && requestCodeLanguage ? (
                               <CodeBlock
-                                code={log.requestContent}
-                                language="json"
+                              code={responseCodeLanguage === 'json' ? JSON.stringify(JSON.parse(log.requestContent), null, 4) : log.requestContent}
+                                language={requestCodeLanguage}
                               />
                             ) : (
                               <p className="utrecht-paragraph">
@@ -206,7 +233,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         return (
                           <>
                             {log.responseHeaders ? (
-                              JSON.stringify(log.responseHeaders)
+                              <CodeBlock
+                              code={JSON.stringify(log.responseHeaders, null, 4)}
+                                language="json"
+                              />
                             ) : (
                               <p className="utrecht-paragraph">
                                 No headers found
@@ -214,7 +244,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             )}
                           </>
                         );
-                      }
+                      },
+                      backgroundColor: "#272822"
                     },
                     {
                       title: "Content",
@@ -222,10 +253,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       render: function() {
                         return (
                           <>
-                            {log.responseContent ? (
+                            {log.responseContent && responseCodeLanguage ? (
                               <CodeBlock
-                                code={log.responseContent}
-                                language="json"
+                              code={responseCodeLanguage === 'json' ? JSON.stringify(JSON.parse(log.responseContent), null, 4) : log.responseContent}
+                                language={responseCodeLanguage}
                               />
                             ) : (
                               <p className="utrecht-paragraph">
