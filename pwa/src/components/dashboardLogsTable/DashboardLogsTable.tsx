@@ -2,9 +2,13 @@ import * as React from "react";
 import "./dashboardLogsTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import LogModal from "../logs/logModal/LogModal";
+import log, { LogObject } from "../../dummy_data/logs";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
+import msToSeconds from "../../services/msToSeconds";
 
 interface DashboardLogsTableProps {
-  logs: any,
+  logs: LogObject[];
 }
 
 const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
@@ -22,23 +26,37 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
 
         <tbody>
           {logs.map((log, idx) => {
-            const statusClass = log.status > 199 && log.status < 300 ? "success" : "error";
+            const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
 
             return (
-              <tr key={idx}>
-                <td><span className={`dashboardLogsTable-status ${statusClass}`}>{log.status}</span></td>
-                <td>{log.type}</td>
-                <td>{log.method}</td>
-                <td>{log.responseTime}ms</td>
-                <td><FontAwesomeIcon icon={faEye} /></td>
-              </tr>
-            )
-          }
-          )}
+              <>
+                <tr key={idx} className="dashboardLogsTable-tr">
+                  <td>
+                    <LabelWithBackground label={log.responseStatusCode.toString()} type={statusClass} />
+                  </td>
+                  <td>{log.type}</td>
+                  <td>{log.requestMethod}</td>
+                  <td>{log.responseTime}ms</td>
+                  <td className="dashboardLogsTable-viewLogTd">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
+                    >
+                      <FontAwesomeIcon icon={faEye} /> View log
+                    </button>
+                  </td>
+                </tr>
+
+                <LogModal {...{ log }} />
+              </>
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
-}
+};
 
 export default DashboardLogsTable;

@@ -1,57 +1,47 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Alert,
-  Modal,
-} from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import { Link } from "gatsby";
-import FlashMessage from "react-flash-message";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { navigate } from "gatsby";
 
 export default function TableNamesTable() {
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const [context, setContext] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
+  const [documentation, setDocumentation] = React.useState<string>(null);
+  const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      getTranslations(context);
-    }
-  }, [context]);
+    getTableNames();
+  }, [API]);
 
-  const getTranslations = (context) => {
+  const getTableNames = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/table_names`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // convert array to array objects
-        const convertedArray = data["results"].map((value) => ({
-          name: value,
-        }));
-        setShowSpinner(false);
-        setTableNames(convertedArray);
+    API.Translation.getTableNames()
+      .then((res) => {
+        const names = res.data.results.map((name) => {
+          return { name: name };
+        });
+        setTableNames(names);
       })
-      .catch((error) => {
+      .catch((err) => {
+        throw new Error("GET table names error: " + err);
+      })
+      .finally(() => {
         setShowSpinner(false);
-        console.log("Error:", error);
-        setAlert(null);
-        setAlert({ type: "danger", message: error.message });
+      });
+  };
+
+  const linkToTableWithTranslation = (tableName: string) => {
+    setShowSpinner(true);
+    API.Translation.getAllFrom(tableName)
+      .then((res) => {
+        navigate(`/translation-tables/${res?.data[0]?.id}/translations`);
+      })
+      .catch((err) => {
+        throw new Error("GET translation error: " + err);
       });
   };
 
@@ -60,52 +50,42 @@ export default function TableNamesTable() {
   });
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("translations")
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ type: "danger", message: err });
         throw new Error("GET Documentation error: " + err);
       });
   };
 
   return (
     <>
-      {alert !== null && (
-        <FlashMessage duration={5000}>
-          <Alert
-            alertClass={alert.type}
-            body={function () {
-              return <>{alert.message}</>;
-            }}
-          />
-        </FlashMessage>
-      )}
       <Card
-        title={"Translations"}
+        title={"Translation tables"}
         cardHeader={function () {
           return (
             <>
               <button
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
-                data-bs-target="#helpModal"
+                data-bs-target="#translationHelpModal"
+                onClick={(e) => e.preventDefault()}
               >
                 <Modal
-                  title="Translations Documentation"
-                  id="helpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
+                  title="Translation Documentation"
+                  id="translationHelpModal"
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <a className="utrecht-link" onClick={getTranslations}>
+              <a className="utrecht-link" onClick={getTableNames}>
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
-              <Link to="/translations/new">
+              <Link to="/translation-tables/new">
                 <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                   <i className="fas fa-plus mr-2" />
                   Create
@@ -132,15 +112,15 @@ export default function TableNamesTable() {
                         headerName: " ",
                         renderCell: (tables: { name: string }) => {
                           return (
-                            <Link
+                            <a
                               className="utrecht-link d-flex justify-content-end"
-                              to={`/translations/${tables.name}`}
+                              onClick={() => linkToTableWithTranslation(tables.name)}
                             >
-                              <button className="utrecht-button btn-sm btn-success">
-                                <i className="fas fa-edit pr-1" />
-                                Edit
+                              <button className="utrecht-button btn-sm btn-primary">
+                                <i className="fas fa-eye pr-1" />
+                                View
                               </button>
-                            </Link>
+                            </a>
                           );
                         },
                       },

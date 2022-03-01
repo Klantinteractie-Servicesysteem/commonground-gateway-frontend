@@ -1,13 +1,12 @@
-import * as React from 'react'
-import {SelectInputComponent} from "@conductionnl/nl-design-system";
+import * as React from "react";
+import { SelectInputComponent } from "@conductionnl/nl-design-system";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface ElementCreationNewProps {
   id: string;
   label: string;
   data?: any;
-  select?: boolean;
-  selectName?: string;
-  options?: Array<Partial<Record<"value" | "name" | "id" | "selected", any>>>;
 }
 
 interface IValue {
@@ -15,39 +14,39 @@ interface IValue {
   value: string,
 }
 
-const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data, select, selectName, options}) => {
-  const [value, setValue] = React.useState<string>("")
-  const [values, setValues] = React.useState<IValue[]>([])
+const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data }) => {
+  const [value, setValue] = React.useState<string>("");
+  const [values, setValues] = React.useState<IValue[]>([]);
 
   React.useEffect(() => {
-    if (!data) return
+    if (!data || !Array.isArray(data)) return;
 
     const loadedValues: IValue[] = data?.map((value) => {
-      return {id: generateId(), value: value}
-    })
+      return { id: generateId(), value: value };
+    });
 
-    setValues([...loadedValues])
-  }, [data])
+    setValues([...loadedValues]);
+  }, [data]);
 
   const handleAdd = () => {
-      setValues([...values, {id: generateId(), value: value}])
-    setValue("")
-  }
+    setValues([...values, { id: generateId(), value: value }]);
+    setValue("");
+  };
 
   const handleDelete = (e) => {
-    e.preventDefault()
-    setValues(values.filter(value => value.id !== e.target.id))
-  }
+    e.preventDefault();
+    setValues(values.filter(value => value.id !== e.target.id));
+  };
 
-  const generateId = (): string => Math.random().toString(36)
+  const generateId = (): string => Math.random().toString(36);
 
   return (
     <div>
       {values.length > 0 &&
-      <ul style={{paddingLeft: 0}}>
+      <ul style={{ paddingLeft: 0 }}>
         {values.map((value, idx) => {
           return (
-            <li key={idx} style={{listStyleType: 'none'}}>
+            <li key={idx} style={{ listStyleType: "none" }}>
               <div className="row">
                 <div className="col-10">
                   <input
@@ -65,12 +64,12 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
                     onClick={handleDelete}
                     className="utrecht-button utrecht-button-sm btn-danger"
                   >
-                    Delete
+                    <FontAwesomeIcon icon={faTrash} /> Delete
                   </button>
                 </div>
               </div>
             </li>
-          )
+          );
         })}
       </ul>
       }
@@ -78,34 +77,22 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({id, label, data,
       <div className="row">
         <h5>Create {label}</h5>
         <div className="col-10">
-          {
-            select ? (
-              <div className="form-group">
-                <SelectInputComponent
-                  options={options !== null && options.length > 0 ? options : []}
-                  name={selectName} id={`${selectName}Input`}
-                  nameOverride={label}
-                  onChange={(e) => setValue(e.target.value)}
-                />
-              </div>
-            ) : (
-              <input
-                type="text"
-                value={value}
-                placeholder={`Add ${label}`}
-                onChange={(e) => setValue(e.target.value)}
-                className="utrecht-textbox utrecht-textbox--html-input mb-2"
-              />
-            )
-          }
+          <input
+            type="text"
+            value={value}
+            placeholder={`Add ${label}`}
+            onChange={(e) => setValue(e.target.value)}
+            className="utrecht-textbox utrecht-textbox--html-input mb-2"
+          />
         </div>
         <div className="col-2">
-          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>Add
+          <button className="utrecht-button utrecht-button-sm btn-success" onClick={handleAdd} disabled={!value}>
+            <FontAwesomeIcon icon={faPlus} /> Add
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ElementCreationNew
+export default ElementCreationNew;

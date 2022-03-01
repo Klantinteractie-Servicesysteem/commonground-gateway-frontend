@@ -1,16 +1,16 @@
-import './dashboardCard.css';
+import "./dashboardCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faLink } from "@fortawesome/free-solid-svg-icons";
-import * as React from 'react';
-import { Link } from 'gatsby';
+import * as React from "react";
+import { Link } from "gatsby";
 
 interface DashboardCardProps {
-  amount: number,
-  title: string,
-  iconBackgroundColor: string,
-  icon: JSX.Element,
-  subtitle: string | JSX.Element,
-  linkTo: string,
+  amount: number;
+  title: string;
+  iconBackgroundColor: string;
+  icon: JSX.Element;
+  subtitle: string | JSX.Element;
+  linkTo: string;
 }
 
 export const DashboardCard: React.FC<DashboardCardProps> = ({
@@ -19,12 +19,12 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
   iconBackgroundColor,
   icon,
   subtitle,
-  linkTo
+  linkTo,
 }) => {
   return (
     <Link to={linkTo} className="dashboardCard">
       <div className="dashboardCard-icon" style={{ backgroundColor: `#${iconBackgroundColor}` }}>
-        { icon }
+        {icon}
       </div>
 
       <div className="dashboardCard-content">
@@ -34,20 +34,18 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
           <span>{title}</span>
         </div>
 
-        <div className="dashboardCard-content-subtitle">
-          {subtitle}
-        </div>
+        <div className="dashboardCard-content-subtitle">{subtitle}</div>
       </div>
     </Link>
-  )
-}
+  );
+};
 
 interface DashboardCardSmallProps {
-  title: string,
-  subtitle: string,
-  iconBackgroundColor: string,
-  icon: JSX.Element,
-  linkTo: string,
+  title: string;
+  subtitle: string;
+  iconBackgroundColor: string;
+  icon: JSX.Element;
+  linkTo: string;
 }
 
 export const DashboardCardSmall: React.FC<DashboardCardSmallProps> = ({
@@ -55,12 +53,12 @@ export const DashboardCardSmall: React.FC<DashboardCardSmallProps> = ({
   subtitle,
   iconBackgroundColor,
   icon,
-  linkTo
+  linkTo,
 }) => {
   return (
     <a href={linkTo} target="_blank" className="dashboardCard dashboardCard--small">
       <div className="dashboardCard-icon" style={{ backgroundColor: `#${iconBackgroundColor}` }}>
-        { icon }
+        {icon}
       </div>
 
       <div className="dashboardCard-content">
@@ -69,10 +67,8 @@ export const DashboardCardSmall: React.FC<DashboardCardSmallProps> = ({
           <span className="dashboardCard-content-title">{title}</span>
         </div>
 
-        <div className="dashboardCard-content-subtitle">
-          {subtitle}
-        </div>
+        <div className="dashboardCard-content-subtitle">{subtitle}</div>
       </div>
     </a>
-  )
-}
+  );
+};

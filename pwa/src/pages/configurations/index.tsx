@@ -1,22 +1,28 @@
-import * as React from "react"
-import Layout from "../../components/common/layout";
+import * as React from "react";
 import ConfigurationsExportButton from "../../components/configurationsExportButton/ConfigurationsExportButton";
+import { HeaderContext } from "../../context/headerContext";
 
 const IndexPage = () => {
+  const [__, setHeader] = React.useContext(HeaderContext);
+
+  React.useEffect(() => {
+    setHeader({
+      title: "Configurations",
+      subText: "Manage your configurations here"
+    });
+  }, [setHeader])
+
   return (
-    <Layout title={"Configurations"} subtext={"An overview of your endpoints objects"}>
-      <title>Gateway - Configurations</title>
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <div className="utrecht-page col-3">
-              <ConfigurationsExportButton />
-            </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <div className="utrecht-page col-3">
+            <ConfigurationsExportButton />
           </div>
         </div>
-      </main>
-    </Layout>
-  )
-}
+      </div>
+    </main>
+  );
+};
 
-export default IndexPage
+export default IndexPage;
