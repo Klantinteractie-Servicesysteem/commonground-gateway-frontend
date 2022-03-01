@@ -126,10 +126,16 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
     if (!checkValues([body["name"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
+
       setLoadingOverlay(false);
       return;
     }
+    if(!JSON.parse(body.conditions)){
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
 
+      setLoadingOverlay(false);
+      return;
+    }
     if (!handlerId) {
       // unset id means we're creating a new entry
       API.Handler.create(body)
@@ -155,6 +161,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         })
         .catch((err) => {
           setAlert({ type: "danger", message: err.message });
+
           throw new Error("Update handler error: " + err);
         })
         .finally(() => {
@@ -304,7 +311,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           name={"conditions"}
                           label={"Conditions (JSON)"}
                           id={"conditionsInput"}
-                          defaultValue={handler?.conditions}
+                          defaultValue={JSON.stringify(handler?.conditions,null ,4)}
                           required={true}
                           infoTooltip={{
                             content: <p>
