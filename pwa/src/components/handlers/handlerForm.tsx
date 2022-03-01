@@ -92,6 +92,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       })
   };
 
+  const parseJson = (json: string) => {
+    try {
+      let parsedJson = JSON.parse(json)
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   const saveHandler = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
@@ -130,12 +139,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       setLoadingOverlay(false);
       return;
     }
-    if(!JSON.parse(body.conditions)){
-      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
 
+    if(!parseJson(body.conditions) || /^[0-9]+$/.test(body.conditions)){
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
+
     if (!handlerId) {
       // unset id means we're creating a new entry
       API.Handler.create(body)
@@ -311,7 +321,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           name={"conditions"}
                           label={"Conditions (JSON)"}
                           id={"conditionsInput"}
-                          defaultValue={JSON.stringify(handler?.conditions,null ,4)}
+                          defaultValue={handler?.conditions}
                           required={true}
                           infoTooltip={{
                             content: <p>
