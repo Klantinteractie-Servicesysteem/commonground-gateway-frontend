@@ -6,6 +6,7 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
 export default function SubscribersTable({ entityId }) {
   const [subscribers, setSubscribers] = React.useState(null);
@@ -35,7 +36,7 @@ export default function SubscribersTable({ entityId }) {
 
   const handleDeleteSubscriber = (id): void => {
     if (confirm(`Do you want to delete this subscriber?`)) {
-      API.Entity.delete(id)
+      API.Subscriber.delete(id)
         .then(() => {
           setAlert({ message: `Deleted subscriber`, type: "success" });
           handleSetSubscribers();
@@ -82,6 +83,8 @@ export default function SubscribersTable({ entityId }) {
                     {
                       headerName: "Method",
                       field: "method",
+                      renderCell: (item: { method: string }) =>
+                        <LabelWithBackground label={item.method} type="primary" />
                     },
                     {
                       headerName: "Endpoint",
