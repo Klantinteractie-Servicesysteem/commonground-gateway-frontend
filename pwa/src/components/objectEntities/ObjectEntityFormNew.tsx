@@ -20,7 +20,6 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
-  const title = 'Edit';
 
   React.useEffect(() => {
     getEntity();
@@ -139,7 +138,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   return (
     <Card
-      title={title}
+      title="Edit"
       cardHeader={function () {
         return (
           <div>
