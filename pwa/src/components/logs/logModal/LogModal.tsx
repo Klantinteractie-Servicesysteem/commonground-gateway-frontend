@@ -54,12 +54,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   </tr>
                   <tr>
                     <th>Session ID</th>
-                    <td className="overflow-y: scroll">
-                      {log.session && (
-                        <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-                          {log.session && log.session}
-                        </h5>
-                      )}
+                    <td>
+                      {log?.session}
                     </td>
                   </tr>
                   <tr>
@@ -287,11 +283,9 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   ]}
                 />
               </div>
-              ;
             </div>
           </>
-        )
-          ;
+        );
       }
       }
     />
