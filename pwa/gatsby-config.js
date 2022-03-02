@@ -39,10 +39,6 @@ module.exports = {
             crumbLabel: 'Object Type',
           },
           {
-            pathname: '/entities/[id]',
-            crumbLabel: 'Object Type',
-          },
-          {
             pathname: '/entities/[entityId]/attributes/[attributeId]',
             crumbLabel: 'Attribute',
           },
