@@ -12,8 +12,7 @@ import { navigate } from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
 } from "../utility/inputHandler";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -60,8 +59,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   });
 
   React.useEffect(() => {
-    id && handleSetApplications();
     handleSetEndpoints();
+    id && handleSetApplications();
   }, [API, id]);
 
   const handleSetApplications = () => {
@@ -72,7 +71,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         res.data.endpoints = res.data.endpoints.map((endpoint) => {
           return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
         })
-
         setApplication(res.data);
       })
       .catch((err) => {
@@ -87,7 +85,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const handleSetEndpoints = () => {
     API.Endpoint.getAll()
       .then((res) => {
-        setEndpoints(res.data);
+        const _endpoints = res.data?.map((endpoint) => {
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
+        })
+        setEndpoints(_endpoints);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -111,11 +112,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     setLoadingOverlay(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
-    let endpoints = retrieveFormArrayAsOArray(event.target, "endpoints", true);
+    let endpoints = retrieveFormArrayAsOArrayWithName(event.target, "endpoints");
 
-    console.log({endpoints})
-
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description ? event.target.description.value : null,
       public: event.target.public.value ? event.target.public.value : null,
@@ -127,9 +126,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
     body = removeEmptyObjectValues(body);
 
-    console.log("body", body)
-
-    if (!checkValues([body["name"], body["domains"]])) {
+    if (!checkValues([body.name, body.domains])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
@@ -275,23 +272,15 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            const _endpoints = endpoints?.map((endpoint) => {
-                              return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-                            })
-
-                            // console.log({_data})
-                            console.log({ _endpoints })
                             return endpoints ? (
                               <MultiSelect
                                 id=""
                                 label="endpoints"
-                                data={application.endpoints}
-                                options={_endpoints}
+                                data={application?.endpoints}
+                                options={endpoints}
                               />
                             ) : (
-                              <>
                                 <Spinner />
-                              </>
                             );
                           }
                         }

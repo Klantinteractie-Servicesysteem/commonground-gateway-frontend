@@ -3,8 +3,8 @@ import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -24,7 +24,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
-import { validateJSON } from "./../../services/validateJSON";
+import { validateJSON } from "../../services/validateJSON";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -83,9 +83,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   const getTableNames = () => {
     API.Translation.getTableNames()
       .then((res) => {
-        const names = res.data.results.map((name) => {
-          return { name: name };
+        const names = res.data?.results.map((name, idx) => {
+          return { name: name, value: name, idx }
         });
+        console.log({names})
         setTableNames(names);
       })
       .catch((err) => {
@@ -104,6 +105,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
+    console.log(translationsOut, translationsIn)
+
     // get the inputs and check if set other set null
     let body: any = {
       name: event.target.name.value,
@@ -121,8 +124,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       translationsIn,
       translationsOut
     };
-
-    console.log("body", body)
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
@@ -322,13 +323,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                     <Accordion
                       id="handlerAccordion"
                       items={[
-                        // {
-                        //   title: "Conditions *",
-                        //   id: "conditionsAccordion",
-                        //   render: function () {
-                        //     return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
-                        //   },
-                        // },
                         {
                           title: "Translations In",
                           id: "translationsInAccordion",
@@ -373,42 +367,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
                                 label={"Mapping In"}
-                                data={
-                                  handler && handler.mappingIn
-                                    ? [
+                                data={[
                                       {
                                         key: "mappingIn",
-                                        value: handler.mappingIn
+                                        value: handler?.mappingIn
                                       }
                                     ]
-                                    : null
                                 }
                               />
                             );
                           }
                         },
-                        // {
-                        //   title: "Mapping Out",
-                        //   id: "mappingOutAccordion",
-                        //   render: function () {
-                        //     return (
-                        //       <MultiDimensionalArrayInput
-                        //         id={"mappingOut"}
-                        //         label={"Mapping Out"}
-                        //         data={
-                        //           handler && handler.mappingOut
-                        //             ? [
-                        //                 {
-                        //                   key: "mappingOut",
-                        //                   value: `${handler.mappingOut}`,
-                        //                 },
-                        //               ]
-                        //             : null
-                        //         }
-                        //       />
-                        //     );
-                        //   },
-                        // },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
@@ -417,15 +386,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
                                 label={"Mapping Out"}
-                                data={
-                                  handler && handler.mappingOut
-                                    ? [
+                                data={[
                                       {
                                         key: "mappingOut",
-                                        value: `${handler.mappingOut}`
+                                        value: `${handler?.mappingOut}`
                                       }
                                     ]
-                                    : null
                                 }
                               />
                             );

@@ -64,20 +64,37 @@ export const retrieveFormArrayAsObject = (array: any[], type: string) => {
  * @param type what needs to be searched in the array
  * @returns array of found array values.
  */
-export const retrieveFormArrayAsOArray = (array: any[], type: string, name?: boolean) => {
+export const retrieveFormArrayAsOArray = (array: any[], type: string) => {
+  let result = [];
+
+  for (let i = 0; i < array.length; i++) {
+    let target = array[i];
+
+    if (target.name.includes(type) && target.value !== "") {
+      result.push(target.value);
+    }
+  }
+
+  return result;
+};
+
+/**
+ * retrieves html defined array from form as array
+ * @param  array the array that will be searched for the array items
+ * @param type what needs to be searched in the array
+ * @returns array of found array values.
+ */
+export const retrieveFormArrayAsOArrayWithName = (array: any[], type: string) => {
   let result = [];
 
   for (let i = 0; i < array.length; i++) {
     let target = array[i];
 
     if (target.name.includes(type)) {
-      if (name) {
-        let _result = target.name;
-        _result = _result.split("[").pop();
-        _result = _result.replace("]", "");
-        result.push(_result)
-      };
-      if (!name) result.push(target.value);
+      let _result = target.name;
+      _result = _result.split("[").pop();
+      _result = _result.replace("]", "");
+      result.push(_result);
     }
   }
 

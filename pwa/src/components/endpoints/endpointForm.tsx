@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   GenericInputComponent,
-  SelectInputComponent,
   TextareaGroup,
   Spinner,
   Card,
@@ -9,13 +8,16 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArrayWithName,
+} from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import ElementCreationNew from "../common/elementCreationNew";
 import MultiSelect from "../common/multiSelect";
 
 interface EndpointFormProps {
@@ -25,7 +27,7 @@ interface EndpointFormProps {
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [endpoint, setEndpoint] = React.useState<any>(null);
-  const [applicationOptions, setApplicationOptions] = React.useState<any>(null);
+  const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
@@ -54,7 +56,9 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
 
     API.Endpoint.getOne(endpointId)
       .then((res) => {
-        console.log(res.data, "endpoint")
+        res.data.applications = res.data.applications.map((endpoint) => {
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
+        })
         setEndpoint(res.data);
       })
       .catch((err) => {
@@ -69,8 +73,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        console.log(res.data, "app")
-        setApplicationOptions(res.data);
+        const _applications = res.data?.map((application) => {
+          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` }
+        })
+        setApplications(_applications);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -93,21 +99,19 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let applications: any[] = retrieveFormArrayAsOArray(event.target, "applications");
+    let applications: any[] = retrieveFormArrayAsOArrayWithName(event.target, "applications");
 
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
       applications
     };
 
-    console.log(body, "body")
-
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["path"]])) {
+    if (!checkValues([body.name, body.path])) {
       return;
     }
 
@@ -174,7 +178,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
               <button
                 className="utrecht-button utrecht-button-sm btn-sm btn-success"
                 type="submit"
-                disabled={!applicationOptions}
+                disabled={!setApplications}
               >
                 <i className="fas fa-save mr-2" />
                 Save
@@ -231,15 +235,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           title: "Applications",
                           id: "applicationsAccordion",
                           render: function() {
-                            return (
-                              <>
+                            return applications ? (
                                 <MultiSelect
-                                  id="applications"
+                                  id=""
                                   label="Applications"
                                   data={endpoint?.applications}
-                                  options={applicationOptions ?? null}
+                                  options={applications}
                                 />
-                              </>
+                            ) : (
+                              <Spinner />
                             );
                           }
                         }
