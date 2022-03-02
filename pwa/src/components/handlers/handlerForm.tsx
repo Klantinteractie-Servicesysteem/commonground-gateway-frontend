@@ -127,7 +127,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
     if (!checkValues([body["name"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
-
       setLoadingOverlay(false);
       return;
     }
