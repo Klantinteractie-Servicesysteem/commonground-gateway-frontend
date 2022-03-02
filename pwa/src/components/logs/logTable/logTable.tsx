@@ -28,6 +28,21 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     handleSetLogs();
   }, [API, entityId, endpointId, sourceId]);
 
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("logtables")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
+
   const handleSetLogs = () => {
     setShowSpinner(true);
 
