@@ -36,7 +36,7 @@ export default function HandlersTable({ endpointId }) {
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get("attributes")
+    API.Documentation.get("handlers")
       .then((res) => {
         setDocumentation(res.data.content);
       })
