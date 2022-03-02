@@ -77,7 +77,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       });
   };
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("attributes")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -220,7 +220,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <Link className="utrecht-link" to={`/entities/${entityId}`}>
+              <Link className="utrecht-link" to={`/entities/${entityId}`} state={{activeTab: "attributes"}}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
