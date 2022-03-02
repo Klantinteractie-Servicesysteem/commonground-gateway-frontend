@@ -141,19 +141,19 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           <>
                             {log.requestHeaders ? (
                               <table className="mt-3 logTable-table">
-                                {log.requestHeaders.map((requestHeader, idx) => {
-                                    return (
-                                      <tr key={Object.keys(requestHeader)[0] + idx}>
-                                        <th>
-                                          {Object.keys(requestHeader)[0]}
-                                        </th>
-                                        <td>
-                                          {Object.values(requestHeader)[0]}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
-                                )}
+                                {/*{log.requestHeaders.map((requestHeader, idx) => {*/}
+                                {/*    return (*/}
+                                {/*      <tr key={Object.keys(requestHeader)[0] + idx}>*/}
+                                {/*        <th>*/}
+                                {/*          {Object.keys(requestHeader)[0]}*/}
+                                {/*        </th>*/}
+                                {/*        <td>*/}
+                                {/*          {Object.values(requestHeader)[0]}*/}
+                                {/*        </td>*/}
+                                {/*      </tr>*/}
+                                {/*    );*/}
+                                {/*  }*/}
+                                {/*)}*/}
                               </table>
                             ) : (
                               <p className="utrecht-paragraph">
@@ -172,19 +172,19 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           <>
                             {log.requestQuery ? (
                               <table className="mt-3 logTable-table">
-                                {log.requestQuery.map((queryParamaters, idx) => {
-                                    return (
-                                      <tr key={Object.keys(queryParamaters)[0] + idx}>
-                                        <th>
-                                          {Object.keys(queryParamaters)[0]}
-                                        </th>
-                                        <td>
-                                          {Object.values(queryParamaters)[0]}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
-                                )}
+                                {/*{log.requestQuery.map((queryParamaters, idx) => {*/}
+                                {/*    return (*/}
+                                {/*      <tr key={Object.keys(queryParamaters)[0] + idx}>*/}
+                                {/*        <th>*/}
+                                {/*          {Object.keys(queryParamaters)[0]}*/}
+                                {/*        </th>*/}
+                                {/*        <td>*/}
+                                {/*          {Object.values(queryParamaters)[0]}*/}
+                                {/*        </td>*/}
+                                {/*      </tr>*/}
+                                {/*    );*/}
+                                {/*  }*/}
+                                {/*)}*/}
                               </table>
                             ) : (
                               <p className="utrecht-paragraph">
@@ -236,19 +236,27 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           <>
                             {log.responseHeaders ? (
                               <table className="mt-3 logTable-table">
-                                {log.requestHeaders.map((requestHeader, idx) => {
-                                    return (
-                                      <tr key={Object.keys(requestHeader)[0] + idx}>
-                                        <th>
-                                          {Object.keys(requestHeader)[0]}
-                                        </th>
-                                        <td>
-                                          {Object.values(requestHeader)[0]}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
-                                )}
+                                {
+                                  for (const [key, value ] of Object.entries( log.requestHeaders )){
+
+                                }
+
+                                }
+                                {/*{Object.keys(log.requestHeaders).map((key, idx) => {*/}
+                                {/*  console.log(log.requestHeaders[key])*/}
+                                {/*  console.log(log.requestHeaders)*/}
+                                {/*    return (*/}
+                                {/*      <tr key={log.requestHeaders[key] + idx}>*/}
+                                {/*        <th>*/}
+                                {/*          {log.requestHeaders[key]}*/}
+                                {/*        </th>*/}
+                                {/*        <td>*/}
+                                {/*          {log.requestHeaders[key]}*/}
+                                {/*        </td>*/}
+                                {/*      </tr>*/}
+                                {/*    );*/}
+                                {/*  }*/}
+                                {/*)}*/}
                               </table>
                             ) : (
                               <p className="utrecht-paragraph">
