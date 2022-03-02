@@ -39,6 +39,10 @@ module.exports = {
             crumbLabel: 'Object Type',
           },
           {
+            pathname: '/entities/[id]',
+            crumbLabel: 'Object Type',
+          },
+          {
             pathname: '/entities/[entityId]/attributes/[attributeId]',
             crumbLabel: 'Attribute',
           },
@@ -49,6 +53,10 @@ module.exports = {
           {
             pathname: '/entities/[entityId]/object_entities/[objectId]',
             crumbLabel: 'Object Entity',
+          },
+          {
+            pathname: '/entities/[id]/objects/[objectEntityId]',
+            crumbLabel: 'Object',
           },
           {
             pathname: '/endpoints/[endpointId]',
