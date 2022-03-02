@@ -24,6 +24,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
+import { validateJSON } from "./../../services/validateJSON";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -92,15 +93,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       })
   };
 
-  const parseJson = (json: string) => {
-    try {
-      let parsedJson = JSON.parse(json)
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   const saveHandler = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
@@ -113,7 +105,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
     // get the inputs and check if set other set null
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       sequence: event.target.sequence.value ? parseInt(event.target.sequence.value) : null,
@@ -140,7 +132,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       return;
     }
 
-    if(!parseJson(body.conditions) || /^[0-9]+$/.test(body.conditions)){
+    if (!validateJSON(body.conditions)) {
       setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
@@ -323,16 +315,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           id={"conditionsInput"}
                           defaultValue={handler?.conditions}
                           required={true}
-                          infoTooltip={{
-                            content: <p>
-                              This field expects a<br/>
-                              <a
-                                target="_blank" href="https://jsonlint.com/"
-                              >
-                                valid JSON object
-                              </a>
-                            </p>
-                          }}
                         />
                       </div>
                     </div>
