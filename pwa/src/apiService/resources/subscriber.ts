@@ -7,10 +7,6 @@ export default class Subscriber {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/subscribers");
-  };
-
   public getOne = (id: string): Promise<AxiosResponse> => {
     return this._instance.get(`/subscribers/${id}`);
   };
