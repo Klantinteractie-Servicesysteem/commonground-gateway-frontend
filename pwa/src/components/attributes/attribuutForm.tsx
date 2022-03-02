@@ -59,7 +59,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       handleSetAttributes();
       handleSetAttribute();
     }
-  }, [API]);
+  }, [API,attributeId]);
 
   const handleSetAttribute = () => {
     setShowSpinner(true);
@@ -248,7 +248,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"name"}
                           id={"nameInput"}
-                          data={attribute && attribute.name && attribute.name}
+                          data={attribute?.name}
                           nameOverride={"Name"}
                           required
                         />
@@ -270,7 +270,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           name={"type"}
                           id={"typeInput"}
                           nameOverride={"Type"}
-                          data={attribute && attribute.type && attribute.type}
+                          data={attribute?.type}
                           required
                         />
                       </div>
@@ -324,7 +324,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           name={"format"}
                           id={"formatInput"}
                           nameOverride={"Format"}
-                          data={attribute && attribute.format && attribute.format}
+                          data={attribute?.format}
                         />
                       </div>
                     </div>
@@ -334,7 +334,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"defaultValue"}
                           id={"defaultValueInput"}
-                          data={attribute && attribute.defaultValue && attribute.defaultValue}
+                          data={attribute?.defaultValue}
                           nameOverride={"Default Value"}
                         />
                       </div>
@@ -343,7 +343,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"multipleOf"}
                           id={"multipleOfInput"}
-                          data={attribute && attribute.multipleOf && attribute.multipleOf}
+                          data={attribute?.multipleOf}
                           nameOverride={"Multiple Of"}
                         />
                       </div>
@@ -354,7 +354,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"minimum"}
                           id={"minimumInput"}
-                          data={attribute && attribute.minimum && attribute.minimum}
+                          data={attribute?.minimum}
                           nameOverride={"Minimum"}
                         />
                       </div>
@@ -363,7 +363,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"maximum"}
                           id={"maximumInput"}
-                          data={attribute && attribute.maximum && attribute.maximum}
+                          data={attribute?.maximum}
                           nameOverride={"Maximum"}
                         />
                       </div>
@@ -376,7 +376,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"exclusiveMinimumInput"}
                             nameLabel={"Exclusive minimum"}
                             nameAttribute={"exclusiveMinimum"}
-                            data={attribute && attribute.exclusiveMinimum && attribute.exclusiveMinimum}
+                            data={attribute?.exclusiveMinimum}
                           />
                         </div>
                       </div>
@@ -387,7 +387,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"exclusiveMaximumInput"}
                             nameLabel={"Exclusive Maximum"}
                             nameAttribute={"exclusiveMaximum"}
-                            data={attribute && attribute.exclusiveMaximum && attribute.exclusiveMaximum}
+                            data={attribute?.exclusiveMaximum}
                           />
                         </div>
                       </div>
@@ -398,7 +398,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"minLength"}
                           id={"minLengthInput"}
-                          data={attribute && attribute.minLength && attribute.minLength}
+                          data={attribute?.minLength}
                           nameOverride={"MinLength"}
                         />
                       </div>
@@ -407,7 +407,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"maxLength"}
                           id={"maxLengthInput"}
-                          data={attribute && attribute.maxLength && attribute.maxLength}
+                          data={attribute?.maxLength}
                           nameOverride={"MaxLength"}
                         />
                       </div>
@@ -418,7 +418,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"minItems"}
                           id={"minItemsInput"}
-                          data={attribute && attribute.minItems && attribute.minItems}
+                          data={attribute?.minItems}
                           nameOverride={"MinItems"}
                         />
                       </div>
@@ -427,7 +427,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"maxItems"}
                           id={"maxItemsInput"}
-                          data={attribute && attribute.maxItems && attribute.maxItems}
+                          data={attribute?.maxItems}
                           nameOverride={"MaxItems"}
                         />
                       </div>
@@ -438,7 +438,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"minDate"}
                           id={"minDateInput"}
-                          data={attribute && attribute.minDate && attribute.minDate}
+                          data={attribute?.minDate}
                           nameOverride={"MinDate"}
                         />
                       </div>
@@ -447,7 +447,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"maxDate"}
                           id={"maxDateInput"}
-                          data={attribute && attribute.maxDate && attribute.maxDate}
+                          data={attribute?.maxDate}
                           nameOverride={"MaxDate"}
                         />
                       </div>
@@ -458,7 +458,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"minProperties"}
                           id={"minPropertiesInput"}
-                          data={attribute && attribute.minProperties && attribute.minProperties}
+                          data={attribute?.minProperties}
                           nameOverride={"Min Properties"}
                         />
                       </div>
@@ -467,7 +467,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"maxProperties"}
                           id={"maxPropertiesInput"}
-                          data={attribute && attribute.maxProperties && attribute.maxProperties}
+                          data={attribute?.maxProperties}
                           nameOverride={"Max Properties"}
                         />
                       </div>
@@ -478,7 +478,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"example"}
                           id={"exampleInput"}
-                          data={attribute && attribute.example && attribute.example}
+                          data={attribute?.example}
                           nameOverride={"Example"}
                         />
                       </div>
@@ -487,7 +487,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"maxFileSize"}
                           id={"maxFileSizeInput"}
-                          data={attribute && attribute.maxFileSize && attribute.maxFileSize}
+                          data={attribute?.maxFileSize}
                           nameOverride={"Max File Size"}
                         />
                       </div>
@@ -509,7 +509,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"persistToGatewayInput"}
                             nameLabel={"Persist To Gateway"}
                             nameAttribute={"persistToGateway"}
-                            data={attribute && attribute.persistToGateway && attribute.persistToGateway}
+                            data={attribute?.persistToGateway}
                             defaultValue={"true"}
                           />
                         </div>
@@ -521,7 +521,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"cascadeInput"}
                             nameLabel={"Cascade"}
                             nameAttribute={"cascade"}
-                            data={attribute && attribute.cascade && attribute.cascade}
+                            data={attribute?.cascade}
                             defaultValue={"true"}
                           />
                         </div>
@@ -533,7 +533,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"requiredInput"}
                             nameLabel={"Required"}
                             nameAttribute={"required"}
-                            data={attribute && attribute.required && attribute.required}
+                            data={attribute?.required}
                             defaultValue={"true"}
                           />
                         </div>
@@ -545,7 +545,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"searchableInput"}
                             nameLabel={"Searchable"}
                             nameAttribute={"searchable"}
-                            data={attribute && attribute.searchable && attribute.searchable}
+                            data={attribute?.searchable}
                             defaultValue={"true"}
                           />
                         </div>
@@ -557,7 +557,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"mustBeUniqueInput"}
                             nameLabel={"Must Be Unique"}
                             nameAttribute={"mustBeUnique"}
-                            data={attribute && attribute.mustBeUnique && attribute.mustBeUnique}
+                            data={attribute?.mustBeUnique}
                             defaultValue={"true"}
                           />
                         </div>
@@ -569,7 +569,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"uniqueItemsInput"}
                             nameLabel={"Unique Items"}
                             nameAttribute={"uniqueItems"}
-                            data={attribute && attribute.uniqueItems && attribute.uniqueItems}
+                            data={attribute?.uniqueItems}
                             defaultValue={"true"}
                           />
                         </div>
@@ -581,7 +581,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"multipleInput"}
                             nameLabel={"Multiple"}
                             nameAttribute={"multiple"}
-                            data={attribute && attribute.multiple && attribute.multiple}
+                            data={attribute?.multiple}
                             defaultValue={"true"}
                           />
                         </div>
@@ -593,7 +593,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"nullableInput"}
                             nameLabel={"Nullable"}
                             nameAttribute={"nullable"}
-                            data={attribute && attribute.nullable && attribute.nullable}
+                            data={attribute?.nullable}
                             defaultValue={"true"}
                           />
                         </div>
@@ -605,7 +605,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"readOnlyInput"}
                             nameLabel={"Read Only"}
                             nameAttribute={"readOnly"}
-                            data={attribute && attribute.readOnly && attribute.readOnly}
+                            data={attribute?.readOnly}
                             defaultValue={"true"}
                           />
                         </div>
@@ -617,7 +617,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"writeOnlyInput"}
                             nameLabel={"Write Only"}
                             nameAttribute={"writeOnly"}
-                            data={attribute && attribute.writeOnly && attribute.writeOnly}
+                            data={attribute?.writeOnly}
                             defaultValue={"true"}
                           />
                         </div>
@@ -629,7 +629,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             id={"deprecatedInput"}
                             nameLabel={"Deprecated"}
                             nameAttribute={"deprecated"}
-                            data={attribute && attribute.deprecated && attribute.deprecated}
+                            data={attribute?.deprecated}
                             defaultValue={"true"}
                           />
                         </div>
