@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
-import { Link } from "gatsby";
+import { Link, navigate } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
@@ -36,8 +36,10 @@ export default function TranslationTable({ tableName }) {
 
   const getTranslations = () => {
     setShowSpinner(true);
+
     API.Translation.getAllFrom(tableName)
       .then((res) => {
+        {res.data.length <=  0 && navigate("/translation-tables")}
         setTranslations(res.data);
       })
       .catch((err) => {
