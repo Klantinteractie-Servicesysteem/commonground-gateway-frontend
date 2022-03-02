@@ -1,18 +1,15 @@
 import * as React from "react";
 import "./logTable.css";
-import {
-  Table,
-  Modal,
-  Spinner,
-  Card
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Modal, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
+import { AlertContext } from "../../../context/alertContext";
+import { HeaderContext } from "../../../context/headerContext";
 
 interface LogTableProps {
   entityId?: string;
@@ -25,21 +22,22 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
   const [logs, setLogs] = React.useState(log);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
+  const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    handleSetLogs()
-    handleSetDocumentation()
+    handleSetLogs();
   }, [API, entityId, endpointId, sourceId]);
 
   const handleSetLogs = () => {
     setShowSpinner(true);
 
-     if (entityId) {
+    if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs from entity error: " + err);
         })
         .finally(() => {
@@ -53,6 +51,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs from source error: " + err);
         })
         .finally(() => {
@@ -66,6 +65,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs for endpoint error: " + err);
         })
         .finally(() => {
@@ -79,6 +79,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           res.data.length && setLogs(res.data);
         })
         .catch((err) => {
+          setAlert({ message: err, type: "danger" });
           throw new Error("GET logs error: " + err);
         })
         .finally(() => {
@@ -87,21 +88,11 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     }
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
   return (
     <div className="logTable">
       <Card
         title="Call logs"
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -112,9 +103,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                 <Modal
                   title="Logs Documentation"
                   id="LogEntityHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -139,37 +128,26 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                           headerName: "Status",
                           field: "responseStatusCode",
                           renderCell: (item) => {
-                            return (
-                              <StatusCode
-                                code={item?.responseStatusCode}
-                                message={item?.responseStatus}
-                              />
-                            );
-                          }
+                            return <StatusCode code={item?.responseStatusCode} message={item?.responseStatus} />;
+                          },
                         },
                         {
                           headerName: "Type",
                           field: "type",
                           renderCell: (item) => {
-                            return (
-                              <span>
-                                {item.type === "in" ? "Incoming" : "Outcoming"}
-                              </span>
-                            );
-                          }
+                            return <span>{item.type === "in" ? "Incoming" : "Outcoming"}</span>;
+                          },
                         },
                         {
                           headerName: "Method",
-                          field: "requestMethod"
+                          field: "requestMethod",
                         },
                         {
                           headerName: "Response time (seconds)",
                           field: "responseTime",
                           renderCell: (item) => {
-                            return (
-                              item && `${item.responseTime}ms (${msToSeconds(item.responseTime)}s)`
-                            );
-                          }
+                            return item && `${item.responseTime}ms (${msToSeconds(item.responseTime)}s)`;
+                          },
                         },
                         {
                           field: "id",
@@ -181,17 +159,15 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                                   type="button"
                                   className="btn btn-primary"
                                   data-bs-toggle="modal"
-                                  data-bs-target={`#logs${item.id.replaceAll(
-                                    "-",
-                                    ""
-                                  )}`}
+                                  data-bs-target={`#logs${item.id.replaceAll("-", "")}`}
                                 >
+                                  <FontAwesomeIcon icon={faEye} />
                                   View log
                                 </button>
                               </div>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       rows={logs}
                     />
@@ -200,16 +176,16 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                       columns={[
                         {
                           headerName: "Status",
-                          field: "status"
+                          field: "status",
                         },
                         {
                           headerName: "Status Code",
-                          field: "statusCode"
+                          field: "statusCode",
                         },
                         {
                           headerName: "Method",
-                          field: "method"
-                        }
+                          field: "method",
+                        },
                       ]}
                       rows={[{ status: "No results found" }]}
                     />
@@ -220,9 +196,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
           );
         }}
       />
-      {logs !== null &&
-      logs?.map((log) => <LogModal log={log} />
-      )}
+      {logs !== null && logs?.map((log, idx) => <LogModal log={log} key={idx} />)}
     </div>
   );
 };
@@ -238,10 +212,7 @@ export const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) 
 
   return (
     <span>
-      <FontAwesomeIcon
-        className={`logTable-statusCode--${statusColor} mr-2`}
-        icon={faCircle}
-      />
+      <FontAwesomeIcon className={`logTable-statusCode--${statusColor} mr-2`} icon={faCircle} />
       {`${code} (${message})`}
     </span>
   );

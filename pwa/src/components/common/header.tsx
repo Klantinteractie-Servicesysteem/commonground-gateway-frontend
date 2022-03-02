@@ -1,24 +1,23 @@
 import * as React from "react";
+import { HeaderContext } from "../../context/headerContext";
+import Breadcrumbs from "./breadcrumbs/breadcrumbs";
 
+export default function Header({ pageContext }) {
+  const {
+    breadcrumb: { crumbs },
+  } = pageContext;
+  const [header] = React.useContext(HeaderContext);
 
-/**
- * This components renders a header.
- *
- * @returns TSX of the generated Header.
- */
-export default function Header({ title, subText }) {
-  return (
+  return header ? (
     <>
       <header className="utrecht-page-header">
         <div className="container">
-          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">
-            {title}
-          </h1>
-          <h5 className="utrecht-heading-5 utrecht-heading-5--distanced">
-            {subText}
-          </h5>
+          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">{header.title}</h1>
+          <Breadcrumbs {...{ crumbs }} />
         </div>
       </header>
     </>
+  ) : (
+    <></>
   );
 }

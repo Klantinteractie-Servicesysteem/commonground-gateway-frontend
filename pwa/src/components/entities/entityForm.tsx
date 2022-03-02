@@ -4,36 +4,47 @@ import {
   Checkbox,
   SelectInputComponent,
   Card,
-  Alert,
   Modal,
   Spinner,
-  TextareaGroup
+  TextareaGroup,
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import FlashMessage from "react-flash-message";
 import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { AlertContext } from "../../context/alertContext";
+import { HeaderContext } from "../../context/headerContext";
 
 interface EntityFormProps {
-  entityId: string,
+  entityId: string;
 }
 
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [alert, setAlert] = React.useState<any>(null);
   const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = entityId ? "Edit Object type" : "Create Object type";
   const [documentation, setDocumentation] = React.useState<string>(null);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setHeader] = React.useContext(HeaderContext);
+
+  React.useEffect(() => {
+    setHeader({
+      title: "Object type",
+      subText: "Manage your object type here",
+    });
+  }, [setHeader]);
+
+  React.useEffect(() => {
+    handleSetDocumentation();
+  });
 
   React.useEffect(() => {
     handleSetSources();
-    handleSetDocumentation();
     entityId && handleSetEntity();
   }, [API, entityId]);
 
@@ -45,6 +56,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setEntity(res.data);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
@@ -58,16 +70,18 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setSources(res.data);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       });
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("object_types")
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET documentation error: " + err);
       });
   };
@@ -83,7 +97,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
       endpoint: event.target.endpoint.value ?? null,
       gateway: event.target.gateway.value ?? null,
       extend: event.target.extend.checked,
-      function: event.target.function.value ?? null
+      function: event.target.function.value ?? null,
     };
 
     // This removes empty values from the body
@@ -93,9 +107,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
       return;
     }
 
-    if (!entityId) { // unset id means we're creating a new entry
+    if (!entityId) {
+      // unset id means we're creating a new entry
       API.Entity.create(body)
         .then(() => {
+          setAlert({ message: "Saved object type", type: "success" });
           navigate("/entities");
         })
         .catch((err) => {
@@ -107,9 +123,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         });
     }
 
-    if (entityId) { // set id means we're updating a existing entry
+    if (entityId) {
+      // set id means we're updating a existing entry
       API.Entity.update(body, entityId)
         .then((res) => {
+          setAlert({ message: "Updated object type", type: "success" });
           setEntity(res.data);
         })
         .catch((err) => {
@@ -123,170 +141,162 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   };
 
   return (
-    <>
-      {
-        alert !== null &&
-        <FlashMessage duration={5000}>
-          <Alert alertClass={alert.type} body={function() {
-            return (<>{alert.message}</>);
-          }} />
-        </FlashMessage>
-      }
-      <form id="dataForm" onSubmit={saveEntity}>
-        <Card
-          title={title}
-          cardHeader={function() {
-            return (
-              <div>
-                <button
-                  className="utrecht-link button-no-style"
-                  data-bs-toggle="modal"
-                  data-bs-target="#entityHelpModal"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Modal
-                    title="Object Type Documentation"
-                    id="entityHelpModal"
-                    body={() => (
-                      <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                    )}
-                  />
-                  <i className="fas fa-question mr-1" />
-                  <span className="mr-2">Help</span>
+    <form id="dataForm" onSubmit={saveEntity}>
+      <Card
+        title={title}
+        cardHeader={function () {
+          return (
+            <div>
+              <button
+                className="utrecht-link button-no-style"
+                data-bs-toggle="modal"
+                data-bs-target="#entityHelpModal"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Modal
+                  title="Object Type Documentation"
+                  id="entityHelpModal"
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                />
+                <i className="fas fa-question mr-1" />
+                <span className="mr-2">Help</span>
+              </button>
+              <Link className="utrecht-link" to={"/entities"}>
+                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
-                <Link className="utrecht-link" to={"/entities"}>
-                  <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                    <i className="fas fa-long-arrow-alt-left mr-2" />Back
-                  </button>
-                </Link>
-                <button
-                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                  type="submit"
-                  disabled={!sources}
-                >
-                  <i className="fas fa-save mr-2" />Save
-                </button>
-              </div>
-            );
-          }}
-          cardBody={function() {
-            return (
-              <div className="row">
-                <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner />
-                  ) : (
-                    <div>
-                      {loadingOverlay && <LoadingOverlay />}
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={entity?.name}
-                            nameOverride={"Name"} required
-                          />
-                        </div>
-                        <div className="col-6">
-                          <SelectInputComponent
-                            options={[
-                              { name: "Organization", value: "organization" },
-                              { name: "User", value: "user" },
-                              { name: "User group", value: "userGroup" }
-                            ]}
-                            data={entity?.function ?? null}
-                            name={"function"}
-                            id={"functionInput"}
-                            nameOverride={"Function"}
-                            required
-                          />
-                        </div>
+              </Link>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit" disabled={!sources}>
+                <i className="fas fa-save mr-2" />
+                Save
+              </button>
+            </div>
+          );
+        }}
+        cardBody={function () {
+          return (
+            <div className="row">
+              <div className="col-12">
+                {showSpinner === true ? (
+                  <Spinner />
+                ) : (
+                  <div>
+                    {loadingOverlay && <LoadingOverlay />}
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={entity?.name}
+                          nameOverride={"Name"}
+                          required
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"endpoint"}
-                            id={"endpointInput"}
-                            data={entity?.endpoint}
-                            nameOverride={"Endpoint"}
-                          />
-                        </div>
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"route"}
-                            id={"routeInput"}
-                            data={entity?.route}
-                            nameOverride={"Route"} />
-                        </div>
+                      <div className="col-6">
+                        <SelectInputComponent
+                          options={[
+                            { name: "Organization", value: "organization" },
+                            { name: "User", value: "user" },
+                            { name: "User group", value: "userGroup" },
+                          ]}
+                          data={entity?.function ?? null}
+                          name={"function"}
+                          id={"functionInput"}
+                          nameOverride={"Function"}
+                          required
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-6">
-                          {
-                            sources !== null && sources.length > 0 ? (
-                              <>
-                                {entity !== null &&
-                                entity.gateway !== undefined &&
-                                entity.gateway !== null ? (
-                                    <SelectInputComponent
-                                      options={sources}
-                                      data={entity.gateway.name}
-                                      name={"gateway"}
-                                      id={"gatewayInput"}
-                                      nameOverride={"Source"}
-                                      value={"/admin/gateways/"} />
-                                  )
-                                  : (
-                                    <SelectInputComponent
-                                      options={sources}
-                                      name={"gateway"}
-                                      id={"gatewayInput"}
-                                      nameOverride={"Source"}
-                                      value={"/admin/gateways/"} />
-                                  )}
-                              </>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"endpoint"}
+                          id={"endpointInput"}
+                          data={entity?.endpoint}
+                          nameOverride={"Endpoint"}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"route"}
+                          id={"routeInput"}
+                          data={entity?.route}
+                          nameOverride={"Route"}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        {sources !== null && sources.length > 0 ? (
+                          <>
+                            {entity !== null && entity.gateway !== undefined && entity.gateway !== null ? (
+                              <SelectInputComponent
+                                options={sources}
+                                data={entity.gateway.name}
+                                name={"gateway"}
+                                id={"gatewayInput"}
+                                nameOverride={"Source"}
+                                value={"/admin/gateways/"}
+                              />
                             ) : (
                               <SelectInputComponent
-                                data="Please wait, gettings sources from the Gateway..."
-                                options={[{
-                                  name: "Please wait, gettings sources from the Gateway...",
-                                  value: "Please wait, gettings sources from the Gateway..."
-                                }]}
-                                name={"gateway"} id={"gatewayInput"} nameOverride={"Source"} disabled />
+                                options={sources}
+                                name={"gateway"}
+                                id={"gatewayInput"}
+                                nameOverride={"Source"}
+                                value={"/admin/gateways/"}
+                              />
                             )}
-                        </div>
-                        <div className="col-6">
-                          <TextareaGroup
-                            name={"description"}
-                            id={"descriptionInput"}
-                            defaultValue={entity?.description}
+                          </>
+                        ) : (
+                          <SelectInputComponent
+                            data="Please wait, gettings sources from the Gateway..."
+                            options={[
+                              {
+                                name: "Please wait, gettings sources from the Gateway...",
+                                value: "Please wait, gettings sources from the Gateway...",
+                              },
+                            ]}
+                            name={"gateway"}
+                            id={"gatewayInput"}
+                            nameOverride={"Source"}
+                            disabled
                           />
-                        </div>
+                        )}
                       </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-check">
-                            <Checkbox
-                              type={"checkbox"}
-                              id={"extendInput"}
-                              nameLabel={"Extend"}
-                              nameAttribute={"extend"}
-                              data={entity && entity.extend && entity.extend} />
-                          </div>
+                      <div className="col-6">
+                        <TextareaGroup
+                          name={"description"}
+                          id={"descriptionInput"}
+                          defaultValue={entity?.description}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="form-check">
+                          <Checkbox
+                            type={"checkbox"}
+                            id={"extendInput"}
+                            nameLabel={"Extend"}
+                            nameAttribute={"extend"}
+                            data={entity && entity.extend && entity.extend}
+                          />
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            );
-          }}
-        />
-      </form>
-    </>
+            </div>
+          );
+        }}
+      />
+    </form>
   );
 };
 export default EntityForm;
-

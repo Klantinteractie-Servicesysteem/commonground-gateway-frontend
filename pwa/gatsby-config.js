@@ -1,28 +1,85 @@
 require("dotenv").config({
-  path: `.env.${process.env.NODE_ENV}`
+  path: `.env.${process.env.NODE_ENV}`,
 });
 
 module.exports = {
   pathPrefix: "/commonground-gateway-frontend",
   plugins: [
-    // {
-    //   resolve: `gatsby-plugin-csp`,
-    //   options: {
-    //     disableOnDev: true,
-    //     mergeScriptHashes: true,
-    //     mergeStyleHashes: true,
-    //     directives: {
-    //       "script-src":
-    //         "'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/ https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/ https://unpkg.com/@conductionnl/ https://unpkg.com/@utrecht/ https://unpkg.com/@nl-design-system-unstable/ 'unsafe-eval'",
-    //       "style-src":
-    //         "'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/ https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/ https://unpkg.com/@conductionnl/ https://unpkg.com/@utrecht/ https://unpkg.com/@nl-design-system-unstable/ 'sha256-cLHlYu9WwZQgD1K6YlWPqFYXJEuD9YpxdlDktBDedco='",
-    //       "img-src": "'self' https://demodam.nl/ data:",
-    //       "font-src":
-    //         "'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/",
-    //       "connect-src":
-    //         "'self' https://admin.acc-vrijbrp-zoetermeer.commonground.nu/ http://admin.acc-vrijbrp-zoetermeer.commonground.nu/",
-    //     },
-    //   },
-    // },
-  ]
+    {
+      resolve: `gatsby-plugin-layout`,
+      options: {
+        component: require.resolve(`./src/components/common/layout.tsx`),
+      },
+    },
+    {
+      resolve: `gatsby-plugin-breadcrumb`,
+      options: {
+        useAutoGen: true,
+        exclude: [
+          `**/dev-404-page/**`,
+          `**/404/**`,
+          `**/404.html`,
+          `**/offline-plugin-app-shell-fallback/**`,
+        ],
+        excludeOptions: {
+          separator: ".",
+        },
+        autoGenHomeLabel: "Dashboard",
+        crumbLabelUpdates: [
+          {
+            pathname: '/sources/[id]',
+            crumbLabel: 'Source',
+          },
+          {
+            pathname: '/entities',
+            crumbLabel: 'Object Types',
+          },
+          {
+            pathname: '/entities/[entityId]',
+            crumbLabel: 'Object Type',
+          },
+          {
+            pathname: '/entities/[entityId]/attributes/[attributeId]',
+            crumbLabel: 'Attribute',
+          },
+          {
+            pathname: '/entities/[entityId]/object_entities',
+            crumbLabel: 'Object Entities',
+          },
+          {
+            pathname: '/entities/[entityId]/object_entities/[objectId]',
+            crumbLabel: 'Object Entity',
+          },
+          {
+            pathname: '/endpoints/[endpointId]',
+            crumbLabel: 'Endpoint',
+          },
+          {
+            pathname: '/endpoints/[endpointId]/handlers/[handlerId]',
+            crumbLabel: 'Handler',
+          },
+          {
+            pathname: '/applications/[id]',
+            crumbLabel: 'Application',
+          },
+          {
+            pathname: '/translation-tables',
+            crumbLabel: 'Translation Tables',
+          },
+          {
+            pathname: '/translation-tables/[translationId]',
+            crumbLabel: 'Translation Table',
+          },
+          {
+            pathname: '/translation-tables/new',
+            crumbLabel: 'Translation Table',
+          },
+          {
+            pathname: '/translation-tables/[translationId]/translations/[id]',
+            crumbLabel: 'Translation',
+          },
+        ],
+      },
+    },
+  ],
 };

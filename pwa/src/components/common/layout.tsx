@@ -3,24 +3,27 @@ import Footer from "./../footer/footer";
 import MainMenu from "./menu";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
-import Header from "./header";
 import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import { isLoggedIn } from "../../services/auth";
+import { isLoggedIn, logout, validateSession } from "../../services/auth";
 import Login from "../../pages/login";
+import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import favicon from "../../images/conduction_logo_blauw.svg";
+import Alert from "../alert/alert";
+import { HeaderProps, HeaderProvider } from "../../context/headerContext";
+import Header from "./header";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
  *
  * @param {object} children Content that is rendered as body.
- * @param {string|null} title Title for the page.
- * @param {string|null} subText Subtext for the site.
- * @returns TSX of the generated Layout.
+ * @returns JSX of the generated Layout.
  */
-export default function Layout({ children, title = "", subtext = "" }) {
+export default function Layout({ children, pageContext }) {
   const [API, setAPI] = React.useState<APIService>(null);
+  const [alert, setAlert] = React.useState<AlertProps>(null);
+  const [header, setHeader] = React.useState<HeaderProps>(null);
 
   React.useEffect(() => {
     if (!isLoggedIn()) {
@@ -29,31 +32,35 @@ export default function Layout({ children, title = "", subtext = "" }) {
     }
 
     const jwt = sessionStorage.getItem("jwt");
+    !validateSession(jwt) && logout()
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
-  return (
-    API ? (
-      <APIProvider value={API}>
-        <Helmet
-          link={[
-            { rel: "shortcut icon", type: "image/png", href: favicon }
-          ]}
-        >
-          <title>Gateway Admin Dashboard</title>
-        </Helmet>
-        <div className="utrecht-document conduction-theme">
-          <div className="utrecht-page">
-            <MainMenu />
-            <div className="utrecht-page__content">
-              <Header title={title} subText={subtext} />
-              <div className="container py-4">{children}</div>
+  return API ? (
+    <APIProvider value={API}>
+      <AlertProvider value={[alert, setAlert]}>
+        <HeaderProvider value={[header, setHeader]}>
+          <Alert />
+          <Helmet link={[{ rel: "shortcut icon", type: "image/png", href: favicon }]}>
+            <title>Gateway Admin Dashboard</title>
+          </Helmet>
+          <div className="utrecht-document conduction-theme">
+            <div className="utrecht-page">
+              <MainMenu />
+              <div className="utrecht-page__content">
+                <header className="utrecht-page-header">
+                  <Header { ...{ pageContext } } />
+                </header>
+                <div className="container py-4">{children}</div>
+              </div>
+              <Footer />
             </div>
-            <Footer />
           </div>
-        </div>
-        <WelcomeModal />
-      </APIProvider>
-    ) : <Login />
+          <WelcomeModal />
+        </HeaderProvider>
+      </AlertProvider>
+    </APIProvider>
+  ) : (
+    <Login />
   );
 }
