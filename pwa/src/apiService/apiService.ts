@@ -13,8 +13,8 @@ import FormIO from "./resources/formIO";
 import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
-import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
 import Subscriber from "./resources/subscriber";
+import { GATSBY_ADMIN_URL, GATSBY_API_URL } from "../../static/env.js";
 
 export default class APIService {
   private _jwtToken: string;
