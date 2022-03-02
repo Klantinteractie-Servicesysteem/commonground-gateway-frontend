@@ -89,6 +89,9 @@ export default function SubscribersTable({ entityId }) {
                     {
                       headerName: "Endpoint",
                       field: "endpoint",
+                      valueFormatter: (item) => {
+                        return item ? item.name : "";
+                      },
                     },
                     {
                       field: "id",
