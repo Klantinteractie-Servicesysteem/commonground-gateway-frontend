@@ -36,7 +36,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                   </td>
                   <td>{log.type}</td>
                   <td>{log.requestMethod}</td>
-                  <td>{log.responseTime}ms</td>
+                  <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                   <td className="dashboardLogsTable-viewLogTd">
                     <button
                       type="button"
