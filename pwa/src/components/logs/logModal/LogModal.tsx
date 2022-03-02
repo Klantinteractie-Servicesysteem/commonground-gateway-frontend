@@ -139,23 +139,27 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Headers",
                         id: "logRequestHeaders",
                         render: function() {
+                            const logs = []
+                            for (const [key, value] of Object.entries(log.requestHeaders)) {
+                              logs.push({...{key, value}})
+                            }
                           return (
                             <>
                               {log.requestHeaders ? (
                                 <table className="mt-3 logTable-table">
-                                  {/*{log.requestHeaders.map((requestHeader, idx) => {*/}
-                                  {/*    return (*/}
-                                  {/*      <tr key={Object.keys(requestHeader)[0] + idx}>*/}
-                                  {/*        <th>*/}
-                                  {/*          {Object.keys(requestHeader)[0]}*/}
-                                  {/*        </th>*/}
-                                  {/*        <td>*/}
-                                  {/*          {Object.values(requestHeader)[0]}*/}
-                                  {/*        </td>*/}
-                                  {/*      </tr>*/}
-                                  {/*    );*/}
-                                  {/*  }*/}
-                                  {/*)}*/}
+                                  {logs.map((log, idx) => {
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>
+                                            {log.key}
+                                          </th>
+                                          <td>
+                                            {log.value}
+                                          </td>
+                                        </tr>
+                                      );
+                                    }
+                                  )}
                                 </table>
                               ) : (
                                 <p className="utrecht-paragraph">
@@ -170,23 +174,27 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Query paramaters",
                         id: "logRequestQueryparamters",
                         render: function() {
+                            const logs = []
+                            for (const [key, value] of Object.entries(log.requestQuery)) {
+                              logs.push({...{key, value}})
+                            }
                           return (
                             <>
                               {log.requestQuery ? (
                                 <table className="mt-3 logTable-table">
-                                  {/*{log.requestQuery.map((queryParamaters, idx) => {*/}
-                                  {/*    return (*/}
-                                  {/*      <tr key={Object.keys(queryParamaters)[0] + idx}>*/}
-                                  {/*        <th>*/}
-                                  {/*          {Object.keys(queryParamaters)[0]}*/}
-                                  {/*        </th>*/}
-                                  {/*        <td>*/}
-                                  {/*          {Object.values(queryParamaters)[0]}*/}
-                                  {/*        </td>*/}
-                                  {/*      </tr>*/}
-                                  {/*    );*/}
-                                  {/*  }*/}
-                                  {/*)}*/}
+                                  {logs.map((log, idx) => {
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>
+                                            {log.key}
+                                          </th>
+                                          <td>
+                                            {log.value}
+                                          </td>
+                                        </tr>
+                                      );
+                                    }
+                                  )}
                                 </table>
                               ) : (
                                 <p className="utrecht-paragraph">

@@ -24,7 +24,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
         </thead>
 
         <tbody>
-        {!logs.length && <tr><td>not fund</td></tr> }
+        {!logs.length && <tr><td>No results found</td></tr> }
         {logs.map((log, idx) => {
           const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
 
