@@ -37,7 +37,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <ObjectEntityFormNew entityId={entityId} objectId={objectId} />
+                <ObjectEntityFormNew {...{entityId, objectId}} />
               </div>
             </div>
           </div>
