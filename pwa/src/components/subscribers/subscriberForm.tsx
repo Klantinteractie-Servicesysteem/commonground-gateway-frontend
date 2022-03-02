@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import {
+  checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import {
@@ -22,6 +23,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
+import { validateJSON } from "../../services/validateJSON";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -131,17 +133,17 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
-    let body: {} = {
-      name: event.target.name.value ? event.target.name.value : null,
-      description: event.target.description.value ? event.target.description.value : null,
+    let body: any = {
+      name: event.target.name.value ?? null,
+      description: event.target.description.value ?? null,
       entity: `admin/entities/${entityId}`,
-      endpoint: event.target.endpoint.value ? event.target.endpoint.value : null,
-      source: event.target.source.value ? event.target.source.value : null,
+      endpoint: event.target.endpoint.value ?? null,
+      gateway: event.target.source.value ?? null,
       method: event.target.method.value,
-      conditions: event.target.conditions.value ? event.target.conditions.value : null,
-      order: event.target.order.value ? parseInt(event.target.order.value) : null,
-      asynchronous: event.target.checked,
-      blocking: event.target.checked,
+      conditions: event.target.conditions.value ?? null,
+      runOrder: parseInt(event.target.runOrder.value) ?? null,
+      asynchronous: event.target.asynchronous.checked,
+      blocking: event.target.blocking.checked,
       mappingIn,
       mappingOut,
       translationsIn,
@@ -151,13 +153,28 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     };
 
     body = removeEmptyObjectValues(body);
+    console.log(body.conditions)
+
+    if (!checkValues([body.name])) {
+      setAlert({ type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
+      return;
+    }
+
+    if (body.conditions !== undefined && !validateJSON(body.conditions)) {
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
+      setLoadingOverlay(false);
+      return;
+    }
 
     if (!subscriberId) {
       // unset id means we're creating a new entry
       API.Subscriber.create(body)
         .then(() => {
           setAlert({ message: "Saved subscriber", type: "success" });
-          navigate(`/entities/${entityId}`);
+          navigate(`/entities/${entityId}`, {
+            state: { activeTab: "subscribers" },
+          });
         })
         .catch((err) => {
           setAlert({ type: "danger", message: err.message });
@@ -172,6 +189,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       // set id means we're updating a existing entry
       API.Subscriber.update(body, subscriberId)
         .then((res) => {
+          console.log(res.data)
           setAlert({ message: "Updated subscriber", type: "success" });
           setSubscriber(res.data);
         })
@@ -192,7 +210,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         cardHeader={function () {
           return (
             <>
-              <Link className="utrecht-link" to={`/entities/${entityId}`}>
+              <Link className="utrecht-link" to={`/entities/${entityId}`} state={{ activeTab: "subscribers" }}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
@@ -220,7 +238,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                           type={"text"}
                           name={"name"}
                           id={"nameInput"}
-                          data={subscriber && subscriber.name && subscriber.name}
+                          data={subscriber?.name}
                           nameOverride={"Name"}
                         />
                       </div>
@@ -236,23 +254,24 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       <div className="col-6">
                         <SelectInputComponent
                           options={[
+                            { name: "GET", value: "GET" },
                             { name: "POST", value: "POST" },
                             { name: "PUT", value: "PUT" },
-                            { name: "GET", value: "GET" },
+                            { name: "PATCH", value: "PATCH" },
                           ]}
                           name={"method"}
                           id={"methodInput"}
                           nameOverride={"Method"}
-                          data={subscriber && subscriber.method && subscriber.method}
+                          data={subscriber?.method}
                           required
                         />
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
                           type={"number"}
-                          name={"order"}
-                          id={"orderInput"}
-                          data={subscriber && subscriber.order && subscriber.order}
+                          name={"runOrder"}
+                          id={"runOrderInput"}
+                          data={subscriber?.runOrder}
                           nameOverride={"Order"}
                         />
                       </div>
@@ -260,82 +279,35 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                     <br/>
                     <div className="row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
+                        <TextareaGroup
                           name={"conditions"}
+                          label={"Conditions (JSON)"}
                           id={"conditionsInput"}
-                          data={subscriber && subscriber.conditions && subscriber.conditions}
-                          nameOverride={"Conditions"}
+                          defaultValue={subscriber?.conditions}
                         />
                       </div>
                       <div className="col-6">
-                        {sources !== null && sources.length > 0 ? (
-                          <>
-                            {subscriber !== null &&
-                            subscriber.source !== undefined &&
-                            subscriber.source !== null ? (
-                              <SelectInputComponent
-                                options={sources}
-                                data={subscriber.source.name}
-                                name={"source"}
-                                id={"sourceInput"}
-                                nameOverride={"Source"}
-                                value={"/admin/sources/"}
-                              />
-                            ) : (
-                              <SelectInputComponent
-                                options={sources}
-                                name={"source"}
-                                id={"sourceInput"}
-                                nameOverride={"Source"}
-                                value={"/admin/sources/"}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <SelectInputComponent
-                            options={[{ name: "Please create a source first.", value: null }]}
-                            name={"source"}
-                            id={"sourceInput"}
-                            nameOverride={"Source"}
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={sources !== null && sources.length > 0 ? sources : [{ name: 'Please create a source  first.', value: null }]}
+                          data={subscriber?.source?.name}
+                          name={"source"}
+                          id={"sourceInput"}
+                          nameOverride={"Source"}
+                          value={"admin/gateways/"}
+                        />
                       </div>
                     </div>
                     <br/>
                     <div className="row">
                       <div className="col-6">
-                        {endpoints !== null && endpoints.length > 0 ? (
-                          <>
-                            {subscriber !== null &&
-                            subscriber.endpoint !== undefined &&
-                            subscriber.endpoint !== null ? (
-                              <SelectInputComponent
-                                options={endpoints}
-                                data={subscriber.endpoint.name}
-                                name={"endpoint"}
-                                id={"endpointInput"}
-                                nameOverride={"Endpoint"}
-                                value={"/admin/endpoints/"}
-                              />
-                            ) : (
-                              <SelectInputComponent
-                                options={endpoints}
-                                name={"endpoint"}
-                                id={"endpointInput"}
-                                nameOverride={"Endpoint"}
-                                value={"/admin/endpoints/"}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <SelectInputComponent
-                            options={[{ name: "Please create a endpoint first.", value: null }]}
-                            name={"endpoint"}
-                            id={"endpointInput"}
-                            nameOverride={"Endpoint"}
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={endpoints !== null && endpoints.length > 0 ? endpoints : [{ name: 'Please create an endpoint first.', value: null }]}
+                          data={subscriber?.endpoint?.name}
+                          name={"endpoint"}
+                          id={"endpointInput"}
+                          nameOverride={"Endpoint"}
+                          value={"admin/endpoints/"}
+                        />
                       </div>
                     </div>
                     <br/>
@@ -347,7 +319,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                             id={"asynchronousInput"}
                             nameLabel={"Asynchronous"}
                             nameAttribute={"asynchronous"}
-                            data={subscriber && subscriber.asynchronous && subscriber.asynchronous}
+                            data={subscriber?.asynchronous}
                             defaultValue={"true"}
                           />
                         </div>
@@ -359,8 +331,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                             id={"blockingInput"}
                             nameLabel={"Blocking"}
                             nameAttribute={"blocking"}
-                            data={subscriber && subscriber.blocking && subscriber.blocking}
-                            defaultValue={"true"}
+                            data={subscriber?.blocking}
                           />
                         </div>
                       </div>
