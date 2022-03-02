@@ -36,7 +36,6 @@ export default function TranslationTable({ tableName }) {
 
   const getTranslations = () => {
     setShowSpinner(true);
-
     API.Translation.getAllFrom(tableName)
       .then((res) => {
         {res.data.length <=  0 && navigate("/translation-tables")}
