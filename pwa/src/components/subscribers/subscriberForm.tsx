@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import {
-  checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
   retrieveFormArrayAsObject,
@@ -15,24 +14,21 @@ import {
   Accordion,
   Spinner,
   Card,
-  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
-import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { MIMETypes } from "../../data/mimeTypes";
 import MultiSelect from "../common/multiSelect";
 
-interface ISubscriber {
+interface SubscriberFormProps {
   subscriberId: string;
   entityId: string;
 }
 
-export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }) => {
+export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, entityId }) => {
   const [subscriber, setSubscriber] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
@@ -57,7 +53,7 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
     handleSetSources();
     handleSetEndpoints();
     handleSetTableNames();
-  }, [API]);
+  }, [API, subscriberId]);
 
   const handleSetSubscriber= () => {
     setShowSpinner(true);
@@ -112,8 +108,8 @@ export const SubscriberForm: React.FC<ISubscriber> = ({ subscriberId, entityId }
 
     API.Translation.getTableNames()
       .then((res) => {
-        const convertedArray = res.data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
-        setTableNames(convertedArray);
+        const mappedTableNames = res.data.results.map((value, idx) => ({ id: idx, name: value, value: value }));
+        setTableNames(mappedTableNames);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
