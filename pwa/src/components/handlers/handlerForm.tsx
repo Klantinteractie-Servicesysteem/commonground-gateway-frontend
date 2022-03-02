@@ -76,7 +76,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET entities error: " + err);
-      })
+      });
 
   };
 
@@ -90,7 +90,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       })
       .catch((err) => {
         throw new Error("GET table names error: " + err);
-      })
+      });
   };
 
   const saveHandler = (event) => {
@@ -188,7 +188,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ "__html":  ""}} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -258,7 +258,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           name={"templateType"}
                           id={"templateTypeInput"}
                           nameOverride={"Template Type"}
-                          required={true}
+                          required
                           data={handler?.templateType}
                         />
                       </div>
@@ -314,7 +314,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           label={"Conditions (JSON)"}
                           id={"conditionsInput"}
                           defaultValue={handler?.conditions}
-                          required={true}
+                          required
                         />
                       </div>
                     </div>
@@ -334,7 +334,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                   options={tableNames}
                                 />
                               ) : (
-                                <><Spinner /></>
+                                <Spinner />
                               )
                             );
                           }
@@ -352,7 +352,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                   options={tableNames}
                                 />
                               ) : (
-                                <><Spinner /></>
+                                <Spinner />
                               )
                             );
                           }
@@ -406,7 +406,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           id: "skeletonInAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
+                              <ElementCreationNew
+                                id="skeletonIn"
+                                label="Skeleton In"
+                                data={handler?.skeletonIn}
+                              />
                             );
                           }
                         },
@@ -415,7 +419,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           id: "skeletonOutAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
+                              <ElementCreationNew
+                                id="skeletonOut"
+                                label="Skeleton Out"
+                                data={handler?.skeletonOut}
+                              />
                             );
                           }
                         }
