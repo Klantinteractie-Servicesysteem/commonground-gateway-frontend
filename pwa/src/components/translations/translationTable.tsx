@@ -6,10 +6,12 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
@@ -38,7 +40,6 @@ export default function TranslationTable({ tableName }) {
     setShowSpinner(true);
     API.Translation.getAllFrom(tableName)
       .then((res) => {
-        {res.data.length <=  0 && navigate("/translation-tables")}
         setTranslations(res.data);
       })
       .catch((err) => {
@@ -50,11 +51,17 @@ export default function TranslationTable({ tableName }) {
   };
 
   const handleDeleteTranslation = (id): void => {
-    if (confirm(`Do you want to delete this translation? With id ${id}`)) {
+    if (translations.length === 1 ? confirm(`Do you want to delete this translation? With id ${id}. If you delete this translation you wil also delete the Translation Table.`) 
+    :  confirm(`Do you want to delete this translation? With id ${id}`)) {
+      setLoadingOverlay(true);
       API.Translation.delete(id)
         .then(() => {
           setAlert({ message: `Deleted translation with id: ${id}`, type: "success" });
+          translations.length === 1 && navigate("/translation-tables")// removed the last translation table
           getTranslations();
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -111,6 +118,8 @@ export default function TranslationTable({ tableName }) {
               {showSpinner === true ? (
                 <Spinner />
               ) : translations ? (
+                <>
+                {loadingOverlay && <LoadingOverlay />}
                 <Table
                   columns={[
                     {
@@ -152,6 +161,7 @@ export default function TranslationTable({ tableName }) {
                   ]}
                   rows={translations}
                 />
+                </>
               ) : (
                 <Table
                   columns={[
