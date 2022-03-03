@@ -3,7 +3,8 @@ import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -20,9 +21,10 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
-  id: string,
+  id: string;
 }
 
 export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
@@ -36,19 +38,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    handleSetDocumentation();
+    id && handleSetSource();
     setHeader({
       title: "Source",
       subText: "Manage your source here"
     });
-  }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    id && handleSetSource();
-  }, [API, id]);
+  }, [setHeader, id, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
@@ -66,7 +62,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       });
   };
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("sources")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -80,15 +76,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
     let body: {} = {
       name: event.target.name.value,
-      description: event.target.description
-        ? event.target.description.value
-        : null,
+      description: event.target.description ? event.target.description.value : null,
       type: event.target.type.value,
       auth: event.target.auth.value,
       locale: event.target.locale.value,
@@ -107,7 +101,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       paths
     };
 
-
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
@@ -116,10 +109,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) { // unset id means we're creating a new entry
+    if (!id) {
+      // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
-          setAlert({ type: "success", message: 'Saved source' });
+          setAlert({ type: "success", message: "Saved source" });
           navigate("/sources");
         })
         .catch((err) => {
@@ -131,10 +125,11 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) { // set id means we're updating a existing entry
+    if (id) {
+      // set id means we're updating a existing entry
       API.Source.update(body, id)
         .then((res) => {
-          setAlert({ type: "success", message: 'Updated source' });
+          setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
         })
         .catch((err) => {
@@ -146,7 +141,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
   };
-
 
   return (
     <form id="dataForm" onSubmit={saveSource}>
@@ -164,23 +158,20 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                 <Modal
                   title="Source Documentation"
                   id="sourceHelpModal"
-                  body={() => (
-                    <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                  )}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                  <i className="fas fa-long-arrow-alt-left mr-2" />
+                  Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht`ht-button-sm btn-sm btn-success"
-                type="submit"
-              >
-                <i className="fas fa-save mr-2" />Save
+              <button className="utrecht-button utrecht`ht-button-sm btn-sm btn-success" type="submit">
+                <i className="fas fa-save mr-2" />
+                Save
               </button>
             </>
           );
@@ -214,63 +205,63 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         )}
                       </div>
                       <div className="col-6">
-                        {source !== null && source.location !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            data={source.location}
-                            nameOverride={"Location (url)"}
-                            infoTooltip={{ content: <p>Enter the source location here</p> }}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            nameOverride={"Location (url)"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"location"}
+                          id={"locationInput"}
+                          data={source?.location}
+                          nameOverride={"Location (url)"}
+                          required
+                          infoTooltip=
+                            {
+                              {
+                                content:
+                                  <p>
+                                    Enter the source location here
+                                  </p>
+                              }
+                            }
+                        />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-6">
                         {source !== null && source.type !== null ? (
-                            <SelectInputComponent
-                              options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              data={source.type}
-                              required={true}
-                            />
-                          ) :
-                          (
-                            <SelectInputComponent
-                              options={[
-                                { name: "json", value: "json" },
-                                { name: "xml", value: "xml" },
-                                { name: "soaps", value: "soaps" },
-                                { name: "ftp", value: "ftp" },
-                                { name: "sftp", value: "sftp" }
-                              ]}
-                              name={"type"}
-                              id={"typeInput"}
-                              nameOverride={"Type"}
-                              required={true}
-                            />
-                          )}
+                          <SelectInputComponent
+                            options={[
+                              { name: "json", value: "json" },
+                              { name: "xml", value: "xml" },
+                              { name: "soaps", value: "soaps" },
+                              { name: "ftp", value: "ftp" },
+                              { name: "sftp", value: "sftp" }
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            data={source.type}
+                            required={true}
+                          />
+                        ) : (
+                          <SelectInputComponent
+                            options={[
+                              { name: "json", value: "json" },
+                              { name: "xml", value: "xml" },
+                              { name: "soaps", value: "soaps" },
+                              { name: "ftp", value: "ftp" },
+                              { name: "sftp", value: "sftp" }
+                            ]}
+                            name={"type"}
+                            id={"typeInput"}
+                            nameOverride={"Type"}
+                            required={true}
+                          />
+                        )}
                       </div>
                       <div className="col-6">
                         {source !== null && source.auth !== null ? (
                           <SelectInputComponent
-                            options={[{ name: "apikey", value: "apikey" },
+                            options={[
+                              { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
                               { name: "username-password", value: "username-password" }
                             ]}
@@ -486,19 +477,28 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                     </div>
                     <Accordion
                       id="sourceAccordion"
-                      items={[{
-                        title: "Headers",
-                        id: "headersAccordion",
-                        render: function() {
-                          return (
-                            <ElementCreationNew
-                              id="headers"
-                              label="Headers"
-                              data={source?.headers}
-                            />
-                          );
-                        }
-                      },
+                      items={[
+                        {
+                          title: "Headers",
+                          id: "headersAccordion",
+                          render: function() {
+                            return (
+                              <MultiDimensionalArrayInput
+                                id="headers"
+                                label="Headers"
+                                data=
+                                  {source && source.headers
+                                    ? [
+                                      {
+                                        key: "headers",
+                                        value: source.headers
+                                      }
+                                    ] : null
+                                  }
+                              />
+                            );
+                          }
+                        },
                         {
                           title: "OAS",
                           id: "oasAccordion",

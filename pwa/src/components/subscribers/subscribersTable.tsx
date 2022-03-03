@@ -1,61 +1,49 @@
 import * as React from "react";
-import { Table, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
-export default function HandlersTable({ endpointId }) {
-  const [documentation, setDocumentation] = React.useState<string>(null);
-  const [handlers, setHandlers] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
+export default function SubscribersTable({ entityId }) {
+  const [subscribers, setSubscribers] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = endpointId === "new" ? "Create Handler" : "Edit Handler";
   const [_, setAlert] = React.useContext(AlertContext);
+  const title: string = entityId === "new" ? "Create Subscriber" : "Edit Subscriber";
 
   React.useEffect(() => {
-    handleSetHandlers();
-    handleSetDocumentation();
+    handleSetSubscribers();
   }, [API]);
 
-  const handleSetHandlers = () => {
+  const handleSetSubscribers = () => {
     setShowSpinner(true);
-    API.Handler.getAllFromEndpoint(endpointId)
+    API.Subscriber.getAllFromEntity(entityId)
       .then((res) => {
-        setHandlers(res.data);
+        setSubscribers(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET handler from endpoint error: " + err);
+        throw new Error("GET Subscribers error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("attributes")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteHandler = (id): void => {
-    if (confirm(`Do you want to delete this handler?`)) {
-      API.Handler.delete(id)
+  const handleDeleteSubscriber = (id): void => {
+    if (confirm(`Do you want to delete this subscriber?`)) {
+      API.Subscriber.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted handler with`, type: "success" });
-          handleSetHandlers();
+          setAlert({ message: `Deleted subscriber`, type: "success" });
+          handleSetSubscribers();
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
-          throw new Error("DELETE handler error: " + err);
+          throw new Error("DELETE Subscriber error: " + err);
         });
     }
   };
@@ -66,25 +54,11 @@ export default function HandlersTable({ endpointId }) {
       cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#handlerHelpModal"
-              onClick={(e) => e.preventDefault()}
-            >
-              <Modal
-                title="Handler Documentation"
-                id="handlerHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
-              <i className="fas fa-question mr-1" />
-              <span className="mr-2">Help</span>
-            </button>
-            <a className="utrecht-link" onClick={handleSetHandlers}>
+            <a className="utrecht-link" onClick={handleSetSubscribers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to={`/endpoints/${endpointId}/handlers/new`}>
+            <Link to={`/entities/${entityId}/subscribers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -99,7 +73,7 @@ export default function HandlersTable({ endpointId }) {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : handlers ? (
+              ) : subscribers ? (
                 <Table
                   columns={[
                     {
@@ -107,25 +81,31 @@ export default function HandlersTable({ endpointId }) {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Method",
+                      field: "method",
+                      renderCell: (item: { method: string }) =>
+                        <LabelWithBackground label={item.method} type="primary" />
+                    },
+                    {
+                      headerName: "Endpoint",
+                      field: "endpoint",
+                      valueFormatter: (item) => {
+                        return item ? item.name : "";
+                      },
                     },
                     {
                       field: "id",
-                      headerName: " ",
-                      renderCell: (item: { id: string }) => {
+                      headerName: "",
+                      renderCell: (item) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
                             <button
-                              onClick={() => handleDeleteHandler(item.id)}
+                              onClick={() => handleDeleteSubscriber(item.id)}
                               className="utrecht-button btn-sm btn-danger mr-2"
                             >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link
-                              className="utrecht-link d-flex justify-content-end"
-                              to={`/endpoints/${endpointId}/handlers/${item.id}/`}
-                            >
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${entityId}/subscribers/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
@@ -135,7 +115,7 @@ export default function HandlersTable({ endpointId }) {
                       },
                     },
                   ]}
-                  rows={handlers}
+                  rows={subscribers}
                 />
               ) : (
                 <Table
@@ -145,11 +125,15 @@ export default function HandlersTable({ endpointId }) {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Method",
+                      field: "method",
+                    },
+                    {
+                      headerName: "Endpoint",
+                      field: "endpoint",
                     },
                   ]}
-                  rows={[]}
+                  rows={[{ name: "No results found" }]}
                 />
               )}
             </div>

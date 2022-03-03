@@ -4,6 +4,8 @@ import ObjectEntitiesTable from "../../components/objectEntities/ObjectEntitiesT
 import EntityForm from "../../components/entities/entityForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
+import SubscribersTable from "../../components/subscribers/subscribersTable";
+
 
 const IndexPage = (props) => {
   const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
@@ -20,6 +22,7 @@ const IndexPage = (props) => {
                   { name: "Overview", id: "overview", active: !activeTab },
                   { name: "Attributes", id: "attributes", active: activeTab === "attributes" },
                   { name: "Objects", id: "data", active: activeTab === "objects" },
+                  { name: "Subscribers", id: "subscribers", active: activeTab === "subscribers" },
                   { name: "Logs", id: "logs" },
                 ]}
               />
@@ -52,6 +55,15 @@ const IndexPage = (props) => {
             >
               <br />
               <ObjectEntitiesTable {...{ entityId }} />
+            </div>
+            <div
+              className={`tab-pane ${activeTab === "subscribers" && "active"}`}
+              id="subscribers"
+              role="tabpanel"
+              aria-labelledby="subscribers-tab"
+            >
+              <br />
+              <SubscribersTable {...{ entityId }} />
             </div>
             <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />

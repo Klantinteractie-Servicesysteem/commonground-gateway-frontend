@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 
-export default class Handler {
+export default class Subscriber {
   private _instance: AxiosInstance;
 
   constructor(_instance: AxiosInstance) {
@@ -8,23 +8,22 @@ export default class Handler {
   }
 
   public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/handlers/${id}`);
+    return this._instance.get(`/subscribers/${id}`);
   };
 
   public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/handlers", JSON.stringify(data));
+    return this._instance.post("/subscribers", JSON.stringify(data));
   };
 
   public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/handlers/${id}`, JSON.stringify(data));
+    return this._instance.put(`/subscribers/${id}`, JSON.stringify(data));
   };
 
-  public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-
-    return this._instance.get(`/handlers?endpoint.id=${endpointId}`);
+  public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/subscribers?entity.id=${entityId}`);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/handlers/${id}`);
-  };
+    return this._instance.delete(`/subscribers/${id}`)
+  }
 }
