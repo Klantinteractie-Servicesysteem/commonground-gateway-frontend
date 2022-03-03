@@ -51,10 +51,13 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [setHeader]);
 
   React.useEffect(() => {
-    handleSetAttributes();
     handleSetDocumentation();
-    attributeId && handleSetAttribute();
   }, [API]);
+
+  React.useEffect(() => {
+    handleSetAttributes();
+    attributeId && handleSetAttribute();
+  }, [API, attributeId]);
 
   React.useEffect(() => {
     if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
@@ -89,7 +92,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("attributes")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -279,7 +282,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         {attributes ? (
                           <SelectInputComponent
                             options={attributes}
-                            data={`/admin/attributes/${attribute?.inversedBy.id}`}
+                            data={`/admin/attributes/${attribute?.inversedBy?.id}`}
                             name={"inversedBy"}
                             id={"inversedByInput"}
                             nameOverride={"inversedBy"}
