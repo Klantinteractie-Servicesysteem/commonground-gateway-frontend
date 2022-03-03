@@ -60,7 +60,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   }, [formIOSchema]);
 
   const getFormIOSchema = () => {
-      API.FormIO.getSchema('weer')
+      API.FormIO.getSchema(entity.endpoint)
         .then((res) => {
           setFormIOSchema(res.data);
         })
