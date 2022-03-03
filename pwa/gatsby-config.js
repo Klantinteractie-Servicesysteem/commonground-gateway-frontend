@@ -51,6 +51,10 @@ module.exports = {
             crumbLabel: 'Object Entity',
           },
           {
+            pathname: '/entities/[entityId]/subscribers/[subscriberId]',
+            crumbLabel: 'Subscriber',
+          },
+          {
             pathname: '/endpoints/[endpointId]',
             crumbLabel: 'Endpoint',
           },

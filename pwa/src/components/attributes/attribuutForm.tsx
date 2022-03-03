@@ -51,19 +51,18 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [setHeader]);
 
   React.useEffect(() => {
+    handleSetAttributes();
     handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    if (attributeId) {
-      handleSetAttributes();
-      handleSetAttribute();
-    }
+    attributeId && handleSetAttribute();
   }, [API]);
 
-  const handleSetAttribute = () => {
-    setShowSpinner(true);
+  React.useEffect(() => {
+    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
 
+    if (attribute && attributes) setShowSpinner(false);
+  }, [attribute, attributes]);
+
+  const handleSetAttribute = () => {
     API.Attribute.getOne(attributeId)
       .then((res) => {
         setAttribute(res.data);
@@ -71,34 +70,32 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET attribute error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
+
+  const handleSetAttributes = () => {
+    API.Attribute.getAll()
+      .then((res) => {
+        const _attributes = res.data.map((attribute) => ({
+          name: attribute.name,
+          value: `/admin/attributes/${attribute.id}`,
+        }));
+        setAttributes(_attributes);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET attributes error: " + err);
+      });
+  };
+
   const handleSetDocumentation = (): void => {
-    API.Documentation.get("attributes")
+    API.Documentation.get()
       .then((res) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-  const handleSetAttributes = () => {
-    setShowSpinner(true);
-
-    API.Attribute.getAllFromEntity(entityId)
-      .then((res) => {
-        setAttributes(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET attributes error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
 
@@ -148,6 +145,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value ? parseInt(event.target.minProperties.value) : null,
       maxProperties: event.target.maxProperties.value ?? null,
+      inversedBy: event.target.inversedBy.value ?? null,
       fileTypes,
       attributeEnum,
       allOf,
@@ -278,29 +276,14 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                     <br />
                     <div className="row">
                       <div className="col-6">
-                        {attributes !== null && attributes.length > 0 ? (
-                          <>
-                            {attribute !== null &&
-                            attribute.inversedBy !== undefined &&
-                            attribute.inversedBy !== null ? (
-                              <SelectInputComponent
-                                options={attributes}
-                                data={attribute.inversedBy.name}
-                                name={"inversedBy"}
-                                id={"inversedByInput"}
-                                nameOverride={"inversedBy"}
-                                value={"/admin/attributes/"}
-                              />
-                            ) : (
-                              <SelectInputComponent
-                                options={attributes}
-                                name={"inversedBy"}
-                                id={"inversedByInput"}
-                                nameOverride={"inversedBy"}
-                                value={"/admin/attributes/"}
-                              />
-                            )}
-                          </>
+                        {attributes ? (
+                          <SelectInputComponent
+                            options={attributes}
+                            data={`/admin/attributes/${attribute?.inversedBy.id}`}
+                            name={"inversedBy"}
+                            id={"inversedByInput"}
+                            nameOverride={"inversedBy"}
+                          />
                         ) : (
                           <SelectInputComponent
                             options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
