@@ -3,12 +3,12 @@ import "./dashboardLogsTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logs/logModal/LogModal";
-import log, { LogObject } from "../../dummy_data/logs";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 import msToSeconds from "../../services/msToSeconds";
 
+
 interface DashboardLogsTableProps {
-  logs: LogObject[];
+  logs: any;
 }
 
 const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
@@ -16,18 +16,17 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
     <div className="dashboardLogsTable">
       <table>
         <thead>
-          <tr>
-            <th>Status</th>
-            <th>Type</th>
-            <th>Method</th>
-            <th>Response time</th>
-          </tr>
+        <tr>
+          <th>Status</th>
+          <th>Type</th>
+          <th>Method</th>
+          <th>Response time</th>
+        </tr>
         </thead>
-
         <tbody>
-          {logs.map((log, idx) => {
-            const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
-
+        {!logs.length && <tr><td>No results found</td></tr> }
+        {logs.map((log, idx) => {
+          const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
             return (
               <>
                 <tr key={idx} className="dashboardLogsTable-tr">
@@ -36,7 +35,7 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                   </td>
                   <td>{log.type}</td>
                   <td>{log.requestMethod}</td>
-                  <td>{log.responseTime}ms</td>
+                  <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                   <td className="dashboardLogsTable-viewLogTd">
                     <button
                       type="button"
@@ -48,11 +47,10 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
                     </button>
                   </td>
                 </tr>
-
-                <LogModal {...{ log }} />
-              </>
-            );
-          })}
+              <LogModal {...{ log }} />
+            </>
+          );
+        })}
         </tbody>
       </table>
     </div>

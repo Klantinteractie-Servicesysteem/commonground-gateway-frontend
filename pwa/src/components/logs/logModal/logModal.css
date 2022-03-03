@@ -1,0 +1,8 @@
+.LogModal table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.LogModal td {
+  overflow: auto;
+}

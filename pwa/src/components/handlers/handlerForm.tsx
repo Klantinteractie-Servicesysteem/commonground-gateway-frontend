@@ -9,6 +9,7 @@ import {
 import {
   GenericInputComponent,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
@@ -23,6 +24,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
+import { validateJSON } from "./../../services/validateJSON";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -74,7 +76,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET entities error: " + err);
-      })
+      });
 
   };
 
@@ -88,7 +90,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       })
       .catch((err) => {
         throw new Error("GET table names error: " + err);
-      })
+      });
   };
 
   const saveHandler = (event) => {
@@ -103,14 +105,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
     // get the inputs and check if set other set null
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
-      description: event.target.description ? event.target.description.value : null,
+      description: event.target.description.value ?? null,
       sequence: event.target.sequence.value ? parseInt(event.target.sequence.value) : null,
       endpoint: `/admin/endpoints/${endpointId}`,
-      entity: event.target.entity.value ? event.target.entity.value : null,
-      template: event.target.template.value ? event.target.template.value : null,
-      templateType: event.target.templateType.value ? event.target.templateType.value : null,
+      entity: event.target.entity.value ?? null,
+      template: event.target.template.value ?? null,
+      templateType: event.target.templateType.value ?? null,
+      conditions: event.target.conditions.value ?? null,
       skeletonIn,
       skeletonOut,
       mappingIn,
@@ -124,6 +127,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
     if (!checkValues([body["name"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
+      return;
+    }
+
+    if (!validateJSON(body.conditions)) {
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
@@ -153,6 +162,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         })
         .catch((err) => {
           setAlert({ type: "danger", message: err.message });
+
           throw new Error("Update handler error: " + err);
         })
         .finally(() => {
@@ -177,7 +187,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ "__html":  ""}} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -247,7 +257,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           name={"templateType"}
                           id={"templateTypeInput"}
                           nameOverride={"Template Type"}
-                          required={true}
+                          required
                           data={handler?.templateType}
                         />
                       </div>
@@ -296,31 +306,35 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         )}
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <TextareaGroup
+                          name={"conditions"}
+                          label={"Conditions (JSON)"}
+                          id={"conditionsInput"}
+                          defaultValue={handler?.conditions}
+                          required
+                        />
+                      </div>
+                    </div>
                     <Accordion
                       id="handlerAccordion"
                       items={[
                         {
-                          title: "Conditions *",
-                          id: "conditionsAccordion",
-                          render: function() {
-                            return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
-                          }
-                        },
-                        {
                           title: "Translations In",
                           id: "translationsInAccordion",
                           render: function() {
-                            return tableNames ? (
-                              <MultiSelect
-                                id="translationsIn"
-                                label="Translations In"
-                                data={handler?.translationsIn}
-                                options={tableNames}
-                              />
-                            ) : (
-                              <>
+                            return (
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsIn"
+                                  label="Translations In"
+                                  data={handler?.translationsIn}
+                                  options={tableNames}
+                                />
+                              ) : (
                                 <Spinner />
-                              </>
+                              )
                             );
                           }
                         },
@@ -328,17 +342,17 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           title: "Translations Out",
                           id: "translationsOutAccordion",
                           render: function() {
-                            return tableNames ? (
-                              <MultiSelect
-                                id="translationsOut"
-                                label="Translations Out"
-                                data={handler?.translationsOut}
-                                options={tableNames}
-                              />
-                            ) : (
-                              <>
+                            return (
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsOut"
+                                  label="Translations Out"
+                                  data={handler?.translationsOut}
+                                  options={tableNames}
+                                />
+                              ) : (
                                 <Spinner />
-                              </>
+                              )
                             );
                           }
                         },
@@ -391,7 +405,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           id: "skeletonInAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
+                              <ElementCreationNew
+                                id="skeletonIn"
+                                label="Skeleton In"
+                                data={handler?.skeletonIn}
+                              />
                             );
                           }
                         },
@@ -400,7 +418,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           id: "skeletonOutAccordion",
                           render: function() {
                             return (
-                              <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
+                              <ElementCreationNew
+                                id="skeletonOut"
+                                label="Skeleton Out"
+                                data={handler?.skeletonOut}
+                              />
                             );
                           }
                         }

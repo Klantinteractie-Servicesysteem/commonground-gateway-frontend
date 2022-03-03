@@ -21,19 +21,18 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
   subtitle,
   linkTo,
 }) => {
+
   return (
     <Link to={linkTo} className="dashboardCard">
       <div className="dashboardCard-icon" style={{ backgroundColor: `#${iconBackgroundColor}` }}>
         {icon}
       </div>
-
       <div className="dashboardCard-content">
         <div className="dashboardCard-content-title">
           <FontAwesomeIcon icon={faAngleRight} />
           <span className="dashboardCard-content-titleAmount">{amount}</span>
           <span>{title}</span>
         </div>
-
         <div className="dashboardCard-content-subtitle">{subtitle}</div>
       </div>
     </Link>
