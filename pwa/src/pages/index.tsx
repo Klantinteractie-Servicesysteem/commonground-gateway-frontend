@@ -7,17 +7,7 @@ const IndexPage = () => {
   const [_, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    isLoggedIn() &&
-      setHeader({
-        subText: `Welcome ${getUser().username}, to the gateway admin dashboard`,
-        title: "Dashboard",
-      });
-
-    !isLoggedIn() &&
-      setHeader({
-        subText: `Welcome to the gateway admin dashboard`,
-        title: "Dashboard",
-      });
+    setHeader({ title: "Dashboard" });
   }, [isLoggedIn()]);
 
   return isLoggedIn() && <Dashboard />;

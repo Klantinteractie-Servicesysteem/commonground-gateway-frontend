@@ -8,9 +8,8 @@ const IndexPage = () => {
   React.useEffect(() => {
     setHeader({
       title: "Configurations",
-      subText: "Manage your configurations here"
     });
-  }, [setHeader])
+  }, [setHeader]);
 
   return (
     <main>

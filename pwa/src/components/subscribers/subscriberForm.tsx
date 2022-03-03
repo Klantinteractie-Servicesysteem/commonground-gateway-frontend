@@ -4,7 +4,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import {
@@ -45,19 +45,17 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   React.useEffect(() => {
     setHeader({
       title: "Subscriber",
-      subText: "Manage your subscriber here",
     });
   }, [setHeader]);
 
-
   React.useEffect(() => {
-    subscriberId && handleSetSubscriber()
+    subscriberId && handleSetSubscriber();
     handleSetSources();
     handleSetEndpoints();
     handleSetTableNames();
   }, [API, subscriberId]);
 
-  const handleSetSubscriber= () => {
+  const handleSetSubscriber = () => {
     setShowSpinner(true);
 
     API.Subscriber.getOne(subscriberId)
@@ -149,11 +147,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       translationsIn,
       translationsOut,
       headers,
-      queryParameters
+      queryParameters,
     };
 
     body = removeEmptyObjectValues(body);
-    console.log(body.conditions)
+    console.log(body.conditions);
 
     if (!checkValues([body.name])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
@@ -189,7 +187,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       // set id means we're updating a existing entry
       API.Subscriber.update(body, subscriberId)
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setAlert({ message: "Updated subscriber", type: "success" });
           setSubscriber(res.data);
         })
@@ -276,7 +274,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <TextareaGroup
@@ -288,7 +286,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <SelectInputComponent
-                          options={sources !== null && sources.length > 0 ? sources : [{ name: 'Please create a source  first.', value: null }]}
+                          options={
+                            sources !== null && sources.length > 0
+                              ? sources
+                              : [{ name: "Please create a source  first.", value: null }]
+                          }
                           data={subscriber?.source?.name}
                           name={"source"}
                           id={"sourceInput"}
@@ -297,11 +299,15 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <SelectInputComponent
-                          options={endpoints !== null && endpoints.length > 0 ? endpoints : [{ name: 'Please create an endpoint first.', value: null }]}
+                          options={
+                            endpoints !== null && endpoints.length > 0
+                              ? endpoints
+                              : [{ name: "Please create an endpoint first.", value: null }]
+                          }
                           data={subscriber?.endpoint?.name}
                           name={"endpoint"}
                           id={"endpointInput"}
@@ -310,7 +316,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row mt-3">
                       <div className="col-12 col-sm-6 ">
                         <div className="form-check">
@@ -387,11 +393,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 data={
                                   subscriber && subscriber.mappingIn
                                     ? [
-                                      {
-                                        key: "mappingIn",
-                                        value: subscriber.mappingIn,
-                                      },
-                                    ]
+                                        {
+                                          key: "mappingIn",
+                                          value: subscriber.mappingIn,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
@@ -409,11 +415,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 data={
                                   subscriber && subscriber.mappingOut
                                     ? [
-                                      {
-                                        key: "mappingOut",
-                                        value: `${subscriber.mappingOut}`,
-                                      },
-                                    ]
+                                        {
+                                          key: "mappingOut",
+                                          value: `${subscriber.mappingOut}`,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
@@ -431,11 +437,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 data={
                                   subscriber && subscriber.headers
                                     ? [
-                                      {
-                                        key: "headers",
-                                        value: `${subscriber.headers}`,
-                                      },
-                                    ]
+                                        {
+                                          key: "headers",
+                                          value: `${subscriber.headers}`,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
@@ -453,11 +459,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 data={
                                   subscriber && subscriber.queryParameters
                                     ? [
-                                      {
-                                        key: "queryParameters",
-                                        value: `${subscriber.queryParameters}`,
-                                      },
-                                    ]
+                                        {
+                                          key: "queryParameters",
+                                          value: `${subscriber.queryParameters}`,
+                                        },
+                                      ]
                                     : null
                                 }
                               />

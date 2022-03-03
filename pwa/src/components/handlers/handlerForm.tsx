@@ -4,7 +4,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -13,7 +13,7 @@ import {
   Accordion,
   Spinner,
   Card,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
@@ -48,7 +48,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     handleSetEntities();
     setHeader({
       title: "Handler",
-      subText: "Manage your handler here"
     });
   }, [setHeader, API, handlerId]);
 
@@ -77,7 +76,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         setAlert({ message: err, type: "danger" });
         throw new Error("GET entities error: " + err);
       });
-
   };
 
   const getTableNames = () => {
@@ -119,7 +117,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       mappingIn,
       mappingOut,
       translationsIn,
-      translationsOut
+      translationsOut,
     };
 
     // This removes empty values from the body
@@ -175,7 +173,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     <form id="handlerForm" onSubmit={saveHandler}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -187,7 +185,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -205,7 +203,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
             </>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -252,7 +250,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                           options={[
                             { name: "twig", value: "twig" },
                             { name: "markdown", value: "markdown" },
-                            { name: "restructuredText", value: "restructuredText" }
+                            { name: "restructuredText", value: "restructuredText" },
                           ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
@@ -323,43 +321,39 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         {
                           title: "Translations In",
                           id: "translationsInAccordion",
-                          render: function() {
-                            return (
-                              tableNames ? (
-                                <MultiSelect
-                                  id="translationsIn"
-                                  label="Translations In"
-                                  data={handler?.translationsIn}
-                                  options={tableNames}
-                                />
-                              ) : (
-                                <Spinner />
-                              )
+                          render: function () {
+                            return tableNames ? (
+                              <MultiSelect
+                                id="translationsIn"
+                                label="Translations In"
+                                data={handler?.translationsIn}
+                                options={tableNames}
+                              />
+                            ) : (
+                              <Spinner />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Translations Out",
                           id: "translationsOutAccordion",
-                          render: function() {
-                            return (
-                              tableNames ? (
-                                <MultiSelect
-                                  id="translationsOut"
-                                  label="Translations Out"
-                                  data={handler?.translationsOut}
-                                  options={tableNames}
-                                />
-                              ) : (
-                                <Spinner />
-                              )
+                          render: function () {
+                            return tableNames ? (
+                              <MultiSelect
+                                id="translationsOut"
+                                label="Translations Out"
+                                data={handler?.translationsOut}
+                                options={tableNames}
+                              />
+                            ) : (
+                              <Spinner />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping In",
                           id: "mappingInAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
@@ -367,21 +361,21 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 data={
                                   handler && handler.mappingIn
                                     ? [
-                                      {
-                                        key: "mappingIn",
-                                        value: handler.mappingIn
-                                      }
-                                    ]
+                                        {
+                                          key: "mappingIn",
+                                          value: handler.mappingIn,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
@@ -389,43 +383,35 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 data={
                                   handler && handler.mappingOut
                                     ? [
-                                      {
-                                        key: "mappingOut",
-                                        value: `${handler.mappingOut}`
-                                      }
-                                    ]
+                                        {
+                                          key: "mappingOut",
+                                          value: `${handler.mappingOut}`,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
-                          render: function() {
+                          render: function () {
                             return (
-                              <ElementCreationNew
-                                id="skeletonIn"
-                                label="Skeleton In"
-                                data={handler?.skeletonIn}
-                              />
+                              <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
                             );
-                          }
+                          },
                         },
                         {
                           title: "Skeleton Out",
                           id: "skeletonOutAccordion",
-                          render: function() {
+                          render: function () {
                             return (
-                              <ElementCreationNew
-                                id="skeletonOut"
-                                label="Skeleton Out"
-                                data={handler?.skeletonOut}
-                              />
+                              <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                     />
                   </>

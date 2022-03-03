@@ -17,7 +17,7 @@ export default function ApplicationsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Applications", subText: "An overview of your application objects" });
+    setHeader({ title: "Applications" });
   }, [setHeader]);
 
   React.useEffect(() => {

@@ -34,7 +34,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   React.useEffect(() => {
     setHeader({
       title: "Endpoint",
-      subText: "Manage your endpoint here",
     });
   }, [setHeader]);
 

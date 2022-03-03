@@ -43,7 +43,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   React.useEffect(() => {
     setHeader({
       title: "Applications",
-      subText: "Manage your applications here",
     });
   }, [setHeader]);
 

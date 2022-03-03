@@ -16,7 +16,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { isValidUUIDV4 } from 'is-valid-uuid-v4';
+import { isValidUUIDV4 } from "is-valid-uuid-v4";
 
 interface ObjectEntityFormProps {
   objectId: string;
@@ -35,10 +35,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Object",
-      subText: "Manage your object here",
-    });
+    setHeader({ title: "Object" });
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -97,12 +94,8 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     let body: {} = {
       uri: event.target.uri.value,
       externalId: isValidUUIDV4(event.target.externalId.value) ? event.target.externalId.value : null,
-      application: event.target.application.value
-        ? event.target.application.value
-        : null,
-      organization: event.target.organization.value
-        ? event.target.organization.value
-        : null,
+      application: event.target.application.value ? event.target.application.value : null,
+      organization: event.target.organization.value ? event.target.organization.value : null,
       owner: event.target.owner.value ?? null,
       entity: `/admin/entities/${entityId}`,
       errors,
@@ -125,7 +118,8 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
       return;
     }
 
-    if (!objectId) { // unset id means we're creating a new entry
+    if (!objectId) {
+      // unset id means we're creating a new entry
       API.ObjectEntity.create(body)
         .then(() => {
           setAlert({ message: "Saved object entities", type: "success" });
@@ -233,36 +227,44 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          {
-                            applications !== null && applications.length > 0 ? (
-                              <>
-                                {objectEntity !== null &&
-                                objectEntity.application !== undefined &&
-                                objectEntity.application !== null ? (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      data={objectEntity.application.name}
-                                      name={"application"} id={"applicationInput"}
-                                      nameOverride={"Application"}
-                                      value={"/admin/applications/"} />
-                                  )
-                                  : (
-                                    <SelectInputComponent
-                                      options={applications}
-                                      name={"application"} id={"applicationInput"}
-                                      nameOverride={"Application"}
-                                      value={"/admin/applications/"} />
-                                  )}
-                              </>
-                            ) : (
-                              <SelectInputComponent
-                                options={[{
+                          {applications !== null && applications.length > 0 ? (
+                            <>
+                              {objectEntity !== null &&
+                              objectEntity.application !== undefined &&
+                              objectEntity.application !== null ? (
+                                <SelectInputComponent
+                                  options={applications}
+                                  data={objectEntity.application.name}
+                                  name={"application"}
+                                  id={"applicationInput"}
+                                  nameOverride={"Application"}
+                                  value={"/admin/applications/"}
+                                />
+                              ) : (
+                                <SelectInputComponent
+                                  options={applications}
+                                  name={"application"}
+                                  id={"applicationInput"}
+                                  nameOverride={"Application"}
+                                  value={"/admin/applications/"}
+                                />
+                              )}
+                            </>
+                          ) : (
+                            <SelectInputComponent
+                              options={[
+                                {
                                   name: "Please wait, gettings applications from the Gateway...",
-                                  value: null
-                                }]}
-                                name={"application"} id={"applicationInput"} nameOverride={"Application"} disabled />
-                            )}
-                       </div>
+                                  value: null,
+                                },
+                              ]}
+                              name={"application"}
+                              id={"applicationInput"}
+                              nameOverride={"Application"}
+                              disabled
+                            />
+                          )}
+                        </div>
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
