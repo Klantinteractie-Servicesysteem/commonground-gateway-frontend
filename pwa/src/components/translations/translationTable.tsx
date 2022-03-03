@@ -60,13 +60,13 @@ export default function TranslationTable({ tableName }) {
           translations.length === 1 && navigate("/translation-tables")// removed the last translation table
           getTranslations();
         })
-        .finally(() => {
-          setLoadingOverlay(false);
-        })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
           throw new Error("DELETE translation error: " + err);
-        });
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        })
     }
   };
 
