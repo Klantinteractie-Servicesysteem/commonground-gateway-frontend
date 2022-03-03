@@ -45,9 +45,10 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
   React.useEffect(() => {
     setHeader({
-      title: `Attribute ${attribute ? attribute.name : ""}`
+      title: "Attribute",
+      subText: "Manage your attribute here",
     });
-  }, [setHeader, attribute]);
+  }, [setHeader]);
 
   React.useEffect(() => {
     handleSetAttributes();
@@ -88,7 +89,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   };
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get("attributes")
+    API.Documentation.get()
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -217,7 +218,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <Link className="utrecht-link" to={`/entities/${entityId}`} state={{activeTab: "attributes"}}>
+              <Link className="utrecht-link" to={`/entities/${entityId}`} state={{ activeTab: "attributes" }}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
