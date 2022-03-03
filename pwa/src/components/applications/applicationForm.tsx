@@ -16,6 +16,7 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
+import ApplicationsTable from "./applicationsTable";
 
 interface IApplication {
   name: string;
@@ -42,10 +43,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
   React.useEffect(() => {
     setHeader({
-      title: "Applications",
+      title: `Applications ${application ? application.name : ""}`,
       subText: "Manage your applications here",
     });
-  }, [setHeader]);
+  }, [setHeader, application]);
 
   React.useEffect(() => {
     handleSetDocumentation();

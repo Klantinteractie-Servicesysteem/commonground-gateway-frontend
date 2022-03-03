@@ -44,10 +44,10 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
 
   React.useEffect(() => {
     setHeader({
-      title: "Subscriber",
+      title: `Subscriber ${subscriber ? subscriber.name : ""}`,
       subText: "Manage your subscriber here",
     });
-  }, [setHeader]);
+  }, [setHeader, subscriber]);
 
 
   React.useEffect(() => {

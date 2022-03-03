@@ -1,5 +1,5 @@
 import * as React from "react";
-import AttributeForm from "../../../../components/attributes/attribuutForm";
+import AttributeForm from "../../../../components/attributes/attributeForm";
 
 const IndexPage = (props) => {
   const attributeId: string = props.params.attributeId === "new" ? null : props.params.attributeId;

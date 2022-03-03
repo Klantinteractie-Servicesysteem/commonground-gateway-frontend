@@ -46,11 +46,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     getTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
+
+  }, [API, handlerId]);
+
+  React.useEffect(() => {
     setHeader({
-      title: "Handler",
+      title: `Handler ${handler? handler.name : ""}`,
       subText: "Manage your handler here"
     });
-  }, [setHeader, API, handlerId]);
+  }, [setHeader, handler]);
 
   const handleSetHandler = () => {
     setShowSpinner(true);
