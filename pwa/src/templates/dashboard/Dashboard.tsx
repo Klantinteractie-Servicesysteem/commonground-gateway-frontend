@@ -27,7 +27,6 @@ const Dashboard: React.FC = () => {
   const handleSetLogs = (): void => {
     API.Log.getAll()
       .then((res) => {
-        console.log(res.data)
         setLogs(res.data);
       })
       .catch((err) => {

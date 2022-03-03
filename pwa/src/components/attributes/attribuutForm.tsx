@@ -52,18 +52,20 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
   React.useEffect(() => {
     handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    if (attributeId) {
-      handleSetAttributes();
-      handleSetAttribute();
-    }
   }, [API]);
 
-  const handleSetAttribute = () => {
-    setShowSpinner(true);
+  React.useEffect(() => {
+    handleSetAttributes();
+    attributeId && handleSetAttribute();
+  }, [API, attributeId]);
 
+  React.useEffect(() => {
+    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
+
+    if (attribute && attributes) setShowSpinner(false);
+  }, [attribute, attributes]);
+
+  const handleSetAttribute = () => {
     API.Attribute.getOne(attributeId)
       .then((res) => {
         setAttribute(res.data);
@@ -71,11 +73,9 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET attribute error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get("attributes")
       .then((res) => {
@@ -86,19 +86,19 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         throw new Error("GET Documentation error: " + err);
       });
   };
-  const handleSetAttributes = () => {
-    setShowSpinner(true);
 
+  const handleSetAttributes = () => {
     API.Attribute.getAllFromEntity(entityId)
       .then((res) => {
-        setAttributes(res.data);
+        const _attributes = res.data.map((attribute) => ({
+          name: attribute.name,
+          value: `/admin/attributes/${attribute.id}`,
+        }));
+        setAttributes(_attributes);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET attributes error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
 
@@ -148,6 +148,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value ? parseInt(event.target.minProperties.value) : null,
       maxProperties: event.target.maxProperties.value ?? null,
+      inversedBy: event.target.inversedBy.value ?? null,
       fileTypes,
       attributeEnum,
       allOf,
@@ -248,7 +249,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"name"}
                           id={"nameInput"}
-                          data={attribute && attribute.name && attribute.name}
+                          data={attribute?.name}
                           nameOverride={"Name"}
                           required
                         />
@@ -270,7 +271,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           name={"type"}
                           id={"typeInput"}
                           nameOverride={"Type"}
-                          data={attribute && attribute.type && attribute.type}
+                          data={attribute?.type}
                           required
                         />
                       </div>
@@ -278,29 +279,14 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                     <br />
                     <div className="row">
                       <div className="col-6">
-                        {attributes !== null && attributes.length > 0 ? (
-                          <>
-                            {attribute !== null &&
-                            attribute.inversedBy !== undefined &&
-                            attribute.inversedBy !== null ? (
-                              <SelectInputComponent
-                                options={attributes}
-                                data={attribute.inversedBy.name}
-                                name={"inversedBy"}
-                                id={"inversedByInput"}
-                                nameOverride={"inversedBy"}
-                                value={"/admin/attributes/"}
-                              />
-                            ) : (
-                              <SelectInputComponent
-                                options={attributes}
-                                name={"inversedBy"}
-                                id={"inversedByInput"}
-                                nameOverride={"inversedBy"}
-                                value={"/admin/attributes/"}
-                              />
-                            )}
-                          </>
+                        {attributes ? (
+                          <SelectInputComponent
+                            options={attributes}
+                            data={`/admin/attributes/${attribute?.inversedBy?.id}`}
+                            name={"inversedBy"}
+                            id={"inversedByInput"}
+                            nameOverride={"inversedBy"}
+                          />
                         ) : (
                           <SelectInputComponent
                             options={[{ name: "Please create a attribute to use inversedBy", value: null }]}
@@ -324,7 +310,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           name={"format"}
                           id={"formatInput"}
                           nameOverride={"Format"}
-                          data={attribute && attribute.format && attribute.format}
+                          data={attribute?.format}
                         />
                       </div>
                     </div>
@@ -334,7 +320,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"text"}
                           name={"defaultValue"}
                           id={"defaultValueInput"}
-                          data={attribute && attribute.defaultValue && attribute.defaultValue}
+                          data={attribute?.defaultValue}
                           nameOverride={"Default Value"}
                         />
                       </div>
@@ -343,7 +329,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           type={"number"}
                           name={"multipleOf"}
                           id={"multipleOfInput"}
-                          data={attribute && attribute.multipleOf && attribute.multipleOf}
+                          data={attribute?.multipleOf}
                           nameOverride={"Multiple Of"}
                         />
                       </div>
