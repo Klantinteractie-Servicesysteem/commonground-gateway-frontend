@@ -22,7 +22,6 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
           <th>Response time</th>
         </tr>
         </thead>
-
         <tbody>
         {!logs.length && <tr><td>No results found</td></tr> }
         {logs.map((log, idx) => {
