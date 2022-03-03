@@ -1,15 +1,13 @@
 import * as React from "react";
 import "./logTable.css";
 import { Table, Modal, Spinner, Card } from "@conductionnl/nl-design-system/lib";
-import log from "../../../dummy_data/logs";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
 import { AlertContext } from "../../../context/alertContext";
-import { HeaderContext } from "../../../context/headerContext";
 
 interface LogTableProps {
   entityId?: string;
@@ -18,8 +16,7 @@ interface LogTableProps {
 }
 
 export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpointId }) => {
-  const [documentation, setDocumentation] = React.useState<string>(null);
-  const [logs, setLogs] = React.useState(log);
+  const [logs, setLogs] = React.useState([]);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
@@ -34,7 +31,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
-          res.data.length && setLogs(res.data);
+         setLogs(res.data);
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -48,7 +45,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     if (sourceId) {
       API.Log.getAllFromSource(sourceId)
         .then((res) => {
-          res.data.length && setLogs(res.data);
+          setLogs(res.data);
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -76,7 +73,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     if (!entityId && !sourceId && !endpointId) {
       API.Log.getAll()
         .then((res) => {
-          res.data.length && setLogs(res.data);
+          setLogs(res.data);
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -103,7 +100,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                 <Modal
                   title="Logs Documentation"
                   id="LogEntityHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
