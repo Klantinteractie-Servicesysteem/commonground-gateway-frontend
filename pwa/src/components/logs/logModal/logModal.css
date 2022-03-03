@@ -1,0 +1,5 @@
+ td {
+    max-height: 5px;
+    max-width: 5px;
+    overflow-x: auto;
+}
