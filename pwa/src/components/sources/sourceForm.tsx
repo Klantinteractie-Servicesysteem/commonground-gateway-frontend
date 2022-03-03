@@ -205,28 +205,23 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         )}
                       </div>
                       <div className="col-6">
-                        {source !== null && source.location !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            data={source.location}
-                            nameOverride={"Location (url)"}
-                            infoTooltip=
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"location"}
+                          id={"locationInput"}
+                          data={source?.location}
+                          nameOverride={"Location (url)"}
+                          required
+                          infoTooltip=
+                            {
                               {
-                                {
-                                  content: <p>Enter the source location here</p>
-                                }
+                                content:
+                                  <p>
+                                    Enter the source location here
+                                  </p>
                               }
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            nameOverride={"Location (url)"}
-                          />
-                        )}
+                            }
+                        />
                       </div>
                     </div>
                     <div className="row">
