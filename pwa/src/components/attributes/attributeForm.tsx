@@ -45,8 +45,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
   React.useEffect(() => {
     setHeader({
-      title: `Attribute ${attribute ? attribute.name : ""}`,
-      subText: "Manage your attribute here",
+      title: `Attribute ${attribute ? attribute.name : ""}`
     });
   }, [setHeader, attribute]);
 
@@ -275,7 +274,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                     </div>
                     <br />
                     <div className="row">
-                      {/* <div className="col-6">
+                      <div className="col-6">
                         {attributes ? (
                           <SelectInputComponent
                             options={attributes}
@@ -292,7 +291,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             nameOverride={"inversedBy"}
                           />
                         )}
-                      </div> */}
+                      </div>
                       <div className="col-6">
                         <SelectInputComponent
                           options={[

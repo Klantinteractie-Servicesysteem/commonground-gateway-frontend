@@ -36,8 +36,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
   React.useEffect(() => {
     setHeader({
-      title: "Object",
-      subText: "Manage your object here",
+      title: "Object"
     });
   }, [setHeader]);
 

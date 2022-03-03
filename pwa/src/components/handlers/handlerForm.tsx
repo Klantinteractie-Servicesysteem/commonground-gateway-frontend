@@ -51,8 +51,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
   React.useEffect(() => {
     setHeader({
-      title: `Handler ${handler? handler.name : ""}`,
-      subText: "Manage your handler here"
+      title: `Handler ${handler? handler.name : ""}`
     });
   }, [setHeader, handler]);
 
