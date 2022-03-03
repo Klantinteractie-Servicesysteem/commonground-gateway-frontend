@@ -3,7 +3,7 @@ import "./logModal.css";
 import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
-import { StatusCode } from "../logTable/logTable";
+import {StatusCode} from "../logTable/logTable";
 import msToSeconds from "../../../services/msToSeconds";
 
 interface LogModalProps {
@@ -38,10 +38,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <tr>
                       <th>Status</th>
                       <td>
-                        <StatusCode
-                          code={log?.responseStatusCode}
-                          message={log?.responseStatus}
-                        />
+                        {/*<StatusCode*/}
+                        {/*  code={log?.responseStatusCode}*/}
+                        {/*  message={log?.responseStatus}*/}
+                        {/*/>*/}
                       </td>
                     </tr>
                     <tr>
@@ -139,10 +139,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Headers",
                         id: "logRequestHeaders",
                         render: function() {
-                            const logs = []
-                            for (const [key, value] of Object.entries(log.requestHeaders)) {
-                              logs.push({...{key, value}})
-                            }
+                          const logs = [];
+                          for (const [key, value] of Object.entries(log.requestHeaders)) {
+                            logs.push({ ...{ key, value } });
+                          }
                           return (
                             <>
                               {log.requestHeaders ? (
@@ -174,10 +174,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Query paramaters",
                         id: "logRequestQueryparamters",
                         render: function() {
-                            const logs = []
-                            for (const [key, value] of Object.entries(log.requestQuery)) {
-                              logs.push({...{key, value}})
-                            }
+                          const logs = [];
+                          for (const [key, value] of Object.entries(log.requestQuery)) {
+                            logs.push({ ...{ key, value } });
+                          }
                           return (
                             <>
                               {log.requestQuery ? (
@@ -242,9 +242,9 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Headers",
                         id: "logResponseHeaders",
                         render: function() {
-                          const logs = []
+                          const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
-                            logs.push({...{key, value}})
+                            logs.push({ ...{ key, value } });
                           }
 
                           return (
@@ -252,17 +252,17 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.responseHeaders ? (
                                 <table className="mt-3 logTable-table">
                                   {logs.map((log, idx) => {
-                                    return (
-                                      <tr key={log.key + idx}>
-                                        <th>
-                                          {log.key}
-                                        </th>
-                                        <td>
-                                          {log.value}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>
+                                            {log.key}
+                                          </th>
+                                          <td>
+                                            {log.value}
+                                          </td>
+                                        </tr>
+                                      );
+                                    }
                                   )}
                                 </table>
                               ) : (

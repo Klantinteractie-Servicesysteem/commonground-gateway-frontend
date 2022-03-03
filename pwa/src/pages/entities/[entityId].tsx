@@ -5,11 +5,28 @@ import EntityForm from "../../components/entities/entityForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
 import SubscribersTable from "../../components/subscribers/subscribersTable";
-
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
   const activeTab: string = props.location.state.activeTab;
+  const API: APIService = React.useContext(APIContext);
+  const [logs, setLogs] = React.useState([]);
+
+  React.useEffect(() => {
+    handleSetLogs();
+  },[API]);
+
+  const handleSetLogs = (): void => {
+    API.Log.getAllFromEntity(entityId)
+      .then((res) => {
+        setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET Logs error: ${err}`);
+      });
+  };
 
   return (
     <main>
@@ -67,7 +84,7 @@ const IndexPage = (props) => {
             </div>
             <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
-              <LogTable {...{ entityId }} />
+              <LogTable logs={logs}  />
             </div>
           </div>
         </div>

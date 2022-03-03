@@ -3,10 +3,28 @@ import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import EndpointForm from "../../components/endpoints/endpointForm";
 import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
 
 export const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
   const activeTab: string = props.location.state.activeTab;
+  const API: APIService = React.useContext(APIContext);
+  const [logs, setLogs] = React.useState([]);
+
+  React.useEffect(() => {
+    handleSetLogs();
+  },[API]);
+
+  const handleSetLogs = (): void => {
+    API.Log.getAllFromEndpoint(endpointId)
+      .then((res) => {
+        setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET Logs error: ${err}`);
+      });
+  };
 
   return (
     <main>
@@ -16,7 +34,11 @@ export const IndexPage = (props) => {
             {endpointId && (
               <Tabs
                 items={[
-                  { name: "Overview", id: "overview", active: activeTab !== "handlers" },
+                  {
+                    name: "Overview",
+                    id: "overview",
+                    active: activeTab !== "handlers"
+                  },
                   {
                     name: "Handlers",
                     id: "handlers",
@@ -51,7 +73,7 @@ export const IndexPage = (props) => {
             </div>
             <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
-              <LogTable {...{ endpointId }} />
+              <LogTable logs={logs} />
             </div>
           </div>
         </div>

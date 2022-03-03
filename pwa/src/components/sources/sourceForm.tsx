@@ -24,32 +24,32 @@ import { HeaderContext } from "../../context/headerContext";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
-  id: string;
+  sourceId: string;
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
+export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = id ? "Edit Source" : "Create Source";
+  const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetDocumentation();
-    id && handleSetSource();
+    sourceId && handleSetSource();
     setHeader({
       title: "Source",
       subText: "Manage your source here"
     });
-  }, [setHeader, id, API]);
+  }, [setHeader, sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
 
-    API.Source.getOne(id)
+    API.Source.getOne(sourceId)
       .then((res) => {
         setSource(res.data);
       })
@@ -109,7 +109,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) {
+    if (!sourceId) {
       // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
@@ -125,9 +125,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) {
+    if (sourceId) {
       // set id means we're updating a existing entry
-      API.Source.update(body, id)
+      API.Source.update(body, sourceId)
         .then((res) => {
           setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
