@@ -3,7 +3,7 @@ import TranslationForm from "../../../../components/translations/translationForm
 import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {
-  const id: string = props.params.id === "new" ? null : props.params.id;
+  const translationId: string = props.params.translationId === "new" ? null : props.params.translationId;
   const subtext: string = props.params.id === "new" ? 'Create a new translation' : 'View or edit this translation'
   const tableName = props.params.translationId;
   const [__, setHeader] = React.useContext(HeaderContext);
@@ -17,7 +17,7 @@ const IndexPage = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            <TranslationForm id={id} tableName={tableName} />
+            <TranslationForm translationId={translationId} tableName={tableName} />
           </div>
         </div>
       </div>

@@ -1,36 +1,41 @@
 import * as React from "react";
-import { GenericInputComponent, Card, Modal, SelectInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
+import {
+  GenericInputComponent,
+  Card,
+  Modal,
+  SelectInputComponent,
+  Spinner
+} from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
-import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
-import { getDefaultLibFileName } from "typescript";
 
 interface TranslationFormProps {
-  id?: string;
+  translationId?: string;
   tableName?: string;
 }
 
-export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName }) => {
+export const TranslationForm: React.FC<TranslationFormProps> = ({ translationId, tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = tableName ? "Edit Translation" : "Create Translation";
+  const title: string = translationId ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableName_, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
-    id && getTranslation(id);
-    getTableName();
-  }, [API]);
+    handleSetDocumentation();
+    translationId && handleTranslation();
+    handleTableName();
+  }, [API, translationId]);
 
-  const getTableName = () => {
+  const handleTableName = () => {
     setShowSpinner(true);
+
     API.Translation.getOne(tableName)
       .then((res) => {
         setTableName(res.data.translationTable);
@@ -43,9 +48,9 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       });
   };
 
-  const getTranslation = (id: string) => {
+  const handleTranslation = () => {
     setShowSpinner(true);
-    API.Translation.getOne(id)
+    API.Translation.getOne(translationId)
       .then((res) => {
         setTranslation(res.data);
       })
@@ -57,18 +62,29 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       });
   };
 
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("translations")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err });
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
+
   const saveTranslation = (event) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
     let body = {
       translationTable: tableName_,
-      language: event.target.language ? event.target.language.value : null,
-      translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
-      translateTo: event.target.translateTo ? event.target.translateTo.value : null,
+      language: event.target.language ?? null,
+      translateFrom: event.target.translateFrom ?? null,
+      translateTo: event.target.translateTo ?? null
     };
 
-    if (!id) {
+    if (!translationId) {
       API.Translation.create(body)
         .then((res) => {
           setTranslation(res.data);
@@ -83,8 +99,8 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
         });
     }
 
-    if (id) {
-      API.Translation.update(body, id)
+    if (translationId) {
+      API.Translation.update(body, translationId)
         .then((res) => {
           setTranslation(res.data);
         })
@@ -97,27 +113,13 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
         });
     }
   };
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("translations")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
 
   return (
     <>
       <form id="dataForm" onSubmit={saveTranslation}>
         <Card
           title={title}
-          cardHeader={function () {
+          cardHeader={function() {
             return (
               <div>
                 <button
@@ -147,7 +149,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
               </div>
             );
           }}
-          cardBody={function () {
+          cardBody={function() {
             return (
               <div className="row">
                 <div className="col-12">
@@ -206,7 +208,7 @@ export const TransForm: React.FC<TransFormProps> = ({ translation }) => {
           <SelectInputComponent
             options={[
               { name: "Nederlands (NL)", value: "nl_NL" },
-              { name: "English (EN)", value: "en_EN" },
+              { name: "English (EN)", value: "en_EN" }
             ]}
             name={"language"}
             id={"languageInput"}
