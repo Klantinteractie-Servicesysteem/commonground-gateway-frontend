@@ -4,8 +4,8 @@ import ObjectEntityFormNew from "../../../../components/objectEntities/ObjectEnt
 import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {
-  const entityId: string = props.params.id === "new" ? null : props.params.id;
-  const objectEntityId: string = props.params.objectEntityId === "new" ? null : props.params.objectEntityId;
+  const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
+  const objectId: string = props.params.objectId === "new" ? null : props.params.objectId;
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
@@ -37,7 +37,7 @@ const IndexPage = (props) => {
                 aria-labelledby="overview-tab"
               >
                 <br />
-                <ObjectEntityFormNew entityId={entityId} objectEntityId={objectEntityId} />
+                <ObjectEntityFormNew {...{entityId, objectId}} />
               </div>
             </div>
           </div>
