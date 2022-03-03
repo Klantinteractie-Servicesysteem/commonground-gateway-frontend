@@ -33,10 +33,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Object type",
-    });
-  }, [setHeader]);
+    setHeader("Object Type");
+  }, [setHeader, entity]);
 
   React.useEffect(() => {
     handleSetDocumentation();

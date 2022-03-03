@@ -6,7 +6,7 @@ const IndexPage = () => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Translation tables" });
+    setHeader("Translation tables");
   }, [setHeader]);
 
   return (

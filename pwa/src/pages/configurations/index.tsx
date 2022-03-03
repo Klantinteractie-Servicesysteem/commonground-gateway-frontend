@@ -6,9 +6,7 @@ const IndexPage = () => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Configurations",
-    });
+    setHeader("Configurations");
   }, [setHeader]);
 
   return (

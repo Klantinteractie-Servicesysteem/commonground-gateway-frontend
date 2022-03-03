@@ -9,7 +9,7 @@ const IndexPage = (props) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Object" });
+    setHeader("Object");
   }, [setHeader]);
 
   return (

@@ -32,10 +32,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Endpoint",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Endpoint <i>{endpoint && endpoint.name}</i>
+      </>,
+    );
+  }, [setHeader, endpoint]);
 
   React.useEffect(() => {
     handleSetDocumentation();

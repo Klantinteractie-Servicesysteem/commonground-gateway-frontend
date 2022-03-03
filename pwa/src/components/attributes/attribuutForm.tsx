@@ -26,6 +26,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { MIMETypes } from "../../data/mimeTypes";
 import MultiSelect from "../common/multiSelect";
+import Application from "../../apiService/resources/application";
 
 interface AttributeFormProps {
   attributeId: string;
@@ -44,10 +45,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Attribute",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Attribute <i>{attribute && attribute.name}</i>
+      </>,
+    );
+  }, [setHeader, attribute]);
 
   React.useEffect(() => {
     handleSetDocumentation();

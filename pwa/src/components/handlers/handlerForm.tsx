@@ -14,6 +14,7 @@ import {
   Spinner,
   Card,
   Modal,
+  ActionMenu,
 } from "@conductionnl/nl-design-system/lib";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
@@ -46,10 +47,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     getTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
-    setHeader({
-      title: "Handler",
-    });
-  }, [setHeader, API, handlerId]);
+  }, [API, handlerId]);
+
+  React.useEffect(() => {
+    setHeader(
+      <>
+        Handler <i>{handler && handler.name}</i>
+      </>,
+    );
+  }, [setHeader, handler]);
 
   const handleSetHandler = () => {
     setShowSpinner(true);

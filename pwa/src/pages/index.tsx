@@ -7,8 +7,8 @@ const IndexPage = () => {
   const [_, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Dashboard" });
-  }, [isLoggedIn()]);
+    setHeader("Dashboard");
+  });
 
   return isLoggedIn() && <Dashboard />;
 };

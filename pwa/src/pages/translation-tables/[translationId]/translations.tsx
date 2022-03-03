@@ -11,7 +11,7 @@ const IndexPage = (props) => {
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Translations" });
+    setHeader("Translations");
   }, [setHeader]);
 
   React.useEffect(() => {

@@ -43,10 +43,12 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Subscriber",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Subscriber <i>{subscriber && subscriber.name}</i>
+      </>,
+    );
+  }, [setHeader, subscriber]);
 
   React.useEffect(() => {
     subscriberId && handleSetSubscriber();

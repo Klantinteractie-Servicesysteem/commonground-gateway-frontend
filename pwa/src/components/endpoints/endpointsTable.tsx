@@ -17,7 +17,7 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Endpoints" });
+    setHeader("Endpoints");
   }, [setHeader]);
 
   React.useEffect(() => {
