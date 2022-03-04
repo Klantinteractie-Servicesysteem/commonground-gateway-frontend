@@ -71,7 +71,12 @@ export const IndexPage = (props) => {
               <br />
               <HandlersTable {...{ endpointId }} />
             </div>
-            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+            <div
+              className="tab-pane"
+              id="logs"
+              role="tabpanel"
+              aria-labelledby="logs-tab"
+            >
               <br />
               <LogTable {...{ logs }} />
             </div>

@@ -36,11 +36,30 @@ const IndexPage = (props) => {
             {entityId && (
               <Tabs
                 items={[
-                  { name: "Overview", id: "overview", active: !activeTab },
-                  { name: "Attributes", id: "attributes", active: activeTab === "attributes" },
-                  { name: "Objects", id: "data", active: activeTab === "objects" },
-                  { name: "Subscribers", id: "subscribers", active: activeTab === "subscribers" },
-                  { name: "Logs", id: "logs" }
+                  {
+                    name: "Overview",
+                    id: "overview",
+                    active: !activeTab
+                  },
+                  {
+                    name: "Attributes",
+                    id: "attributes",
+                    active: activeTab === "attributes"
+                  },
+                  {
+                    name: "Objects",
+                    id: "data",
+                    active: activeTab === "objects"
+                  },
+                  {
+                    name: "Subscribers",
+                    id: "subscribers",
+                    active: activeTab === "subscribers"
+                  },
+                  {
+                    name: "Logs",
+                    id: "logs"
+                  }
                 ]}
               />
             )}
@@ -82,7 +101,12 @@ const IndexPage = (props) => {
               <br />
               <SubscribersTable {...{ entityId }} />
             </div>
-            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+            <div
+              className="tab-pane"
+              id="logs"
+              role="tabpanel"
+              aria-labelledby="logs-tab"
+            >
               <br />
               <LogTable {...{ logs }} />
             </div>
