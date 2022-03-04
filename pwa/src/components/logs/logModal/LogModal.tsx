@@ -3,8 +3,8 @@ import "./logModal.css";
 import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
-import {StatusCode} from "../logTable/logTable";
 import msToSeconds from "../../../services/msToSeconds";
+import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
 
 interface LogModalProps {
   log: any;
@@ -18,6 +18,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         title={"Call log"}
         id={`logs${log.id}`}
         body={function() {
+          const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
           return (
             <>
               <Tabs
@@ -38,10 +39,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <tr>
                       <th>Status</th>
                       <td>
-                        {/*<StatusCode*/}
-                        {/*  code={log?.responseStatusCode}*/}
-                        {/*  message={log?.responseStatus}*/}
-                        {/*/>*/}
+                        <LabelWithBackground
+                          label={log?.responseStatusCode}
+                          type={statusClass}
+                        />
                       </td>
                     </tr>
                     <tr>

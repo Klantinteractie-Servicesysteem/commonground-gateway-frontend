@@ -23,8 +23,9 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
           <th>Response time</th>
         </tr>
         </thead>
-        <tbody>
-        {!logs.length && <tr><td>No results found</td></tr> }
+        {!logs.length && <tr>
+          <td>No results found</td>
+        </tr>}
         {logs.map((log, idx) => {
           const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
           return (
@@ -51,13 +52,9 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
             </>
           );
         })}
-        </tbody>
       </table>
     </div>
   );
 };
 
 export default LogsTable;
-
-export class StatusCode {
-}

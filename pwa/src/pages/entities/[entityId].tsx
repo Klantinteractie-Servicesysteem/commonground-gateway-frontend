@@ -16,7 +16,7 @@ const IndexPage = (props) => {
 
   React.useEffect(() => {
     handleSetLogs();
-  },[API]);
+  }, [API]);
 
   const handleSetLogs = (): void => {
     API.Log.getAllFromEntity(entityId)
@@ -24,7 +24,7 @@ const IndexPage = (props) => {
         setLogs(res.data);
       })
       .catch((err) => {
-        throw new Error(`GET Logs error: ${err}`);
+        throw new Error(`GET Entity error: ${err}`);
       });
   };
 
@@ -40,7 +40,7 @@ const IndexPage = (props) => {
                   { name: "Attributes", id: "attributes", active: activeTab === "attributes" },
                   { name: "Objects", id: "data", active: activeTab === "objects" },
                   { name: "Subscribers", id: "subscribers", active: activeTab === "subscribers" },
-                  { name: "Logs", id: "logs" },
+                  { name: "Logs", id: "logs" }
                 ]}
               />
             )}
@@ -84,7 +84,7 @@ const IndexPage = (props) => {
             </div>
             <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
-              <LogTable logs={logs}  />
+              <LogTable {...{ logs }} />
             </div>
           </div>
         </div>

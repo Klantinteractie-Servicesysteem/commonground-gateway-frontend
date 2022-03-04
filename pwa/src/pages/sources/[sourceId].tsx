@@ -20,7 +20,7 @@ const IndexPage = (props) => {
         setLogs(res.data);
       })
       .catch((err) => {
-        throw new Error(`GET Logs error: ${err}`);
+        throw new Error(`GET Source Logs error: ${err}`);
       });
   };
 
@@ -61,7 +61,7 @@ const IndexPage = (props) => {
                 aria-labelledby="logs-tab"
               >
                 <br />
-                <LogTable logs={logs} />
+                <LogTable {...{ logs }} />
               </div>
             </div>
           </div>

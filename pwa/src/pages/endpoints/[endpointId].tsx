@@ -14,7 +14,7 @@ export const IndexPage = (props) => {
 
   React.useEffect(() => {
     handleSetLogs();
-  },[API]);
+  }, [API]);
 
   const handleSetLogs = (): void => {
     API.Log.getAllFromEndpoint(endpointId)
@@ -22,7 +22,7 @@ export const IndexPage = (props) => {
         setLogs(res.data);
       })
       .catch((err) => {
-        throw new Error(`GET Logs error: ${err}`);
+        throw new Error(`GET Endpoint Logs error: ${err}`);
       });
   };
 
@@ -42,12 +42,12 @@ export const IndexPage = (props) => {
                   {
                     name: "Handlers",
                     id: "handlers",
-                    active: activeTab === "handlers",
+                    active: activeTab === "handlers"
                   },
                   {
                     name: "Logs",
-                    id: "logs",
-                  },
+                    id: "logs"
+                  }
                 ]}
               />
             )}
@@ -73,7 +73,7 @@ export const IndexPage = (props) => {
             </div>
             <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
-              <LogTable logs={logs} />
+              <LogTable {...{ logs }} />
             </div>
           </div>
         </div>
