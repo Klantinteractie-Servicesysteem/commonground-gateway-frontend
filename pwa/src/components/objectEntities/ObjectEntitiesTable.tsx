@@ -161,17 +161,17 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
             <Modal
               title={`Create a new ${entity?.name} object`}
               id="objectModal"
+              body={() => (
+                <>
+                  { FormIO && formIOSchema.components && FormIO }
+                  {
+                    entity?.handlers?.length < 1 && (
+                      <span>This object type needs a handler and endpoint linked to fetch the form</span>
+                    )
+                  } 
+                </> 
+              )}
             />
-                  body={() => (
-                    <>
-                      { FormIO && formIOSchema.components && FormIO }
-                      {
-                        entity?.handlers?.length < 1 && (
-                          <span>This object type needs a handler and endpoint linked to fetch the form</span>
-                        )
-                      }  
-                  )}
-                    </>
           </>
         );
       }}
