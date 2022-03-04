@@ -12,7 +12,7 @@ interface LogModalProps {
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
   return (
-    <div>
+    <div className="LogModal">
       <Modal
         key={log.id}
         title={"Call log"}
@@ -25,16 +25,11 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                 items={[
                   { name: "General", id: "logGeneral", active: true },
                   { name: "Request", id: "logRequest" },
-                  { name: "Response", id: "logResponse" }
+                  { name: "Response", id: "logResponse" },
                 ]}
               />
               <div className="tab-content">
-                <div
-                  className="tab-pane active"
-                  id="logGeneral"
-                  role="tabpanel"
-                  aria-labelledby="logGeneral-tab"
-                >
+                <div className="tab-pane active" id="logGeneral" role="tabpanel" aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Status</th>
@@ -93,7 +88,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Session",
                         id: "logRequestSession",
                         backgroundColor: "black",
-                        render: function() {
+                        render: function () {
                           return (
                             <>
                               {log.sessionValues ? (
@@ -169,7 +164,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        }
+                        },
                       },
                       {
                         title: "Query paramaters",
@@ -210,7 +205,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Content",
                         id: "logRequestContent",
                         backgroundColor: "black",
-                        render: function() {
+                        render: function () {
                           return (
                             <>
                               {log.requestContent ? (
@@ -245,7 +240,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
-                            logs.push({ ...{ key, value } });
+                            logs.push({...{key, value}})
                           }
 
                           return (
@@ -253,17 +248,17 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.responseHeaders ? (
                                 <table className="mt-3 logTable-table">
                                   {logs.map((log, idx) => {
-                                      return (
-                                        <tr key={log.key + idx}>
-                                          <th>
-                                            {log.key}
-                                          </th>
-                                          <td>
-                                            {log.value}
-                                          </td>
-                                        </tr>
-                                      );
-                                    }
+                                    return (
+                                      <tr key={log.key + idx}>
+                                        <th>
+                                          {log.key}
+                                        </th>
+                                        <td>
+                                          {log.value}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
                                   )}
                                 </table>
                               ) : (

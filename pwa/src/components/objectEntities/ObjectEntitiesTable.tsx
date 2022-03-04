@@ -172,7 +172,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               title={`Create a new ${entity?.name} object`}
               id="objectModal"
               body={() => (
-                <>  
+                <>
                   {FormIO && FormIO }
                 </>
               )}
