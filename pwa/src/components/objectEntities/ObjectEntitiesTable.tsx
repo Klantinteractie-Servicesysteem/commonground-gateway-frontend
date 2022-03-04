@@ -160,23 +160,28 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <button
-              className="utrecht-button utrecht-button-sm btn-sm btn-success"
-              data-bs-toggle="modal"
-              data-bs-target="#objectModal"
-            >
-              <i className="fas fa-plus mr-2" />
-              Create
-            </button>
-            <Modal
-              title={`Create a new ${entity?.name} object`}
-              id="objectModal"
-              body={() => (
-                <>
-                  {FormIO && FormIO }
-                </>
-              )}
-            />
+                <button
+                  className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                  data-bs-toggle="modal"
+                  data-bs-target="#objectModal"
+                >
+                  <i className="fas fa-plus mr-2" />
+                  Create
+                </button>
+                <Modal
+                  title={`Create a new ${entity?.name} object`}
+                  id="objectModal"
+                  body={() => (
+                    <>
+                      { FormIO && formIOSchema.components && FormIO }
+                      {
+                        entity?.handlers?.length < 1 && (
+                          <span>This object type needs a handler and endpoint linked to fetch the form</span>
+                        )
+                      }  
+                    </>
+                  )}
+                />
           </>
         );
       }}
