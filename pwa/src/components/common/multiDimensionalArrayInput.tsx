@@ -38,6 +38,7 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
                             name={`${id}[${key}]`}
                             value={value.toString()}
                             className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                            disabled
                           />
                         </div>
                       </div>
