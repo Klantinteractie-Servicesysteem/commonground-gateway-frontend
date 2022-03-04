@@ -13,24 +13,22 @@ export const IndexPage = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            {
-              endpointId && (
-                <Tabs
-                  items={[
-                    { name: "Overview", id: "overview", active: activeTab !== "handlers" },
-                    {
-                      name: "Handlers",
-                      id: "handlers",
-                      active: activeTab === "handlers",
-                    },
-                    {
-                      name: "Logs",
-                      id: "logs",
-                    },
-                  ]}
-                />
-              )
-            }
+            {endpointId && (
+              <Tabs
+                items={[
+                  { name: "Overview", id: "overview", active: activeTab !== "handlers" },
+                  {
+                    name: "Handlers",
+                    id: "handlers",
+                    active: activeTab === "handlers",
+                  },
+                  {
+                    name: "Logs",
+                    id: "logs",
+                  },
+                ]}
+              />
+            )}
           </div>
           <div className="tab-content">
             <div

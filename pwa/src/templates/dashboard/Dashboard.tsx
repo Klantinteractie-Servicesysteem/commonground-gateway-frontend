@@ -7,15 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import _logs from "../../dummy_data/logs";
-
 import applicationsIcon from "./../../images/icon-applications.svg";
 import sourcesIcon from "./../../images/icon-sources.svg";
 import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 
 const Dashboard: React.FC = () => {
-  const [logs, setLogs] = React.useState(null);
+  const [logs, setLogs] = React.useState([]);
   const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
   const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const [endpointsCount, setEndpointsCount] = React.useState<number>(0);
@@ -29,7 +27,7 @@ const Dashboard: React.FC = () => {
   const handleSetLogs = (): void => {
     API.Log.getAll()
       .then((res) => {
-        res.data.length && setLogs(res.data);
+        setLogs(res.data);
       })
       .catch((err) => {
         throw new Error(`GET Logs error: ${err}`);
@@ -107,7 +105,7 @@ const Dashboard: React.FC = () => {
           <div className="dashboard-logsTableContainer">
             <span className="title">Activity</span>
             <span className="subtitle">View all logged activities of the last 24 hours</span>
-            <DashboardLogsTable logs={logs ?? _logs} />
+            <DashboardLogsTable logs={logs} />
           </div>
         </div>
 

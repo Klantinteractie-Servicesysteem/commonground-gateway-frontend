@@ -51,6 +51,14 @@ module.exports = {
             crumbLabel: 'Object Entity',
           },
           {
+            pathname: '/entities/[entityId]/objects/[objectId]',
+            crumbLabel: 'Object',
+          },
+          {
+            pathname: '/entities/[entityId]/subscribers/[subscriberId]',
+            crumbLabel: 'Subscriber',
+          },
+          {
             pathname: '/endpoints/[endpointId]',
             crumbLabel: 'Endpoint',
           },
@@ -63,10 +71,33 @@ module.exports = {
             crumbLabel: 'Application',
           },
           {
-            pathname: '/translations/[id]',
+            pathname: '/translation-tables',
+            crumbLabel: 'Translation Tables',
+          },
+          {
+            pathname: '/translation-tables/[translationId]',
+            crumbLabel: 'Translation Table',
+          },
+          {
+            pathname: '/translation-tables/new',
+            crumbLabel: 'Translation Table',
+          },
+          {
+            pathname: '/translation-tables/[translationId]/translations/[id]',
             crumbLabel: 'Translation',
           },
         ],
+      },
+    },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        icon: `src/images/conduction_logo_blauw.svg`,
+        name: `Conductor`,
+        short_name: `Conductor`,
+        start_url: `/`,
+        display: `standalone`,
+        theme_color_in_head: false, 
       },
     },
   ],

@@ -15,7 +15,7 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@conductionnl/nl-design-system": "^1.0.122",
+    "@conductionnl/nl-design-system": "^1.0.128",
     "@formio/react": "^5.2.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@nl-design-system-unstable/theme-switcher": "1.0.0-alpha.6",
@@ -29,6 +29,7 @@
     "gatsby": "^4.1.6",
     "gatsby-plugin-breadcrumb": "^12.3.1",
     "gatsby-plugin-layout": "^3.6.0",
+    "gatsby-plugin-manifest": "^4.8.2",
     "install": "^0.13.0",
     "is-valid-uuid-v4": "^1.2.1",
     "jwt-decode": "^3.1.2",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
-    "gatsby-link": "^4.3.0"
+    "gatsby-link": "^4.3.0",
+    "prettier": "2.5.1"
   }
 }

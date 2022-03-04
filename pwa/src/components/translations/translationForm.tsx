@@ -7,6 +7,7 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
+import { getDefaultLibFileName } from "typescript";
 
 interface TranslationFormProps {
   id?: string;
@@ -19,12 +20,28 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const [translation, setTranslation] = React.useState<any>(null);
   const title: string = tableName ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
+  const [tableName_, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     id && getTranslation(id);
+    getTableName();
   }, [API]);
+
+  const getTableName = () => {
+    setShowSpinner(true);
+    API.Translation.getOne(tableName)
+      .then((res) => {
+        setTableName(res.data.translationTable);
+      })
+      .catch((err) => {
+        throw new Error("GET translation error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
 
   const getTranslation = (id: string) => {
     setShowSpinner(true);
@@ -45,7 +62,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
     setLoadingOverlay(true);
 
     let body = {
-      translationTable: tableName,
+      translationTable: tableName_,
       language: event.target.language ? event.target.language.value : null,
       translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,

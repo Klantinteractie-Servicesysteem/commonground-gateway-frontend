@@ -4,17 +4,17 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
+  retrieveFormArrayAsObject
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
   SelectInputComponent,
+  TextareaGroup,
   Accordion,
   Spinner,
   Card,
-  Modal,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
-import { isLoggedIn } from "../../services/auth";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
@@ -24,115 +24,72 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
+import { validateJSON } from "./../../services/validateJSON";
 
 interface HandlerFormProps {
-  id: string;
+  handlerId: string;
   endpointId: string;
 }
 
-export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
-  const [context, setContext] = React.useState(null);
+export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
-  const title: string = id ? "Edit Handler" : "Create Handler";
+  const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
-  const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    getTableNames();
+    handlerId && handleSetHandler();
+    handleSetEntities();
     setHeader({
       title: "Handler",
-      subText: "Manage your handler here",
+      subText: "Manage your handler here"
     });
-  }, [setHeader]);
+  }, [setHeader, API, handlerId]);
 
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && context === null) {
-      setContext({
-        adminUrl: process.env.GATSBY_ADMIN_URL,
-      });
-    } else if (isLoggedIn()) {
-      if (id) {
-        getHandler();
-      }
-      getEntities();
-      getTableNames();
-    }
-  }, [context]);
-
-  const getHandler = () => {
+  const handleSetHandler = () => {
     setShowSpinner(true);
-    fetch(`${context.adminUrl}/handlers/${id}`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setHandler(data);
-        setShowSpinner(false);
+
+    API.Handler.getOne(handlerId)
+      .then((res) => {
+        setHandler(res.data);
       })
-      .catch((error) => {
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET handler error: " + err);
+      })
+      .finally(() => {
         setShowSpinner(false);
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
       });
   };
 
-  const getEntities = () => {
-    fetch(`${context.adminUrl}/entities`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data["hydra:member"] !== undefined && data["hydra:member"].length > 0) {
-          setEntities(data["hydra:member"]);
-        }
+  const handleSetEntities = () => {
+    API.Entity.getAll()
+      .then((res) => {
+        setEntities(res.data);
       })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET entities error: " + err);
       });
+
   };
 
   const getTableNames = () => {
-    fetch(`${context.adminUrl}/table_names`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const convertedArray = data["results"].map((value, idx) => ({ id: idx, name: value, value: value }));
-        setTableNames(convertedArray);
-      })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
-      });
-  };
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Translation.getTableNames()
       .then((res) => {
-        setDocumentation(res.data.content);
+        const names = res.data.results.map((name) => {
+          return { name: name };
+        });
+        setTableNames(names);
       })
       .catch((err) => {
-        throw new Error("GET Documentation error: " + err);
+        throw new Error("GET table names error: " + err);
       });
   };
 
@@ -148,65 +105,77 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
 
     // get the inputs and check if set other set null
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
-      description: event.target.description ? event.target.description.value : null,
+      description: event.target.description.value ?? null,
       sequence: event.target.sequence.value ? parseInt(event.target.sequence.value) : null,
       endpoint: `/admin/endpoints/${endpointId}`,
-      entity: event.target.entity.value ? event.target.entity.value : null,
-      template: event.target.template.value ? event.target.template.value : null,
-      templateType: event.target.templateType.value ? event.target.templateType.value : null,
+      entity: event.target.entity.value ?? null,
+      template: event.target.template.value ?? null,
+      templateType: event.target.templateType.value ?? null,
+      conditions: event.target.conditions.value ?? null,
       skeletonIn,
       skeletonOut,
       mappingIn,
       mappingOut,
       translationsIn,
-      translationsOut,
+      translationsOut
     };
 
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
+
     if (!checkValues([body["name"]])) {
-      setAlert(null);
       setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-    let url = `${context.adminUrl}/handlers`;
-    let method = "POST";
-    if (id) {
-      url = `${url}/${id}`;
-      method = "PUT";
+    if (!validateJSON(body.conditions)) {
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
+      setLoadingOverlay(false);
+      return;
     }
 
-    fetch(url, {
-      method: method,
-      credentials: "include",
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setHandler(data);
-        !id && setAlert({ message: "Saved handler", type: "success" });
-        id && setAlert({ message: "Updated handler", type: "success" });
-        !id && navigate(`/endpoints/${endpointId}`);
-      })
-      .catch((error) => {
-        setAlert({ type: "danger", message: error.message });
-        throw new Error("GET handler error: " + error);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
+    if (!handlerId) {
+      // unset id means we're creating a new entry
+      API.Handler.create(body)
+        .then(() => {
+          setAlert({ message: "Saved Handler", type: "success" });
+          navigate("/handlers");
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+          throw new Error("Create handler error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
+    }
+
+    if (handlerId) {
+      // set id means we're updating a existing entry
+      API.Handler.update(body, handlerId)
+        .then((res) => {
+          setAlert({ message: "Updated handler", type: "success" });
+          setHandler(res.data);
+        })
+        .catch((err) => {
+          setAlert({ type: "danger", message: err.message });
+
+          throw new Error("Update handler error: " + err);
+        })
+        .finally(() => {
+          setLoadingOverlay(false);
+        });
+    }
   };
 
   return (
     <form id="handlerForm" onSubmit={saveHandler}>
       <Card
         title={title}
-        cardHeader={function () {
+        cardHeader={function() {
           return (
             <>
               <button
@@ -218,12 +187,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                 <Modal
                   title="Handler Documentation"
                   id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                  body={() => <div dangerouslySetInnerHTML={{ "__html": "" }} />}
                 />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
-              <Link className="utrecht-link" to={`/endpoints/${endpointId}`} state={{activeTab: "handlers"}}>
+              <Link className="utrecht-link" to={`/endpoints/${endpointId}`} state={{ activeTab: "handlers" }}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
                   Back
@@ -236,7 +205,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
             </>
           );
         }}
-        cardBody={function () {
+        cardBody={function() {
           return (
             <div className="row">
               <div className="col-12">
@@ -283,12 +252,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                           options={[
                             { name: "twig", value: "twig" },
                             { name: "markdown", value: "markdown" },
-                            { name: "restructuredText", value: "restructuredText" },
+                            { name: "restructuredText", value: "restructuredText" }
                           ]}
                           name={"templateType"}
                           id={"templateTypeInput"}
                           nameOverride={"Template Type"}
-                          required={true}
+                          required
                           data={handler?.templateType}
                         />
                       </div>
@@ -337,56 +306,60 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                         )}
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <TextareaGroup
+                          name={"conditions"}
+                          label={"Conditions (JSON)"}
+                          id={"conditionsInput"}
+                          defaultValue={handler?.conditions}
+                          required
+                        />
+                      </div>
+                    </div>
                     <Accordion
                       id="handlerAccordion"
                       items={[
                         {
-                          title: "Conditions *",
-                          id: "conditionsAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="conditions" label="Conditions" data={handler?.conditions} />;
-                          },
-                        },
-                        {
                           title: "Translations In",
                           id: "translationsInAccordion",
-                          render: function () {
-                            return tableNames ? (
-                              <MultiSelect
-                                id="translationsIn"
-                                label="Translations In"
-                                data={handler?.translationsIn}
-                                options={tableNames}
-                              />
-                            ) : (
-                              <>
+                          render: function() {
+                            return (
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsIn"
+                                  label="Translations In"
+                                  data={handler?.translationsIn}
+                                  options={tableNames}
+                                />
+                              ) : (
                                 <Spinner />
-                              </>
+                              )
                             );
-                          },
+                          }
                         },
                         {
                           title: "Translations Out",
                           id: "translationsOutAccordion",
-                          render: function () {
-                            return tableNames ? (
-                              <MultiSelect
-                                id="translationsOut"
-                                label="Translations Out"
-                                data={handler?.translationsOut}
-                                options={tableNames}
-                              />
-                            ) : (
-                              <>
+                          render: function() {
+                            return (
+                              tableNames ? (
+                                <MultiSelect
+                                  id="translationsOut"
+                                  label="Translations Out"
+                                  data={handler?.translationsOut}
+                                  options={tableNames}
+                                />
+                              ) : (
                                 <Spinner />
-                              </>
+                              )
                             );
-                          },
+                          }
                         },
                         {
                           title: "Mapping In",
                           id: "mappingInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
@@ -394,21 +367,21 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 data={
                                   handler && handler.mappingIn
                                     ? [
-                                        {
-                                          key: "mappingIn",
-                                          value: handler.mappingIn,
-                                        },
-                                      ]
+                                      {
+                                        key: "mappingIn",
+                                        value: handler.mappingIn
+                                      }
+                                    ]
                                     : null
                                 }
                               />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Mapping Out",
                           id: "mappingOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
@@ -416,35 +389,43 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ id, endpointId }) => {
                                 data={
                                   handler && handler.mappingOut
                                     ? [
-                                        {
-                                          key: "mappingOut",
-                                          value: `${handler.mappingOut}`,
-                                        },
-                                      ]
+                                      {
+                                        key: "mappingOut",
+                                        value: `${handler.mappingOut}`
+                                      }
+                                    ]
                                     : null
                                 }
                               />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Skeleton In",
                           id: "skeletonInAccordion",
-                          render: function () {
+                          render: function() {
                             return (
-                              <ElementCreationNew id="skeletonIn" label="Skeleton In" data={handler?.skeletonIn} />
+                              <ElementCreationNew
+                                id="skeletonIn"
+                                label="Skeleton In"
+                                data={handler?.skeletonIn}
+                              />
                             );
-                          },
+                          }
                         },
                         {
                           title: "Skeleton Out",
                           id: "skeletonOutAccordion",
-                          render: function () {
+                          render: function() {
                             return (
-                              <ElementCreationNew id="skeletonOut" label="Skeleton Out" data={handler?.skeletonOut} />
+                              <ElementCreationNew
+                                id="skeletonOut"
+                                label="Skeleton Out"
+                                data={handler?.skeletonOut}
+                              />
                             );
-                          },
-                        },
+                          }
+                        }
                       ]}
                     />
                   </>
