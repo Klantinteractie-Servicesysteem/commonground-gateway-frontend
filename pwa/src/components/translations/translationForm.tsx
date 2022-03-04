@@ -21,7 +21,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ translationId,
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = translationId ? "Edit Translation" : "Create Translation";
+  const title: string = translationId && tableName ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableName_, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
@@ -35,7 +35,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ translationId,
 
   const handleTableName = () => {
     setShowSpinner(true);
-
+console.log(tableName)
     API.Translation.getOne(tableName)
       .then((res) => {
         setTableName(res.data.translationTable);
