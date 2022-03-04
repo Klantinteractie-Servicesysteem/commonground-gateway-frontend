@@ -98,14 +98,14 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
                 data-bs-toggle="modal"
                 data-bs-target="#LogEntityHelpModal"
               >
-                <Modal
-                  title="Logs Documentation"
-                  id="LogEntityHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
+              <Modal
+                title="Logs Documentation"
+                id="LogEntityHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
+              />
               <a className="utrecht-link" onClick={handleSetLogs}>
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>

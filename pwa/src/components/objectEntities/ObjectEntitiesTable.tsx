@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Table,
-  Card,
-  Spinner,
-  Modal,
-} from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -49,24 +44,19 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
 
     import("@formio/react").then((formio) => {
       const { Form } = formio;
-      setFormIO(
-        <Form
-          src={formIOSchema}
-          onSubmit={saveObject}
-        />,
-      );
+      setFormIO(<Form src={formIOSchema} onSubmit={saveObject} />);
     });
     setShowSpinner(false);
   }, [formIOSchema]);
 
   const getFormIOSchema = () => {
-      API.FormIO.getSchema(entity.endpoint)
-        .then((res) => {
-          setFormIOSchema(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET form.io schema error: " + err);
-        });
+    API.FormIO.getSchema(entity.endpoint)
+      .then((res) => {
+        setFormIOSchema(res.data);
+      })
+      .catch((err) => {
+        throw new Error("GET form.io schema error: " + err);
+      });
   };
 
   const saveObject = (event) => {
@@ -148,14 +138,14 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               data-bs-toggle="modal"
               data-bs-target="#ObjectEntityHelpModal"
             >
-              <Modal
-                title="Object Entities Documentation"
-                id="ObjectEntityHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Object Entities Documentation"
+              id="ObjectEntityHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetObjectEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
@@ -171,16 +161,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
             <Modal
               title={`Create a new ${entity?.name} object`}
               id="objectModal"
-              body={() => (
-                <>
-                  {FormIO && FormIO }
-                </>
-              )}
+              body={() => <>{FormIO && FormIO}</>}
             />
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -195,19 +181,18 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                     },
                     {
                       headerName: "Owner",
-                      field: "owner"
+                      field: "owner",
                     },
                     {
                       headerName: "Created",
                       field: "dateCreated",
-                      renderCell: (item: { dateCreated: string }) =>
-                        new Date(item.dateCreated).toLocaleString("nl-NL")
+                      renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
                     },
                     {
                       headerName: "Updated",
                       field: "dateModified",
                       renderCell: (item: { dateModified: string }) =>
-                        new Date(item.dateModified).toLocaleString("nl-NL")
+                        new Date(item.dateModified).toLocaleString("nl-NL"),
                     },
                     {
                       field: "id",
@@ -223,8 +208,8 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                             </button>
                           </Link>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={objectEntities}
                 />
@@ -233,20 +218,20 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                   columns={[
                     {
                       headerName: "Id",
-                      field: "id"
+                      field: "id",
                     },
                     {
                       headerName: "Owner",
-                      field: "owner"
+                      field: "owner",
                     },
                     {
                       headerName: "Created",
-                      field: "dateCreated"
+                      field: "dateCreated",
                     },
                     {
                       headerName: "Updated",
-                      field: "dateModified"
-                    }
+                      field: "dateModified",
+                    },
                   ]}
                   rows={[]}
                 />
