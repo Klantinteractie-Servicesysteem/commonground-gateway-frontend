@@ -76,14 +76,14 @@ export default function AttributeTable({ entityId }) {
               data-bs-target="#attributeHelpModal"
               onClick={(e) => e.preventDefault()}
             >
-              <Modal
-                title="Attribute Documentation"
-                id="attributeHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Attribute Documentation"
+              id="attributeHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetAttributes}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

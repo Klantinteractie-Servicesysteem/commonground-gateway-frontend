@@ -150,14 +150,14 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                 data-bs-target="#applicationHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
-                <Modal
-                  title="Application Documentation"
-                  id="applicationHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
+              <Modal
+                title="Application Documentation"
+                id="applicationHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+              />
               <Link className="utrecht-link" to={"/applications"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />

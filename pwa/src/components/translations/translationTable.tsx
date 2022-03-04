@@ -82,14 +82,14 @@ export default function TranslationTable({ tableName }) {
               data-bs-target="#translationHelpModal"
               onClick={(e) => e.preventDefault()}
             >
-              <Modal
-                title="Translation Documentation"
-                id="translationHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Translation Documentation"
+              id="translationHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={getTranslations}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

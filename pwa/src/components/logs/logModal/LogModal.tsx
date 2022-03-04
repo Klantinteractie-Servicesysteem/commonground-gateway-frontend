@@ -30,48 +30,50 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
               <div className="tab-content">
                 <div className="tab-pane active" id="logGeneral" role="tabpanel" aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
-                    <tr>
-                      <th>Status</th>
-                      <td>
-                        <StatusCode code={log?.responseStatusCode} message={log?.responseStatus} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Type</th>
-                      <td>{log?.type === "in" ? "Incoming" : "Outcoming"}</td>
-                    </tr>
-                    <tr>
-                      <th>Call ID</th>
-                      <td>{log?.callId}</td>
-                    </tr>
-                    <tr>
-                      <th>Session ID</th>
-                      <td>{log?.session}</td>
-                    </tr>
-                    <tr>
-                      <th>Response time</th>
-                      <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
-                    </tr>
-                    <tr>
-                      <th>Route</th>
-                      <td>{log?.routeName}</td>
-                    </tr>
-                    <tr>
-                      <th>Endpoint</th>
-                      <td>
-                        <Link
-                          to={"/endpoints/" + log?.id}
-                          type="button"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          onClick={() => {
-                            navigate("/endpoints/" + log?.id);
-                          }}
-                        >
-                          {log?.endpoint?.name}
-                        </Link>
-                      </td>
-                    </tr>
+                    <tbody>
+                      <tr>
+                        <th>Status</th>
+                        <td>
+                          <StatusCode code={log?.responseStatusCode} message={log?.responseStatus} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Type</th>
+                        <td>{log?.type === "in" ? "Incoming" : "Outcoming"}</td>
+                      </tr>
+                      <tr>
+                        <th>Call ID</th>
+                        <td>{log?.callId}</td>
+                      </tr>
+                      <tr>
+                        <th>Session ID</th>
+                        <td>{log?.session}</td>
+                      </tr>
+                      <tr>
+                        <th>Response time</th>
+                        <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
+                      </tr>
+                      <tr>
+                        <th>Route</th>
+                        <td>{log?.routeName}</td>
+                      </tr>
+                      <tr>
+                        <th>Endpoint</th>
+                        <td>
+                          <Link
+                            to={"/endpoints/" + log?.id}
+                            type="button"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onClick={() => {
+                              navigate("/endpoints/" + log?.id);
+                            }}
+                          >
+                            {log?.endpoint?.name}
+                          </Link>
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                   <Accordion
                     id="logGeneralAccordion"
@@ -97,18 +99,20 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                 </div>
                 <div className="tab-pane" id="logRequest" role="tabpanel" aria-labelledby="logRequest-tab">
                   <table className="mt-3 logTable-table">
-                    <tr>
-                      <th>Method</th>
-                      <td>{log?.requestMethod}</td>
-                    </tr>
-                    <tr>
-                      <th>Path info</th>
-                      <td>{log?.requestPathInfo}</td>
-                    </tr>
-                    <tr>
-                      <th>Languages</th>
-                      <td>{log?.requestLanguages}</td>
-                    </tr>
+                    <tbody>
+                      <tr>
+                        <th>Method</th>
+                        <td>{log?.requestMethod}</td>
+                      </tr>
+                      <tr>
+                        <th>Path info</th>
+                        <td>{log?.requestPathInfo}</td>
+                      </tr>
+                      <tr>
+                        <th>Languages</th>
+                        <td>{log?.requestLanguages}</td>
+                      </tr>
+                    </tbody>
                   </table>
                   <Accordion
                     id="logRequestAccordion"
@@ -125,14 +129,16 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             <>
                               {log.requestHeaders ? (
                                 <table className="mt-3 logTable-table">
-                                  {logs.map((log, idx) => {
-                                    return (
-                                      <tr key={log.key + idx}>
-                                        <th>{log.key}</th>
-                                        <td>{log.value}</td>
-                                      </tr>
-                                    );
-                                  })}
+                                  <tbody>
+                                    {logs.map((log, idx) => {
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>{log.key}</th>
+                                          <td>{log.value}</td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
                                 </table>
                               ) : (
                                 <p className="utrecht-paragraph">No headers found</p>
@@ -153,14 +159,16 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             <>
                               {log.requestQuery ? (
                                 <table className="mt-3 logTable-table">
-                                  {logs.map((log, idx) => {
-                                    return (
-                                      <tr key={log.key + idx}>
-                                        <th>{log.key}</th>
-                                        <td>{log.value}</td>
-                                      </tr>
-                                    );
-                                  })}
+                                  <tbody>
+                                    {logs.map((log, idx) => {
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>{log.key}</th>
+                                          <td>{log.value}</td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
                                 </table>
                               ) : (
                                 <p className="utrecht-paragraph">No parameters found</p>
@@ -205,14 +213,16 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             <>
                               {log.responseHeaders ? (
                                 <table className="mt-3 logTable-table">
-                                  {logs.map((log, idx) => {
-                                    return (
-                                      <tr key={log.key + idx}>
-                                        <th>{log.key}</th>
-                                        <td>{log.value}</td>
-                                      </tr>
-                                    );
-                                  })}
+                                  <tbody>
+                                    {logs.map((log, idx) => {
+                                      return (
+                                        <tr key={log.key + idx}>
+                                          <th>{log.key}</th>
+                                          <td>{log.value}</td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
                                 </table>
                               ) : (
                                 <p className="utrecht-paragraph">No headers found</p>
