@@ -5,24 +5,47 @@ import HandlersTable from "../../components/handlers/handlerTable";
 import LogTable from "../../components/logs/logTable/logTable";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
+import { Card, Modal } from "@conductionnl/nl-design-system/lib";
+import { AlertContext } from "../../context/alertContext";
+import Spinner from "../../components/common/spinner";
 
 export const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const activeTab: string = props.location.state.activeTab;
   const API: APIService = React.useContext(APIContext);
   const [logs, setLogs] = React.useState([]);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+  const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     handleSetLogs();
+    handleSetDocumentation();
   }, [API]);
 
   const handleSetLogs = (): void => {
+    setShowSpinner(true);
+
     API.Log.getAllFromEndpoint(endpointId)
       .then((res) => {
         setLogs(res.data);
       })
       .catch((err) => {
         throw new Error(`GET Endpoint Logs error: ${err}`);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET Documentation error: " + err);
       });
   };
 
@@ -78,7 +101,31 @@ export const IndexPage = (props) => {
               aria-labelledby="logs-tab"
             >
               <br />
-              <LogTable {...{ logs }} />
+
+              <Card
+                title="Endpoint Logs"
+                cardHeader={() =>
+                  <>
+                    <button className="utrecht-link button-no-style" data-bs-toggle="modal"
+                            data-bs-target="#endpointHelpModal">
+                      <Modal
+                        title="Endpoint Documentation"
+                        id="endpointHelpModal"
+                        body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                      />
+                      <i className="fas fa-question mr-1" />
+                      <span className="mr-2">Help</span>
+                    </button>
+                    <a className="utrecht-link" onClick={handleSetLogs}>
+                      <i className="fas fa-sync-alt mr-1" />
+                      <span className="mr-2">Refresh</span>
+                    </a>
+                  </>
+                }
+                cardBody={() =>
+                  showSpinner === true ? (<Spinner/>) :
+                  <LogTable logs={logs} />}
+              />
             </div>
           </div>
         </div>
