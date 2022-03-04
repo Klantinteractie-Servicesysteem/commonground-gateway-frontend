@@ -4,7 +4,7 @@ import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {
   const translationId: string = props.params.translationId === "new" ? null : props.params.translationId;
-  const subtext: string = props.params.id === "new" ? 'Create a new translation' : 'View or edit this translation'
+  const subtext: string = props.params.translationId === "new" ? 'Create a new translation' : 'View or edit this translation'
   const tableName = props.params.translationId;
   const [__, setHeader] = React.useContext(HeaderContext);
 
