@@ -8,21 +8,13 @@ interface MultiDimensionalArrayInputProps {
   data: Record<any, any>;
   id?: string;
   label?: string;
-  deleteFunction?: any;
-  addFunction?: any;
 }
 
 /**
  * This components handles multidimensional array input forms.
  * @returns JSX of the generated form.
  */
-const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
-  data,
-  id,
-  label,
-  deleteFunction,
-  addFunction,
-}) => {
+const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({ data, id, label }) => {
   const deleteElement = deleteElementFunction;
 
   return (
