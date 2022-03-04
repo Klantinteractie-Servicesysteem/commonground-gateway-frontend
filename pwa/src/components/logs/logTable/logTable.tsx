@@ -8,6 +8,7 @@ import { faCircle, faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logModal/LogModal";
 import msToSeconds from "../../../services/msToSeconds";
 import { AlertContext } from "../../../context/alertContext";
+import statusCodeToClassname from "../../../services/statusCodeToClassName";
 
 interface LogTableProps {
   entityId?: string;
@@ -31,7 +32,7 @@ export const LogTable: React.FC<LogTableProps> = ({ entityId, sourceId, endpoint
     if (entityId) {
       API.Log.getAllFromEntity(entityId)
         .then((res) => {
-         setLogs(res.data);
+          setLogs(res.data);
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
@@ -204,12 +205,9 @@ interface StatusCodeProps {
 }
 
 export const StatusCode: React.FC<StatusCodeProps> = ({ code, message = null }) => {
-  let statusColor: string;
-  code > 199 && code < 300 ? (statusColor = "green") : (statusColor = "red");
-
   return (
     <span>
-      <FontAwesomeIcon className={`logTable-statusCode--${statusColor} mr-2`} icon={faCircle} />
+      <FontAwesomeIcon className={`logTable-statusCode--${statusCodeToClassname(code)} mr-2`} icon={faCircle} />
       {`${code} (${message})`}
     </span>
   );

@@ -5,6 +5,7 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import LogModal from "../logs/logModal/LogModal";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 import msToSeconds from "../../services/msToSeconds";
+import statusCodeToClassName from "../../services/statusCodeToClassName";
 
 interface DashboardLogsTableProps {
   logs: any;
@@ -29,11 +30,13 @@ const DashboardLogsTable: React.FC<DashboardLogsTableProps> = ({ logs }) => {
             </tr>
           )}
           {logs.map((log, idx) => {
-            const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
             return (
               <tr key={idx} className="dashboardLogsTable-tr">
                 <td>
-                  <LabelWithBackground label={log.responseStatusCode.toString()} type={statusClass} />
+                  <LabelWithBackground
+                    label={log.responseStatusCode.toString()}
+                    type={statusCodeToClassName(log.responseStatusCode)}
+                  />
                 </td>
                 <td>{log.type}</td>
                 <td>{log.requestMethod}</td>
