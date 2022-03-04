@@ -16,7 +16,13 @@ interface MultiDimensionalArrayInputProps {
  * This components handles multidimensional array input forms.
  * @returns JSX of the generated form.
  */
-const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({ data, id, label, deleteFunction, addFunction}) => {
+const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
+  data,
+  id,
+  label,
+  deleteFunction,
+  addFunction,
+}) => {
   const deleteElement = deleteElementFunction;
 
   return (
@@ -24,36 +30,39 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
       <div id={`new${_.upperFirst(id)}`}>
         <ul style={{ paddingLeft: 0 }}>
           {data !== undefined &&
-          data !== null &&
-          data.map((item) => (
-            item.value && Object.entries(item.value).map(([key, value], idx) => {
-              return (
-                <div className="d-flex">
-                  <div className="col-10">
-                    <div className="form-group">
-                      <span className="utrecht-form-label">{key}</span>
-                      <input
-                        type="text"
-                        id="value"
-                        name={`${id}[${key}]`}
-                        value={value.toString()}
-                        className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                      />
+            data !== null &&
+            data.map(
+              (item) =>
+                item.value &&
+                Object.entries(item.value).map(([key, value], idx) => {
+                  return (
+                    <div key={idx} className="d-flex">
+                      <div className="col-10">
+                        <div className="form-group">
+                          <span className="utrecht-form-label">{key}</span>
+                          <input
+                            type="text"
+                            id="value"
+                            name={`${id}[${key}]`}
+                            value={value.toString()}
+                            className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-2 m-auto">
+                        <button
+                          value={key}
+                          onClick={deleteElement}
+                          type="button"
+                          className="utrecht-button utrecht-button-sm btn-sm btn-danger"
+                        >
+                          <FontAwesomeIcon icon={faTrash} /> Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-2 m-auto">
-                    <button
-                      value={key}
-                      onClick={deleteElement}
-                      type="button"
-                      className="utrecht-button utrecht-button-sm btn-sm btn-danger"
-                    >
-                      <FontAwesomeIcon icon={faTrash} /> Delete
-                    </button>
-                  </div>
-                </div>
-              );
-            })))}
+                  );
+                }),
+            )}
         </ul>
       </div>
       <br />
@@ -82,7 +91,7 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
                 `new${_.upperFirst(id)}Key`,
                 `new${_.upperFirst(id)}Value`,
                 `${id}`,
-                deleteElement
+                deleteElement,
               );
             }}
           >
@@ -92,6 +101,6 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
       </div>
     </>
   );
-}
+};
 
 export default MultiDimensionalArrayInput;
