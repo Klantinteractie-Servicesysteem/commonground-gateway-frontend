@@ -15,6 +15,10 @@ export default class Log {
     return this._instance.get(`/logs?session=${sessionId}`);
   };
 
+  public getAllFromCall = (callId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?callId=${callId}`);
+  };
+
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
     return this._instance.get("/logs?entity.id=" + entityId);
   };
