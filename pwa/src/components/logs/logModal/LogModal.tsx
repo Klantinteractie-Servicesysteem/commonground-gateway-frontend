@@ -3,8 +3,8 @@ import "./logModal.css";
 import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
-import { StatusCode } from "../logTable/logTable";
 import msToSeconds from "../../../services/msToSeconds";
+import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
 
 interface LogModalProps {
   log: any;
@@ -17,7 +17,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         key={log.id}
         title={"Call log"}
         id={`logs${log.id}`}
-        body={function () {
+        body={function() {
+          const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
           return (
             <>
               <Tabs
@@ -30,50 +31,55 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
               <div className="tab-content">
                 <div className="tab-pane active" id="logGeneral" role="tabpanel" aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
-                    <tbody>
-                      <tr>
-                        <th>Status</th>
-                        <td>
-                          <StatusCode code={log?.responseStatusCode} message={log?.responseStatus} />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Type</th>
-                        <td>{log?.type === "in" ? "Incoming" : "Outcoming"}</td>
-                      </tr>
-                      <tr>
-                        <th>Call ID</th>
-                        <td>{log?.callId}</td>
-                      </tr>
-                      <tr>
-                        <th>Session ID</th>
-                        <td>{log?.session}</td>
-                      </tr>
-                      <tr>
-                        <th>Response time</th>
-                        <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
-                      </tr>
-                      <tr>
-                        <th>Route</th>
-                        <td>{log?.routeName}</td>
-                      </tr>
-                      <tr>
-                        <th>Endpoint</th>
-                        <td>
-                          <Link
-                            to={"/endpoints/" + log?.id}
-                            type="button"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                            onClick={() => {
-                              navigate("/endpoints/" + log?.id);
-                            }}
-                          >
-                            {log?.endpoint?.name}
-                          </Link>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <tr>
+                      <th>Status</th>
+                      <td>
+                        <LabelWithBackground
+                          label={log?.responseStatusCode}
+                          type={statusClass}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Type</th>
+                      <td>
+                        {log?.type === "in" ? "Incoming" : "Outcoming"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Call ID</th>
+                      <td>{log?.callId}</td>
+                    </tr>
+                    <tr>
+                      <th>Session ID</th>
+                      <td>
+                        {log?.session}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Response time</th>
+                      <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
+                    </tr>
+                    <tr>
+                      <th>Route</th>
+                      <td>{log?.routeName}</td>
+                    </tr>
+                    <tr>
+                      <th>Endpoint</th>
+                      <td>
+                        <Link
+                          to={"/endpoints/" + log?.id}
+                          type="button"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                          onClick={() => {
+                            navigate("/endpoints/" + log?.id);
+                          }}
+                        >
+                          {log?.endpoint?.name}
+                        </Link>
+                      </td>
+                    </tr>
                   </table>
                   <Accordion
                     id="logGeneralAccordion"
@@ -86,33 +92,41 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           return (
                             <>
                               {log.sessionValues ? (
-                                <CodeBlock code={JSON.stringify(log.sessionValues)} language="json" />
+                                <CodeBlock
+                                  code={JSON.stringify(log.sessionValues)}
+                                  language="json"
+                                />
                               ) : (
-                                <p className="utrecht-paragraph">No session values found</p>
+                                <p className="utrecht-paragraph">
+                                  No session values found
+                                </p>
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logRequest" role="tabpanel" aria-labelledby="logRequest-tab">
+                <div
+                  className="tab-pane"
+                  id="logRequest"
+                  role="tabpanel"
+                  aria-labelledby="logRequest-tab"
+                >
                   <table className="mt-3 logTable-table">
-                    <tbody>
-                      <tr>
-                        <th>Method</th>
-                        <td>{log?.requestMethod}</td>
-                      </tr>
-                      <tr>
-                        <th>Path info</th>
-                        <td>{log?.requestPathInfo}</td>
-                      </tr>
-                      <tr>
-                        <th>Languages</th>
-                        <td>{log?.requestLanguages}</td>
-                      </tr>
-                    </tbody>
+                    <tr>
+                      <th>Method</th>
+                      <td>{log?.requestMethod}</td>
+                    </tr>
+                    <tr>
+                      <th>Path info</th>
+                      <td>{log?.requestPathInfo}</td>
+                    </tr>
+                    <tr>
+                      <th>Languages</th>
+                      <td>{log?.requestLanguages}</td>
+                    </tr>
                   </table>
                   <Accordion
                     id="logRequestAccordion"
@@ -120,7 +134,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Headers",
                         id: "logRequestHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
                             logs.push({ ...{ key, value } });
@@ -129,19 +143,24 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             <>
                               {log.requestHeaders ? (
                                 <table className="mt-3 logTable-table">
-                                  <tbody>
-                                    {logs.map((log, idx) => {
+                                  {logs.map((log, idx) => {
                                       return (
                                         <tr key={log.key + idx}>
-                                          <th>{log.key}</th>
-                                          <td>{log.value}</td>
+                                          <th>
+                                            {log.key}
+                                          </th>
+                                          <td>
+                                            {log.value}
+                                          </td>
                                         </tr>
                                       );
-                                    })}
-                                  </tbody>
+                                    }
+                                  )}
                                 </table>
                               ) : (
-                                <p className="utrecht-paragraph">No headers found</p>
+                                <p className="utrecht-paragraph">
+                                  No headers found
+                                </p>
                               )}
                             </>
                           );
@@ -150,7 +169,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Query paramaters",
                         id: "logRequestQueryparamters",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestQuery)) {
                             logs.push({ ...{ key, value } });
@@ -159,23 +178,28 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             <>
                               {log.requestQuery ? (
                                 <table className="mt-3 logTable-table">
-                                  <tbody>
-                                    {logs.map((log, idx) => {
+                                  {logs.map((log, idx) => {
                                       return (
                                         <tr key={log.key + idx}>
-                                          <th>{log.key}</th>
-                                          <td>{log.value}</td>
+                                          <th>
+                                            {log.key}
+                                          </th>
+                                          <td>
+                                            {log.value}
+                                          </td>
                                         </tr>
                                       );
-                                    })}
-                                  </tbody>
+                                    }
+                                  )}
                                 </table>
                               ) : (
-                                <p className="utrecht-paragraph">No parameters found</p>
+                                <p className="utrecht-paragraph">
+                                  No parameters found
+                                </p>
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
@@ -185,75 +209,96 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           return (
                             <>
                               {log.requestContent ? (
-                                <CodeBlock code={log.requestContent} language="json" />
+                                <CodeBlock
+                                  code={log.requestContent}
+                                  language="json"
+                                />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph">
+                                  No content found
+                                </p>
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logResponse" role="tabpanel" aria-labelledby="logResponse-tab">
+                <div
+                  className="tab-pane"
+                  id="logResponse"
+                  role="tabpanel"
+                  aria-labelledby="logResponse-tab"
+                >
                   <Accordion
                     id="logResponseAccordion"
                     items={[
                       {
                         title: "Headers",
                         id: "logResponseHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
-                            logs.push({ ...{ key, value } });
+                            logs.push({...{key, value}})
                           }
 
                           return (
                             <>
                               {log.responseHeaders ? (
                                 <table className="mt-3 logTable-table">
-                                  <tbody>
-                                    {logs.map((log, idx) => {
-                                      return (
-                                        <tr key={log.key + idx}>
-                                          <th>{log.key}</th>
-                                          <td>{log.value}</td>
-                                        </tr>
-                                      );
-                                    })}
-                                  </tbody>
+                                  {logs.map((log, idx) => {
+                                    return (
+                                      <tr key={log.key + idx}>
+                                        <th>
+                                          {log.key}
+                                        </th>
+                                        <td>
+                                          {log.value}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }
+                                  )}
                                 </table>
                               ) : (
-                                <p className="utrecht-paragraph">No headers found</p>
+                                <p className="utrecht-paragraph">
+                                  No headers found
+                                </p>
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
                         id: "logResponseContent",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.responseContent ? (
-                                <CodeBlock code={log.responseContent} language="json" />
+                                <CodeBlock
+                                  code={log.responseContent}
+                                  language="json"
+                                />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph">
+                                  No content found
+                                </p>
                               )}
                             </>
                           );
                         },
-                        backgroundColor: "black",
-                      },
+                        backgroundColor: "black"
+                      }
                     ]}
                   />
                 </div>
               </div>
             </>
           );
-        }}
+        }
+        }
       />
     </div>
   );
