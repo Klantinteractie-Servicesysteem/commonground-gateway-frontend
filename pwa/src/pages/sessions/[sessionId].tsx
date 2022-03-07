@@ -1,7 +1,9 @@
+import { Card } from "@conductionnl/nl-design-system";
 import * as React from "react";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import LogTable from "../../components/logs/logTable/logTable";
+import Spinner from "../../components/common/spinner";
+import LogsTable from "../../components/logs/logTable/logTable";
 import { HeaderContext } from "../../context/headerContext";
 
 const IndexPage = (props) => {
@@ -12,8 +14,8 @@ const IndexPage = (props) => {
   const sessionId: string = props.params.sessionId;
 
   React.useEffect(() => {
-    setHeader({ title: `Session: ${sessionId}`, subText: "" });
-  });
+    setHeader({ title: "Session", subText: "" });
+  }, [setHeader]);
 
   React.useEffect(() => {
     API.Log.getAll()
@@ -23,9 +25,17 @@ const IndexPage = (props) => {
       .catch((err) => {
         throw new Error(`GET All Logs error: ${err}`);
       });
-  });
+  }, [API]);
 
-  if (!logs) return <>Loading...</>;
+  return logs ? (
+    <Card
+      title={`All logs in session: ${sessionId}`}
+      cardBody={() => <LogsTable {...{ logs }} />}
+      cardHeader={() => <></>}
+    />
+  ) : (
+    <Spinner />
+  );
 };
 
 export default IndexPage;
