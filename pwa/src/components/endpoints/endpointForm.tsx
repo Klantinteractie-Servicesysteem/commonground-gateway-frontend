@@ -87,7 +87,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
-      application: event.target.application.value ?? null
+      applications: [event.target.application.value] ?? null
     };
 
     // This removes empty values from the body
@@ -191,7 +191,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {applications ? (
                           <SelectInputComponent
                             options={applications}
-                            data={endpoint?.application?.name}
+                            data={endpoint?.applications?.id}
                             name={"application"}
                             id={"applicationInput"}
                             nameOverride={"Applications"}

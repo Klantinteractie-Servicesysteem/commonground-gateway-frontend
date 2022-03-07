@@ -236,7 +236,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                             {entity !== null && entity.gateway !== undefined && entity.gateway !== null ? (
                               <SelectInputComponent
                                 options={sources}
-                                data={entity.gateway.name}
+                                data={entity.gateway.id}
                                 name={"gateway"}
                                 id={"gatewayInput"}
                                 nameOverride={"Source"}
