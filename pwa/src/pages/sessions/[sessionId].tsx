@@ -21,7 +21,7 @@ const IndexPage = (props) => {
   }, [setHeader]);
 
   React.useEffect(() => {
-    API.Log.getAll()
+    API.Log.getAllFromSession(sessionId)
       .then((res) => {
         setLogs(res.data);
       })
