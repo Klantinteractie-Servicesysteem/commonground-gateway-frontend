@@ -3,36 +3,43 @@ import { Link } from "gatsby";
 import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import { AlertContext } from "../../context/alertContext";
 import { navigate } from "gatsby";
+import { useAsync } from "../../hooks/useAsync";
 
 export default function TableNamesTable() {
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [_, setAlert] = React.useContext(AlertContext);
+  const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
-    getTableNames();
-  }, [API]);
+    !tableNames && setShowSpinner(true);
 
-  const getTableNames = () => {
-    setShowSpinner(true);
-    API.Translation.getTableNames()
-      .then((res) => {
-        const names = res.data.results.map((name) => {
-          return { name: name };
-        });
-        setTableNames(names);
-      })
-      .catch((err) => {
-        throw new Error("GET table names error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
+    tableNames && setShowSpinner(false);
+  }, [tableNames]);
+
+  useAsync({
+    asyncFunction: API.Translation.getTableNames,
+    onSuccess: (res) => {
+      const names = res.data.results.map((name) => {
+        return { name: name };
       });
-  };
+      setTableNames(names);
+    },
+    onError: (err) => {
+      throw new Error(`GET table names error: ${err}`);
+    },
+  });
+
+  useAsync({
+    asyncFunction: () => API.Documentation.get("translations"),
+    onSuccess: (res) => {
+      setDocumentation(res.data.content);
+    },
+    onError: (err) => {
+      throw new Error(`GET Translations documentation: ${err}`);
+    },
+  });
 
   const linkToTableWithTranslation = (tableName: string) => {
     setShowSpinner(true);
@@ -42,21 +49,6 @@ export default function TableNamesTable() {
       })
       .catch((err) => {
         throw new Error("GET translation error: " + err);
-      });
-  };
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("translations")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err });
-        throw new Error("GET Documentation error: " + err);
       });
   };
 
@@ -81,7 +73,7 @@ export default function TableNamesTable() {
                 id="translationHelpModal"
                 body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
               />
-              <a className="utrecht-link" onClick={getTableNames}>
+              <a className="utrecht-link">
                 <i className="fas fa-sync-alt mr-1" />
                 <span className="mr-2">Refresh</span>
               </a>
