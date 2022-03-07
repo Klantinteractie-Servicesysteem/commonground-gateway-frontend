@@ -2,7 +2,7 @@ import * as React from "react";
 import "./dashboard.css";
 import { DashboardCard, DashboardCardSmall } from "./../../components/dashboardCard/DashboardCard";
 import CallHealthQuickview from "./../../components/callHealthQuickview/CallHealthQuickview";
-import LogsTable from "../../components/logs/logTable/logTable"
+import LogsTable from "../../components/logs/logTable/logTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import APIService from "../../apiService/apiService";
@@ -11,9 +11,10 @@ import applicationsIcon from "./../../images/icon-applications.svg";
 import sourcesIcon from "./../../images/icon-sources.svg";
 import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
+import Spinner from "../../components/common/spinner";
 
 const Dashboard: React.FC = () => {
-  const [logs, setLogs] = React.useState([]);
+  const [logs, setLogs] = React.useState(null);
   const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
   const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const [endpointsCount, setEndpointsCount] = React.useState<number>(0);
@@ -63,9 +64,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard">
       <div>
-        <h3 className="dashboard-dividerTitle">
-          Quick overview
-        </h3>
+        <h3 className="dashboard-dividerTitle">Quick overview</h3>
         <div className="dashboard-quickOverview">
           <DashboardCard
             amount={applicationsCount}
@@ -98,21 +97,17 @@ const Dashboard: React.FC = () => {
 
       <div className="dashboard-row-logsAndDocumentation">
         <div className="dashboard-logsTable">
-          <h3 className="dashboard-dividerTitle">
-            Recent activity (logs)
-          </h3>
+          <h3 className="dashboard-dividerTitle">Recent activity (logs)</h3>
 
           <div className="dashboard-logsTableContainer">
             <span className="title">Activity</span>
             <span className="subtitle">View all logged activities of the last 24 hours</span>
-            <LogsTable logs={logs} />
+            {logs ? <LogsTable {...{ logs }} /> : <Spinner />}
           </div>
         </div>
 
         <div className="dashboard-externalLinks">
-          <h3 className="dashboard-dividerTitle">
-            Documentation and support
-          </h3>
+          <h3 className="dashboard-dividerTitle">Documentation and support</h3>
 
           <DashboardCardSmall
             title="Documentation"
