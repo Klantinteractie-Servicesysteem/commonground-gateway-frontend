@@ -18,7 +18,7 @@ export default function UsersTable() {
   React.useEffect(() => {
     if (typeof window !== "undefined" && context === null) {
       setContext({
-        apiUrl: process.env.GATSBY_API_URL
+        apiUrl: process.env.GATSBY_API_URL,
       });
     } else if (isLoggedIn()) {
       getUsers();
@@ -30,15 +30,12 @@ export default function UsersTable() {
     fetch(`${context.apiUrl}/`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("jwt")
-      }
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+      },
     })
       .then((response) => response.json())
       .then((data) => {
-        if (
-          data["hydra:member"] !== undefined &&
-          data["hydra:member"] !== null
-        ) {
+        if (data["hydra:member"] !== undefined && data["hydra:member"] !== null) {
           setUsers(data["hydra:member"]);
           setShowSpinner(false);
         }
@@ -53,7 +50,7 @@ export default function UsersTable() {
   });
 
   const handleSetDocumentation = (): void => {
-    API.Documentation.get()
+    API.Documentation.get("users")
       .then((res) => {
         setDocumentation(res.data.content);
       })
@@ -65,24 +62,18 @@ export default function UsersTable() {
   return (
     <Card
       title={"Users"}
-      cardHeader={function() {
+      cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#UserHelpModal"
-            >
-              <Modal
-                title="User Documentation"
-                id="UserHelpModal"
-                body={() => (
-                  <div dangerouslySetInnerHTML={{ __html: documentation }} />
-                )}
-              />
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#UserHelpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="User Documentation"
+              id="UserHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={getUsers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
@@ -96,7 +87,7 @@ export default function UsersTable() {
           </>
         );
       }}
-      cardBody={function() {
+      cardBody={function () {
         return (
           <div className="row">
             <div className="col-12">
@@ -107,11 +98,11 @@ export default function UsersTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
+                      field: "description",
                     },
                     {
                       field: "id",
@@ -125,8 +116,8 @@ export default function UsersTable() {
                             </button>
                           </Link>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   rows={users}
                 />
@@ -135,12 +126,12 @@ export default function UsersTable() {
                   columns={[
                     {
                       headerName: "Name",
-                      field: "name"
+                      field: "name",
                     },
                     {
                       headerName: "Description",
-                      field: "description"
-                    }
+                      field: "description",
+                    },
                   ]}
                   rows={[]}
                 />

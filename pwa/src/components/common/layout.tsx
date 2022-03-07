@@ -9,7 +9,6 @@ import { isLoggedIn, logout, validateSession } from "../../services/auth";
 import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
-import favicon from "../../images/conduction_logo_blauw.svg";
 import Alert from "../alert/alert";
 import { HeaderProps, HeaderProvider } from "../../context/headerContext";
 import Header from "./header";
@@ -41,7 +40,7 @@ export default function Layout({ children, pageContext }) {
       <AlertProvider value={[alert, setAlert]}>
         <HeaderProvider value={[header, setHeader]}>
           <Alert />
-          <Helmet link={[{ rel: "shortcut icon", type: "image/png", href: favicon }]}>
+          <Helmet>
             <title>Gateway Admin Dashboard</title>
           </Helmet>
           <div className="utrecht-document conduction-theme">

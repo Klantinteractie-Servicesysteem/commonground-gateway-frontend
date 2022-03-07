@@ -75,14 +75,14 @@ export default function SourcesTable() {
         return (
           <>
             <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#sourceHelpModal">
-              <Modal
-                title="Source Documentation"
-                id="sourceHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Source Documentation"
+              id="sourceHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetSources}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
