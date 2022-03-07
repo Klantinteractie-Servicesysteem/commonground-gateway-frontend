@@ -133,14 +133,14 @@ const IndexPage = (props) => {
             >
               <br />
               <Card
-                title="Endpoint Logs"
+                title="Object type Logs"
                 cardHeader={() =>
                   <>
                     <button className="utrecht-link button-no-style" data-bs-toggle="modal"
-                            data-bs-target="#endpointHelpModal">
+                            data-bs-target="#objectTypeHelpModal">
                       <Modal
-                        title="Endpoint Documentation"
-                        id="endpointHelpModal"
+                        title="Object type Documentation"
+                        id="objectTypeHelpModal"
                         body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                       />
                       <i className="fas fa-question mr-1" />
