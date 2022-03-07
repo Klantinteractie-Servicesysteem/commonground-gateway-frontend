@@ -18,7 +18,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         title={"Call log"}
         id={`logs${log.id}`}
         body={function () {
-          const statusClass = log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger";
+          const statusClass = log.responseStatusCode ? log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger" : "danger";
           return (
             <>
               <Tabs
