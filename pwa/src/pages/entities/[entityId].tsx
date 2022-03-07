@@ -137,10 +137,10 @@ const IndexPage = (props) => {
                 cardHeader={() =>
                   <>
                     <button className="utrecht-link button-no-style" data-bs-toggle="modal"
-                            data-bs-target="#objectTypeHelpModal">
+                            data-bs-target="#objectTypeLogHelpModal">
                       <Modal
                         title="Object type Documentation"
-                        id="objectTypeHelpModal"
+                        id="objectTypeLogHelpModal"
                         body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
                       />
                       <i className="fas fa-question mr-1" />
