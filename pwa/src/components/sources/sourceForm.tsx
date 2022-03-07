@@ -1,6 +1,11 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsObject,
+} from "../utility/inputHandler";
 import {
   GenericInputComponent,
   Accordion,
@@ -16,40 +21,35 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
-  id: string;
+  sourceId: string;
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
+export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = id ? "Edit Source" : "Create Source";
+  const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    handleSetDocumentation();
+    sourceId && handleSetSource();
     setHeader({
       title: "Source",
       subText: "Manage your source here",
     });
-  }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    id && handleSetSource();
-  }, [API, id]);
+  }, [setHeader, sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
 
-    API.Source.getOne(id)
+    API.Source.getOne(sourceId)
       .then((res) => {
         setSource(res.data);
       })
@@ -76,7 +76,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let headers = retrieveFormArrayAsOArray(event.target, "headers");
+    let headers = retrieveFormArrayAsObject(event.target, "headers");
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
@@ -109,7 +109,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) {
+    if (!sourceId) {
       // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
@@ -125,9 +125,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) {
+    if (sourceId) {
       // set id means we're updating a existing entry
-      API.Source.update(body, id)
+      API.Source.update(body, sourceId)
         .then((res) => {
           setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
@@ -155,14 +155,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                 data-bs-target="#sourceHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
-                <Modal
-                  title="Source Documentation"
-                  id="sourceHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
+              <Modal
+                title="Source Documentation"
+                id="sourceHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+              />
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
@@ -200,23 +200,17 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         )}
                       </div>
                       <div className="col-6">
-                        {source !== null && source.location !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            data={source.location}
-                            nameOverride={"Location (url)"}
-                            infoTooltip={{ content: <p>Enter the source location here</p> }}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"location"}
-                            id={"locationInput"}
-                            nameOverride={"Location (url)"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"location"}
+                          id={"locationInput"}
+                          data={source?.location}
+                          nameOverride={"Location (url)"}
+                          required
+                          infoTooltip={{
+                            content: <p>Enter the source location here</p>,
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="row">
@@ -468,7 +462,22 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                           title: "Headers",
                           id: "headersAccordion",
                           render: function () {
-                            return <ElementCreationNew id="headers" label="Headers" data={source?.headers} />;
+                            return (
+                              <MultiDimensionalArrayInput
+                                id="headers"
+                                label="Headers"
+                                data={
+                                  source && source.headers
+                                    ? [
+                                        {
+                                          key: "headers",
+                                          value: source.headers,
+                                        },
+                                      ]
+                                    : null
+                                }
+                              />
+                            );
                           },
                         },
                         {

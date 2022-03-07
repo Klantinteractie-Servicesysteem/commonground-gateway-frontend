@@ -9,13 +9,13 @@ const IndexPage = () => {
   React.useEffect(() => {
     isLoggedIn() &&
       setHeader({
-        subText: `Welcome ${getUser().username}, to the gateway admin dashboard`,
+        subText: `Welcome ${getUser().username}, to the Conductor admin dashboard`,
         title: "Dashboard",
       });
 
     !isLoggedIn() &&
       setHeader({
-        subText: `Welcome to the gateway admin dashboard`,
+        subText: `Welcome to the Conductor admin dashboard`,
         title: "Dashboard",
       });
   }, [isLoggedIn()]);
