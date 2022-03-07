@@ -90,6 +90,10 @@ module.exports = {
             pathname: "/sessions/[sessionId]",
             crumbLabel: "Session",
           },
+          {
+            pathname: "/calls/[callId]",
+            crumbLabel: "Call",
+          },
         ],
       },
     },

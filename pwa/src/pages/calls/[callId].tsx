@@ -14,30 +14,26 @@ const IndexPage = (props) => {
   const [__, setAlert] = React.useContext(AlertContext);
 
   const API: APIService = React.useContext(APIContext);
-  const sessionId: string = props.params.sessionId;
+  const callId: string = props.params.callId;
 
   React.useEffect(() => {
-    setHeader({ title: "Session", subText: "" });
+    setHeader({ title: "Call", subText: "" });
   }, [setHeader]);
 
   React.useEffect(() => {
-    API.Log.getAllFromSession(sessionId)
+    API.Log.getAllFromCall(callId)
       .then((res) => {
         setLogs(res.data);
       })
       .catch((err) => {
         navigate("/");
-        setAlert({ message: "Error getting session logs", type: "danger" });
-        throw new Error(`GET Session Logs error: ${err}`);
+        setAlert({ message: "Error getting call logs", type: "danger" });
+        throw new Error(`GET Call Logs error: ${err}`);
       });
   }, [API]);
 
   return logs ? (
-    <Card
-      title={`All logs in session: ${sessionId}`}
-      cardBody={() => <LogsTable {...{ logs }} />}
-      cardHeader={() => <></>}
-    />
+    <Card title={`All logs in call: ${callId}`} cardBody={() => <LogsTable {...{ logs }} />} cardHeader={() => <></>} />
   ) : (
     <Spinner />
   );

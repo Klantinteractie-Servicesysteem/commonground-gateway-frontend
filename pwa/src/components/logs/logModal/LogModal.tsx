@@ -43,7 +43,17 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     </tr>
                     <tr>
                       <th>Call ID</th>
-                      <td>{log?.callId}</td>
+                      <td>
+                        <Link
+                          to={`/calls/${log?.callId}`}
+                          aria-label="Close"
+                          type="button"
+                          data-bs-dismiss="modal"
+                          onClick={() => navigate(`/calls/${log?.callId}`)}
+                        >
+                          {log?.callId}
+                        </Link>
+                      </td>
                     </tr>
                     <tr>
                       <th>Session ID</th>
