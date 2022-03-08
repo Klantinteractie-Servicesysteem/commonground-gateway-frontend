@@ -7,11 +7,14 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import DeleteModal from "../deleteModal/Deletemodal";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function EntitiesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [entities, setEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
@@ -55,17 +58,19 @@ export default function EntitiesTable() {
   };
 
   const handleDeleteObjectType = (id): void => {
-    if (confirm(`Do you want to delete this object type?`)) {
-      API.Entity.delete(id)
-        .then(() => {
-          setAlert({ message: `Deleted object type`, type: "success" });
-          handleSetEntities();
-        })
-        .catch((err) => {
-          setAlert({ message: err, type: "danger" });
-          throw new Error("DELETE Sources error: " + err);
-        });
-    }
+    setLoadingOverlay(true);
+    API.Entity.delete(id)
+      .then(() => {
+        setAlert({ message: `Deleted object type`, type: "success" });
+        handleSetEntities();
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("DELETE Sources error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -103,51 +108,56 @@ export default function EntitiesTable() {
               {showSpinner === true ? (
                 <Spinner />
               ) : entities ? (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Endpoint",
-                      field: "endpoint",
-                    },
-                    {
-                      headerName: "Path",
-                      field: "route",
-                    },
-                    {
-                      headerName: "Source",
-                      field: "gateway",
-                      valueFormatter: (item) => {
-                        return item ? item.name : "";
+                <>
+                  {loadingOverlay && <LoadingOverlay />}
+                  <Table
+                    columns={[
+                      {
+                        headerName: "Name",
+                        field: "name",
                       },
-                    },
-                    {
-                      field: "id",
-                      headerName: "",
-                      renderCell: (item) => {
-                        return (
-                          <div className="utrecht-link d-flex justify-content-end">
-                            <button
-                              onClick={() => handleDeleteObjectType(item.id)}
-                              className="utrecht-button btn-sm btn-danger mr-2"
-                            >
-                              <FontAwesomeIcon icon={faTrash} /> Delete
-                            </button>
-                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
-                              <button className="utrecht-button btn-sm btn-success">
-                                <FontAwesomeIcon icon={faEdit} /> Edit
+                      {
+                        headerName: "Endpoint",
+                        field: "endpoint",
+                      },
+                      {
+                        headerName: "Path",
+                        field: "route",
+                      },
+                      {
+                        headerName: "Source",
+                        field: "gateway",
+                        valueFormatter: (item) => {
+                          return item ? item.name : "";
+                        },
+                      },
+                      {
+                        field: "id",
+                        headerName: "",
+                        renderCell: (item) => {
+                          return (
+                            <div className="utrecht-link d-flex justify-content-end">
+                              <button
+                                className="utrecht-button btn-sm btn-danger mr-2"
+                                data-bs-toggle="modal"
+                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                              >
+                                <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                            </Link>
-                          </div>
-                        );
+                              <DeleteModal handleDelete={handleDeleteObjectType} handleId={item.id} />
+                              <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
+                                <button className="utrecht-button btn-sm btn-success">
+                                  <FontAwesomeIcon icon={faEdit} /> Edit
+                                </button>
+                              </Link>
+                            </div>
+                          );
+                        },
                       },
-                    },
-                  ]}
-                  rows={entities}
-                />
+                    ]}
+                    rows={entities}
+                  />
+                </>
               ) : (
                 <Table
                   columns={[
