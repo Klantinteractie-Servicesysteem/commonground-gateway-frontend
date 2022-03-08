@@ -566,7 +566,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           title: "Validation",
                           id: "ValidationAccordion",
                           render: function () {
-                            console.log(attribute?.fileTypes)
                             return (
                               // Here the Validation
                               <>

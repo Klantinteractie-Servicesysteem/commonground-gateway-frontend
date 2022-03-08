@@ -63,7 +63,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
       {values.length > 0 &&
       <ul style={{ paddingLeft: 0 }}>
         {values.map((value, idx) => {
-          console.log({ values })
           return (
             <li key={idx} style={{ listStyleType: "none" }}>
               <div className="row">
