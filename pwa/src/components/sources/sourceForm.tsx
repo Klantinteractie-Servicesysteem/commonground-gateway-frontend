@@ -4,7 +4,7 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject
+  retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
   GenericInputComponent,
@@ -12,7 +12,7 @@ import {
   Card,
   Spinner,
   SelectInputComponent,
-  Modal
+  Modal,
 } from "@conductionnl/nl-design-system/lib";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -24,32 +24,32 @@ import { HeaderContext } from "../../context/headerContext";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
-  id: string;
+  sourceId: string;
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
+export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = id ? "Edit Source" : "Create Source";
+  const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
     handleSetDocumentation();
-    id && handleSetSource();
+    sourceId && handleSetSource();
     setHeader({
       title: "Source",
-      subText: "Manage your source here"
+      subText: "Manage your source here",
     });
-  }, [setHeader, id, API]);
+  }, [setHeader, sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
 
-    API.Source.getOne(id)
+    API.Source.getOne(sourceId)
       .then((res) => {
         setSource(res.data);
       })
@@ -98,7 +98,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       authorizationHeader: event.target.authorizationHeader.value,
       headers,
       oas,
-      paths
+      paths,
     };
 
     body = removeEmptyObjectValues(body);
@@ -109,7 +109,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) {
+    if (!sourceId) {
       // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
@@ -125,9 +125,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) {
+    if (sourceId) {
       // set id means we're updating a existing entry
-      API.Source.update(body, id)
+      API.Source.update(body, sourceId)
         .then((res) => {
           setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
@@ -146,7 +146,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     <form id="dataForm" onSubmit={saveSource}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <>
               <button
@@ -155,14 +155,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                 data-bs-target="#sourceHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
-                <Modal
-                  title="Source Documentation"
-                  id="sourceHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
+              <Modal
+                title="Source Documentation"
+                id="sourceHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+              />
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />
@@ -176,7 +176,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
             </>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -196,12 +196,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             nameOverride={"Name"}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            nameOverride={"Name"}
-                          />
+                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} nameOverride={"Name"} />
                         )}
                       </div>
                       <div className="col-6">
@@ -212,15 +207,9 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                           data={source?.location}
                           nameOverride={"Location (url)"}
                           required
-                          infoTooltip=
-                            {
-                              {
-                                content:
-                                  <p>
-                                    Enter the source location here
-                                  </p>
-                              }
-                            }
+                          infoTooltip={{
+                            content: <p>Enter the source location here</p>,
+                          }}
                         />
                       </div>
                     </div>
@@ -233,7 +222,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                               { name: "xml", value: "xml" },
                               { name: "soaps", value: "soaps" },
                               { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" }
+                              { name: "sftp", value: "sftp" },
                             ]}
                             name={"type"}
                             id={"typeInput"}
@@ -248,7 +237,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                               { name: "xml", value: "xml" },
                               { name: "soaps", value: "soaps" },
                               { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" }
+                              { name: "sftp", value: "sftp" },
                             ]}
                             name={"type"}
                             id={"typeInput"}
@@ -263,7 +252,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             options={[
                               { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                              { name: "username-password", value: "username-password" },
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -276,7 +265,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             options={[
                               { name: "apikey", value: "apikey" },
                               { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" }
+                              { name: "username-password", value: "username-password" },
                             ]}
                             name={"auth"}
                             id={"authInput"}
@@ -335,12 +324,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.jwt}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Jwt"}
-                            name={"jwt"}
-                            id={"jwtInput"}
-                          />
+                          <GenericInputComponent type={"text"} nameOverride={"Jwt"} name={"jwt"} id={"jwtInput"} />
                         )}
                       </div>
                       <div className="col-6">
@@ -467,11 +451,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                             data={source.password}
                           />
                         ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"password"}
-                            id={"passwordInput"}
-                          />
+                          <GenericInputComponent type={"text"} name={"password"} id={"passwordInput"} />
                         )}
                       </div>
                     </div>
@@ -481,50 +461,39 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                         {
                           title: "Headers",
                           id: "headersAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id="headers"
                                 label="Headers"
-                                data=
-                                  {source && source.headers
+                                data={
+                                  source && source.headers
                                     ? [
-                                      {
-                                        key: "headers",
-                                        value: source.headers
-                                      }
-                                    ] : null
-                                  }
+                                        {
+                                          key: "headers",
+                                          value: source.headers,
+                                        },
+                                      ]
+                                    : null
+                                }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function() {
-                            return (
-                              <ElementCreationNew
-                                id="oas"
-                                label="OAS"
-                                data={source?.oas}
-                              />
-                            );
-                          }
+                          render: function () {
+                            return <ElementCreationNew id="oas" label="OAS" data={source?.oas} />;
+                          },
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function() {
-                            return (
-                              <ElementCreationNew
-                                id="paths"
-                                label="Paths"
-                                data={source?.paths}
-                              />
-                            );
-                          }
-                        }
+                          render: function () {
+                            return <ElementCreationNew id="paths" label="Paths" data={source?.paths} />;
+                          },
+                        },
                       ]}
                     />
                   </>

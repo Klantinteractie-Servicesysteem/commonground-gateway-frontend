@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import EndpointsTable from "../../components/endpoints/endpointsTable";
 
 const IndexPage = () => {
@@ -7,12 +7,12 @@ const IndexPage = () => {
       <div className="row">
         <div className="col-12">
           <div className="page-top-item">
-            <EndpointsTable/>
+            <EndpointsTable />
           </div>
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
 export default IndexPage;

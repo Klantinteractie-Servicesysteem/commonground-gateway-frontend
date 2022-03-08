@@ -18,7 +18,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [translation, setTranslation] = React.useState<any>(null);
-  const title: string = tableName ? "Edit Translation" : "Create Translation";
+  const title: string = id ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [tableName_, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
@@ -126,14 +126,14 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                   data-bs-target="#translationHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <Modal
-                    title="Translation Documentation"
-                    id="translationHelpModal"
-                    body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                  />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>
+                <Modal
+                  title="Translation Documentation"
+                  id="translationHelpModal"
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                />
                 <Link className="utrecht-link" to={`/translation-tables/${tableName}/translations`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />

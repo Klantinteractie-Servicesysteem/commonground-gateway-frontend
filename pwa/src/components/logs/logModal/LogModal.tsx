@@ -3,8 +3,8 @@ import "./logModal.css";
 import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
-import { StatusCode } from "../logTable/logTable";
 import msToSeconds from "../../../services/msToSeconds";
+import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
 
 interface LogModalProps {
   log: any;
@@ -18,6 +18,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         title={"Call log"}
         id={`logs${log.id}`}
         body={function () {
+          const statusClass = log.responseStatusCode ? log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger" : "danger";
           return (
             <>
               <Tabs
@@ -33,7 +34,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <tr>
                       <th>Status</th>
                       <td>
-                        <StatusCode code={log?.responseStatusCode} message={log?.responseStatus} />
+                        <LabelWithBackground label={log?.responseStatusCode} type={statusClass} />
                       </td>
                     </tr>
                     <tr>
@@ -42,11 +43,31 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     </tr>
                     <tr>
                       <th>Call ID</th>
-                      <td>{log?.callId}</td>
+                      <td>
+                        <Link
+                          to={`/calls/${log?.callId}`}
+                          aria-label="Close"
+                          type="button"
+                          data-bs-dismiss="modal"
+                          onClick={() => navigate(`/calls/${log?.callId}`)}
+                        >
+                          {log?.callId}
+                        </Link>
+                      </td>
                     </tr>
                     <tr>
                       <th>Session ID</th>
-                      <td>{log?.session}</td>
+                      <td>
+                        <Link
+                          to={`/sessions/${log?.session}`}
+                          aria-label="Close"
+                          type="button"
+                          data-bs-dismiss="modal"
+                          onClick={() => navigate(`/sessions/${log?.session}`)}
+                        >
+                          {log?.session}
+                        </Link>
+                      </td>
                     </tr>
                     <tr>
                       <th>Response time</th>
