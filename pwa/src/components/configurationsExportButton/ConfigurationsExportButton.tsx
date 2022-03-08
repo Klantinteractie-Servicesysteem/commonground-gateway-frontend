@@ -57,14 +57,14 @@ export default function ConfigurationsExportButton() {
         {loading ? "Preparing your download..." : "Export Configuration"}
       </button>
       <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#configurationsHelpModal">
-        <Modal
-          title="Configuration Documentation"
-          id="configurationsHelpModal"
-          body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-        />
         <i className="fas fa-question mr-1" />
         <span className="mr-2">Help</span>
       </button>
+      <Modal
+        title="Configuration Documentation"
+        id="configurationsHelpModal"
+        body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+      />
     </div>
   );
 }

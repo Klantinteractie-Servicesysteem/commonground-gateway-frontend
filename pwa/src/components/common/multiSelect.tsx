@@ -98,12 +98,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
         <div className="col-10">
           <div className="input-group">
             <select
-              name={id}
               defaultValue={value ?? data}
               className="utrecht-select utrecht-select--html-select"
               onChange={(e) => handleChange(e, e.target.selectedIndex, e.target.value)}
             >
-              <option/>
+              <option value="">
+                Select an option
+              </option>
               {options.map((option, idx) => (
                 <option key={idx} value={option.value} id={option.id} >
                   {_.upperFirst(option.name)}

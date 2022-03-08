@@ -9,18 +9,17 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { Link } from 'gatsby';
 
 interface ObjectEntityFormNewProps {
-  objectEntityId: string,
+  objectId: string,
   entityId: string,
 }
 
-export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ objectEntityId, entityId }) => {
+export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ objectId, entityId }) => {
   const API: APIService = React.useContext(APIContext);
   const [entity, setEntity] = React.useState(null);
   const [object, setObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
-  const title = 'Edit';
 
   React.useEffect(() => {
     getEntity();
@@ -52,7 +51,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   const getObject = () => {
     setShowSpinner(true);
-    API.ObjectEntity.getOne(objectEntityId)
+    API.ObjectEntity.getOne(objectId)
       .then((res) => {
         setObject(res.data);
       })
@@ -110,7 +109,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     let body = event.data;
     body.submit = undefined;
 
-    if (!objectEntityId) {
+    if (!objectId) {
       API.ApiCalls.createObject(entity?.endpoint, body)
         .then((res) => {
           setObject(res.data)
@@ -122,8 +121,8 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
           getObject();
         });
     }
-    if (objectEntityId) {
-      API.ApiCalls.updateObject(entity?.endpoint, objectEntityId, body)
+    if (objectId) {
+      API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
         .then((res) => {
           setObject(res.data)
         })
@@ -139,7 +138,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   return (
     <Card
-      title={title}
+      title="Edit"
       cardHeader={function () {
         return (
           <div>
@@ -151,7 +150,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <Link className="utrecht-link" to={`/entities/${entityId}`}>
+            <Link className="utrecht-link" to={`/entities/${entityId}`} state={{activeTab: "objects"}}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                 <i className="fas fa-long-arrow-alt-left mr-2" />Back
               </button>

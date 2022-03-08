@@ -72,14 +72,14 @@ export default function HandlersTable({ endpointId }) {
               data-bs-target="#handlerHelpModal"
               onClick={(e) => e.preventDefault()}
             >
-              <Modal
-                title="Handler Documentation"
-                id="handlerHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Handler Documentation"
+              id="handlerHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetHandlers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

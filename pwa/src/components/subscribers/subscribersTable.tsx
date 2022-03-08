@@ -1,97 +1,64 @@
 import * as React from "react";
-import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
+import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
-export default function ApplicationsTable() {
-  const [documentation, setDocumentation] = React.useState<string>(null);
-  const [applications, setApplications] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
+export default function SubscribersTable({ entityId }) {
+  const [subscribers, setSubscribers] = React.useState(null);
+  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setHeader] = React.useContext(HeaderContext);
+  const title: string = entityId === "new" ? "Create Subscriber" : "Edit Subscriber";
 
   React.useEffect(() => {
-    setHeader({ title: "Applications", subText: "An overview of your application objects" });
-  }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    handleSetApplications();
+    handleSetSubscribers();
   }, [API]);
 
-  const handleSetApplications = (): void => {
+  const handleSetSubscribers = () => {
     setShowSpinner(true);
-    API.Application.getAll()
+    API.Subscriber.getAllFromEntity(entityId)
       .then((res) => {
-        setApplications(res.data);
+        setSubscribers(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET Applications error: " + err);
+        throw new Error("GET Subscribers error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("applications")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteApplication = (id): void => {
-    if (confirm(`Do you want to delete this application?`)) {
-      API.Application.delete(id)
+  const handleDeleteSubscriber = (id): void => {
+    if (confirm(`Do you want to delete this subscriber?`)) {
+      API.Subscriber.delete(id)
         .then(() => {
-          setAlert({ message: `Deleted application`, type: "success" });
-          handleSetApplications();
+          setAlert({ message: `Deleted subscriber`, type: "success" });
+          handleSetSubscribers();
         })
         .catch((err) => {
           setAlert({ message: err, type: "danger" });
-          throw new Error("DELETE application error: " + err);
+          throw new Error("DELETE Subscriber error: " + err);
         });
     }
   };
 
   return (
     <Card
-      title={"Applications"}
+      title={title}
       cardHeader={function () {
         return (
           <>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#applicationHelpModal"
-            >
-              <i className="fas fa-question mr-1" />
-              <span className="mr-2">Help</span>
-            </button>
-            <Modal
-              title="Application Documentation"
-              id="applicationHelpModal"
-              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-            />
-            <a className="utrecht-link" onClick={handleSetApplications}>
+            <a className="utrecht-link" onClick={handleSetSubscribers}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/applications/new">
+            <Link to={`/entities/${entityId}/subscribers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -106,7 +73,7 @@ export default function ApplicationsTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : applications ? (
+              ) : subscribers ? (
                 <Table
                   columns={[
                     {
@@ -114,22 +81,31 @@ export default function ApplicationsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Method",
+                      field: "method",
+                      renderCell: (item: { method: string }) =>
+                        <LabelWithBackground label={item.method} type="primary" />
+                    },
+                    {
+                      headerName: "Endpoint",
+                      field: "endpoint",
+                      valueFormatter: (item) => {
+                        return item ? item.name : "";
+                      },
                     },
                     {
                       field: "id",
-                      headerName: " ",
-                      renderCell: (item: { id: string }) => {
+                      headerName: "",
+                      renderCell: (item) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
                             <button
-                              onClick={() => handleDeleteApplication(item.id)}
+                              onClick={() => handleDeleteSubscriber(item.id)}
                               className="utrecht-button btn-sm btn-danger mr-2"
                             >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link to={`/applications/${item.id}`}>
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${entityId}/subscribers/${item.id}`}>
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
@@ -139,7 +115,7 @@ export default function ApplicationsTable() {
                       },
                     },
                   ]}
-                  rows={applications}
+                  rows={subscribers}
                 />
               ) : (
                 <Table
@@ -149,11 +125,15 @@ export default function ApplicationsTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Description",
-                      field: "description",
+                      headerName: "Method",
+                      field: "method",
+                    },
+                    {
+                      headerName: "Endpoint",
+                      field: "endpoint",
                     },
                   ]}
-                  rows={[{ name: "No results found", description: " " }]}
+                  rows={[{ name: "No results found" }]}
                 />
               )}
             </div>
