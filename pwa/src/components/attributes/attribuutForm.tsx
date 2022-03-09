@@ -42,7 +42,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  let test = "test";
 
   React.useEffect(() => {
     setHeader({
