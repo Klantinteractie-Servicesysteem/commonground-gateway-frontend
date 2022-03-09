@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./deleteModal.css";
+import "./deletemodal.css";
 import { Modal } from "@conductionnl/nl-design-system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -33,7 +33,6 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ handleDelete, handleId, optio
                 onClick={() => handleDelete(handleId)}
                 data-bs-dismiss="modal"
               >
-                
                 <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
               <button className="utrecht-button cancel-btn-right btn-sm mr-2" data-bs-dismiss="modal">
