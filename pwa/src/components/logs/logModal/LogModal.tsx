@@ -2,7 +2,7 @@ import * as React from "react";
 import "./logModal.css";
 import { Accordion, Modal, Tabs } from "@conductionnl/nl-design-system";
 import { Link, navigate } from "gatsby";
-import CodeBlock from "../../common/codeBlock/codeBlock";
+import { CodeBlock, getCodeLanguage } from "../../common/codeBlock/codeBlock";
 import msToSeconds from "../../../services/msToSeconds";
 import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
 import LogTable from "../logTable/logTable";
@@ -38,6 +38,14 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
       });
   };
 
+  const [requestCodeLanguage, setRequestCodeLanguage] = React.useState(null);
+  const [responseCodeLanguage, setResponseCodeLanguage] = React.useState(null);
+
+  React.useEffect(() => {
+    log.requestHeaders?.accept ? setRequestCodeLanguage(getCodeLanguage(log.requestHeaders?.accept[0])) : setRequestCodeLanguage('json');
+    log.requestHeaders['content-type'] !== undefined ? setResponseCodeLanguage(getCodeLanguage(log.requestHeaders['content-type'][0])) : setRequestCodeLanguage('json');
+  }, [log]);
+  
   return (
     <div className="LogModal">
       <Modal
@@ -63,24 +71,24 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <tr>
                       <th>Status</th>
                       <td>
-                        <LabelWithBackground label={log?.responseStatusCode} type={statusClass} />
+                        <LabelWithBackground label={log.responseStatusCode} type={statusClass} />
                       </td>
                     </tr>
                     <tr>
                       <th>Type</th>
-                      <td>{log?.type === "in" ? "Incoming" : "Outcoming"}</td>
+                      <td>{log.type === "in" ? "Incoming" : "Outcoming"}</td>
                     </tr>
                     <tr>
                       <th>Call ID</th>
                       <td>
                         <Link
-                          to={`/calls/${log?.callId}`}
+                          to={`/calls/${log.callId}`}
                           aria-label="Close"
                           type="button"
                           data-bs-dismiss="modal"
-                          onClick={() => navigate(`/calls/${log?.callId}`)}
+                          onClick={() => navigate(`/calls/${log.callId}`)}
                         >
-                          {log?.callId}
+                          {log.callId}
                         </Link>
                       </td>
                     </tr>
@@ -88,13 +96,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       <th>Session ID</th>
                       <td>
                         <Link
-                          to={`/sessions/${log?.session}`}
+                          to={`/sessions/${log.session}`}
                           aria-label="Close"
                           type="button"
                           data-bs-dismiss="modal"
-                          onClick={() => navigate(`/sessions/${log?.session}`)}
+                          onClick={() => navigate(`/sessions/${log.session}`)}
                         >
-                          {log?.session}
+                          {log.session}
                         </Link>
                       </td>
                     </tr>
@@ -104,21 +112,21 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     </tr>
                     <tr>
                       <th>Route</th>
-                      <td>{log?.routeName}</td>
+                      <td>{log.routeName}</td>
                     </tr>
                     <tr>
                       <th>Endpoint</th>
                       <td>
                         <Link
-                          to={"/endpoints/" + log?.id}
+                          to={"/endpoints/" + log.id}
                           type="button"
                           data-bs-dismiss="modal"
                           aria-label="Close"
                           onClick={() => {
-                            navigate("/endpoints/" + log?.id);
+                            navigate("/endpoints/" + log.id);
                           }}
                         >
-                          {log?.endpoint?.name}
+                          {log.endpoint?.name}
                         </Link>
                       </td>
                     </tr>
@@ -175,15 +183,15 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Method</th>
-                      <td>{log?.requestMethod}</td>
+                      <td>{log.requestMethod}</td>
                     </tr>
                     <tr>
                       <th>Path info</th>
-                      <td>{log?.requestPathInfo}</td>
+                      <td>{log.requestPathInfo}</td>
                     </tr>
                     <tr>
                       <th>Languages</th>
-                      <td>{log?.requestLanguages}</td>
+                      <td>{log.requestLanguages}</td>
                     </tr>
                   </table>
                   <Accordion
@@ -248,12 +256,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Content",
                         id: "logRequestContent",
-                        backgroundColor: "black",
-                        render: function() {
+                        backgroundColor: "#272822",
+                        render: function () {
                           return (
                             <>
                               {log.requestContent ? (
-                                <CodeBlock code={log.requestContent} language="json" />
+                                <CodeBlock code={JSON.stringify(JSON.parse(log.requestContent), null, 4)} language={requestCodeLanguage} />
                               ) : (
                                 <p className="utrecht-paragraph text-white">No content found</p>
                               )}
@@ -300,12 +308,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Content",
                         id: "logResponseContent",
-                        backgroundColor: "black",
-                        render: function() {
+                        backgroundColor: "#272822",
+                        render: function () {
                           return (
                             <>
                               {log.responseContent ? (
-                                <CodeBlock code={log.responseContent} language="json" />
+                                <CodeBlock code={JSON.stringify(JSON.parse(log.responseContent), null, 4)} language={responseCodeLanguage} />
                               ) : (
                                 <p className="utrecht-paragraph text-white">No content found</p>
                               )}
