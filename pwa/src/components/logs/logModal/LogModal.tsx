@@ -218,7 +218,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         id: "logResponseHeaders",
                         render: function () {
                           const logs = [];
-                          for (const [key, value] of Object.entries(log.requestHeaders)) {
+                          for (const [key, value] of Object.entries(log.responseHeaders)) {
                             logs.push({ ...{ key, value } });
                           }
 
