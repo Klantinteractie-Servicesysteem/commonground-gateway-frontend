@@ -40,10 +40,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
 
   const [requestCodeLanguage, setRequestCodeLanguage] = React.useState(null);
   const [responseCodeLanguage, setResponseCodeLanguage] = React.useState(null);
+
   React.useEffect(() => {
     log.requestHeaders?.accept ? setRequestCodeLanguage(getCodeLanguage(log.requestHeaders?.accept[0])) : setRequestCodeLanguage('json');
     log.requestHeaders['content-type'] !== undefined ? setResponseCodeLanguage(getCodeLanguage(log.requestHeaders['content-type'][0])) : setRequestCodeLanguage('json');
   }, [log]);
+  
   return (
     <div className="LogModal">
       <Modal
@@ -284,7 +286,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           return (
                             <>
                               {log.responseContent ? (
-                                <CodeBlock code={JSON.stringify(JSON.parse(log.responseContent), null, 4)} language={requestCodeLanguage} />
+                                <CodeBlock code={JSON.stringify(JSON.parse(log.responseContent), null, 4)} language={responseCodeLanguage} />
                               ) : (
                                 <p className="utrecht-paragraph text-white">No content found</p>
                               )}
