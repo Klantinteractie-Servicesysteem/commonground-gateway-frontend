@@ -10,13 +10,13 @@ const IndexPage = () => {
     isLoggedIn() &&
       setHeader({
         subText: `Welcome ${getUser().username}, to the Conductor admin dashboard`,
-        title: "Dashboard",
+        title: "Conductor",
       });
 
     !isLoggedIn() &&
       setHeader({
         subText: `Welcome to the Conductor admin dashboard`,
-        title: "Dashboard",
+        title: "Conductor",
       });
   }, [isLoggedIn()]);
 

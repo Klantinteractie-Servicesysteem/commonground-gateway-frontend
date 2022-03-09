@@ -31,7 +31,7 @@ export default function Layout({ children, pageContext }) {
     }
 
     const jwt = sessionStorage.getItem("jwt");
-    !validateSession(jwt) && logout()
+    !validateSession(jwt) && logout();
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
@@ -41,14 +41,14 @@ export default function Layout({ children, pageContext }) {
         <HeaderProvider value={[header, setHeader]}>
           <Alert />
           <Helmet>
-            <title>Gateway Admin Dashboard</title>
+            <title>Conductor Admin Dashboard</title>
           </Helmet>
           <div className="utrecht-document conduction-theme">
             <div className="utrecht-page">
               <MainMenu />
               <div className="utrecht-page__content">
                 <header className="utrecht-page-header">
-                  <Header { ...{ pageContext } } />
+                  <Header {...{ pageContext }} />
                 </header>
                 <div className="container py-4">{children}</div>
               </div>
