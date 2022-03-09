@@ -9,9 +9,10 @@ import msToSeconds from "../../../services/msToSeconds";
 
 interface LogsTableProps {
   logs: any;
+  modal: boolean
 }
 
-const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
+const LogsTable: React.FC<LogsTableProps> = ({ logs, modal = true }) => {
   return (
     <div className="logsTable">
       <table>
@@ -39,18 +40,26 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                 <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                 <td>{log.application?.name}</td>
                 <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
-                <td className="logsTable-viewLogTd">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
-                  >
-                    <FontAwesomeIcon icon={faEye} /> View log
-                  </button>
-                </td>
+                {
+                  modal && (
+                    <td className="logsTable-viewLogTd">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
+                      >
+                        <FontAwesomeIcon icon={faEye} /> View log
+                      </button>
+                    </td>
+                  )
+                }
               </tr>
-              <LogModal {...{ log }} />
+              {
+                modal && (
+                  <LogModal {...{ log }} />
+                )
+              }
             </>
           );
         })}
