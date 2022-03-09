@@ -33,6 +33,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ handleDelete, handleId, optio
                 onClick={() => handleDelete(handleId)}
                 data-bs-dismiss="modal"
               >
+                
                 <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
               <button className="utrecht-button cancel-btn-right btn-sm mr-2" data-bs-dismiss="modal">
