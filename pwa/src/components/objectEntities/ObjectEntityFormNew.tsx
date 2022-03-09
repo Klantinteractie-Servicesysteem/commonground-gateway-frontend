@@ -10,7 +10,7 @@ import { AlertContext } from "../../context/alertContext";
 import { Link } from 'gatsby';
 
 interface ObjectEntityFormNewProps {
-  objectId: string,
+  objectId?: string,
   entityId: string,
 }
 
@@ -26,19 +26,19 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   React.useEffect(() => {
     getEntity();
-    getObject();
+    objectId && getObject();
   }, [API]);
   React.useEffect(() => {
-    entity && object && getFormIOSchema();
+    entity && getFormIOSchema();
   }, [entity, object]);
 
   React.useEffect(() => {
-    if ((!entity || !object || !formIO) && !showSpinner) {
+    if ((!entity || !formIO) && !showSpinner) {
        setShowSpinner(true);
        return;
     }  
-    (entity && object && formIO) && showSpinner && setShowSpinner(false)
-  }, [entity, object, formIO]);
+    (entity && formIO) && showSpinner && setShowSpinner(false)
+  }, [entity, formIO]);
 
   React.useEffect(() => {
     if (!formIOSchema) return;
@@ -49,6 +49,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         <Form
           src={formIOSchema}
           onSubmit={saveObject}
+          options={{noAlerts: false}}
         />,
       );
     });
@@ -57,13 +58,17 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   const getObject = () => {
     setObject(null);
-    API.ObjectEntity.getOne(objectId)
-      .then((res) => {
-        setObject(res.data);
-      })
-      .catch((err) => {
-        throw new Error("GET objectEntity error: " + err);
-      })
+    let id: string;
+    id = objectId ? id = object.id : id = null
+    if (id) {
+      API.ObjectEntity.getOne(id)
+        .then((res) => {
+          setObject(res.data);
+        })
+        .catch((err) => {
+          throw new Error("GET objectEntity error: " + err);
+        })
+      }
   };
 
   const getEntity = () => {
@@ -108,6 +113,9 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
     if (!objectId) {
       API.ApiCalls.createObject(entity?.endpoint, body)
+        .then((res) => {
+          setObject(res);
+        })
         .catch((err) => {
           throw new Error("Create object error: " + err);
         })
@@ -118,6 +126,9 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     }
     if (objectId) {
       API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
+        .then((res) => {
+          setObject(res);
+        })
         .catch((err) => {
           throw new Error("Update object error: " + err);
         })

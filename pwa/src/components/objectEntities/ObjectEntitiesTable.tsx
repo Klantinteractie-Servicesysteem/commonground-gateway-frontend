@@ -51,6 +51,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   };
 
   const handleSetObjectEntities = () => {
+    setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
         res?.data?.length > 0 && setObjectEntities(res.data);
@@ -59,6 +60,9 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setAlert({ message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
+      .finally(() => {
+        setShowSpinner(false);
+      });
   };
 
   const syncObject = (objectEntityId: string) => {
