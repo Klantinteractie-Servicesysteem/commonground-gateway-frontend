@@ -3,7 +3,7 @@ import Application from "./resources/application";
 import Attribute from "./resources/attribute";
 import Source from "./resources/source";
 import Entity from "./resources/entity";
-import ObjectEntity from "./resources/objectEntity";
+import ObjectEntity from "./resources/ObjectEntity";
 import Log from "./resources/log";
 import Login from "./services/login";
 import Documentation from "./services/documentation";
