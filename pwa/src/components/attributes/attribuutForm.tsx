@@ -301,7 +301,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           options={[
                             { name: "Email", value: "email" },
                             { name: "Phone", value: "phone" },
-                            { name: "Country code", value: "country code" },
+                            { name: "Country code", value: "countryCode" },
                             { name: "BSN", value: "bsn" },
                             { name: "Url", value: "url" },
                             { name: "UUID", value: "uuid" },
