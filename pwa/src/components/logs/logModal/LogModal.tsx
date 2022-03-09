@@ -200,7 +200,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.requestContent ? (
                                 <CodeBlock code={log.requestContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
@@ -251,7 +251,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.responseContent ? (
                                 <CodeBlock code={log.responseContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
