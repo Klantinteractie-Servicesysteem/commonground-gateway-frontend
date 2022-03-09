@@ -7,8 +7,8 @@ export default class Log {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/logs");
+  public getAllIncoming = (): Promise<AxiosResponse> => {
+    return this._instance.get("/logs?type=in");
   };
 
   public getAllFromSession = (sessionId: string): Promise<AxiosResponse> => {
