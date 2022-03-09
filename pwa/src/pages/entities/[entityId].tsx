@@ -5,11 +5,52 @@ import EntityForm from "../../components/entities/entityForm";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
 import LogTable from "../../components/logs/logTable/logTable";
 import SubscribersTable from "../../components/subscribers/subscribersTable";
-
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import { AlertContext } from "../../context/alertContext";
+import { Card, Modal } from "@conductionnl/nl-design-system";
+import Spinner from "../../components/common/spinner";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
   const activeTab: string = props.location.state.activeTab;
+  const API: APIService = React.useContext(APIContext);
+  const [logs, setLogs] = React.useState([]);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const [documentation, setDocumentation] = React.useState<string>(null);
+
+
+  React.useEffect(() => {
+    handleSetLogs();
+    handleSetDocumentation();
+  }, [API]);
+
+  const handleSetLogs = (): void => {
+    setShowSpinner(true);
+
+    API.Log.getAllFromEntity(entityId)
+      .then((res) => {
+        setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET Entity error: ${err}`);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const handleSetDocumentation = (): void => {
+    API.Documentation.get("")
+      .then((res) => {
+        setDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET Documentation error: " + err);
+      });
+  };
 
   return (
     <main>
@@ -19,11 +60,30 @@ const IndexPage = (props) => {
             {entityId && (
               <Tabs
                 items={[
-                  { name: "Overview", id: "overview", active: !activeTab },
-                  { name: "Attributes", id: "attributes", active: activeTab === "attributes" },
-                  { name: "Objects", id: "data", active: activeTab === "objects" },
-                  { name: "Subscribers", id: "subscribers", active: activeTab === "subscribers" },
-                  { name: "Logs", id: "logs" },
+                  {
+                    name: "Overview",
+                    id: "overview",
+                    active: !activeTab
+                  },
+                  {
+                    name: "Attributes",
+                    id: "attributes",
+                    active: activeTab === "attributes"
+                  },
+                  {
+                    name: "Objects",
+                    id: "data",
+                    active: activeTab === "objects"
+                  },
+                  {
+                    name: "Subscribers",
+                    id: "subscribers",
+                    active: activeTab === "subscribers"
+                  },
+                  {
+                    name: "Logs",
+                    id: "logs"
+                  }
                 ]}
               />
             )}
@@ -65,9 +125,37 @@ const IndexPage = (props) => {
               <br />
               <SubscribersTable {...{ entityId }} />
             </div>
-            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+            <div
+              className="tab-pane"
+              id="logs"
+              role="tabpanel"
+              aria-labelledby="logs-tab"
+            >
               <br />
-              <LogTable {...{ entityId }} />
+              <Card
+                title="Object type Logs"
+                cardHeader={() =>
+                  <>
+                    <button className="utrecht-link button-no-style" data-bs-toggle="modal"
+                            data-bs-target="#objectTypeLogHelpModal">
+                      <Modal
+                        title="Object type Documentation"
+                        id="objectTypeLogHelpModal"
+                        body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                      />
+                      <i className="fas fa-question mr-1" />
+                      <span className="mr-2">Help</span>
+                    </button>
+                    <a className="utrecht-link" onClick={handleSetLogs}>
+                      <i className="fas fa-sync-alt mr-1" />
+                      <span className="mr-2">Refresh</span>
+                    </a>
+                  </>
+                }
+                cardBody={() =>
+                  showSpinner === true ? (<Spinner/>) :
+                    <LogTable logs={logs} />}
+              />
             </div>
           </div>
         </div>
