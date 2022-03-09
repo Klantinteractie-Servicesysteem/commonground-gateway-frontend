@@ -9,13 +9,18 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import { navigate } from "gatsby-link";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArray } from "../utility/inputHandler";
+import {
+  checkValues,
+  removeEmptyObjectValues,
+  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+} from "../utility/inputHandler";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
+import MultiSelect from "../common/multiSelect";
 
 interface IApplication {
   name: string;
@@ -24,6 +29,7 @@ interface IApplication {
   secret: string;
   resource: string;
   domains: Array<string>;
+  endpoints: any;
 }
 
 interface ApplicationFormProps {
@@ -32,6 +38,7 @@ interface ApplicationFormProps {
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [application, setApplication] = React.useState<IApplication>(null);
+  const [endpoints, setEndpoints] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -52,6 +59,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   });
 
   React.useEffect(() => {
+    handleSetEndpoints();
     id && handleSetApplications();
   }, [API, id]);
 
@@ -60,6 +68,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
     API.Application.getOne(id)
       .then((res) => {
+        res.data.endpoints = res.data.endpoints.map((endpoint) => {
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
+        })
         setApplication(res.data);
       })
       .catch((err) => {
@@ -70,6 +81,21 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         setShowSpinner(false);
       });
   };
+
+  const handleSetEndpoints = () => {
+    API.Endpoint.getAll()
+      .then((res) => {
+        const _endpoints = res.data?.map((endpoint) => {
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
+        })
+        setEndpoints(_endpoints);
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET endpoints error: " + err);
+      });
+  };
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get("applications")
       .then((res) => {
@@ -86,19 +112,21 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     setLoadingOverlay(true);
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
+    let endpoints = retrieveFormArrayAsOArrayWithName(event.target, "endpoints");
 
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description ? event.target.description.value : null,
       public: event.target.public.value ? event.target.public.value : null,
       secret: event.target.secret.value ? event.target.secret.value : null,
       resource: event.target.resource.value ? event.target.resource.value : null,
       domains,
+      endpoints
     };
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["domains"]])) {
+    if (!checkValues([body.name, body.domains])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
@@ -240,6 +268,22 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                             return <ElementCreationNew id="domains" label="Domains" data={application?.domains} />;
                           },
                         },
+                        {
+                          title: "Endpoints",
+                          id: "endpointsAccordion",
+                          render: function () {
+                            return endpoints ? (
+                              <MultiSelect
+                                id=""
+                                label="endpoints"
+                                data={application?.endpoints}
+                                options={endpoints}
+                              />
+                            ) : (
+                                <Spinner />
+                            );
+                          }
+                        }
                       ]}
                     />
                   </div>
