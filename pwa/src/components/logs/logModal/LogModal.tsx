@@ -23,13 +23,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
             <>
               <Tabs
                 items={[
-                  { name: "General", id: "logGeneral", active: true },
-                  { name: "Request", id: "logRequest" },
-                  { name: "Response", id: "logResponse" },
+                  { name: "General", id: `logGeneral${log.id}`, active: true },
+                  { name: "Request", id: `logRequest${log.id}` },
+                  { name: "Response", id: `logResponse${log.id}` },
                 ]}
               />
               <div className="tab-content">
-                <div className="tab-pane active" id="logGeneral" role="tabpanel" aria-labelledby="logGeneral-tab">
+                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel" aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Status</th>
@@ -116,7 +116,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logRequest" role="tabpanel" aria-labelledby="logRequest-tab">
+                <div className="tab-pane" id={`logRequest${log.id}`} role="tabpanel" aria-labelledby="logRequest-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Method</th>
@@ -209,7 +209,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logResponse" role="tabpanel" aria-labelledby="logResponse-tab">
+                <div className="tab-pane" id={`logResponse${log.id}`} role="tabpanel" aria-labelledby="logResponse-tab">
                   <Accordion
                     id="logResponseAccordion"
                     items={[
