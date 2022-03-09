@@ -42,6 +42,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  let test = "test";
 
   React.useEffect(() => {
     setHeader({
@@ -60,9 +61,11 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [API, attributeId]);
 
   React.useEffect(() => {
-    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
+    if (attributeId) {
+      if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
 
-    if (attribute && attributes) setShowSpinner(false);
+      if (attribute && attributes) setShowSpinner(false);
+    }
   }, [attribute, attributes]);
 
   const handleSetAttribute = () => {
