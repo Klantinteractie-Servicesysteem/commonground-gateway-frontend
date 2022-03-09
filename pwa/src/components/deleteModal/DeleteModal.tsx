@@ -21,7 +21,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ handleDelete, handleId, optio
             <>
               {optionalLength === 1 ? (
                 <p>
-                  Are you sure you want to delete {handleId}?{" "}
+                  Are you sure you want to delete {handleId}? <br></br>
                   <b>If you delete this translation you wil also delete the Translation Table!</b>
                 </p>
               ) : (
@@ -36,7 +36,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ handleDelete, handleId, optio
                 <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
               <button className="utrecht-button cancel-btn-right btn-sm mr-2" data-bs-dismiss="modal">
-                Cancel  
+                Cancel
               </button>
             </>
           );
