@@ -26,12 +26,12 @@ const Dashboard: React.FC = () => {
   }, [API]);
 
   const handleSetLogs = (): void => {
-    API.Log.getAll()
+    API.Log.getAllIncoming()
       .then((res) => {
         setLogs(res.data);
       })
       .catch((err) => {
-        throw new Error(`GET Logs error: ${err}`);
+        throw new Error(`GET Incoming Logs error: ${err}`);
       });
   };
 
