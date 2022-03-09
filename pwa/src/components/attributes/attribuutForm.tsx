@@ -71,7 +71,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setAttribute(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET attribute error: " + err);
       });
   };
@@ -82,7 +82,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -97,7 +97,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setAttributes(_attributes);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET attributes error: " + err);
       });
   };
@@ -115,7 +115,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
-    let body: {} = {
+    let body: any = {
       entity: `/admin/entities/${entityId}`,
       name: event.target.name.value,
       description: event.target.description.value ?? null,
@@ -161,8 +161,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["type"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+    if (!checkValues([body.name, body.type])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -175,7 +175,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
           navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create application error: " + err);
         })
         .finally(() => {
@@ -191,7 +191,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
           setAttribute(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update application error: " + err);
         })
         .finally(() => {
