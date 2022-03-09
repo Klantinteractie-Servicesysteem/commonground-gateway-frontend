@@ -14,7 +14,11 @@ const AlertComponent = () => {
   if (alert) {
     return (
       <div className={`conduction-alert conduction-alert-${alert.type}`}>
-        <h5>{alert.title}</h5>
+        {
+          alert.title && (
+            <h5>{alert.title}</h5>
+          )
+        }
         <p>{alert.message}</p>
 
         <div className="conduction-alert-closeContainer" onClick={() => setAlert(null)}>
