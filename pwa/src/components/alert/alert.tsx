@@ -14,7 +14,8 @@ const AlertComponent = () => {
   if (alert) {
     return (
       <div className={`conduction-alert conduction-alert-${alert.type}`}>
-        {alert.message}
+        <h5>{alert.title}</h5>
+        <p>{alert.message}</p>
 
         <div className="conduction-alert-closeContainer" onClick={() => setAlert(null)}>
           <FontAwesomeIcon className="conduction-alert-close" icon={faTimes} />
