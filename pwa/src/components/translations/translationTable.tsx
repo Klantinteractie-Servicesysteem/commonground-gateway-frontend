@@ -6,7 +6,7 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import DeleteModal from "../deleteModal/Deletemodal";
+import DeleteModal from "../deleteModal/DeleteModal";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function TranslationTable({ tableName }) {
