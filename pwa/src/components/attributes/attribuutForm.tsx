@@ -172,7 +172,9 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       API.Attribute.create(body)
         .then(() => {
           setAlert({ message: "Saved attribute", type: "success" });
-          navigate(`/entities/${entityId}`);
+          navigate(`/entities/${entityId}`, {
+            state: { activeTab: "attributes" },
+          });
         })
         .catch((err) => {
           setAlert({ type: "danger", message: err.message });
