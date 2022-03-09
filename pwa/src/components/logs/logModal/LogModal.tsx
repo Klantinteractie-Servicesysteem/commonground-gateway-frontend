@@ -17,7 +17,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
         key={log.id}
         title={"Call log"}
         id={`logs${log.id}`}
-        body={function () {
+        body={function() {
           const statusClass = log.responseStatusCode ? log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger" : "danger";
           return (
             <>
@@ -25,11 +25,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                 items={[
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
-                  { name: "Response", id: `logResponse${log.id}` },
+                  { name: "Response", id: `logResponse${log.id}` }
                 ]}
               />
               <div className="tab-content">
-                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel" aria-labelledby="logGeneral-tab">
+                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel"
+                     aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Status</th>
@@ -93,6 +94,32 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         </Link>
                       </td>
                     </tr>
+                    <tr>
+                      <th>Application</th>
+                      <td>
+                        {
+                          log.application ? (
+                            <Link
+                              to={"/applications/" + log?.id}
+                              type="button"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                              onClick={() => {
+                                navigate("/applications/" + log?.id);
+                              }}
+                            >
+                              {log?.application?.name}
+                            </Link>
+                          ) : (
+                            "No application found"
+                          )
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Date created</th>
+                      <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
+                    </tr>
                   </table>
                   <Accordion
                     id="logGeneralAccordion"
@@ -101,7 +128,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Session",
                         id: "logRequestSession",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.sessionValues ? (
@@ -111,8 +138,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
@@ -137,7 +164,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Headers",
                         id: "logRequestHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
                             logs.push({ ...{ key, value } });
@@ -160,12 +187,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Query paramaters",
                         id: "logRequestQueryparamters",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestQuery)) {
                             logs.push({ ...{ key, value } });
@@ -188,13 +215,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
                         id: "logRequestContent",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.requestContent ? (
@@ -204,8 +231,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
@@ -216,7 +243,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Headers",
                         id: "logResponseHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.responseHeaders)) {
                             logs.push({ ...{ key, value } });
@@ -240,13 +267,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
                         id: "logResponseContent",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.responseContent ? (
@@ -256,8 +283,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
