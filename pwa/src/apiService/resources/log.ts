@@ -30,4 +30,8 @@ export default class Log {
   public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
     return this._instance.get("/logs?source.id=" + sourceId);
   };
+
+  public getAllOutgoingFromCallId = (callId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?type=out&callId=${callId}`);
+  };
 }

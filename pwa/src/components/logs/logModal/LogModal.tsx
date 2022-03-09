@@ -5,12 +5,39 @@ import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
 import msToSeconds from "../../../services/msToSeconds";
 import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
+import LogTable from "../logTable/logTable";
+import APIService from "../../../apiService/apiService";
+import APIContext from "../../../apiService/apiContext";
+import Spinner from "../../common/spinner";
 
 interface LogModalProps {
   log: any;
 }
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
+  const API: APIService = React.useContext(APIContext);
+  const [callIdLogs, setLogs] = React.useState([]);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+
+  React.useEffect(() => {
+    handleSetOutgoingLogs();
+  }, [API]);
+
+  const handleSetOutgoingLogs = (): void => {
+    setShowSpinner(true);
+
+    API.Log.getAllOutgoingFromCallId(log.callId)
+      .then((res) => {
+        setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET all outgoing Logs from call id error: ${err}`);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
   return (
     <div className="LogModal">
       <Modal
@@ -26,6 +53,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
                   { name: "Response", id: `logResponse${log.id}` },
+                  { name: "Outgoing", id: `outgoing${log.id}` },
                 ]}
               />
               <div className="tab-content">
@@ -260,6 +288,14 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       },
                     ]}
                   />
+                </div>
+                <div className="tab-pane" id={`outgoing${log.id}`} role="tabpanel" aria-labelledby="outgoing-tab">
+                    <div className="mt-3">
+                      {
+                        showSpinner === true ? (<Spinner />) :
+                          <LogTable logs={callIdLogs} />
+                      }
+                    </div>
                 </div>
               </div>
             </>
