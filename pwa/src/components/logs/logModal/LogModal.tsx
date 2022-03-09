@@ -293,7 +293,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <div className="mt-3">
                       {
                         showSpinner === true ? (<Spinner />) :
-                          <LogTable logs={callIdLogs} />
+                          <LogTable logs={callIdLogs} modal={false} />
                       }
                     </div>
                 </div>
