@@ -172,7 +172,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           }
                           return (
                             <>
-                              {log.requestQuery ? (
+                              {log.requestQuery > 0 ? (
                                 <table className="mt-3 logTable-table">
                                   {logs.map((log, idx) => {
                                     return (
@@ -200,7 +200,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.requestContent ? (
                                 <CodeBlock code={log.requestContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
@@ -245,18 +245,18 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Content",
                         id: "logResponseContent",
+                        backgroundColor: "black",
                         render: function () {
                           return (
                             <>
                               {log.responseContent ? (
                                 <CodeBlock code={log.responseContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
                         },
-                        backgroundColor: "black",
                       },
                     ]}
                   />
