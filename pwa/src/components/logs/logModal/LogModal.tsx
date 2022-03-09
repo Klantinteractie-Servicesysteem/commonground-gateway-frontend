@@ -34,24 +34,24 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     <tr>
                       <th>Status</th>
                       <td>
-                        <LabelWithBackground label={log?.responseStatusCode} type={statusClass} />
+                        <LabelWithBackground label={log.responseStatusCode} type={statusClass} />
                       </td>
                     </tr>
                     <tr>
                       <th>Type</th>
-                      <td>{log?.type === "in" ? "Incoming" : "Outcoming"}</td>
+                      <td>{log.type === "in" ? "Incoming" : "Outcoming"}</td>
                     </tr>
                     <tr>
                       <th>Call ID</th>
                       <td>
                         <Link
-                          to={`/calls/${log?.callId}`}
+                          to={`/calls/${log.callId}`}
                           aria-label="Close"
                           type="button"
                           data-bs-dismiss="modal"
-                          onClick={() => navigate(`/calls/${log?.callId}`)}
+                          onClick={() => navigate(`/calls/${log.callId}`)}
                         >
-                          {log?.callId}
+                          {log.callId}
                         </Link>
                       </td>
                     </tr>
@@ -59,13 +59,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       <th>Session ID</th>
                       <td>
                         <Link
-                          to={`/sessions/${log?.session}`}
+                          to={`/sessions/${log.session}`}
                           aria-label="Close"
                           type="button"
                           data-bs-dismiss="modal"
-                          onClick={() => navigate(`/sessions/${log?.session}`)}
+                          onClick={() => navigate(`/sessions/${log.session}`)}
                         >
-                          {log?.session}
+                          {log.session}
                         </Link>
                       </td>
                     </tr>
@@ -75,21 +75,21 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     </tr>
                     <tr>
                       <th>Route</th>
-                      <td>{log?.routeName}</td>
+                      <td>{log.routeName}</td>
                     </tr>
                     <tr>
                       <th>Endpoint</th>
                       <td>
                         <Link
-                          to={"/endpoints/" + log?.id}
+                          to={"/endpoints/" + log.id}
                           type="button"
                           data-bs-dismiss="modal"
                           aria-label="Close"
                           onClick={() => {
-                            navigate("/endpoints/" + log?.id);
+                            navigate("/endpoints/" + log.id);
                           }}
                         >
-                          {log?.endpoint?.name}
+                          {log.endpoint?.name}
                         </Link>
                       </td>
                     </tr>
@@ -120,15 +120,15 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Method</th>
-                      <td>{log?.requestMethod}</td>
+                      <td>{log.requestMethod}</td>
                     </tr>
                     <tr>
                       <th>Path info</th>
-                      <td>{log?.requestPathInfo}</td>
+                      <td>{log.requestPathInfo}</td>
                     </tr>
                     <tr>
                       <th>Languages</th>
-                      <td>{log?.requestLanguages}</td>
+                      <td>{log.requestLanguages}</td>
                     </tr>
                   </table>
                   <Accordion
