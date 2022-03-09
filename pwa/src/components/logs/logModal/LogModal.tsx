@@ -23,13 +23,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
             <>
               <Tabs
                 items={[
-                  { name: "General", id: "logGeneral", active: true },
-                  { name: "Request", id: "logRequest" },
-                  { name: "Response", id: "logResponse" },
+                  { name: "General", id: `logGeneral${log.id}`, active: true },
+                  { name: "Request", id: `logRequest${log.id}` },
+                  { name: "Response", id: `logResponse${log.id}` },
                 ]}
               />
               <div className="tab-content">
-                <div className="tab-pane active" id="logGeneral" role="tabpanel" aria-labelledby="logGeneral-tab">
+                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel" aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Status</th>
@@ -116,7 +116,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logRequest" role="tabpanel" aria-labelledby="logRequest-tab">
+                <div className="tab-pane" id={`logRequest${log.id}`} role="tabpanel" aria-labelledby="logRequest-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Method</th>
@@ -172,7 +172,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           }
                           return (
                             <>
-                              {log.requestQuery ? (
+                              {log.requestQuery > 0 ? (
                                 <table className="mt-3 logTable-table">
                                   {logs.map((log, idx) => {
                                     return (
@@ -200,7 +200,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               {log.requestContent ? (
                                 <CodeBlock code={log.requestContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
@@ -209,7 +209,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     ]}
                   />
                 </div>
-                <div className="tab-pane" id="logResponse" role="tabpanel" aria-labelledby="logResponse-tab">
+                <div className="tab-pane" id={`logResponse${log.id}`} role="tabpanel" aria-labelledby="logResponse-tab">
                   <Accordion
                     id="logResponseAccordion"
                     items={[
@@ -218,7 +218,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         id: "logResponseHeaders",
                         render: function () {
                           const logs = [];
-                          for (const [key, value] of Object.entries(log.requestHeaders)) {
+                          for (const [key, value] of Object.entries(log.responseHeaders)) {
                             logs.push({ ...{ key, value } });
                           }
 
@@ -245,18 +245,18 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Content",
                         id: "logResponseContent",
+                        backgroundColor: "black",
                         render: function () {
                           return (
                             <>
                               {log.responseContent ? (
                                 <CodeBlock code={log.responseContent} language="json" />
                               ) : (
-                                <p className="utrecht-paragraph">No content found</p>
+                                <p className="utrecht-paragraph text-white">No content found</p>
                               )}
                             </>
                           );
                         },
-                        backgroundColor: "black",
                       },
                     ]}
                   />

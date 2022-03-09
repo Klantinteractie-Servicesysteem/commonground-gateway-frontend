@@ -11,6 +11,10 @@ export default class ObjectEntity {
     return this._instance.get(`/object_entities/${id}`);
   };
 
+  public sync = (id: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/object_entities/${id}/sync`);
+  };
+
   public create = (data: any): Promise<AxiosResponse> => {
     return this._instance.post("/object_entities", JSON.stringify(data));
   };
