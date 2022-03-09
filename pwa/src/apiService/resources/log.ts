@@ -7,8 +7,8 @@ export default class Log {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/logs");
+  public getAllIncoming = (): Promise<AxiosResponse> => {
+    return this._instance.get("/logs?type=in");
   };
 
   public getAllFromSession = (sessionId: string): Promise<AxiosResponse> => {
@@ -29,5 +29,9 @@ export default class Log {
 
   public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
     return this._instance.get("/logs?source.id=" + sourceId);
+  };
+
+  public getAllOutgoingFromCallId = (callId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?type=out&callId=${callId}`);
   };
 }

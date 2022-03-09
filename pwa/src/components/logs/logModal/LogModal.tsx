@@ -5,19 +5,46 @@ import { Link, navigate } from "gatsby";
 import CodeBlock from "../../common/codeBlock/codeBlock";
 import msToSeconds from "../../../services/msToSeconds";
 import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
+import LogTable from "../logTable/logTable";
+import APIService from "../../../apiService/apiService";
+import APIContext from "../../../apiService/apiContext";
+import Spinner from "../../common/spinner";
 
 interface LogModalProps {
   log: any;
 }
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
+  const API: APIService = React.useContext(APIContext);
+  const [callIdLogs, setLogs] = React.useState([]);
+  const [showSpinner, setShowSpinner] = React.useState(false);
+
+  React.useEffect(() => {
+    handleSetOutgoingLogs();
+  }, [API]);
+
+  const handleSetOutgoingLogs = (): void => {
+    setShowSpinner(true);
+
+    API.Log.getAllOutgoingFromCallId(log.callId)
+      .then((res) => {
+        setLogs(res.data);
+      })
+      .catch((err) => {
+        throw new Error(`GET all outgoing Logs from call id error: ${err}`);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
   return (
     <div className="LogModal">
       <Modal
         key={log.id}
         title={"Call log"}
         id={`logs${log.id}`}
-        body={function () {
+        body={function() {
           const statusClass = log.responseStatusCode ? log.responseStatusCode > 199 && log.responseStatusCode < 300 ? "success" : "danger" : "danger";
           return (
             <>
@@ -26,10 +53,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
                   { name: "Response", id: `logResponse${log.id}` },
+                  { name: "Outgoing", id: `outgoing${log.id}` },
                 ]}
               />
               <div className="tab-content">
-                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel" aria-labelledby="logGeneral-tab">
+                <div className="tab-pane active" id={`logGeneral${log.id}`} role="tabpanel"
+                     aria-labelledby="logGeneral-tab">
                   <table className="mt-3 logTable-table">
                     <tr>
                       <th>Status</th>
@@ -93,6 +122,32 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         </Link>
                       </td>
                     </tr>
+                    <tr>
+                      <th>Application</th>
+                      <td>
+                        {
+                          log.application ? (
+                            <Link
+                              to={"/applications/" + log?.id}
+                              type="button"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                              onClick={() => {
+                                navigate("/applications/" + log?.id);
+                              }}
+                            >
+                              {log?.application?.name}
+                            </Link>
+                          ) : (
+                            "No application found"
+                          )
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Date created</th>
+                      <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
+                    </tr>
                   </table>
                   <Accordion
                     id="logGeneralAccordion"
@@ -101,7 +156,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                         title: "Session",
                         id: "logRequestSession",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.sessionValues ? (
@@ -111,8 +166,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
@@ -137,7 +192,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Headers",
                         id: "logRequestHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestHeaders)) {
                             logs.push({ ...{ key, value } });
@@ -160,12 +215,12 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Query paramaters",
                         id: "logRequestQueryparamters",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.requestQuery)) {
                             logs.push({ ...{ key, value } });
@@ -188,13 +243,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
                         id: "logRequestContent",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.requestContent ? (
@@ -204,8 +259,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
                 </div>
@@ -216,7 +271,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Headers",
                         id: "logResponseHeaders",
-                        render: function () {
+                        render: function() {
                           const logs = [];
                           for (const [key, value] of Object.entries(log.responseHeaders)) {
                             logs.push({ ...{ key, value } });
@@ -240,13 +295,13 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
+                        }
                       },
                       {
                         title: "Content",
                         id: "logResponseContent",
                         backgroundColor: "black",
-                        render: function () {
+                        render: function() {
                           return (
                             <>
                               {log.responseContent ? (
@@ -256,10 +311,18 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                               )}
                             </>
                           );
-                        },
-                      },
+                        }
+                      }
                     ]}
                   />
+                </div>
+                <div className="tab-pane" id={`outgoing${log.id}`} role="tabpanel" aria-labelledby="outgoing-tab">
+                    <div className="mt-3">
+                      {
+                        showSpinner === true ? (<Spinner />) :
+                          <LogTable logs={callIdLogs} modal={false} />
+                      }
+                    </div>
                 </div>
               </div>
             </>
