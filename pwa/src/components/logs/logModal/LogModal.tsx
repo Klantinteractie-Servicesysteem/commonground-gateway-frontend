@@ -172,7 +172,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                           }
                           return (
                             <>
-                              {log.requestQuery ? (
+                              {log.requestQuery > 0 ? (
                                 <table className="mt-3 logTable-table">
                                   {logs.map((log, idx) => {
                                     return (
@@ -245,6 +245,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       {
                         title: "Content",
                         id: "logResponseContent",
+                        backgroundColor: "black",
                         render: function () {
                           return (
                             <>
@@ -256,7 +257,6 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                             </>
                           );
                         },
-                        backgroundColor: "black",
                       },
                     ]}
                   />
