@@ -208,11 +208,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
                             {
-                              item.externalId && item.gateway.location && entity.endpoint &&
-                              <button onClick={() => {syncObject(item.id)}} className="utrecht-button btn-sm btn-primary">
+                              item.externalId && item.gateway?.location && entity?.endpoint &&  
+                              <button onClick={() => {syncObject(item.id)}} className="utrecht-button btn-sm btn-primary mr-2">
                                 <FontAwesomeIcon icon={faSync} /> Sync
                               </button>
-                            }
+                            } 
                             <Link
                               className="utrecht-link d-flex justify-content-end"
                               to={`/entities/${entityId}/objects/${item.id}`}
@@ -242,10 +242,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                     {
                       headerName: "Created",
                       field: "dateCreated",
-                    },
-                    {
-                      headerName: " ",
-                      field: "id",
                     },
                   ]}
                   rows={[]}
