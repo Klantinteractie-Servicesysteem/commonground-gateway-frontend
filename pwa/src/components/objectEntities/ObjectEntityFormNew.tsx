@@ -2,10 +2,11 @@ import * as React from "react";
 import {
   Card,
   Spinner,
+  Modal
 } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { AlertContext } from "../../context/alertContext";
 import { Link } from 'gatsby';
 
 interface ObjectEntityFormNewProps {
@@ -20,21 +21,27 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const title = objectId ?? 'New object';
 
   React.useEffect(() => {
     getEntity();
     getObject();
   }, [API]);
-
   React.useEffect(() => {
-    setShowSpinner(true);
     entity && object && getFormIOSchema();
-    setShowSpinner(false);
   }, [entity, object]);
 
   React.useEffect(() => {
+    if ((!entity || !object || !formIO) && !showSpinner) {
+       setShowSpinner(true);
+       return;
+    }  
+    (entity && object && formIO) && showSpinner && setShowSpinner(false)
+  }, [entity, object, formIO]);
+
+  React.useEffect(() => {
     if (!formIOSchema) return;
-    setShowSpinner(true);
 
     import("@formio/react").then((formio) => {
       const { Form } = formio;
@@ -45,12 +52,11 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         />,
       );
     });
-    setShowSpinner(false);
   }, [formIOSchema]);
 
 
   const getObject = () => {
-    setShowSpinner(true);
+    setObject(null);
     API.ObjectEntity.getOne(objectId)
       .then((res) => {
         setObject(res.data);
@@ -58,13 +64,10 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       .catch((err) => {
         throw new Error("GET objectEntity error: " + err);
       })
-      .finally(() => {
-        setShowSpinner(false);
-      });
   };
 
   const getEntity = () => {
-    setShowSpinner(true);
+    setEntity(null);
     API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data);
@@ -72,14 +75,10 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       .catch((err) => {
         throw new Error("GET entity error: " + err);
       })
-      .finally(() => {
-        setShowSpinner(false);
-      });
   };
 
   const getFormIOSchema = () => {
-    if (formIOSchema && object) setFormIOSchema(fillFormIOSchema(formIOSchema));
-    setShowSpinner(true); 
+    setFormIOSchema(null);
     API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
         setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
@@ -87,9 +86,6 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       .catch((err) => {
         throw new Error("GET form.io schema error: " + err);
       })
-      .finally(() => {
-        setShowSpinner(false);
-      });
   };
 
   const fillFormIOSchema = (schema: any) => {
@@ -106,30 +102,27 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   }
 
   const saveObject = (event) => {
+    setObject(null);
     let body = event.data;
     body.submit = undefined;
 
     if (!objectId) {
       API.ApiCalls.createObject(entity?.endpoint, body)
-        .then((res) => {
-          setObject(res.data)
-        })
         .catch((err) => {
           throw new Error("Create object error: " + err);
         })
         .finally(() => {
+          setAlert({ message: "Saved object", type: "success" });
           getObject();
         });
     }
     if (objectId) {
       API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
-        .then((res) => {
-          setObject(res.data)
-        })
         .catch((err) => {
           throw new Error("Update object error: " + err);
         })
         .finally(() => {
+          setAlert({ message: "Saved object", type: "success" });
           getObject();
         });
     }
@@ -138,38 +131,46 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   return (
     <Card
-      title="Edit"
+      title={title}
       cardHeader={function () {
         return (
-          <div>
+          <>
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#helpModal"
+              data-bs-target="#handlerHelpModal"
+              onClick={(e) => e.preventDefault()}
             >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <Link className="utrecht-link" to={`/entities/${entityId}`} state={{activeTab: "objects"}}>
+            <Modal
+              title="Handler Documentation"
+              id="handlerHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
+            />
+            <Link className="utrecht-link" to={`/entities/${entityId}`} state={{ activeTab: "objects" }}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                <i className="fas fa-long-arrow-alt-left mr-2" />
+                Back
               </button>
             </Link>
-          </div>)
+          </>
+        )
       }}
       cardBody={function () {
         return (
-          <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <Spinner />
-              ) : (
-                formIO && formIO
-              )} 
-            </div>
-          </div>
+          <>
+            {
+              showSpinner && <Spinner /> 
+            }
+            {
+              !showSpinner && formIO && formIO
+            }
+          </>
         )
-      }} />
+      }} 
+    />
   )
 }
 export default ObjectEntityFormNew;

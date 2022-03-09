@@ -29,66 +29,28 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     }
     handleSetDocumentation();
     setShowSpinner(false);
-    handleSetDocumentation();
   }, [API, entityId]);
 
+  
   React.useEffect(() => {
-    setShowSpinner(true);
-    entity && getFormIOSchema();
-    setShowSpinner(false);
-  }, [API, entity]);
-
-  React.useEffect(() => {
-    if (!formIOSchema) return;
-    setShowSpinner(true);
-
-    import("@formio/react").then((formio) => {
-      const { Form } = formio;
-      setFormIO(<Form src={formIOSchema} onSubmit={saveObject} />);
-    });
-    setShowSpinner(false);
-  }, [formIOSchema]);
-
-  const getFormIOSchema = () => {
-    API.FormIO.getSchema(entity.name)
-      .then((res) => {
-        setFormIOSchema(res.data);
-      })
-      .catch((err) => {
-        throw new Error("GET form.io schema error: " + err);
-      });
-  };
-
-  const saveObject = (event) => {
-    setShowSpinner(true);
-    let body = event.data;
-    body.submit = undefined;
-
-    API.ApiCalls.createObject(entity?.name, body)
-      .catch((err) => {
-        throw new Error("Create object error: " + err);
-      })
-      .finally(() => {
-        handleSetObjectEntities();
-      });
-  };
+    if ((!entity || !objectEntities) && !showSpinner) {
+       setShowSpinner(true);
+       return;
+    }  
+    (!entity || !objectEntities) && showSpinner && setShowSpinner(false)
+  }, [entity, objectEntities]);
 
   const getEntity = () => {
-    setShowSpinner(true);
     API.Entity.getOne(entityId)
       .then((res) => {
         setEntity(res.data);
       })
       .catch((err) => {
         throw new Error("GET entity error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
 
   const handleSetObjectEntities = () => {
-    setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
         res?.data?.length > 0 && setObjectEntities(res.data);
@@ -97,9 +59,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setAlert({ message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
-      .finally(() => {
-        setShowSpinner(false);
-      });
   };
 
   const syncObject = (objectEntityId: string) => {
@@ -163,19 +122,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <button
-              className="utrecht-button utrecht-button-sm btn-sm btn-success"
-              data-bs-toggle="modal"
-              data-bs-target="#objectModal"
-            >
-              <i className="fas fa-plus mr-2" />
-              Create
-            </button>
-            <Modal
-              title={`Create a new ${entity?.name} object`}
-              id="objectModal"
-              body={() => <>{FormIO && FormIO}</>}
-            />
+            <Link to={`/entities/${entityId}/objects/new`}>
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
+                <i className="fas fa-plus mr-2" />
+                Create
+              </button>
+            </Link>
           </>
         );
       }}
