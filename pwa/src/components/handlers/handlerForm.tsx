@@ -3,7 +3,7 @@ import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
@@ -24,7 +24,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
-import { validateJSON } from "./../../services/validateJSON";
+import { validateJSON } from "../../services/validateJSON";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -82,9 +82,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   const getTableNames = () => {
     API.Translation.getTableNames()
       .then((res) => {
-        const names = res.data.results.map((name) => {
-          return { name: name };
+        const names = res.data?.results.map((name, idx) => {
+          return { name: name, value: name, idx }
         });
+        console.log({names})
         setTableNames(names);
       })
       .catch((err) => {
@@ -102,6 +103,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
     let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
     let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
+
+    console.log(translationsOut, translationsIn)
 
     // get the inputs and check if set other set null
     let body: any = {
@@ -359,15 +362,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                               <MultiDimensionalArrayInput
                                 id={"mappingIn"}
                                 label={"Mapping In"}
-                                data={
-                                  handler && handler.mappingIn
-                                    ? [
-                                        {
-                                          key: "mappingIn",
-                                          value: handler.mappingIn,
-                                        },
-                                      ]
-                                    : null
+                                data={[
+                                      {
+                                        key: "mappingIn",
+                                        value: handler?.mappingIn
+                                      }
+                                    ]
                                 }
                               />
                             );
@@ -381,15 +381,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                               <MultiDimensionalArrayInput
                                 id={"mappingOut"}
                                 label={"Mapping Out"}
-                                data={
-                                  handler && handler.mappingOut
-                                    ? [
-                                        {
-                                          key: "mappingOut",
-                                          value: `${handler.mappingOut}`,
-                                        },
-                                      ]
-                                    : null
+                                data={[
+                                      {
+                                        key: "mappingOut",
+                                        value: `${handler?.mappingOut}`
+                                      }
+                                    ]
                                 }
                               />
                             );
