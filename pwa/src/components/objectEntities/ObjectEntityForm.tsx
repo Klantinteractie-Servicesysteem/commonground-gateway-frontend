@@ -58,7 +58,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setObjectEntity(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET object entity error: " + err);
       })
       .finally(() => {
@@ -71,7 +71,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET applications error: " + err);
       });
   };
@@ -81,7 +81,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -110,13 +110,13 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["uri"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (body["externalId"] !== null && !isValidUUIDV4(body["externalId"])) {
-      setAlert({ type: "danger", message: "External Id is not a valid UUID" });
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "External Id is not a valid UUID" });
       setLoadingOverlay(false);
       return;
     }
@@ -129,7 +129,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
           navigate(`/entities/${entityId}`);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("CREATE object entity error: " + err);
         })
         .finally(() => {
@@ -145,7 +145,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
           setObjectEntity(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("UPDATE object entity error: " + err);
         })
         .finally(() => {
