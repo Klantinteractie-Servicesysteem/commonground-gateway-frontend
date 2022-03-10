@@ -1,0 +1,17 @@
+.configurationTable {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.configurationTable-table th,
+.configurationTable-table td {
+    padding: 7px 5px;
+}
+
+.configurationTable-table {
+    width: 100%;
+}
+
+.configurationTable-table tr th {
+    width: 30%;
+}

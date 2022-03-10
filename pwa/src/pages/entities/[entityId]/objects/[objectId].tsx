@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import ObjectEntityFormNew from "../../../../components/objectEntities/ObjectEntityFormNew";
+import ObjectEntityFormNew from "../../../../components/objectEntities/objectEntityFormNew/ObjectEntityFormNew";
 import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {
