@@ -17,7 +17,7 @@ const IndexPage = (props) => {
   const sessionId: string = props.params.sessionId;
 
   React.useEffect(() => {
-    setHeader({ title: "Session", subText: "" });
+    setHeader(<h1>Session</h1>);
   }, [setHeader]);
 
   React.useEffect(() => {
