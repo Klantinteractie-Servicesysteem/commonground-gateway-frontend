@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import Application from "./resources/application";
 import Attribute from "./resources/attribute";
 import Source from "./resources/source";
@@ -8,12 +8,13 @@ import Log from "./resources/log";
 import Login from "./services/login";
 import Documentation from "./services/documentation";
 import Endpoint from "./resources/endpoint";
-import Translation from './resources/translation';
+import Translation from "./resources/translation";
 import FormIO from "./resources/formIO";
 import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import Subscriber from "./resources/subscriber";
+import { isLoggedIn, logout, validateSession } from "../services/auth";
 
 export default class APIService {
   private _jwtToken: string;
@@ -22,14 +23,15 @@ export default class APIService {
     this._jwtToken = _jwtToken;
   }
 
+  // Clients
   public get adminClient(): AxiosInstance {
     return axios.create({
       baseURL: window.GATSBY_ADMIN_URL,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer " + this._jwtToken
-      }
+        Authorization: "Bearer " + this._jwtToken,
+      },
     });
   }
 
@@ -59,8 +61,8 @@ export default class APIService {
       baseURL: process.env.GATSBY_READ_THE_DOCS_URL,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
   }
 
@@ -68,7 +70,7 @@ export default class APIService {
     return axios.create({
       baseURL: window.GATSBY_API_URL,
       headers: {
-        "Accept": "application/form.io",
+        Accept: "application/form.io",
         "Content-Type": "application/json",
         Authorization: "Bearer " + this._jwtToken,
       },
@@ -105,7 +107,7 @@ export default class APIService {
   }
 
   public get Translation(): Translation {
-    return new Translation(this.adminClient)
+    return new Translation(this.adminClient);
   }
 
   public get Handler(): Handler {
@@ -137,3 +139,29 @@ export default class APIService {
     return new ApiCalls(this.apiClient);
   }
 }
+
+export const Send = (
+  _instance: AxiosInstance,
+  method: "GET" | "POST" | "PUT" | "DELETE",
+  endpoint: string,
+  payload?: JSON,
+): Promise<AxiosResponse | {}> => {
+  const _payload = JSON.stringify(payload);
+
+  if (!validateSession()) {
+    logout();
+
+    return Promise.resolve({});
+  }
+
+  switch (method) {
+    case "GET":
+      return _instance.get(endpoint);
+    case "POST":
+      return _instance.post(endpoint, _payload);
+    case "PUT":
+      return _instance.put(endpoint, _payload);
+    case "DELETE":
+      return _instance.delete(endpoint);
+  }
+};
