@@ -141,7 +141,7 @@ export default class APIService {
 }
 
 export const Send = (
-  _instance: AxiosInstance,
+  instance: AxiosInstance,
   method: "GET" | "POST" | "PUT" | "DELETE",
   endpoint: string,
   payload?: JSON,
@@ -156,12 +156,12 @@ export const Send = (
 
   switch (method) {
     case "GET":
-      return _instance.get(endpoint);
+      return instance.get(endpoint);
     case "POST":
-      return _instance.post(endpoint, _payload);
+      return instance.post(endpoint, _payload);
     case "PUT":
-      return _instance.put(endpoint, _payload);
+      return instance.put(endpoint, _payload);
     case "DELETE":
-      return _instance.delete(endpoint);
+      return instance.delete(endpoint);
   }
 };
