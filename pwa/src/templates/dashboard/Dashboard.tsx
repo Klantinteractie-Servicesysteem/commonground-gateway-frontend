@@ -39,8 +39,8 @@ const Dashboard: React.FC = () => {
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("sources")
+  const handleSetLogsDocumentation = (): void => {
+    API.Documentation.get("logs")
       .then((res) => {
         setLogsDocumentation(res.data.content);
       })
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
                   data-bs-target="#logsHelpModal"
-                  onClick={handleSetDocumentation}
+                  onClick={handleSetLogsDocumentation}
                 >
                   <Modal
                     title="Logs Documentation"
