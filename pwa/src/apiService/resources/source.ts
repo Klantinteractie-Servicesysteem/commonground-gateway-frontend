@@ -1,5 +1,5 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse | {} } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Source {
   private _instance: AxiosInstance;
