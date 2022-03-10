@@ -53,7 +53,7 @@ export default function HandlersTable({ endpointId }) {
     setLoadingOverlay(true);
     API.Handler.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted handler with`, type: "success" });
+        setAlert({ message: `Deleted handler`, type: "success" });
         handleSetHandlers();
       })
       .catch((err) => {
@@ -130,7 +130,7 @@ export default function HandlersTable({ endpointId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal handleDelete={handleDeleteHandler} handleId={item.id} />
+                              <DeleteModal resourceDelete={handleDeleteHandler} resourceId={item.id} />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/endpoints/${endpointId}/handlers/${item.id}/`}

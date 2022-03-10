@@ -148,7 +148,7 @@ export default function AttributeTable({ entityId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal handleDelete={handleDeleteAttribute} handleId={item.id} />
+                              <DeleteModal resourceDelete={handleDeleteAttribute} resourceId={item.id} />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/entities/${entityId}/attributes/${item.id}`}

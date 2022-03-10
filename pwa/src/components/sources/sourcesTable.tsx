@@ -133,7 +133,7 @@ export default function SourcesTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal handleDelete={handleDeleteSource} handleId={item.id} />
+                              <DeleteModal resourceDelete={handleDeleteSource} resourceId={item.id} />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

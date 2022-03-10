@@ -137,7 +137,7 @@ export default function ApplicationsTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal handleDelete={handleDeleteApplication} handleId={item.id} />
+                              <DeleteModal resourceDelete={handleDeleteApplication} resourceId={item.id} />
                               <Link to={`/applications/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

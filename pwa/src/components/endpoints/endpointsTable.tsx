@@ -133,7 +133,7 @@ export default function EndpointsTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal handleDelete={handleDeleteEndpoint} handleId={item.id} />
+                              <DeleteModal resourceDelete={handleDeleteEndpoint} resourceId={item.id} />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit
