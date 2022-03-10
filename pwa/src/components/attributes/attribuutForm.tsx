@@ -60,9 +60,11 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [API, attributeId]);
 
   React.useEffect(() => {
-    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
+    if (attributeId) {
+      if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
 
-    if (attribute && attributes) setShowSpinner(false);
+      if (attribute && attributes) setShowSpinner(false);
+    }
   }, [attribute, attributes]);
 
   const handleSetAttribute = () => {
