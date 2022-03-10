@@ -8,23 +8,23 @@ export default class Entity {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
+  public getAll = (): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "GET", "/entities");
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
+  public getOne = (id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "GET", `/entities/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
+  public create = (data: any): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "POST", "/entities", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
+  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "PUT", `/entities/${id}`, data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
+  public delete = (id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "DELETE", `/entities/${id}`);
   };
 }

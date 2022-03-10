@@ -151,7 +151,7 @@ export const Send = (
   if (!validateSession()) {
     logout();
 
-    return Promise.resolve({});
+    return Promise.resolve({ data: [] });
   }
 
   switch (method) {

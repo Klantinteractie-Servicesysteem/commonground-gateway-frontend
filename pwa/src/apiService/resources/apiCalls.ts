@@ -8,11 +8,11 @@ export default class FormIO {
     this._instance = _instance;
   }
 
-  public createObject = (endpoint: string, data: any): Promise<AxiosResponse> => {
+  public createObject = (endpoint: string, data: any): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "POST", `/${endpoint}`, data);
   };
 
-  public updateObject = (endpoint: string, id: string, data: any): Promise<AxiosResponse> => {
+  public updateObject = (endpoint: string, id: string, data: any): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "PUT", `/${endpoint}/${id}`, data);
   };
 }

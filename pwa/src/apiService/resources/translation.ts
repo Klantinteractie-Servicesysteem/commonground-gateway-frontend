@@ -8,27 +8,27 @@ export default class Translation {
     this._instance = _instance;
   }
 
-  public getAllFrom = (tableName: string): Promise<AxiosResponse> => {
+  public getAllFrom = (tableName: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "GET", `/translations?translationTable=${tableName}`);
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
+  public getOne = (id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "GET", `/translations/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
+  public create = (data: any): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "POST", "/translations", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
+  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "PUT", `/translations/${id}`, data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
+  public delete = (id: string): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "DELETE", `/translations/${id}`);
   };
 
-  public getTableNames = (): Promise<AxiosResponse> => {
+  public getTableNames = (): Promise<AxiosResponse | {}> => {
     return Send(this._instance, "GET", "/table_names");
   };
 }
