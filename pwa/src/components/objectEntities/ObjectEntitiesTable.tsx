@@ -16,29 +16,17 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   const [objectEntities, setObjectEntities] = React.useState(null);
   const [entity, setEntity] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [FormIO, setFormIO] = React.useState(null);
-  const [formIOSchema, setFormIOSchema] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     setShowSpinner(true);
     if (entityId) {
-      handleSetObjectEntities();
       getEntity();
+      handleSetObjectEntities();
     }
     handleSetDocumentation();
-    setShowSpinner(false);
   }, [API, entityId]);
-
-  
-  React.useEffect(() => {
-    if ((!entity || !objectEntities) && !showSpinner) {
-       setShowSpinner(true);
-       return;
-    }  
-    (!entity || !objectEntities) && showSpinner && setShowSpinner(false)
-  }, [entity, objectEntities]);
 
   const getEntity = () => {
     API.Entity.getOne(entityId)
@@ -51,10 +39,10 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   };
 
   const handleSetObjectEntities = () => {
-    setShowSpinner(true);
+    !showSpinner && setShowSpinner(true);
     API.ObjectEntity.getAllFromEntity(entityId)
       .then((res) => {
-        res?.data?.length > 0 && setObjectEntities(res.data);
+        setObjectEntities(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -89,7 +77,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
       });
   };
 
-  const handleDeleteObjectEntity = (id): void => {
+  const handleDeleteObjectEntity = (id: string): void => {
     if (confirm(`Do you want to delete this object entity?`)) {
       API.ObjectEntity.delete(id)
         .then(() => {
@@ -141,7 +129,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : objectEntities ? (
+              ) : objectEntities?.length ? (
                 <Table
                   columns={[
                     {
@@ -199,8 +187,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                       headerName: "Created",
                       field: "dateCreated",
                     },
+                    {
+                      headerName: " ",
+                      field: "id2",
+                    },
                   ]}
-                  rows={[]}
+                  rows={[{id: 'No results found', owner: null, dateCreated: null, id2: null}]}
                 />
               )}
             </div>
