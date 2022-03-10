@@ -29,7 +29,6 @@ const WelcomeModal: React.FC = () => {
   const welcomeModalBody = (): JSX.Element => {
     return (
       <>
-        <p>Welcome to Conductor!</p>
         <p>
           It seems you haven't created a application yet, in order to consume your API's you will need to create
           applications.
@@ -70,7 +69,7 @@ const WelcomeModal: React.FC = () => {
       >
         More info
       </button>
-      <Modal title={"Hello!"} id="welcomeModal" body={welcomeModalBody} />
+      <Modal title="Welcome to Conductor!" id="welcomeModal" body={welcomeModalBody} />
     </>
   );
 };

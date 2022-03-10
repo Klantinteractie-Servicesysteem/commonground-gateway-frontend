@@ -35,7 +35,7 @@ export default function EntitiesTable() {
         setEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Entities error: " + err);
       })
       .finally(() => {
@@ -49,7 +49,7 @@ export default function EntitiesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -62,7 +62,7 @@ export default function EntitiesTable() {
           handleSetEntities();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE Sources error: " + err);
         });
     }
@@ -75,14 +75,14 @@ export default function EntitiesTable() {
         return (
           <>
             <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#entityHelpModal">
-              <Modal
-                title="Object Types Documentation"
-                id="entityHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Object Types Documentation"
+              id="entityHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetEntities}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

@@ -56,7 +56,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ type: "danger", message: err });
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -75,14 +75,14 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                   data-bs-target="#translationHelpModal"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <Modal
-                    title="Translation Documentation"
-                    id="translationHelpModal"
-                    body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                  />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>
+                <Modal
+                  title="Translation Documentation"
+                  id="translationHelpModal"
+                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                />
                 <Link className="utrecht-link" to={`/translation-tables`}>
                   <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                     <i className="fas fa-long-arrow-alt-left mr-2" />

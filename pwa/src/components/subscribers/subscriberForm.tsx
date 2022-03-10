@@ -65,7 +65,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSubscriber(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET subscriber error: " + err);
       })
       .finally(() => {
@@ -81,7 +81,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       })
       .finally(() => {
@@ -97,7 +97,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setEndpoint(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET endpoints error: " + err);
       })
       .finally(() => {
@@ -156,13 +156,13 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     console.log(body.conditions);
 
     if (!checkValues([body.name])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (body.conditions !== undefined && !validateJSON(body.conditions)) {
-      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
@@ -177,7 +177,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
           });
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create subscriber error: " + err);
         })
         .finally(() => {
@@ -194,7 +194,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
           setSubscriber(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update subscriber error: " + err);
         })
         .finally(() => {

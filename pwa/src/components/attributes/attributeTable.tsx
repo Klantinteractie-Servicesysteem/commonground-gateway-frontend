@@ -31,7 +31,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
@@ -45,7 +45,7 @@ export default function AttributeTable({ entityId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -58,7 +58,7 @@ export default function AttributeTable({ entityId }) {
           handleSetAttributes();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE attribute error: " + err);
         });
     }
@@ -76,14 +76,14 @@ export default function AttributeTable({ entityId }) {
               data-bs-target="#attributeHelpModal"
               onClick={(e) => e.preventDefault()}
             >
-              <Modal
-                title="Attribute Documentation"
-                id="attributeHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Attribute Documentation"
+              id="attributeHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetAttributes}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

@@ -39,7 +39,7 @@ export default function ApplicationsTable() {
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Applications error: " + err);
       })
       .finally(() => {
@@ -53,7 +53,7 @@ export default function ApplicationsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -66,7 +66,7 @@ export default function ApplicationsTable() {
           handleSetApplications();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE application error: " + err);
         });
     }
@@ -83,14 +83,14 @@ export default function ApplicationsTable() {
               data-bs-toggle="modal"
               data-bs-target="#applicationHelpModal"
             >
-              <Modal
-                title="Application Documentation"
-                id="applicationHelpModal"
-                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-              />
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
+            <Modal
+              title="Application Documentation"
+              id="applicationHelpModal"
+              body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+            />
             <a className="utrecht-link" onClick={handleSetApplications}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>

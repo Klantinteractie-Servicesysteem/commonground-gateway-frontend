@@ -24,15 +24,15 @@ import { HeaderContext } from "../../context/headerContext";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 
 interface SourceFormProps {
-  id: string;
+  sourceId: string;
 }
 
-export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
+export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = id ? "Edit Source" : "Create Source";
+  const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
@@ -53,12 +53,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
   const handleSetSource = () => {
     setShowSpinner(true);
 
-    API.Source.getOne(id)
+    API.Source.getOne(sourceId)
       .then((res) => {
         setSource(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET gateway error: " + err);
       })
       .finally(() => {
@@ -71,7 +71,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -84,7 +84,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description ? event.target.description.value : null,
       type: event.target.type.value,
@@ -107,13 +107,13 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+    if (!checkValues([body.name, body.location, body.type, body.auth])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!id) {
+    if (!sourceId) {
       // unset id means we're creating a new entry
       API.Source.create(body)
         .then(() => {
@@ -121,7 +121,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
           navigate("/sources");
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create source error: " + err);
         })
         .finally(() => {
@@ -129,15 +129,15 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
         });
     }
 
-    if (id) {
+    if (sourceId) {
       // set id means we're updating a existing entry
-      API.Source.update(body, id)
+      API.Source.update(body, sourceId)
         .then((res) => {
           setAlert({ type: "success", message: "Updated source" });
           setSource(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update source error: " + err);
         })
         .finally(() => {
@@ -159,14 +159,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ id }) => {
                 data-bs-target="#sourceHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
-                <Modal
-                  title="Source Documentation"
-                  id="sourceHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
+              <Modal
+                title="Source Documentation"
+                id="sourceHelpModal"
+                body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+              />
               <Link className="utrecht-link" to={"/sources"}>
                 <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
                   <i className="fas fa-long-arrow-alt-left mr-2" />

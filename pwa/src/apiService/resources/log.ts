@@ -7,8 +7,16 @@ export default class Log {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/logs");
+  public getAllIncoming = (): Promise<AxiosResponse> => {
+    return this._instance.get("/logs?type=in");
+  };
+
+  public getAllFromSession = (sessionId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?session=${sessionId}`);
+  };
+
+  public getAllFromCall = (callId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?callId=${callId}`);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
@@ -16,10 +24,14 @@ export default class Log {
   };
 
   public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-    return this._instance.get('/logs?endpoint.id=' + endpointId)
-  }
+    return this._instance.get("/logs?endpoint.id=" + endpointId);
+  };
 
   public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
     return this._instance.get("/logs?source.id=" + sourceId);
+  };
+
+  public getAllOutgoingFromCallId = (callId: string): Promise<AxiosResponse> => {
+    return this._instance.get(`/logs?type=out&callId=${callId}`);
   };
 }
