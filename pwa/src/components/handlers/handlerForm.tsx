@@ -141,7 +141,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       API.Handler.create(body)
         .then(() => {
           setAlert({ message: "Saved Handler", type: "success" });
-          navigate("/handlers");
+          navigate(`/endpoints/${endpointId}/handlers`);
         })
         .catch((err) => {
           setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
