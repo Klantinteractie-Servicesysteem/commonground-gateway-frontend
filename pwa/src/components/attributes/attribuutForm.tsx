@@ -147,7 +147,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       minDate: event.target.minDate.value ?? null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value ?? null,
+      maxProperties: event.target.maxProperties.value ? parseInt(event.target.minProperties.value) : null,
       inversedBy: event.target.inversedBy.value ?? null,
       fileTypes,
       attributeEnum,
