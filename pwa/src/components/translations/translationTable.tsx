@@ -30,7 +30,7 @@ export default function TranslationTable({ tableName }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
 
         throw new Error("GET Documentation error: " + err);
       });
@@ -51,7 +51,7 @@ export default function TranslationTable({ tableName }) {
   };
 
   const handleDeleteTranslation = (id): void => {
-    if (translations.length === 1 ? confirm(`Do you want to delete this translation? With id ${id}. If you delete this translation you wil also delete the Translation Table.`) 
+    if (translations.length === 1 ? confirm(`Do you want to delete this translation? With id ${id}. If you delete this translation you wil also delete the Translation Table.`)
     :  confirm(`Do you want to delete this translation? With id ${id}`)) {
       setLoadingOverlay(true);
       API.Translation.delete(id)
@@ -61,7 +61,7 @@ export default function TranslationTable({ tableName }) {
           getTranslations();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE translation error: " + err);
         })
         .finally(() => {

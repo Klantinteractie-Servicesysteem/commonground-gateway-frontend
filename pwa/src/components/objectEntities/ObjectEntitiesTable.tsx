@@ -45,7 +45,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setObjectEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
@@ -57,7 +57,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     setShowSpinner(true);
     API.ObjectEntity.sync(objectEntityId)
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
@@ -72,7 +72,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -85,7 +85,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
           handleSetObjectEntities();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE object entity error: " + err);
         });
     }
