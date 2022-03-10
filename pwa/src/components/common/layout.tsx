@@ -10,7 +10,7 @@ import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import Alert from "../alert/alert";
-import { HeaderProps, HeaderProvider } from "../../context/headerContext";
+import { HeaderProvider } from "../../context/headerContext";
 import Header from "./header";
 
 /**
@@ -22,7 +22,7 @@ import Header from "./header";
 export default function Layout({ children, pageContext }) {
   const [API, setAPI] = React.useState<APIService>(null);
   const [alert, setAlert] = React.useState<AlertProps>(null);
-  const [header, setHeader] = React.useState<HeaderProps>(null);
+  const [header, setHeader] = React.useState(null);
 
   React.useEffect(() => {
     if (!isLoggedIn()) {
@@ -31,7 +31,7 @@ export default function Layout({ children, pageContext }) {
     }
 
     const jwt = sessionStorage.getItem("jwt");
-    !validateSession(jwt) && logout()
+    !validateSession(jwt) && logout();
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
@@ -48,7 +48,7 @@ export default function Layout({ children, pageContext }) {
               <MainMenu />
               <div className="utrecht-page__content">
                 <header className="utrecht-page-header">
-                  <Header { ...{ pageContext } } />
+                  <Header {...{ pageContext }} />
                 </header>
                 <div className="container py-4">{children}</div>
               </div>

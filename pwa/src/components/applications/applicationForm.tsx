@@ -48,11 +48,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Applications",
-      subText: "Manage your applications here",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Application <i>{application && application.name}</i>
+      </>,
+    );
+  }, [setHeader, application]);
 
   React.useEffect(() => {
     handleSetDocumentation();

@@ -17,7 +17,7 @@ const IndexPage = (props) => {
   const callId: string = props.params.callId;
 
   React.useEffect(() => {
-    setHeader({ title: "Call", subText: "" });
+    setHeader(<h1>Call</h1>);
   }, [setHeader]);
 
   React.useEffect(() => {
