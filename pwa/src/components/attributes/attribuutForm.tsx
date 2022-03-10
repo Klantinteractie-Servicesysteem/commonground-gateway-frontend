@@ -71,7 +71,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setAttribute(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET attribute error: " + err);
       });
   };
@@ -82,7 +82,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -97,7 +97,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         setAttributes(_attributes);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET attributes error: " + err);
       });
   };
@@ -115,7 +115,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
     let requiredIf = retrieveFormArrayAsObject(event.target, "requiredIf");
     let objectConfig = retrieveFormArrayAsObject(event.target, "objectConfig");
 
-    let body: {} = {
+    let body: any = {
       entity: `/admin/entities/${entityId}`,
       name: event.target.name.value,
       description: event.target.description.value ?? null,
@@ -147,7 +147,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       minDate: event.target.minDate.value ?? null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value ?? null,
+      maxProperties: event.target.maxProperties.value ? parseInt(event.target.minProperties.value) : null,
       inversedBy: event.target.inversedBy.value ?? null,
       fileTypes,
       attributeEnum,
@@ -161,8 +161,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["type"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+    if (!checkValues([body.name, body.type])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -172,10 +172,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       API.Attribute.create(body)
         .then(() => {
           setAlert({ message: "Saved attribute", type: "success" });
-          navigate(`/entities/${entityId}`);
+          navigate(`/entities/${entityId}`, {
+            state: { activeTab: "attributes" },
+          });
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create application error: " + err);
         })
         .finally(() => {
@@ -191,7 +193,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
           setAttribute(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update application error: " + err);
         })
         .finally(() => {
@@ -301,7 +303,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           options={[
                             { name: "Email", value: "email" },
                             { name: "Phone", value: "phone" },
-                            { name: "Country code", value: "country code" },
+                            { name: "Country code", value: "countryCode" },
                             { name: "BSN", value: "bsn" },
                             { name: "Url", value: "url" },
                             { name: "UUID", value: "uuid" },

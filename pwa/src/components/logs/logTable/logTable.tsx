@@ -9,18 +9,20 @@ import msToSeconds from "../../../services/msToSeconds";
 
 interface LogsTableProps {
   logs: any;
+  modal: boolean
 }
 
-const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
+const LogsTable: React.FC<LogsTableProps> = ({ logs, modal = true }) => {
   return (
     <div className="logsTable">
       <table>
         <thead>
         <tr>
           <th>Status</th>
-          <th>Type</th>
           <th>Method</th>
           <th>Response time</th>
+          <th>Application</th>
+          <th>Date created</th>
         </tr>
         </thead>
         {!logs.length && <tr>
@@ -34,21 +36,30 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                 <td>
                   <LabelWithBackground label={log?.responseStatusCode?.toString()} type={statusClass} />
                 </td>
-                <td>{log.type}</td>
                 <td>{log.requestMethod}</td>
                 <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
-                <td className="logsTable-viewLogTd">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
-                  >
-                    <FontAwesomeIcon icon={faEye} /> View log
-                  </button>
-                </td>
+                <td>{log.application?.name}</td>
+                <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
+                {
+                  modal && (
+                    <td className="logsTable-viewLogTd">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
+                      >
+                        <FontAwesomeIcon icon={faEye} /> View log
+                      </button>
+                    </td>
+                  )
+                }
               </tr>
-              <LogModal {...{ log }} />
+              {
+                modal && (
+                  <LogModal {...{ log }} />
+                )
+              }
             </>
           );
         })}

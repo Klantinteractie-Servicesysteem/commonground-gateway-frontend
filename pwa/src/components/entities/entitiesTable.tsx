@@ -38,7 +38,7 @@ export default function EntitiesTable() {
         setEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Entities error: " + err);
       })
       .finally(() => {
@@ -52,7 +52,7 @@ export default function EntitiesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
