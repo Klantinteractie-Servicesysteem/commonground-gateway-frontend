@@ -33,32 +33,34 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs, modal = true }) => {
                 : "danger"
               : "danger";
             return (
-              <>
-                <tr key={idx} className="logsTable-tr">
-                  <td>
-                    <LabelWithBackground label={log?.responseStatusCode?.toString()} type={statusClass} />
+              <tr key={`log${idx}`} className="logsTable-tr">
+                <td>
+                  <LabelWithBackground label={log?.responseStatusCode?.toString()} type={statusClass} />
+                </td>
+                <td>{log.requestMethod}</td>
+                <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
+                <td>{log.application?.name}</td>
+                <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
+                {modal && (
+                  <td className="logsTable-viewLogTd">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
+                    >
+                      <FontAwesomeIcon icon={faEye} /> View log
+                    </button>
                   </td>
-                  <td>{log.requestMethod}</td>
-                  <td>{`${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
-                  <td>{log.application?.name}</td>
-                  <td>{new Date(log.createdAt).toLocaleString("nl-NL")}</td>
-                  {modal && (
-                    <td className="logsTable-viewLogTd">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target={`#logs${log.id.replace(new RegExp("-", "g"), "")}`}
-                      >
-                        <FontAwesomeIcon icon={faEye} /> View log
-                      </button>
-                    </td>
-                  )}
-                </tr>
-                {modal && <LogModal {...{ log }} />}
-              </>
+                )}
+              </tr>
             );
           })}
+
+          {modal &&
+            logs.map((log, idx) => {
+              <LogModal key={`logModal${idx}`} {...{ log }} />;
+            })}
 
           {!logs.length && (
             <tr>
