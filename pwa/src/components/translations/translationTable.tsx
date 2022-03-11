@@ -148,7 +148,13 @@ export default function TranslationTable({ tableName }) {
                               <DeleteModal
                                 resourceDelete={handleDeleteTranslation}
                                 resourceId={item.id}
-                                optionalLength={translations.length}
+                                optionalMessage={
+                                  translations.length === 1 && (
+                                    <>
+                                      If you delete this translation <b>you wil also delete the Translation Table!</b>
+                                    </>
+                                  )
+                                }
                               />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
