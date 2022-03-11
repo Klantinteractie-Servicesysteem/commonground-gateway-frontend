@@ -57,11 +57,6 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs, modal = true }) => {
             );
           })}
 
-          {modal &&
-            logs.map((log, idx) => {
-              <LogModal key={`logModal${idx}`} {...{ log }} />;
-            })}
-
           {!logs.length && (
             <tr>
               <td>No results found</td>
@@ -69,6 +64,8 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs, modal = true }) => {
           )}
         </tbody>
       </table>
+
+      {modal && logs.map((log, idx) => <LogModal key={`logModal${idx}`} {...{ log }} />)}
     </div>
   );
 };
