@@ -6,11 +6,8 @@ const IndexPage = () => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Configurations",
-      subText: "Manage your configurations here"
-    });
-  }, [setHeader])
+    setHeader("Configurations");
+  }, [setHeader]);
 
   return (
     <main>

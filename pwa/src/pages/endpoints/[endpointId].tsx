@@ -11,7 +11,7 @@ import Spinner from "../../components/common/spinner";
 
 export const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
-  const [documentation, setDocumentation] = React.useState<string>(null);
+  const [logsDocumentation, setLogsDocumentation] = React.useState<string>(null);
   const activeTab: string = props.location.state.activeTab;
   const API: APIService = React.useContext(APIContext);
   const [logs, setLogs] = React.useState([]);
@@ -20,7 +20,6 @@ export const IndexPage = (props) => {
 
   React.useEffect(() => {
     handleSetLogs();
-    handleSetDocumentation();
   }, [API]);
 
   const handleSetLogs = (): void => {
@@ -38,14 +37,14 @@ export const IndexPage = (props) => {
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("")
+  const handleSetLogsDocumentation = (): void => {
+    API.Documentation.get("logs")
       .then((res) => {
-        setDocumentation(res.data.content);
+        setLogsDocumentation(res.data.content);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
+        throw new Error(`GET Logs documentation error: ${err}`);
       });
   };
 
@@ -60,17 +59,17 @@ export const IndexPage = (props) => {
                   {
                     name: "Overview",
                     id: "overview",
-                    active: activeTab !== "handlers"
+                    active: activeTab !== "handlers",
                   },
                   {
                     name: "Handlers",
                     id: "handlers",
-                    active: activeTab === "handlers"
+                    active: activeTab === "handlers",
                   },
                   {
                     name: "Logs",
-                    id: "logs"
-                  }
+                    id: "logs",
+                  },
                 ]}
               />
             )}
@@ -94,37 +93,40 @@ export const IndexPage = (props) => {
               <br />
               <HandlersTable {...{ endpointId }} />
             </div>
-            <div
-              className="tab-pane"
-              id="logs"
-              role="tabpanel"
-              aria-labelledby="logs-tab"
-            >
+            <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
               <br />
 
               <Card
                 title="Endpoint Logs"
-                cardHeader={() =>
+                cardHeader={() => (
                   <>
-                    <button className="utrecht-link button-no-style" data-bs-toggle="modal"
-                            data-bs-target="#endpointHelpModal">
-                      <Modal
-                        title="Endpoint Documentation"
-                        id="endpointHelpModal"
-                        body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
-                      />
+                    <button
+                      className="utrecht-link button-no-style"
+                      data-bs-toggle="modal"
+                      data-bs-target="#logsHelpModal"
+                      onClick={handleSetLogsDocumentation}
+                    >
                       <i className="fas fa-question mr-1" />
                       <span className="mr-2">Help</span>
                     </button>
+                    <Modal
+                      title="Logs Documentation"
+                      id="logsHelpModal"
+                      body={() =>
+                        logsDocumentation ? (
+                          <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} />
+                        ) : (
+                          <Spinner />
+                        )
+                      }
+                    />
                     <a className="utrecht-link" onClick={handleSetLogs}>
                       <i className="fas fa-sync-alt mr-1" />
                       <span className="mr-2">Refresh</span>
                     </a>
                   </>
-                }
-                cardBody={() =>
-                  showSpinner === true ? (<Spinner/>) :
-                  <LogTable logs={logs} />}
+                )}
+                cardBody={() => (showSpinner ? <Spinner /> : <LogTable logs={logs} />)}
               />
             </div>
           </div>

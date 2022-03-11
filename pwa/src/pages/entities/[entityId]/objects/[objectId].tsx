@@ -8,7 +8,7 @@ const IndexPage = (props) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: "Object", subText: "Edit or view your object"})
+    setHeader("Object");
   }, [setHeader]);
 
   return (

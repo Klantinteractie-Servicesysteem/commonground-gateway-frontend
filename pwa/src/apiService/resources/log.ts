@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Log {
@@ -8,30 +9,30 @@ export default class Log {
   }
 
   public getAllIncoming = (): Promise<AxiosResponse> => {
-    return this._instance.get("/logs?type=in");
+    return Send(this._instance, "GET", "/logs?type=in");
   };
 
   public getAllFromSession = (sessionId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/logs?session=${sessionId}`);
+    return Send(this._instance, "GET", `/logs?session=${sessionId}`);
   };
 
   public getAllFromCall = (callId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/logs?callId=${callId}`);
+    return Send(this._instance, "GET", `/logs?callId=${callId}`);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
-    return this._instance.get("/logs?entity.id=" + entityId);
+    return Send(this._instance, "GET", `/logs?entity.id=${entityId}`);
   };
 
   public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-    return this._instance.get("/logs?endpoint.id=" + endpointId);
+    return Send(this._instance, "GET", `/logs?endpoint.id=${endpointId}`);
   };
 
   public getAllFromSource = (sourceId: string): Promise<AxiosResponse> => {
-    return this._instance.get("/logs?source.id=" + sourceId);
+    return Send(this._instance, "GET", `/logs?source.id=${sourceId}`);
   };
 
   public getAllOutgoingFromCallId = (callId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/logs?type=out&callId=${callId}`);
+    return Send(this._instance, "GET", `/logs?type=out&callId=${callId}`);
   };
 }

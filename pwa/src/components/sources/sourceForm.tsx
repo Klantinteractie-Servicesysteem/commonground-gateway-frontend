@@ -38,13 +38,17 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader(
+      <>
+        Source <i>{source && source.name}</i>
+      </>,
+    );
+  }, [setHeader, source]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
     sourceId && handleSetSource();
-    setHeader({
-      title: "Source",
-      subText: "Manage your source here",
-    });
-  }, [setHeader, sourceId, API]);
+  }, [sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
