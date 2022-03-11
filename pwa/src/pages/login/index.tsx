@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./login.css";
 import APIService from "../../apiService/apiService";
-import { isLoggedIn, setUser } from "../../services/auth";
+import { setUser } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 import Particles from "react-tsparticles";
