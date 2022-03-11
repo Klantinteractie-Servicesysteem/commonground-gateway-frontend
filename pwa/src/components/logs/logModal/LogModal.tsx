@@ -111,8 +111,8 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
                     </tr>
                     <tr>
-                      <th>Route</th>
-                      <td>{log.routeName}</td>
+                      <th>{log.type === "out" ? "Source" : "Route"}</th>
+                      <td>{log.type === "out" ? <Link to={`/sources/${log.source.id}`}>{log.source.name}</Link> : log.routeName}</td>
                     </tr>
                     <tr>
                       <th>Endpoint</th>
