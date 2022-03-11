@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Entity {
@@ -7,23 +8,23 @@ export default class Entity {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/entities");
+  public getAll = (): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "GET", "/entities");
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/entities/${id}`);
+  public getOne = (id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "GET", `/entities/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/entities", JSON.stringify(data));
+  public create = (data: any): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "POST", "/entities", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/entities/${id}`, JSON.stringify(data));
+  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "PUT", `/entities/${id}`, data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/entities/${id}`)
-  }
+  public delete = (id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "DELETE", `/entities/${id}`);
+  };
 }

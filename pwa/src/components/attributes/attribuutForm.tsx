@@ -26,6 +26,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { MIMETypes } from "../../data/mimeTypes";
 import MultiSelect from "../common/multiSelect";
+import Application from "../../apiService/resources/application";
 
 interface AttributeFormProps {
   attributeId: string;
@@ -44,11 +45,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Attribute",
-      subText: "Manage your attribute here",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Attribute <i>{attribute && attribute.name}</i>
+      </>,
+    );
+  }, [setHeader, attribute]);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -60,9 +62,11 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [API, attributeId]);
 
   React.useEffect(() => {
-    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
+    if (attributeId) {
+      if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
 
-    if (attribute && attributes) setShowSpinner(false);
+      if (attribute && attributes) setShowSpinner(false);
+    }
   }, [attribute, attributes]);
 
   const handleSetAttribute = () => {

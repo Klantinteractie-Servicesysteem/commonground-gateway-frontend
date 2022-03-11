@@ -12,7 +12,7 @@ export default function Header({ pageContext }) {
     <>
       <header className="utrecht-page-header">
         <div className="container">
-          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">{header.title}</h1>
+          <h1 className="utrecht-heading-1 utrecht-heading-1--distanced">{header}</h1>
           <Breadcrumbs {...{ crumbs }} />
         </div>
       </header>

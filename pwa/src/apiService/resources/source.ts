@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Source {
@@ -7,23 +8,23 @@ export default class Source {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/gateways");
+  public getAll = (): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "GET", "/gateways");
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/gateways/${id}`);
+  public getOne = (id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "GET", `/gateways/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/gateways", JSON.stringify(data));
+  public create = (data: any): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "POST", "/gateways", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/gateways/${id}`, JSON.stringify(data));
+  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "PUT", `/gateways/${id}`, data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/gateways/${id}`)
-  }
+  public delete = (id: string): Promise<AxiosResponse | {}> => {
+    return Send(this._instance, "DELETE", `/gateways/${id}`);
+  };
 }

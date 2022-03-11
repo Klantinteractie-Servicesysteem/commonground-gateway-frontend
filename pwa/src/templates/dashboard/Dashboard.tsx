@@ -12,9 +12,11 @@ import sourcesIcon from "./../../images/icon-sources.svg";
 import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
+import { Card, Modal } from "@conductionnl/nl-design-system";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
+  const [logsDocumentation, setLogsDocumentation] = React.useState(null);
   const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
   const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const [endpointsCount, setEndpointsCount] = React.useState<number>(0);
@@ -26,12 +28,24 @@ const Dashboard: React.FC = () => {
   }, [API]);
 
   const handleSetLogs = (): void => {
+    logs && setLogs(null);
+
     API.Log.getAllIncoming()
       .then((res) => {
         setLogs(res.data);
       })
       .catch((err) => {
         throw new Error(`GET Incoming Logs error: ${err}`);
+      });
+  };
+
+  const handleSetLogsDocumentation = (): void => {
+    API.Documentation.get("logs")
+      .then((res) => {
+        setLogsDocumentation(res.data.content);
+      })
+      .catch((err) => {
+        throw new Error(`GET Logs documentation error: ${err}`);
       });
   };
 
@@ -97,13 +111,36 @@ const Dashboard: React.FC = () => {
 
       <div className="dashboard-row-logsAndDocumentation">
         <div className="dashboard-logsTable">
-          <h3 className="dashboard-dividerTitle">Recent activity (logs)</h3>
+          <h3 className="dashboard-dividerTitle">Recent activity</h3>
 
-          <div className="dashboard-logsTableContainer">
-            <span className="title">Activity</span>
-            <span className="subtitle">View all logged activities of the last 24 hours</span>
-            {logs ? <LogsTable {...{ logs }} /> : <Spinner />}
-          </div>
+          <Card
+            title="Recent activity"
+            cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
+            cardHeader={() => (
+              <>
+                <button
+                  className="utrecht-link button-no-style"
+                  data-bs-toggle="modal"
+                  data-bs-target="#logsHelpModal"
+                  onClick={handleSetLogsDocumentation}
+                >
+                  <Modal
+                    title="Logs Documentation"
+                    id="logsHelpModal"
+                    body={() =>
+                      logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
+                    }
+                  />
+                  <i className="fas fa-question mr-1" />
+                  <span className="mr-2">Help</span>
+                </button>
+                <a className="utrecht-link" onClick={handleSetLogs}>
+                  <i className="fas fa-sync-alt mr-1" />
+                  <span className="mr-2">Refresh</span>
+                </a>
+              </>
+            )}
+          />
         </div>
 
         <div className="dashboard-externalLinks">

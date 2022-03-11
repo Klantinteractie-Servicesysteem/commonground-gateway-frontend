@@ -14,12 +14,10 @@ const IndexPage = (props) => {
   const [logs, setLogs] = React.useState([]);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [_, setAlert] = React.useContext(AlertContext);
-  const [documentation, setDocumentation] = React.useState<string>(null);
-
+  const [logsDocumentation, setLogsDocumentation] = React.useState<string>(null);
 
   React.useEffect(() => {
     handleSetLogs();
-    handleSetDocumentation();
   }, [API]);
 
   const handleSetLogs = (): void => {
@@ -37,14 +35,14 @@ const IndexPage = (props) => {
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("")
+  const handleSetLogsDocumentation = (): void => {
+    API.Documentation.get("logs")
       .then((res) => {
-        setDocumentation(res.data.content);
+        setLogsDocumentation(res.data.content);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
+        throw new Error(`GET Logs documentation error: ${err}`);
       });
   };
 
@@ -59,42 +57,42 @@ const IndexPage = (props) => {
                   {
                     name: "Overview",
                     id: "overview",
-                    active: true
+                    active: true,
                   },
                   {
                     name: "Logs",
-                    id: "logs"
-                  }
+                    id: "logs",
+                  },
                 ]}
               />
             )}
             <div className="tab-content">
-              <div
-                className="tab-pane active"
-                id="overview"
-                role="tabpanel"
-                aria-labelledby="overview-tab"
-              >
+              <div className="tab-pane active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                 <br />
                 <SourceForm {...{ sourceId }} />
               </div>
-              <div
-                className="tab-pane"
-                id="logs"
-                role="tabpanel"
-                aria-labelledby="logs-tab"
-              >
+              <div className="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
                 <br />
                 <Card
                   title="Source Logs"
-                  cardHeader={() =>
+                  cardHeader={() => (
                     <>
-                      <button className="utrecht-link button-no-style" data-bs-toggle="modal"
-                              data-bs-target="#sourceLogHelpModal">
+                      <button
+                        className="utrecht-link button-no-style"
+                        data-bs-toggle="modal"
+                        data-bs-target="#logsHelpModal"
+                        onClick={handleSetLogsDocumentation}
+                      >
                         <Modal
-                          title="Source Documentation"
-                          id="sourceLogHelpModal"
-                          body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
+                          title="Logs Documentation"
+                          id="logsHelpModal"
+                          body={() =>
+                            logsDocumentation ? (
+                              <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} />
+                            ) : (
+                              <Spinner />
+                            )
+                          }
                         />
                         <i className="fas fa-question mr-1" />
                         <span className="mr-2">Help</span>
@@ -104,10 +102,8 @@ const IndexPage = (props) => {
                         <span className="mr-2">Refresh</span>
                       </a>
                     </>
-                  }
-                  cardBody={() =>
-                    showSpinner === true ? (<Spinner />) :
-                      <LogTable logs={logs} />}
+                  )}
+                  cardBody={() => (showSpinner ? <Spinner /> : <LogTable logs={logs} />)}
                 />
               </div>
             </div>
