@@ -48,7 +48,6 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
     log.requestHeaders["content-type"] !== undefined
       ? setResponseCodeLanguage(getCodeLanguage(log.requestHeaders["content-type"][0]))
       : setRequestCodeLanguage("json");
-    console.log("React.useEffect()");
   }, [log]);
 
   return (
