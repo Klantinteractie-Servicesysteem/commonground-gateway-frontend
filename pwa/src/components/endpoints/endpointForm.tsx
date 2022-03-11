@@ -36,14 +36,21 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetApplications();
+    setHeader(
+      <>
+        Endpoint <i>{endpoint && endpoint.name}</i>
+      </>,
+    );
+  }, [setHeader, endpoint]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetApplications();
     endpointId && handleSetEndpoint();
-    setHeader({
-      title: "Endpoint",
-      subText: "Manage your endpoint here"
-    });
-  }, [setHeader, endpointId, API]);
+  }, [API, endpointId]);
 
   const handleSetEndpoint = () => {
     setShowSpinner(true);

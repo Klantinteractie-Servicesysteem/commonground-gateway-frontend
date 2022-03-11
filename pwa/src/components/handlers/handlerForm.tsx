@@ -46,11 +46,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     getTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
-    setHeader({
-      title: "Handler",
-      subText: "Manage your handler here",
-    });
-  }, [setHeader, API, handlerId]);
+  }, [API, handlerId]);
+
+  React.useEffect(() => {
+    setHeader(
+      <>
+        Handler <i>{handler && handler.name}</i>
+      </>,
+    );
+  }, [setHeader, handler]);
 
   const handleSetHandler = () => {
     setShowSpinner(true);
@@ -183,6 +187,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 data-bs-target="#handlerHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
+                <Modal
+                  title="Handler Documentation"
+                  id="handlerHelpModal"
+                  body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
+                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>

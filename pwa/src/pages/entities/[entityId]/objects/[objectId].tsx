@@ -9,40 +9,29 @@ const IndexPage = (props) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({title: "Object", subText: "Edit or view your object"})
+    setHeader("Object");
   }, [setHeader]);
 
   return (
-      <main>
-        <div className="row">
-          <div className="col-12">
-            <div className="page-top-item">
-              {props.params.id !== "new" ? (
-                <Tabs
-                  items={[
-                    { name: "Edit", id: "edit", active: true }
-                  ]}
-                />
-              ) : (
-                <Tabs
-                  items={[{ name: "Edit", id: "edit", active: true }]}
-                />
-              )}
-            </div>
-            <div className="tab-content">
-              <div
-                className="tab-pane active"
-                id="overview"
-                role="tabpanel"
-                aria-labelledby="overview-tab"
-              >
-                <br />
-                <ObjectEntityFormNew {...{entityId, objectId}} />
-              </div>
+    <main>
+      <div className="row">
+        <div className="col-12">
+          <div className="page-top-item">
+            {props.params.id !== "new" ? (
+              <Tabs items={[{ name: "Edit", id: "edit", active: true }]} />
+            ) : (
+              <Tabs items={[{ name: "Edit", id: "edit", active: true }]} />
+            )}
+          </div>
+          <div className="tab-content">
+            <div className="tab-pane active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+              <br />
+              <ObjectEntityFormNew {...{ entityId, objectId }} />
             </div>
           </div>
         </div>
-      </main>
+      </div>
+    </main>
   );
 };
 
