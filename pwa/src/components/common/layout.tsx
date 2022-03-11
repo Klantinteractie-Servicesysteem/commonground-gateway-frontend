@@ -31,7 +31,6 @@ export default function Layout({ children, pageContext }) {
     }
 
     const jwt = sessionStorage.getItem("jwt");
-    !validateSession(jwt) && logout();
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 
