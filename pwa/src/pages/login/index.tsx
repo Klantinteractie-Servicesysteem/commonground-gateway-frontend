@@ -13,10 +13,6 @@ const Login: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const API: APIService = new APIService("");
 
-  React.useEffect(() => {
-    isLoggedIn() && navigate("/");
-  }, [API]);
-
   const handleLogin = (): void => {
     setLoading(true);
 
