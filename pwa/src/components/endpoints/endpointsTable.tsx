@@ -61,11 +61,11 @@ export default function EndpointsTable() {
     setLoadingOverlay(true);
     API.Endpoint.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted endpoint`, type: "success" });
+        setAlert({ message: "Deleted endpoint", type: "success" });
         handleSetEndpoints();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE endpoint error: " + err);
       })
       .finally(() => {

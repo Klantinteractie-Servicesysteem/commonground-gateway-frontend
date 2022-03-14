@@ -57,11 +57,11 @@ export default function AttributeTable({ entityId }) {
     setLoadingOverlay(true);
     API.Attribute.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted attribute`, type: "success" });
+        setAlert({ message: "Deleted attribute", type: "success" });
         handleSetAttributes();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE attribute error: " + err);
       })
       .finally(() => {

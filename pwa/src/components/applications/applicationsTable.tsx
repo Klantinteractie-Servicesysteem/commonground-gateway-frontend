@@ -65,11 +65,11 @@ export default function ApplicationsTable() {
     setLoadingOverlay(true);
     API.Application.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted application`, type: "success" });
+        setAlert({ message: "Deleted application", type: "success" });
         handleSetApplications();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE application error: " + err);
       })
       .finally(() => {

@@ -53,11 +53,11 @@ export default function HandlersTable({ endpointId }) {
     setLoadingOverlay(true);
     API.Handler.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted handler`, type: "success" });
+        setAlert({ message: "Deleted handler", type: "success" });
         handleSetHandlers();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE handler error: " + err);
       })
       .finally(() => {

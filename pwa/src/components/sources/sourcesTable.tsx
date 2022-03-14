@@ -61,11 +61,11 @@ export default function SourcesTable() {
     setLoadingOverlay(true);
     API.Source.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted source`, type: "success" });
+        setAlert({ message: "Deleted source", type: "success" });
         handleSetSources();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {

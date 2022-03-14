@@ -61,11 +61,11 @@ export default function EntitiesTable() {
     setLoadingOverlay(true);
     API.Entity.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted object type`, type: "success" });
+        setAlert({ message: "Deleted object type", type: "success" });
         handleSetEntities();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {

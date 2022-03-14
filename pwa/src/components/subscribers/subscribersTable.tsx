@@ -41,11 +41,11 @@ export default function SubscribersTable({ entityId }) {
     setLoadingOverlay(true);
     API.Subscriber.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted subscriber`, type: "success" });
+        setAlert({ message: "Deleted subscriber", type: "success" });
         handleSetSubscribers();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE Subscriber error: " + err);
       })
       .finally(() => {

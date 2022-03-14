@@ -55,12 +55,12 @@ export default function TranslationTable({ tableName }) {
     setLoadingOverlay(true);
     API.Translation.delete(id)
       .then(() => {
-        setAlert({ message: `Deleted translation with id: ${id}`, type: "success" });
+        setAlert({ message: "Deleted translation", type: "success" });
         translations.length === 1 && navigate("/translation-tables"); // removed the last translation table
         getTranslations();
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("DELETE translation error: " + err);
       })
       .finally(() => {
