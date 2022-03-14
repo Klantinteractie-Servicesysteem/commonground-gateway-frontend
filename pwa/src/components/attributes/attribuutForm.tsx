@@ -26,6 +26,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { MIMETypes } from "../../data/mimeTypes";
 import MultiSelect from "../common/multiSelect";
+import Application from "../../apiService/resources/application";
 
 interface AttributeFormProps {
   attributeId: string;
@@ -44,11 +45,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Attribute",
-      subText: "Manage your attribute here",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Attribute <i>{attribute && attribute.name}</i>
+      </>,
+    );
+  }, [setHeader, attribute]);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -60,9 +62,11 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   }, [API, attributeId]);
 
   React.useEffect(() => {
-    if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
+    if (attributeId) {
+      if ((!attribute || !attributes) && !showSpinner) setShowSpinner(true);
 
-    if (attribute && attributes) setShowSpinner(false);
+      if (attribute && attributes) setShowSpinner(false);
+    }
   }, [attribute, attributes]);
 
   const handleSetAttribute = () => {
@@ -147,7 +151,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       minDate: event.target.minDate.value ?? null,
       uniqueItems: event.target.uniqueItems.checked,
       minProperties: event.target.minProperties.value ? parseInt(event.target.minProperties.value) : null,
-      maxProperties: event.target.maxProperties.value ?? null,
+      maxProperties: event.target.maxProperties.value ? parseInt(event.target.minProperties.value) : null,
       inversedBy: event.target.inversedBy.value ?? null,
       fileTypes,
       attributeEnum,
@@ -172,7 +176,9 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       API.Attribute.create(body)
         .then(() => {
           setAlert({ message: "Saved attribute", type: "success" });
-          navigate(`/entities/${entityId}`);
+          navigate(`/entities/${entityId}`, {
+            state: { activeTab: "attributes" },
+          });
         })
         .catch((err) => {
           setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });

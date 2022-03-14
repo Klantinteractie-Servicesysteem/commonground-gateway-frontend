@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class ObjectEntity {
@@ -8,26 +9,26 @@ export default class ObjectEntity {
   }
 
   public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/object_entities/${id}`);
+    return Send(this._instance, "GET", `/object_entities/${id}`);
   };
 
   public sync = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/object_entities/${id}/sync`);
+    return Send(this._instance, "GET", `/object_entities/${id}/sync`);
   };
 
   public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/object_entities", JSON.stringify(data));
+    return Send(this._instance, "POST", "/object_entities", data);
   };
 
   public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/object_entities/${id}`, JSON.stringify(data));
+    return Send(this._instance, "PUT", `/object_entities/${id}`, data);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/object_entities?entity.id=${entityId}`);
+    return Send(this._instance, "GET", `/object_entities?entity.id=${entityId}`);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/object_entities/${id}`)
-  }
+    return Send(this._instance, "DELETE", `/object_entities/${id}`);
+  };
 }

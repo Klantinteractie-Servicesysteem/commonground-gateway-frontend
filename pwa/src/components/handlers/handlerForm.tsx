@@ -3,7 +3,8 @@ import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArrayWithName,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
@@ -46,11 +47,15 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     getTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
-    setHeader({
-      title: "Handler",
-      subText: "Manage your handler here",
-    });
-  }, [setHeader, API, handlerId]);
+  }, [API, handlerId]);
+
+  React.useEffect(() => {
+    setHeader(
+      <>
+        Handler <i>{handler && handler.name}</i>
+      </>,
+    );
+  }, [setHeader, handler]);
 
   const handleSetHandler = () => {
     setShowSpinner(true);
@@ -83,7 +88,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     API.Translation.getTableNames()
       .then((res) => {
         const names = res.data?.results.map((name, idx) => {
-          return { name: name, value: name, idx }
+          return { name: name, value: name, idx };
         });
         setTableNames(names);
       })
@@ -141,7 +146,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       API.Handler.create(body)
         .then(() => {
           setAlert({ message: "Saved Handler", type: "success" });
-          navigate("/handlers");
+          navigate(`/endpoints/${endpointId}/handlers`);
         })
         .catch((err) => {
           setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
@@ -360,12 +365,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 id={"mappingIn"}
                                 label={"Mapping In"}
                                 data={[
-                                      {
-                                        key: "mappingIn",
-                                        value: handler?.mappingIn
-                                      }
-                                    ]
-                                }
+                                  {
+                                    key: "mappingIn",
+                                    value: handler?.mappingIn,
+                                  },
+                                ]}
                               />
                             );
                           },
@@ -379,12 +383,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 id={"mappingOut"}
                                 label={"Mapping Out"}
                                 data={[
-                                      {
-                                        key: "mappingOut",
-                                        value: `${handler?.mappingOut}`
-                                      }
-                                    ]
-                                }
+                                  {
+                                    key: "mappingOut",
+                                    value: `${handler?.mappingOut}`,
+                                  },
+                                ]}
                               />
                             );
                           },
