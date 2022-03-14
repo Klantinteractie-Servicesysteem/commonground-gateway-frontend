@@ -176,7 +176,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -184,29 +184,27 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           id={"nameInput"}
                           data={endpoint && endpoint.name && endpoint.name}
                           nameOverride={"Name"}
+                          required
                         />
                       </div>
+                      <div className="col-6">
+                        <GenericInputComponent
+                          nameOverride={"Path"}
+                          name={"path"}
+                          data={endpoint?.path}
+                          type={"text"}
+                          id={"pathInput"}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="row form-row">
                       <div className="col-6">
                         <TextareaGroup
                           name={"description"}
                           id={"descriptionInput"}
                           defaultValue={endpoint?.description}
                         />
-                      </div>
-                    </div>
-                    <br />
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <GenericInputComponent
-                            nameOverride={"Path"}
-                            name={"path"}
-                            data={endpoint?.path}
-                            type={"text"}
-                            id={"pathInput"}
-                            required={true}
-                          />
-                        </div>
                       </div>
                     </div>
                     <Accordion

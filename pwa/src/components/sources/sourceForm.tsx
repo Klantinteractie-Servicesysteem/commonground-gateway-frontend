@@ -170,7 +170,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                 ) : (
                   <>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -194,8 +194,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <SelectInputComponent
                           options={[
@@ -227,8 +226,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -248,8 +246,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -269,8 +266,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -290,8 +286,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -311,7 +306,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -331,7 +326,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br />
                     <Accordion
                       id="sourceAccordion"
                       items={[

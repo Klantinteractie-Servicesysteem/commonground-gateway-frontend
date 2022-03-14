@@ -191,7 +191,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -212,7 +212,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -232,8 +232,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
-                      <div className="col-12">
+                    <div className="row form-row">
+                      <div className="col-6">
                         <TextareaGroup
                           name={"description"}
                           id={"descriptionInput"}
