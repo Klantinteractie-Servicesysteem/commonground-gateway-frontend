@@ -16,12 +16,12 @@ export default class Source {
     return Send(this._instance, "GET", `/gateways/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return Send(this._instance, "POST", "/gateways", data);
-  };
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/gateways/${id}`, data);
+    }
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/gateways/${id}`, data);
+    return Send(this._instance, "POST", "/gateways", data);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {

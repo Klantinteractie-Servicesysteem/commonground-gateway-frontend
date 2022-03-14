@@ -41,7 +41,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
     setHeader(
       <>
         Source <i>{source && source.name}</i>
-      </>
+      </>,
     );
   }, [setHeader, source]);
 
@@ -113,37 +113,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
       return;
     }
 
-    if (!sourceId) {
-      // unset id means we're creating a new entry
-      API.Source.create(body)
-        .then(() => {
-          setAlert({ type: "success", message: "Saved source" });
-          navigate("/sources");
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create source error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (sourceId) {
-      // set id means we're updating a existing entry
-      API.Source.update(body, sourceId)
-        .then((res) => {
-          setAlert({ type: "success", message: "Updated source" });
-          setSource(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update source error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Source.createOrUpdate(body, sourceId)
+      .then(() => {
+        setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
+        navigate("/sources");
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error("Create or update source error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -208,12 +189,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           nameOverride={"Location (url)"}
                           required
                           infoTooltip={{
-                            content: <p>Enter the source location here</p>
+                            content: <p>Enter the source location here</p>,
                           }}
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <SelectInputComponent
@@ -222,7 +203,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                             { name: "xml", value: "xml" },
                             { name: "soap", value: "soap" },
                             { name: "ftp", value: "ftp" },
-                            { name: "sftp", value: "sftp" }
+                            { name: "sftp", value: "sftp" },
                           ]}
                           name={"type"}
                           id={"typeInput"}
@@ -236,7 +217,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           options={[
                             { name: "apikey", value: "apikey" },
                             { name: "jwt", value: "jwt" },
-                            { name: "username-password", value: "username-password" }
+                            { name: "username-password", value: "username-password" },
                           ]}
                           name={"auth"}
                           id={"authInput"}
@@ -246,7 +227,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -267,7 +248,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -288,7 +269,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -309,7 +290,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -350,14 +331,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <Accordion
                       id="sourceAccordion"
                       items={[
                         {
                           title: "Headers",
                           id: "headersAccordion",
-                          render: function() {
+                          render: function () {
                             return (
                               <MultiDimensionalArrayInput
                                 id="headers"
@@ -365,31 +346,31 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                                 data={
                                   source && source.headers
                                     ? [
-                                      {
-                                        key: "headers",
-                                        value: source.headers
-                                      }
-                                    ]
+                                        {
+                                          key: "headers",
+                                          value: source.headers,
+                                        },
+                                      ]
                                     : null
                                 }
                               />
                             );
-                          }
+                          },
                         },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function() {
+                          render: function () {
                             return <ElementCreationNew id="oas" label="OAS" data={source?.oas} />;
-                          }
+                          },
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function() {
+                          render: function () {
                             return <ElementCreationNew id="paths" label="Paths" data={source?.paths} />;
-                          }
-                        }
+                          },
+                        },
                       ]}
                     />
                   </>
