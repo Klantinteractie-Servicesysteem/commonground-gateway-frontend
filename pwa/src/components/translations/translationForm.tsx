@@ -176,7 +176,7 @@ interface TransFormProps {
 
 export const TransForm: React.FC<TransFormProps> = ({ translation }) => {
   return (
-    <div className="row">
+    <div className="row form-row">
       <div className="col-4">
         <div className="form-group">
           <GenericInputComponent

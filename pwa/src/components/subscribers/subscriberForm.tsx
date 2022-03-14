@@ -215,7 +215,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -234,7 +234,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <SelectInputComponent
                           options={[
@@ -260,8 +260,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <TextareaGroup
                           name={"conditions"}
@@ -285,8 +284,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <SelectInputComponent
                           options={[{ name: 'Extern Source', value: 'externSource' }, { name: 'Intern Gateway', value: 'internGateway' }]}
@@ -308,8 +306,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row mt-3">
+                    <div className="row form-row">
                       <div className="col-12 col-sm-6 ">
                         <div className="form-check">
                           <Checkbox

@@ -187,7 +187,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay/>}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -213,8 +213,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <br/>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -234,8 +233,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <br/>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <SelectInputComponent
                           options={
@@ -258,8 +256,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <br/>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-12">
                         <div className="form-check">
                           <Checkbox

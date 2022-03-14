@@ -198,7 +198,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -220,8 +220,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <TextareaGroup
                           name={"description"}
@@ -230,7 +229,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         />
                       </div>
                     </div>
-                    <br/>
                     <Accordion
                       id="endpointAccordion"
                       items={[

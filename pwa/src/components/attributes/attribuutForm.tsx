@@ -249,7 +249,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -282,8 +282,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         {attributes ? (
                           <SelectInputComponent
@@ -320,7 +319,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         />
                       </div>
                     </div>
-                    <div className="row mt-3">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -340,8 +339,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         />
                       </div>
                     </div>
-                    <br/>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-12">
                         <TextareaGroup
                           name={"description"}
@@ -359,7 +357,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                           render: function () {
                             return (
                               <>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"number"}
@@ -379,7 +377,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-12 col-sm-6">
                                     <div className="form-check">
                                       <Checkbox
@@ -403,7 +401,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     </div>
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"number"}
@@ -423,7 +421,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"number"}
@@ -443,7 +441,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"text"}
@@ -463,7 +461,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"number"}
@@ -483,7 +481,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-6">
                                     <GenericInputComponent
                                       type={"text"}
@@ -503,7 +501,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
-                                <br/>
                                 <Accordion
                                   id="attributeAccordion"
                                   items={[
@@ -577,7 +574,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                             return (
                               // Here the Validation
                               <>
-                                <div className="row mt-3">
+                                <div className="row form-row">
                                   <div className="col-12 col-sm-6 ">
                                     <div className="form-check">
                                       <Checkbox
