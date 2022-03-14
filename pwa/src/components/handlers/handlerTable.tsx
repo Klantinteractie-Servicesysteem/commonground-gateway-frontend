@@ -27,7 +27,7 @@ export default function HandlersTable({ endpointId }) {
         setHandlers(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET handler from endpoint error: " + err);
       })
       .finally(() => {
@@ -41,7 +41,7 @@ export default function HandlersTable({ endpointId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -54,7 +54,7 @@ export default function HandlersTable({ endpointId }) {
           handleSetHandlers();
         })
         .catch((err) => {
-          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+          setAlert({ message: err, type: "danger" });
           throw new Error("DELETE handler error: " + err);
         });
     }

@@ -39,7 +39,7 @@ export default function ApplicationsTable() {
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Applications error: " + err);
       })
       .finally(() => {
@@ -53,7 +53,7 @@ export default function ApplicationsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -66,7 +66,7 @@ export default function ApplicationsTable() {
           handleSetApplications();
         })
         .catch((err) => {
-          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+          setAlert({ message: err, type: "danger" });
           throw new Error("DELETE application error: " + err);
         });
     }

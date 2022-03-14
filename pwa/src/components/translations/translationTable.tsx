@@ -30,8 +30,7 @@ export default function TranslationTable({ tableName }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
-
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -61,7 +60,7 @@ export default function TranslationTable({ tableName }) {
           getTranslations();
         })
         .catch((err) => {
-          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+          setAlert({ message: err, type: "danger" });
           throw new Error("DELETE translation error: " + err);
         })
         .finally(() => {

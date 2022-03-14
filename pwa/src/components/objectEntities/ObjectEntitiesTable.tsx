@@ -94,7 +94,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         res?.data?.length > 0 && setObjectEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
@@ -106,7 +106,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     setShowSpinner(true);
     API.ObjectEntity.sync(objectEntityId)
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
@@ -121,7 +121,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -134,7 +134,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
           handleSetObjectEntities();
         })
         .catch((err) => {
-          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+          setAlert({ message: err, type: "danger" });
           throw new Error("DELETE object entity error: " + err);
         });
     }
@@ -208,11 +208,11 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
                             {
-                              item.externalId && item.gateway?.location && entity?.endpoint &&  
+                              item.externalId && item.gateway?.location && entity?.endpoint &&
                               <button onClick={() => {syncObject(item.id)}} className="utrecht-button btn-sm btn-primary mr-2">
                                 <FontAwesomeIcon icon={faSync} /> Sync
                               </button>
-                            } 
+                            }
                             <Link
                               className="utrecht-link d-flex justify-content-end"
                               to={`/entities/${entityId}/objects/${item.id}`}
