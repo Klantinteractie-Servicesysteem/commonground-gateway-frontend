@@ -68,34 +68,20 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
     };
 
-    if (!id) {
-      API.Translation.create(body)
-        .then((res) => {
-          setTranslation(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET translation error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-          setLoadingOverlay(false);
-          navigate(`/translation-tables/${tableName}/translations`);
-        });
-    }
-
-    if (id) {
-      API.Translation.update(body, id)
-        .then((res) => {
-          setTranslation(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET translation error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-          setLoadingOverlay(false);
-        });
-    }
+    API.Translation.createOrUpdate(body, id)
+      .then((res) => {
+        setTranslation(res.data);
+        setAlert({ message: `${id ? "Updated" : "Created"} translation`, type: "success" });
+      })
+      .catch((err) => {
+        setAlert({ message: `Error creating translation: ${err}`, type: "danger" });
+        throw new Error("GET translation error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+        setLoadingOverlay(false);
+        navigate(`/translation-tables/${tableName}/translations`);
+      });
   };
   React.useEffect(() => {
     handleSetDocumentation();
