@@ -50,7 +50,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
 
     API.Entity.getOne(entityId)
       .then((res) => {
-        console.log(res.data)
         setEntity(res.data);
       })
       .catch((err) => {
@@ -110,7 +109,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
       setLoadingOverlay(false);
       return;
     }
-    console.log(body)
+
     if (!entityId) {
       // unset id means we're creating a new entry
       API.Entity.create(body)
