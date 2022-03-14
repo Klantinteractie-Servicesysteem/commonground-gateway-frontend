@@ -230,6 +230,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
+                    <br/>
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -250,6 +251,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
+                    <br/>
                     <div className="row">
                       <div className="col-12">
                         <TextareaGroup

@@ -340,6 +340,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         />
                       </div>
                     </div>
+                    <br/>
                     <div className="row">
                       <div className="col-12">
                         <TextareaGroup
@@ -502,6 +503,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                     />
                                   </div>
                                 </div>
+                                <br/>
                                 <Accordion
                                   id="attributeAccordion"
                                   items={[

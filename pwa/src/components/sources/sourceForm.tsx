@@ -330,6 +330,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
+                    <br/>
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
