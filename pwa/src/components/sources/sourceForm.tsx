@@ -47,8 +47,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
 
   React.useEffect(() => {
     handleSetDocumentation();
-    id && handleSetSource();
-  }, [id, API]);
+    sourceId && handleSetSource();
+  }, [sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
