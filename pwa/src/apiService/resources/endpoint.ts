@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Endpoint {
@@ -8,22 +9,22 @@ export default class Endpoint {
   }
 
   public getAll = (): Promise<AxiosResponse> => {
-    return this._instance.get("/endpoints");
+    return Send(this._instance, "GET", "/endpoints");
   };
 
   public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/endpoints/${id}`);
+    return Send(this._instance, "GET", `/endpoints/${id}`);
   };
 
   public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/endpoints", JSON.stringify(data));
+    return Send(this._instance, "POST", "/endpoints", data);
   };
 
   public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/endpoints/${id}`, JSON.stringify(data));
+    return Send(this._instance, "PUT", `/endpoints/${id}`, data);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/endpoints/${id}`)
-  }
+    return Send(this._instance, "DELETE", `/endpoints/${id}`);
+  };
 }

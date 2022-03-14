@@ -17,7 +17,7 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Sources", subText: "An overview of your source objects" });
+    setHeader("Sources");
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -49,7 +49,7 @@ export default function SourcesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -62,7 +62,7 @@ export default function SourcesTable() {
           handleSetSources();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE Sources error: " + err);
         });
     }

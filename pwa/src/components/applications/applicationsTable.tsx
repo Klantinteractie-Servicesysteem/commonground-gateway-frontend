@@ -17,8 +17,12 @@ export default function ApplicationsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Applications", subText: "An overview of your application objects" });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Application <i>{applications && applications.name}</i>
+      </>,
+    );
+  }, [setHeader, applications]);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -35,7 +39,7 @@ export default function ApplicationsTable() {
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Applications error: " + err);
       })
       .finally(() => {
@@ -49,7 +53,7 @@ export default function ApplicationsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -62,7 +66,7 @@ export default function ApplicationsTable() {
           handleSetApplications();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE application error: " + err);
         });
     }

@@ -27,7 +27,7 @@ module.exports = {
         autoGenHomeLabel: "Dashboard",
         crumbLabelUpdates: [
           {
-            pathname: "/sources/[id]",
+            pathname: "/sources/[sourceId]",
             crumbLabel: "Source",
           },
           {

@@ -1,9 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 
-export interface HeaderProps {
-  title: string,
-  subText: string,
-}
-
-export const HeaderContext = React.createContext<[HeaderProps, (value: HeaderProps) => void]>(null)
-export const HeaderProvider = HeaderContext.Provider
+export const HeaderContext = React.createContext<[string | JSX.Element, (value: string | JSX.Element) => void]>(null);
+export const HeaderProvider = HeaderContext.Provider;

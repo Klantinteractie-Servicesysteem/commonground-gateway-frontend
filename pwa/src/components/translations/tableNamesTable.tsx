@@ -55,7 +55,7 @@ export default function TableNamesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ type: "danger", message: err });
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err });
         throw new Error("GET Documentation error: " + err);
       });
   };

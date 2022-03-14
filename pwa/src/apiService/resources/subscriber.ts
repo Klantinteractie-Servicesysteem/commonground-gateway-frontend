@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Subscriber {
@@ -8,22 +9,22 @@ export default class Subscriber {
   }
 
   public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/subscribers/${id}`);
+    return Send(this._instance, "GET", `/subscribers/${id}`);
   };
 
   public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/subscribers", JSON.stringify(data));
+    return Send(this._instance, "POST", "/subscribers", data);
   };
 
   public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/subscribers/${id}`, JSON.stringify(data));
+    return Send(this._instance, "PUT", `/subscribers/${id}`, data);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/subscribers?entity.id=${entityId}`);
+    return Send(this._instance, "GET", `/subscribers?entity.id=${entityId}`);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/subscribers/${id}`)
-  }
+    return Send(this._instance, "DELETE", `/subscribers/${id}`);
+  };
 }

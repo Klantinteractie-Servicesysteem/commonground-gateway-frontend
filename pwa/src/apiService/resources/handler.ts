@@ -1,3 +1,4 @@
+import { Send } from "../apiService";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 export default class Handler {
@@ -8,23 +9,22 @@ export default class Handler {
   }
 
   public getOne = (id: string): Promise<AxiosResponse> => {
-    return this._instance.get(`/handlers/${id}`);
+    return Send(this._instance, "GET", `/handlers/${id}`);
   };
 
   public create = (data: any): Promise<AxiosResponse> => {
-    return this._instance.post("/handlers", JSON.stringify(data));
+    return Send(this._instance, "POST", "/handlers", data);
   };
 
   public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return this._instance.put(`/handlers/${id}`, JSON.stringify(data));
+    return Send(this._instance, "PUT", `/handlers/${id}`, data);
   };
 
   public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-
-    return this._instance.get(`/handlers?endpoint.id=${endpointId}`);
+    return Send(this._instance, "GET", `/handlers?endpoint.id=${endpointId}`);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {
-    return this._instance.delete(`/handlers/${id}`);
+    return Send(this._instance, "DELETE", `/handlers/${id}`);
   };
 }

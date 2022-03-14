@@ -38,13 +38,17 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
+    setHeader(
+      <>
+        Source <i>{source && source.name}</i>
+      </>,
+    );
+  }, [setHeader, source]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
     sourceId && handleSetSource();
-    setHeader({
-      title: "Source",
-      subText: "Manage your source here",
-    });
-  }, [setHeader, sourceId, API]);
+  }, [sourceId, API]);
 
   const handleSetSource = () => {
     setShowSpinner(true);
@@ -54,7 +58,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
         setSource(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET gateway error: " + err);
       })
       .finally(() => {
@@ -67,7 +71,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -80,7 +84,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
     let oas = retrieveFormArrayAsOArray(event.target, "oas");
     let paths = retrieveFormArrayAsOArray(event.target, "paths");
 
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description ? event.target.description.value : null,
       type: event.target.type.value,
@@ -103,8 +107,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
 
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"], body["location"], body["type"], body["auth"]])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+    if (!checkValues([body.name, body.location, body.type, body.auth])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -117,7 +121,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
           navigate("/sources");
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create source error: " + err);
         })
         .finally(() => {
@@ -133,7 +137,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
           setSource(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update source error: " + err);
         })
         .finally(() => {

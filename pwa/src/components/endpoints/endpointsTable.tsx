@@ -17,7 +17,7 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({ title: "Endpoints", subText: "An overview of your endpoint objects" });
+    setHeader("Endpoints");
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -35,7 +35,7 @@ export default function EndpointsTable() {
         setEndpoints(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Endpoints error: " + err);
       })
       .finally(() => {
@@ -49,7 +49,7 @@ export default function EndpointsTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -62,7 +62,7 @@ export default function EndpointsTable() {
           handleSetEndpoints();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE endpoint error: " + err);
         });
     }
