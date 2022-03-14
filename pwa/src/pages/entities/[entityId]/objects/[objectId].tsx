@@ -18,9 +18,9 @@ const IndexPage = (props) => {
         <div className="col-12">
           <div className="page-top-item">
             {props.params.id !== "new" ? (
-              <Tabs items={[{ name: "Edit", id: "edit", active: true }]} />
+              <Tabs tabs={[{ name: "Edit", id: "edit", active: true }]} />
             ) : (
-              <Tabs items={[{ name: "Edit", id: "edit", active: true }]} />
+              <Tabs tabs={[{ name: "Edit", id: "edit", active: true }]} />
             )}
           </div>
           <div className="tab-content">
