@@ -48,11 +48,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Applications",
-      subText: "Manage your applications here",
-    });
-  }, [setHeader]);
+    setHeader(
+      <>
+        Application <i>{application && application.name}</i>
+      </>,
+    );
+  }, [setHeader, application]);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -74,7 +75,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         setApplication(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET application error: " + err);
       })
       .finally(() => {
@@ -91,7 +92,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         setEndpoints(_endpoints);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET endpoints error: " + err);
       });
   };
@@ -102,7 +103,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -127,7 +128,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name, body.domains])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -140,7 +141,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
           navigate("/applications");
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create application error: " + err);
         })
         .finally(() => {
@@ -156,7 +157,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
           setApplication(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update application error: " + err);
         })
         .finally(() => {

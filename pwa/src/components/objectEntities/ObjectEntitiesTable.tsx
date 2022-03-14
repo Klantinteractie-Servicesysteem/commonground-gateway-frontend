@@ -5,7 +5,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faSync } from "@fortawesome/free-solid-svg-icons";
 
 interface ObjectEntitiesTableProps {
   entityId: string;
@@ -64,7 +64,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     let body = event.data;
     body.submit = undefined;
 
-    API.ApiCalls.createObject(entity?.endpoint, body)
+    API.ApiCalls.createObject(entity?.name, body)
       .catch((err) => {
         throw new Error("Create object error: " + err);
       })
@@ -94,10 +94,23 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         res?.data?.length > 0 && setObjectEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET object entities error: " + err);
       })
       .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const syncObject = (objectEntityId: string) => {
+    setShowSpinner(true);
+    API.ObjectEntity.sync(objectEntityId)
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        throw new Error("GET object entities error: " + err);
+      })
+      .finally(() => {
+        setAlert({ message: `Object ${objectEntityId} synced`, type: "success" });
         setShowSpinner(false);
       });
   };
@@ -108,7 +121,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -121,7 +134,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
           handleSetObjectEntities();
         })
         .catch((err) => {
-          setAlert({ message: err, type: "danger" });
+          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
           throw new Error("DELETE object entity error: " + err);
         });
     }
@@ -189,24 +202,26 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                       renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
                     },
                     {
-                      headerName: "Updated",
-                      field: "dateModified",
-                      renderCell: (item: { dateModified: string }) =>
-                        new Date(item.dateModified).toLocaleString("nl-NL"),
-                    },
-                    {
                       field: "id",
                       headerName: " ",
-                      renderCell: (item: { id: string }) => {
+                      renderCell: (item: { id: string, externalId: string, gateway: {location: string} }) => {
                         return (
-                          <Link
-                            className="utrecht-link d-flex justify-content-end"
-                            to={`/entities/${entityId}/objects/${item.id}`}
-                          >
-                            <button className="utrecht-button btn-sm btn-success">
-                              <FontAwesomeIcon icon={faEdit} /> Edit
-                            </button>
-                          </Link>
+                          <div className="utrecht-link d-flex justify-content-end">
+                            {
+                              item.externalId && item.gateway?.location && entity?.endpoint &&  
+                              <button onClick={() => {syncObject(item.id)}} className="utrecht-button btn-sm btn-primary mr-2">
+                                <FontAwesomeIcon icon={faSync} /> Sync
+                              </button>
+                            } 
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/objects/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
                         );
                       },
                     },
@@ -227,10 +242,6 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                     {
                       headerName: "Created",
                       field: "dateCreated",
-                    },
-                    {
-                      headerName: "Updated",
-                      field: "dateModified",
                     },
                   ]}
                   rows={[]}

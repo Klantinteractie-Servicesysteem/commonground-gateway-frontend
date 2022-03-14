@@ -10,7 +10,7 @@ import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import Alert from "../alert/alert";
-import { HeaderProps, HeaderProvider } from "../../context/headerContext";
+import { HeaderProvider } from "../../context/headerContext";
 import Header from "./header";
 
 /**
@@ -22,7 +22,7 @@ import Header from "./header";
 export default function Layout({ children, pageContext }) {
   const [API, setAPI] = React.useState<APIService>(null);
   const [alert, setAlert] = React.useState<AlertProps>(null);
-  const [header, setHeader] = React.useState<HeaderProps>(null);
+  const [header, setHeader] = React.useState(null);
 
   React.useEffect(() => {
     if (!isLoggedIn()) {
@@ -31,7 +31,6 @@ export default function Layout({ children, pageContext }) {
     }
 
     const jwt = sessionStorage.getItem("jwt");
-    !validateSession(jwt) && logout();
     !API && jwt && setAPI(new APIService(jwt));
   }, [API, isLoggedIn()]);
 

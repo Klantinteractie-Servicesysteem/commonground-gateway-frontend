@@ -36,14 +36,21 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    handleSetApplications();
+    setHeader(
+      <>
+        Endpoint <i>{endpoint && endpoint.name}</i>
+      </>,
+    );
+  }, [setHeader, endpoint]);
+
+  React.useEffect(() => {
     handleSetDocumentation();
+  });
+
+  React.useEffect(() => {
+    handleSetApplications();
     endpointId && handleSetEndpoint();
-    setHeader({
-      title: "Endpoint",
-      subText: "Manage your endpoint here"
-    });
-  }, [setHeader, endpointId, API]);
+  }, [API, endpointId]);
 
   const handleSetEndpoint = () => {
     setShowSpinner(true);
@@ -56,7 +63,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setEndpoint(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET endpoints error: " + err);
       })
       .finally(() => {
@@ -73,7 +80,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setApplications(_applications);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET application error: " + err);
       });
   };
@@ -84,7 +91,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -106,6 +113,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name, body.path])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
       return;
     }
 
@@ -117,7 +126,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
           navigate(`/endpoints`);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create endpoint error: " + err);
         })
         .finally(() => {

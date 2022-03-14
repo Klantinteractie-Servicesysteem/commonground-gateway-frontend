@@ -33,11 +33,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader({
-      title: "Object type",
-      subText: "Manage your object type here",
-    });
-  }, [setHeader]);
+    setHeader("Object Type");
+  }, [setHeader, entity]);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -56,7 +53,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setEntity(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
@@ -70,7 +67,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       });
   };
@@ -81,7 +78,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ message: err, type: "danger" });
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
         throw new Error("GET documentation error: " + err);
       });
   };
@@ -90,7 +87,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     event.preventDefault();
     setLoadingOverlay(true);
 
-    let body: {} = {
+    let body: any = {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       route: event.target.route.value ?? null,
@@ -103,7 +100,9 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     // This removes empty values from the body
     body = removeEmptyObjectValues(body);
 
-    if (!checkValues([body["name"]])) {
+    if (!checkValues([body.name])) {
+      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setLoadingOverlay(false);
       return;
     }
 
@@ -115,7 +114,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
           navigate("/entities");
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Create entity error: " + err);
         })
         .finally(() => {
@@ -131,7 +130,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
           setEntity(res.data);
         })
         .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
+          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
           throw new Error("Update entity error: " + err);
         })
         .finally(() => {
