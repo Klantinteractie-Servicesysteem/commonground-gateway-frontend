@@ -55,7 +55,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
           return (
             <>
               <Tabs
-                items={[
+                tabs={[
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
                   { name: "Response", id: `logResponse${log.id}` },
