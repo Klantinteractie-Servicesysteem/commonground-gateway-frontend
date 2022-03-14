@@ -16,12 +16,12 @@ interface LogModalProps {
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
   const API: APIService = React.useContext(APIContext);
-  const [callIdLogs, setCallIdLogs] = React.useState(null);
+  const [outgoingCallIdLog, setOutgoingCallIdLog] = React.useState(null);
 
   const handleSetOutgoingLogs = (): void => {
     API.Log.getAllOutgoingFromCallId(log.callId)
       .then((res) => {
-        setCallIdLogs(res.data);
+        setOutgoingCallIdLog(res.data);
       })
       .catch((err) => {
         throw new Error(`GET all outgoing Logs from call id error: ${err}`);
@@ -342,7 +342,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                 </div>
                 <div className="tab-pane" id={`outgoing${log.id}`} role="tabpanel" aria-labelledby="outgoing-tab">
                   <div className="mt-3">
-                    {callIdLogs ? <LogTable logs={callIdLogs} modal={false} /> : <Spinner />}
+                    {outgoingCallIdLog ? <LogTable logs={outgoingCallIdLog} modal={false} /> : <Spinner />}
                   </div>
                 </div>
               </div>
