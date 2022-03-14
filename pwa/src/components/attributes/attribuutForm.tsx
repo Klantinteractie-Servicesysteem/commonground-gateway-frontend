@@ -171,39 +171,21 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       return;
     }
 
-    if (!attributeId) {
-      // unset id means we're creating a new entry
-      API.Attribute.create(body)
-        .then(() => {
-          setAlert({ message: "Saved attribute", type: "success" });
-          navigate(`/entities/${entityId}`, {
-            state: { activeTab: "attributes" },
-          });
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
+    API.Attribute.createOrUpdate(body, attributeId)
+      .then((res) => {
+        setAlert({ message: `${attributeId ? "Updated" : "Created"} attribute`, type: "success" });
+        setAttribute(res.data);
+        navigate(`/entities/${entityId}`, {
+          state: { activeTab: "attributes" },
         });
-    }
-
-    if (attributeId) {
-      // set id means we're updating a existing entry
-      API.Attribute.update(body, attributeId)
-        .then((res) => {
-          setAlert({ message: "Updated attribute", type: "success" });
-          setAttribute(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error(`Create or update application error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (

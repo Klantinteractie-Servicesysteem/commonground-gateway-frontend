@@ -4,15 +4,12 @@ import {
   TextareaGroup,
   Spinner,
   Card,
-  Modal, Accordion
+  Modal,
+  Accordion,
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArrayWithName,
-} from "../utility/inputHandler";
+import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArrayWithName } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
@@ -58,8 +55,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     API.Endpoint.getOne(endpointId)
       .then((res) => {
         res.data.applications = res.data.applications.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-        })
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+        });
         setEndpoint(res.data);
       })
       .catch((err) => {
@@ -75,8 +72,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     API.Application.getAll()
       .then((res) => {
         const _applications = res.data?.map((application) => {
-          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` }
-        })
+          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` };
+        });
         setApplications(_applications);
       })
       .catch((err) => {
@@ -106,7 +103,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
       path: event.target.path.value,
-      applications
+      applications,
     };
 
     // This removes empty values from the body
@@ -118,44 +115,25 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       return;
     }
 
-    if (!endpointId) {
-      // unset id means we're creating a new entry
-      API.Endpoint.create(body)
-        .then(() => {
-          setAlert({ message: "Saved endpoint", type: "success" });
-          navigate(`/endpoints`);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create endpoint error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (endpointId) {
-      // set id means we're updating a existing entry
-      API.Endpoint.update(body, endpointId)
-        .then((res) => {
-          setAlert({ message: "Updated endpoint", type: "success" });
-          setEndpoint(res.data);
-        })
-        .catch((err) => {
-          setAlert({ type: "danger", message: err.message });
-          throw new Error("Update endpoint error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Endpoint.createOrUpdate(body, endpointId)
+      .then(() => {
+        setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
+        navigate("/endpoints");
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error(`Create or update endpoint error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
     <form id="dataForm" onSubmit={saveEndpoint}>
       <Card
         title={title}
-        cardHeader={function() {
+        cardHeader={function () {
           return (
             <div>
               <button
@@ -189,7 +167,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
             </div>
           );
         }}
-        cardBody={function() {
+        cardBody={function () {
           return (
             <div className="row">
               <div className="col-12">
@@ -235,19 +213,19 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: function() {
+                          render: function () {
                             return applications ? (
-                                <MultiSelect
-                                  id=""
-                                  label="Applications"
-                                  data={endpoint?.applications}
-                                  options={applications}
-                                />
+                              <MultiSelect
+                                id=""
+                                label="Applications"
+                                data={endpoint?.applications}
+                                options={applications}
+                              />
                             ) : (
                               <Spinner />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                     />
                   </div>

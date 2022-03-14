@@ -151,39 +151,20 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       return;
     }
 
-    if (!subscriberId) {
-      // unset id means we're creating a new entry
-      API.Subscriber.create(body)
-        .then(() => {
-          setAlert({ message: "Saved subscriber", type: "success" });
-          navigate(`/entities/${entityId}`, {
-            state: { activeTab: "subscribers" },
-          });
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create subscriber error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
+    API.Subscriber.createOrUpdate(body, subscriberId)
+      .then(() => {
+        setAlert({ message: `${subscriberId ? "Updated" : "Created"} subscriber`, type: "success" });
+        navigate(`/entities/${entityId}`, {
+          state: { activeTab: "subscribers" },
         });
-    }
-
-    if (subscriberId) {
-      // set id means we're updating a existing entry
-      API.Subscriber.update(body, subscriberId)
-        .then((res) => {
-          setAlert({ message: "Updated subscriber", type: "success" });
-          setSubscriber(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update subscriber error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error(`Create or update subscriber error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (

@@ -32,11 +32,13 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
       translateTo: event.target.translateTo ? event.target.translateTo.value : null,
     };
 
-    API.Translation.create(body)
+    API.Translation.createOrUpdate(body)
       .then((res) => {
         setTranslation(res.data);
+        setAlert({ message: "Created translation table", type: "success" });
       })
       .catch((err) => {
+        setAlert({ message: `Error creating translation table: ${err}`, type: "danger" });
         throw new Error("Save translation table error: " + err);
       })
       .finally(() => {
