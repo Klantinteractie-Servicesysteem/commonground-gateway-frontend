@@ -236,7 +236,3 @@ a:hover {
 .utrecht-button:disabled:hover {
   cursor: not-allowed;
 }
-
-.row-spacing {
-    margin-bottom: 15px;
-}
