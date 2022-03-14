@@ -55,7 +55,7 @@ export const IndexPage = (props) => {
           <div className="page-top-item">
             {endpointId && (
               <Tabs
-                items={[
+                tabs={[
                   {
                     name: "Overview",
                     id: "overview",
