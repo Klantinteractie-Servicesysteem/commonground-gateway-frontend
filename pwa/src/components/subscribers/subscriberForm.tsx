@@ -58,16 +58,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   }, [API, subscriberId]);
 
   React.useEffect(() => {
-    if (subscriberId) {
-
-      if (( !subscriber || !sources || !endpoints || !tableNames) && !showSpinner) setShowSpinner(true);
-      if (( subscriber && sources && endpoints && tableNames) && showSpinner) setShowSpinner(false);
-    } else {
-
-      if (( !sources || !endpoints || !tableNames) && !showSpinner) setShowSpinner(true);
-      if (( sources && endpoints && tableNames) && showSpinner) setShowSpinner(false);
-    }
-  }, [subscriber, sources, endpoints, tableNames]);
+    setShowSpinner(!sources || !endpoints || !tableNames || (subscriberId && !subscriber));
+  }, [subscriber, sources, endpoints, tableNames, subscriberId]);
 
   const handleSetSubscriber= () => {
     API.Subscriber.getOne(subscriberId)
