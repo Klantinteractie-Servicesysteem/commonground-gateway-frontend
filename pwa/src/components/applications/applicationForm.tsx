@@ -12,7 +12,8 @@ import { navigate } from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArrayWithName,
 } from "../utility/inputHandler";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -70,8 +71,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     API.Application.getOne(id)
       .then((res) => {
         res.data.endpoints = res.data.endpoints.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-        })
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+        });
         setApplication(res.data);
       })
       .catch((err) => {
@@ -87,8 +88,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     API.Endpoint.getAll()
       .then((res) => {
         const _endpoints = res.data?.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-        })
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+        });
         setEndpoints(_endpoints);
       })
       .catch((err) => {
@@ -122,7 +123,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
       secret: event.target.secret.value ? event.target.secret.value : null,
       resource: event.target.resource.value ? event.target.resource.value : null,
       domains,
-      endpoints
+      endpoints,
     };
 
     body = removeEmptyObjectValues(body);
@@ -133,37 +134,18 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
       return;
     }
 
-    if (!id) {
-      // unset id means we're creating a new entry
-      API.Application.create(body)
-        .then(() => {
-          setAlert({ message: "Saved application", type: "success" });
-          navigate("/applications");
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (id) {
-      // set id means we're updating a existing entry
-      API.Application.update(body, id)
-        .then((res) => {
-          setAlert({ message: "Updated application", type: "success" });
-          setApplication(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Application.createOrUpdate(body, id)
+      .then(() => {
+        setAlert({ message: `${id ? "Updated" : "Created"} application`, type: "success" });
+        navigate("/applications");
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error(`Create or update application error ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -274,17 +256,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                           id: "endpointsAccordion",
                           render: function () {
                             return endpoints ? (
-                              <MultiSelect
-                                id=""
-                                label="endpoints"
-                                data={application?.endpoints}
-                                options={endpoints}
-                              />
+                              <MultiSelect id="" label="endpoints" data={application?.endpoints} options={endpoints} />
                             ) : (
-                                <Spinner />
+                              <Spinner />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                     />
                   </div>
