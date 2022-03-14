@@ -187,7 +187,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay/>}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -213,7 +213,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -233,31 +233,20 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {sources !== null && sources.length > 0 ? (
-                          <SelectInputComponent
-                            options={sources}
-                            data={`/admin/gateways/${entity?.gateway?.id}`}
-                            name={"gateway"}
-                            id={"gatewayInput"}
-                            nameOverride={"Source"}
-                          />
-                        ) : (
-                          <SelectInputComponent
-                            data="Please wait, getting sources from the Gateway..."
-                            options={[
-                              {
-                                name: "Please wait, getting sources from the Gateway...",
-                                value: "Please wait, getting sources from the Gateway...",
-                              },
-                            ]}
-                            name={"gateway"}
-                            id={"gatewayInput"}
-                            nameOverride={"Source"}
-                            disabled
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={
+                            sources !== null && sources.length > 0
+                              ? sources
+                              : [{ name: "Please create a source  first.", value: null }]
+                          }
+                          data={entity?.gateway?.name}
+                          name={"source"}
+                          id={"sourceInput"}
+                          nameOverride={"Source"}
+                          value={"admin/gateways/"}
+                        />
                       </div>
                       <div className="col-6">
                         <TextareaGroup
@@ -267,7 +256,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityId}) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-12">
                         <div className="form-check">
                           <Checkbox
