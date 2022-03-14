@@ -117,9 +117,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
 
     API.Endpoint.createOrUpdate(body, endpointId)
       .then(() => {
-        setAlert({ message: "err", type: "danger" });
-
-        // setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
+        setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
         navigate("/endpoints");
       })
       .catch((err) => {
