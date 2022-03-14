@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 export interface AlertProps {
-  title?: string,
   message: string,
   type: 'danger' | 'success',
 }
