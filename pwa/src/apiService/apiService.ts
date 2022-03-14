@@ -145,13 +145,20 @@ export const Send = (
   method: "GET" | "POST" | "PUT" | "DELETE",
   endpoint: string,
   payload?: JSON,
-): Promise<AxiosResponse | {}> => {
+): Promise<AxiosResponse> => {
   const _payload = JSON.stringify(payload);
 
   if (!validateSession()) {
     logout();
 
-    return Promise.resolve({ data: [] });
+    return Promise.resolve({
+      // return fake AxiosInstance for calls to not break
+      data: [],
+      status: -1,
+      statusText: "Session invalid",
+      config: {},
+      headers: {},
+    });
   }
 
   switch (method) {

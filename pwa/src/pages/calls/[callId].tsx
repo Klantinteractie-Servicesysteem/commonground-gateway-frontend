@@ -18,7 +18,7 @@ const IndexPage = (props) => {
   const callId: string = props.params.callId;
 
   React.useEffect(() => {
-    setHeader(<h1>Call</h1>);
+    setHeader("Call");
   }, [setHeader]);
 
   React.useEffect(() => {
@@ -59,16 +59,16 @@ const IndexPage = (props) => {
             data-bs-target="#logsHelpModal"
             onClick={handleSetLogsDocumentation}
           >
-            <Modal
-              title="Logs Documentation"
-              id="logsHelpModal"
-              body={() =>
-                logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
-              }
-            />
             <i className="fas fa-question mr-1" />
             <span className="mr-2">Help</span>
           </button>
+          <Modal
+            title="Logs Documentation"
+            id="logsHelpModal"
+            body={() =>
+              logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
+            }
+          />
           <a className="utrecht-link" onClick={handleSetLogs}>
             <i className="fas fa-sync-alt mr-1" />
             <span className="mr-2">Refresh</span>

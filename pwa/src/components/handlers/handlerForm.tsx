@@ -3,7 +3,8 @@ import { Link } from "gatsby";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArrayWithName,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
@@ -87,7 +88,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     API.Translation.getTableNames()
       .then((res) => {
         const names = res.data?.results.map((name, idx) => {
-          return { name: name, value: name, idx }
+          return { name: name, value: name, idx };
         });
         setTableNames(names);
       })
@@ -187,11 +188,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 data-bs-target="#handlerHelpModal"
                 onClick={(e) => e.preventDefault()}
               >
-                <Modal
-                  title="Handler Documentation"
-                  id="handlerHelpModal"
-                  body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
-                />
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
               </button>
@@ -369,12 +365,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 id={"mappingIn"}
                                 label={"Mapping In"}
                                 data={[
-                                      {
-                                        key: "mappingIn",
-                                        value: handler?.mappingIn
-                                      }
-                                    ]
-                                }
+                                  {
+                                    key: "mappingIn",
+                                    value: handler?.mappingIn,
+                                  },
+                                ]}
                               />
                             );
                           },
@@ -388,12 +383,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                                 id={"mappingOut"}
                                 label={"Mapping Out"}
                                 data={[
-                                      {
-                                        key: "mappingOut",
-                                        value: `${handler?.mappingOut}`
-                                      }
-                                    ]
-                                }
+                                  {
+                                    key: "mappingOut",
+                                    value: `${handler?.mappingOut}`,
+                                  },
+                                ]}
                               />
                             );
                           },
