@@ -15,8 +15,8 @@ const AlertComponent = () => {
     return (
       <div className={`conduction-alert conduction-alert-${alert.type}`}>
         {
-          alert.title && (
-            <h5>{alert.title}</h5>
+          alert.type === 'danger' && (
+            <h5><span>Oops something went wrong</span></h5>
           )
         }
         <p>{alert.message}</p>
