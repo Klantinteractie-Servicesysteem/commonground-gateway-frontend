@@ -237,3 +237,6 @@ a:hover {
   cursor: not-allowed;
 }
 
+.row-spacing {
+    margin-bottom: 15px;
+}
