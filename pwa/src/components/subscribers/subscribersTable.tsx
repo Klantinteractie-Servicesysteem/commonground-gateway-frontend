@@ -7,10 +7,13 @@ import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
+import DeleteModal from "../deleteModal/DeleteModal";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function SubscribersTable({ entityId }) {
   const [subscribers, setSubscribers] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const title: string = entityId === "new" ? "Create Subscriber" : "Edit Subscriber";
@@ -35,17 +38,19 @@ export default function SubscribersTable({ entityId }) {
   };
 
   const handleDeleteSubscriber = (id): void => {
-    if (confirm(`Do you want to delete this subscriber?`)) {
-      API.Subscriber.delete(id)
-        .then(() => {
-          setAlert({ message: `Deleted subscriber`, type: "success" });
-          handleSetSubscribers();
-        })
-        .catch((err) => {
-          setAlert({ message: err, type: "danger" });
-          throw new Error("DELETE Subscriber error: " + err);
-        });
-    }
+    setLoadingOverlay(true);
+    API.Subscriber.delete(id)
+      .then(() => {
+        setAlert({ message: "Deleted subscriber", type: "success" });
+        handleSetSubscribers();
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        throw new Error("DELETE Subscriber error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -74,53 +79,58 @@ export default function SubscribersTable({ entityId }) {
               {showSpinner === true ? (
                 <Spinner />
               ) : subscribers ? (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Method",
-                      field: "method",
-                      renderCell: (item: { method: string }) => (
-                        <LabelWithBackground label={item.method} type="primary" />
-                      ),
-                    },
-                    {
-                      headerName: "Endpoint",
-                      field: "endpoint",
-                      valueFormatter: (item) => {
-                        return item ? item.name : "";
+                <>
+                  {loadingOverlay && <LoadingOverlay />}
+                  <Table
+                    columns={[
+                      {
+                        headerName: "Name",
+                        field: "name",
                       },
-                    },
-                    {
-                      field: "id",
-                      headerName: "",
-                      renderCell: (item) => {
-                        return (
-                          <div className="utrecht-link d-flex justify-content-end">
-                            <button
-                              onClick={() => handleDeleteSubscriber(item.id)}
-                              className="utrecht-button btn-sm btn-danger mr-2"
-                            >
-                              <FontAwesomeIcon icon={faTrash} /> Delete
-                            </button>
-                            <Link
-                              className="utrecht-link d-flex justify-content-end"
-                              to={`/entities/${entityId}/subscribers/${item.id}`}
-                            >
-                              <button className="utrecht-button btn-sm btn-success">
-                                <FontAwesomeIcon icon={faEdit} /> Edit
+                      {
+                        headerName: "Method",
+                        field: "method",
+                        renderCell: (item: { method: string }) => (
+                          <LabelWithBackground label={item.method} type="primary" />
+                        ),
+                      },
+                      {
+                        headerName: "Endpoint",
+                        field: "endpoint",
+                        valueFormatter: (item) => {
+                          return item ? item.name : "";
+                        },
+                      },
+                      {
+                        field: "id",
+                        headerName: "",
+                        renderCell: (item) => {
+                          return (
+                            <div className="utrecht-link d-flex justify-content-end">
+                              <button
+                                className="utrecht-button btn-sm btn-danger mr-2"
+                                data-bs-toggle="modal"
+                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                              >
+                                <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                            </Link>
-                          </div>
-                        );
+                              <DeleteModal resourceDelete={handleDeleteSubscriber} resourceId={item.id} />
+                              <Link
+                                className="utrecht-link d-flex justify-content-end"
+                                to={`/entities/${entityId}/subscribers/${item.id}`}
+                              >
+                                <button className="utrecht-button btn-sm btn-success">
+                                  <FontAwesomeIcon icon={faEdit} /> Edit
+                                </button>
+                              </Link>
+                            </div>
+                          );
+                        },
                       },
-                    },
-                  ]}
-                  rows={subscribers}
-                />
+                    ]}
+                    rows={subscribers}
+                  />
+                </>
               ) : (
                 <Table
                   columns={[
