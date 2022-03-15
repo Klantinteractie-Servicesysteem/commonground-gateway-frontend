@@ -106,6 +106,11 @@ export default function CollectionTable() {
                         field: "description",
                       },
                       {
+                        headerName: "Created At",
+                        field: "createdAt",
+                        renderCell: (item: { createdAt: string }) => new Date(item.createdAt).toLocaleString("nl-NL"),
+                      },
+                      {
                         field: "id",
                         headerName: " ",
                         renderCell: (item: { id: string }) => {
@@ -142,6 +147,10 @@ export default function CollectionTable() {
                     {
                       headerName: "Description",
                       field: "description",
+                    },
+                    {
+                      headerName: "Created At",
+                      field: "createdAt",
                     },
                   ]}
                   rows={[
