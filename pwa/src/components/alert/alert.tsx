@@ -28,5 +28,3 @@ const AlertComponent = () => {
 };
 
 export default AlertComponent;
-
-export default AlertComponent;
