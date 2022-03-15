@@ -27,5 +27,6 @@ const AlertComponent = () => {
   return <></>;
 };
 
+export default AlertComponent;
 
 export default AlertComponent;

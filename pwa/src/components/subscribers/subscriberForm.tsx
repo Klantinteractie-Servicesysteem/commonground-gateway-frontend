@@ -61,7 +61,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     setShowSpinner(!sources || !endpoints || !tableNames || (subscriberId && !subscriber));
   }, [subscriber, sources, endpoints, tableNames, subscriberId]);
 
-  const handleSetSubscriber= () => {
+  const handleSetSubscriber = () => {
     API.Subscriber.getOne(subscriberId)
       .then((res) => {
         setSubscriber(res.data);
@@ -268,7 +268,10 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                     <div className="row form-row">
                       <div className="col-6">
                         <SelectInputComponent
-                          options={[{ name: 'Extern Source', value: 'externSource' }, { name: 'Intern Gateway', value: 'internGateway' }]}
+                          options={[
+                            { name: "Extern Source", value: "externSource" },
+                            { name: "Intern Gateway", value: "internGateway" },
+                          ]}
                           data={subscriber?.type}
                           name={"type"}
                           id={"typeInput"}
@@ -278,7 +281,11 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <SelectInputComponent
-                          options={endpoints !== null && endpoints.length > 0 ? endpoints : [{ name: 'Please create an endpoint first.', value: null }]}
+                          options={
+                            endpoints !== null && endpoints.length > 0
+                              ? endpoints
+                              : [{ name: "Please create an endpoint first.", value: null }]
+                          }
                           data={subscriber?.endpoint?.name}
                           name={"endpoint"}
                           id={"endpointInput"}

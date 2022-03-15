@@ -204,15 +204,19 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
                     {
                       field: "id",
                       headerName: " ",
-                      renderCell: (item: { id: string, externalId: string, gateway: {location: string} }) => {
+                      renderCell: (item: { id: string; externalId: string; gateway: { location: string } }) => {
                         return (
                           <div className="utrecht-link d-flex justify-content-end">
-                            {
-                              item.externalId && item.gateway?.location && entity?.endpoint &&
-                              <button onClick={() => {syncObject(item.id)}} className="utrecht-button btn-sm btn-primary mr-2">
+                            {item.externalId && item.gateway?.location && entity?.endpoint && (
+                              <button
+                                onClick={() => {
+                                  syncObject(item.id);
+                                }}
+                                className="utrecht-button btn-sm btn-primary mr-2"
+                              >
                                 <FontAwesomeIcon icon={faSync} /> Sync
                               </button>
-                            }
+                            )}
                             <Link
                               className="utrecht-link d-flex justify-content-end"
                               to={`/entities/${entityId}/objects/${item.id}`}

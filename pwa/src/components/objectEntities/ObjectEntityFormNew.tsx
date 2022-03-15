@@ -1,16 +1,13 @@
 import * as React from "react";
-import {
-  Card,
-  Spinner,
-} from "@conductionnl/nl-design-system/lib";
+import { Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { Link } from 'gatsby';
+import { Link } from "gatsby";
 
 interface ObjectEntityFormNewProps {
-  objectId: string,
-  entityId: string,
+  objectId: string;
+  entityId: string;
 }
 
 export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ objectId, entityId }) => {
@@ -38,16 +35,10 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
     import("@formio/react").then((formio) => {
       const { Form } = formio;
-      setFormIO(
-        <Form
-          src={formIOSchema}
-          onSubmit={saveObject}
-        />,
-      );
+      setFormIO(<Form src={formIOSchema} onSubmit={saveObject} />);
     });
     setShowSpinner(false);
   }, [formIOSchema]);
-
 
   const getObject = () => {
     setShowSpinner(true);
@@ -79,7 +70,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   const getFormIOSchema = () => {
     if (formIOSchema && object) setFormIOSchema(fillFormIOSchema(formIOSchema));
-    setShowSpinner(true); 
+    setShowSpinner(true);
     API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
         setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
@@ -96,14 +87,14 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     let schemaWithData = schema;
     for (let i = 0; i < schemaWithData.components.length; i++) {
       for (let i = 0; i < object?.objectValues?.length; i++) {
-        if (schemaWithData.components[i].key = object.objectValues[i].attribute.name) {
+        if ((schemaWithData.components[i].key = object.objectValues[i].attribute.name)) {
           let type = object.objectValues[i].attribute.type;
           schemaWithData.components[i].defaultValue = object.objectValues[i][`${type}Value`];
         }
       }
     }
     return schemaWithData;
-  }
+  };
 
   const saveObject = (event) => {
     let body = event.data;
@@ -112,7 +103,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     if (!objectId) {
       API.ApiCalls.createObject(entity?.endpoint, body)
         .then((res) => {
-          setObject(res.data)
+          setObject(res.data);
         })
         .catch((err) => {
           throw new Error("Create object error: " + err);
@@ -124,7 +115,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     if (objectId) {
       API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
         .then((res) => {
-          setObject(res.data)
+          setObject(res.data);
         })
         .catch((err) => {
           throw new Error("Update object error: " + err);
@@ -135,41 +126,33 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     }
   };
 
-
   return (
     <Card
       title="Edit"
       cardHeader={function () {
         return (
           <div>
-            <button
-              className="utrecht-link button-no-style"
-              data-bs-toggle="modal"
-              data-bs-target="#helpModal"
-            >
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#helpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
-            <Link className="utrecht-link" to={`/entities/${entityId}`} state={{activeTab: "objects"}}>
+            <Link className="utrecht-link" to={`/entities/${entityId}`} state={{ activeTab: "objects" }}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                <i className="fas fa-long-arrow-alt-left mr-2" />Back
+                <i className="fas fa-long-arrow-alt-left mr-2" />
+                Back
               </button>
             </Link>
-          </div>)
+          </div>
+        );
       }}
       cardBody={function () {
         return (
           <div className="row">
-            <div className="col-12">
-              {showSpinner === true ? (
-                <Spinner />
-              ) : (
-                formIO && formIO
-              )} 
-            </div>
+            <div className="col-12">{showSpinner === true ? <Spinner /> : formIO && formIO}</div>
           </div>
-        )
-      }} />
-  )
-}
+        );
+      }}
+    />
+  );
+};
 export default ObjectEntityFormNew;

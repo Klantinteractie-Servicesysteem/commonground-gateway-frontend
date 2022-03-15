@@ -1,15 +1,14 @@
 .codeBlock-code--xml {
-    color: green;
+  color: green;
 }
 
 .codeBlock-code--json {
-    color: orange;
+  color: orange;
 }
 
 .codeBlock {
-    background-color: 'black';
-    overflow-wrap: 'break-word';
-    max-height: 500px;
-    overflow-y: auto;
+  background-color: "black";
+  overflow-wrap: "break-word";
+  max-height: 500px;
+  overflow-y: auto;
 }
-

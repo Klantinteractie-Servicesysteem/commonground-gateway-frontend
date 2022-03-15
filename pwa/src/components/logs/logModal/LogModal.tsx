@@ -25,7 +25,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
       })
       .catch((err) => {
         throw new Error(`GET all outgoing Logs from call id error: ${err}`);
-      })
+      });
   };
 
   const [requestCodeLanguage, setRequestCodeLanguage] = React.useState(null);
@@ -59,7 +59,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
                   { name: "Response", id: `logResponse${log.id}` },
-                  { name: "Outgoing", id: `outgoing${log.id}`, onClick: handleSetOutgoingLogs},
+                  { name: "Outgoing", id: `outgoing${log.id}`, onClick: handleSetOutgoingLogs },
                 ]}
               />
               <div className="tab-content">

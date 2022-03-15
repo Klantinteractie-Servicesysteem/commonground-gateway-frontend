@@ -83,8 +83,9 @@ export default function SubscribersTable({ entityId }) {
                     {
                       headerName: "Method",
                       field: "method",
-                      renderCell: (item: { method: string }) =>
+                      renderCell: (item: { method: string }) => (
                         <LabelWithBackground label={item.method} type="primary" />
+                      ),
                     },
                     {
                       headerName: "Endpoint",
@@ -105,7 +106,10 @@ export default function SubscribersTable({ entityId }) {
                             >
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
-                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${entityId}/subscribers/${item.id}`}>
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/subscribers/${item.id}`}
+                            >
                               <button className="utrecht-button btn-sm btn-success">
                                 <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>

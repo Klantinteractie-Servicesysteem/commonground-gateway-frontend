@@ -10,8 +10,8 @@ interface ElementCreationNewProps {
 }
 
 interface IValue {
-  id: string,
-  value: string,
+  id: string;
+  value: string;
 }
 
 const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data }) => {
@@ -35,44 +35,44 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
 
   const handleDelete = (e) => {
     e.preventDefault();
-    setValues(values.filter(value => value.id !== e.target.id));
+    setValues(values.filter((value) => value.id !== e.target.id));
   };
 
   const generateId = (): string => Math.random().toString(36);
 
   return (
     <div>
-      {values.length > 0 &&
-      <ul style={{ paddingLeft: 0 }}>
-        {values.map((value, idx) => {
-          return (
-            <li key={idx} style={{ listStyleType: "none" }}>
-              <div className="row">
-                <div className="col-10">
-                  <input
-                    disabled
-                    type="text"
-                    id={value.value}
-                    value={value.value}
-                    name={`${id}[${value.value}]`}
-                    className="utrecht-textbox utrecht-textbox--html-input mb-2"
-                  />
+      {values.length > 0 && (
+        <ul style={{ paddingLeft: 0 }}>
+          {values.map((value, idx) => {
+            return (
+              <li key={idx} style={{ listStyleType: "none" }}>
+                <div className="row">
+                  <div className="col-10">
+                    <input
+                      disabled
+                      type="text"
+                      id={value.value}
+                      value={value.value}
+                      name={`${id}[${value.value}]`}
+                      className="utrecht-textbox utrecht-textbox--html-input mb-2"
+                    />
+                  </div>
+                  <div className="col-2">
+                    <button
+                      id={value.id}
+                      onClick={handleDelete}
+                      className="utrecht-button utrecht-button-sm btn-danger"
+                    >
+                      <FontAwesomeIcon icon={faTrash} /> Delete
+                    </button>
+                  </div>
                 </div>
-                <div className="col-2">
-                  <button
-                    id={value.id}
-                    onClick={handleDelete}
-                    className="utrecht-button utrecht-button-sm btn-danger"
-                  >
-                    <FontAwesomeIcon icon={faTrash} /> Delete
-                  </button>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      }
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <div className="row">
         <h5>Create {label}</h5>

@@ -4,9 +4,7 @@
   "private": true,
   "description": "pwa",
   "author": "Gino",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "scripts": {
     "develop": "gatsby develop",
     "start": "gatsby develop",

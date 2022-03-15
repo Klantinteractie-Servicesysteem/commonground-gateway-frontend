@@ -82,8 +82,8 @@ App\Entity\Handler:
             montag: monday
             dienstag: tuesday
             mittwoch: wednesday
-            donnerstag: thursday 
-            freitag: friday 
+            donnerstag: thursday
+            freitag: friday
             wochenende.samstag: saturday
             wochenende.sonntag: sunday
         endpoint: "@weerEndpoint"
@@ -103,7 +103,7 @@ App\Entity\Translation:
         translateFrom: regen
         translateTo: sturm
         language: de
-        
+
 App\Entity\Application:
     localHostApp:
         name: localhost
