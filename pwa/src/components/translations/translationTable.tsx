@@ -6,6 +6,7 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import DeleteModal from "../deleteModal/DeleteModal";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function TranslationTable({ tableName }) {
@@ -51,28 +52,20 @@ export default function TranslationTable({ tableName }) {
   };
 
   const handleDeleteTranslation = (id): void => {
-    if (
-      translations.length === 1
-        ? confirm(
-            `Do you want to delete this translation? With id ${id}. If you delete this translation you wil also delete the Translation Table.`,
-          )
-        : confirm(`Do you want to delete this translation? With id ${id}`)
-    ) {
-      setLoadingOverlay(true);
-      API.Translation.delete(id)
-        .then(() => {
-          setAlert({ message: `Deleted translation with id: ${id}`, type: "success" });
-          translations.length === 1 && navigate("/translation-tables"); // removed the last translation table
-          getTranslations();
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
-          throw new Error("DELETE translation error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    setLoadingOverlay(true);
+    API.Translation.delete(id)
+      .then(() => {
+        setAlert({ message: "Deleted translation", type: "success" });
+        translations.length === 1 && navigate("/translation-tables"); // removed the last translation table
+        getTranslations();
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        throw new Error("DELETE translation error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -146,11 +139,23 @@ export default function TranslationTable({ tableName }) {
                           return (
                             <div className="utrecht-link d-flex justify-content-end">
                               <button
-                                onClick={() => handleDeleteTranslation(item.id)}
                                 className="utrecht-button btn-sm btn-danger mr-2"
+                                data-bs-toggle="modal"
+                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
+                              <DeleteModal
+                                resourceDelete={handleDeleteTranslation}
+                                resourceId={item.id}
+                                optionalMessage={
+                                  translations.length === 1 && (
+                                    <>
+                                      If you delete this translation <b>you wil also delete the Translation Table!</b>
+                                    </>
+                                  )
+                                }
+                              />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/translation-tables/${item.id}/translations/${item.id}`}

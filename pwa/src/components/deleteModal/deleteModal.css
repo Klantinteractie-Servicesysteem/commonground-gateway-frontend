@@ -1,0 +1,14 @@
+.DeleteModal .DeleteModal-messageContainer {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.DeleteModal .DeleteModal-messageContainer > *:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.DeleteModal .DeleteModal-buttonContainer {
+  display: flex;
+  justify-content: space-between;
+}
