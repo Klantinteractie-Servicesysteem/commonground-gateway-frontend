@@ -230,8 +230,9 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                       </div>
                       <div className="col-6">
                         <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
+                          label="Description"
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={entity?.description}
                         />
                       </div>

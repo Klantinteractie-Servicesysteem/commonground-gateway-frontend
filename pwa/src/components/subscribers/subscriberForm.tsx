@@ -209,8 +209,9 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
+                          label="Description"
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={subscriber?.description}
                         />
                       </div>
@@ -244,9 +245,9 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                     <div className="row form-row">
                       <div className="col-6">
                         <TextareaGroup
-                          name={"conditions"}
-                          label={"Conditions (JSON)"}
-                          id={"conditionsInput"}
+                          name="conditions"
+                          label={<span>Conditions (JSON Logic) <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">Read more about the use of JSON Logic</a></span>}
+                          id="conditionsInput"
                           defaultValue={subscriber?.conditions}
                         />
                       </div>

@@ -201,8 +201,9 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                     <div className="row form-row">
                       <div className="col-6">
                         <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
+                          label="Description"
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={endpoint?.description}
                         />
                       </div>
