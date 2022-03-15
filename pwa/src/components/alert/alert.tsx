@@ -12,10 +12,20 @@ const AlertComponent = () => {
   }, [alert]);
 
   if (alert) {
+    let title: string;
+    switch (alert.type) {
+      case "danger":
+        title = "Oops something went wrong";
+        break;
+      case "success":
+        title = "Success";
+        break;
+    }
+
     return (
       <div className={`Alert Alert--${alert.type}`}>
         <div className="Alert-messageContainer">
-          {alert.type === "danger" && <span className="Alert-header">Oops something went wrong</span>}
+          <span className="Alert-header">{title}</span>
           <span>{alert.message}</span>
         </div>
 
