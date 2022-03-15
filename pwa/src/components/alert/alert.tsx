@@ -13,12 +13,14 @@ const AlertComponent = () => {
 
   if (alert) {
     return (
-      <div className={`conduction-alert conduction-alert-${alert.type}`}>
-        {alert.type === "danger" && <span className="conduction-alert-header">Oops something went wrong</span>}
-        <span>{alert.message}</span>
+      <div className={`Alert Alert--${alert.type}`}>
+        <div className="Alert-messageContainer">
+          {alert.type === "danger" && <span className="Alert-header">Oops something went wrong</span>}
+          <span>{alert.message}</span>
+        </div>
 
-        <div className="conduction-alert-closeContainer" onClick={() => setAlert(null)}>
-          <FontAwesomeIcon className="conduction-alert-close" icon={faTimes} />
+        <div className="Alert-closeContainer" onClick={() => setAlert(null)}>
+          <FontAwesomeIcon icon={faTimes} />
         </div>
       </div>
     );
