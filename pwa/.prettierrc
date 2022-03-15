@@ -1,9 +1,7 @@
 {
     "overrides": [
         {
-            "files": [
-                "*.json"
-            ],
+            "files": ["*.json"],
             "options": {
                 "parser": "json",
                 "printWidth": 120,
@@ -11,10 +9,7 @@
             }
         },
         {
-            "files": [
-                "*.ts",
-                "*.tsx"
-            ],
+            "files": ["*.ts", "*.tsx"],
             "options": {
                 "parser": "typescript",
                 "printWidth": 120,
@@ -24,10 +19,7 @@
             }
         },
         {
-            "files": [
-                "*.css",
-                "*.scss"
-            ],
+            "files": ["*.css", "*.scss"],
             "options": {
                 "parser": "css",
                 "tabWidth": 2

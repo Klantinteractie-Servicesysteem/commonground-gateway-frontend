@@ -25,8 +25,10 @@ const Footer: React.FC<FooterProps> = ({ layoutClassName }) => {
           </li>
 
           <li>
-            <a href="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md"
-               target="_blank">
+            <a
+              href="https://github.com/ConductionNL/commonground-gateway/blob/development/docs/docs/index.md"
+              target="_blank"
+            >
               License
             </a>
           </li>

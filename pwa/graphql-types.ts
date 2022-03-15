@@ -58,14 +58,12 @@ export type File = Node & {
   internal: Internal;
 };
 
-
 export type FileModifiedTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type FileAccessTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -74,14 +72,12 @@ export type FileAccessTimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type FileChangeTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type FileBirthTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -90,7 +86,6 @@ export type FileBirthTimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type FileAtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
@@ -98,14 +93,12 @@ export type FileAtimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type FileMtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type FileCtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -173,14 +166,12 @@ export type Directory = Node & {
   internal: Internal;
 };
 
-
 export type DirectoryModifiedTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type DirectoryAccessTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -189,14 +180,12 @@ export type DirectoryAccessTimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type DirectoryChangeTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type DirectoryBirthTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -205,7 +194,6 @@ export type DirectoryBirthTimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type DirectoryAtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
@@ -213,14 +201,12 @@ export type DirectoryAtimeArgs = {
   locale?: Maybe<Scalars["String"]>;
 };
 
-
 export type DirectoryMtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
   difference?: Maybe<Scalars["String"]>;
   locale?: Maybe<Scalars["String"]>;
 };
-
 
 export type DirectoryCtimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -241,7 +227,6 @@ export type Site = Node & {
   children: Array<Node>;
   internal: Internal;
 };
-
 
 export type SiteBuildTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
@@ -354,7 +339,6 @@ export type SiteBuildMetadata = Node & {
   internal: Internal;
 };
 
-
 export type SiteBuildMetadataBuildTimeArgs = {
   formatString?: Maybe<Scalars["String"]>;
   fromNow?: Maybe<Scalars["Boolean"]>;
@@ -378,7 +362,6 @@ export type Query = {
   siteBuildMetadata?: Maybe<SiteBuildMetadata>;
   allSiteBuildMetadata: SiteBuildMetadataConnection;
 };
-
 
 export type QueryFileArgs = {
   sourceInstanceName?: Maybe<StringQueryOperatorInput>;
@@ -418,14 +401,12 @@ export type QueryFileArgs = {
   internal?: Maybe<InternalFilterInput>;
 };
 
-
 export type QueryAllFileArgs = {
   filter?: Maybe<FileFilterInput>;
   sort?: Maybe<FileSortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QueryDirectoryArgs = {
   sourceInstanceName?: Maybe<StringQueryOperatorInput>;
@@ -465,14 +446,12 @@ export type QueryDirectoryArgs = {
   internal?: Maybe<InternalFilterInput>;
 };
 
-
 export type QueryAllDirectoryArgs = {
   filter?: Maybe<DirectoryFilterInput>;
   sort?: Maybe<DirectorySortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QuerySiteArgs = {
   buildTime?: Maybe<DateQueryOperatorInput>;
@@ -487,14 +466,12 @@ export type QuerySiteArgs = {
   internal?: Maybe<InternalFilterInput>;
 };
 
-
 export type QueryAllSiteArgs = {
   filter?: Maybe<SiteFilterInput>;
   sort?: Maybe<SiteSortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QuerySiteFunctionArgs = {
   functionRoute?: Maybe<StringQueryOperatorInput>;
@@ -510,14 +487,12 @@ export type QuerySiteFunctionArgs = {
   internal?: Maybe<InternalFilterInput>;
 };
 
-
 export type QueryAllSiteFunctionArgs = {
   filter?: Maybe<SiteFunctionFilterInput>;
   sort?: Maybe<SiteFunctionSortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QuerySitePageArgs = {
   path?: Maybe<StringQueryOperatorInput>;
@@ -534,14 +509,12 @@ export type QuerySitePageArgs = {
   pluginCreatorId?: Maybe<StringQueryOperatorInput>;
 };
 
-
 export type QueryAllSitePageArgs = {
   filter?: Maybe<SitePageFilterInput>;
   sort?: Maybe<SitePageSortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QuerySitePluginArgs = {
   resolve?: Maybe<StringQueryOperatorInput>;
@@ -559,14 +532,12 @@ export type QuerySitePluginArgs = {
   internal?: Maybe<InternalFilterInput>;
 };
 
-
 export type QueryAllSitePluginArgs = {
   filter?: Maybe<SitePluginFilterInput>;
   sort?: Maybe<SitePluginSortInput>;
   skip?: Maybe<Scalars["Int"]>;
   limit?: Maybe<Scalars["Int"]>;
 };
-
 
 export type QuerySiteBuildMetadataArgs = {
   buildTime?: Maybe<DateQueryOperatorInput>;
@@ -575,7 +546,6 @@ export type QuerySiteBuildMetadataArgs = {
   children?: Maybe<NodeFilterListInput>;
   internal?: Maybe<InternalFilterInput>;
 };
-
 
 export type QueryAllSiteBuildMetadataArgs = {
   filter?: Maybe<SiteBuildMetadataFilterInput>;
@@ -667,26 +637,21 @@ export type FileConnection = {
   group: Array<FileGroupConnection>;
 };
 
-
 export type FileConnectionDistinctArgs = {
   field: FileFieldsEnum;
 };
-
 
 export type FileConnectionMaxArgs = {
   field: FileFieldsEnum;
 };
 
-
 export type FileConnectionMinArgs = {
   field: FileFieldsEnum;
 };
 
-
 export type FileConnectionSumArgs = {
   field: FileFieldsEnum;
 };
-
 
 export type FileConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -843,26 +808,21 @@ export type FileGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type FileGroupConnectionDistinctArgs = {
   field: FileFieldsEnum;
 };
-
 
 export type FileGroupConnectionMaxArgs = {
   field: FileFieldsEnum;
 };
 
-
 export type FileGroupConnectionMinArgs = {
   field: FileFieldsEnum;
 };
 
-
 export type FileGroupConnectionSumArgs = {
   field: FileFieldsEnum;
 };
-
 
 export type FileGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -913,9 +873,7 @@ export type FileSortInput = {
   order?: Maybe<Array<Maybe<SortOrderEnum>>>;
 };
 
-export type SortOrderEnum =
-  | "ASC"
-  | "DESC";
+export type SortOrderEnum = "ASC" | "DESC";
 
 export type DirectoryConnection = {
   totalCount: Scalars["Int"];
@@ -929,26 +887,21 @@ export type DirectoryConnection = {
   group: Array<DirectoryGroupConnection>;
 };
 
-
 export type DirectoryConnectionDistinctArgs = {
   field: DirectoryFieldsEnum;
 };
-
 
 export type DirectoryConnectionMaxArgs = {
   field: DirectoryFieldsEnum;
 };
 
-
 export type DirectoryConnectionMinArgs = {
   field: DirectoryFieldsEnum;
 };
 
-
 export type DirectoryConnectionSumArgs = {
   field: DirectoryFieldsEnum;
 };
-
 
 export type DirectoryConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1095,26 +1048,21 @@ export type DirectoryGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type DirectoryGroupConnectionDistinctArgs = {
   field: DirectoryFieldsEnum;
 };
-
 
 export type DirectoryGroupConnectionMaxArgs = {
   field: DirectoryFieldsEnum;
 };
 
-
 export type DirectoryGroupConnectionMinArgs = {
   field: DirectoryFieldsEnum;
 };
 
-
 export type DirectoryGroupConnectionSumArgs = {
   field: DirectoryFieldsEnum;
 };
-
 
 export type DirectoryGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1182,26 +1130,21 @@ export type SiteConnection = {
   group: Array<SiteGroupConnection>;
 };
 
-
 export type SiteConnectionDistinctArgs = {
   field: SiteFieldsEnum;
 };
-
 
 export type SiteConnectionMaxArgs = {
   field: SiteFieldsEnum;
 };
 
-
 export type SiteConnectionMinArgs = {
   field: SiteFieldsEnum;
 };
 
-
 export type SiteConnectionSumArgs = {
   field: SiteFieldsEnum;
 };
-
 
 export type SiteConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1324,26 +1267,21 @@ export type SiteGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type SiteGroupConnectionDistinctArgs = {
   field: SiteFieldsEnum;
 };
-
 
 export type SiteGroupConnectionMaxArgs = {
   field: SiteFieldsEnum;
 };
 
-
 export type SiteGroupConnectionMinArgs = {
   field: SiteFieldsEnum;
 };
 
-
 export type SiteGroupConnectionSumArgs = {
   field: SiteFieldsEnum;
 };
-
 
 export type SiteGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1381,26 +1319,21 @@ export type SiteFunctionConnection = {
   group: Array<SiteFunctionGroupConnection>;
 };
 
-
 export type SiteFunctionConnectionDistinctArgs = {
   field: SiteFunctionFieldsEnum;
 };
-
 
 export type SiteFunctionConnectionMaxArgs = {
   field: SiteFunctionFieldsEnum;
 };
 
-
 export type SiteFunctionConnectionMinArgs = {
   field: SiteFunctionFieldsEnum;
 };
 
-
 export type SiteFunctionConnectionSumArgs = {
   field: SiteFunctionFieldsEnum;
 };
-
 
 export type SiteFunctionConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1523,26 +1456,21 @@ export type SiteFunctionGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type SiteFunctionGroupConnectionDistinctArgs = {
   field: SiteFunctionFieldsEnum;
 };
-
 
 export type SiteFunctionGroupConnectionMaxArgs = {
   field: SiteFunctionFieldsEnum;
 };
 
-
 export type SiteFunctionGroupConnectionMinArgs = {
   field: SiteFunctionFieldsEnum;
 };
 
-
 export type SiteFunctionGroupConnectionSumArgs = {
   field: SiteFunctionFieldsEnum;
 };
-
 
 export type SiteFunctionGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1655,26 +1583,21 @@ export type SitePageConnection = {
   group: Array<SitePageGroupConnection>;
 };
 
-
 export type SitePageConnectionDistinctArgs = {
   field: SitePageFieldsEnum;
 };
-
 
 export type SitePageConnectionMaxArgs = {
   field: SitePageFieldsEnum;
 };
 
-
 export type SitePageConnectionMinArgs = {
   field: SitePageFieldsEnum;
 };
 
-
 export type SitePageConnectionSumArgs = {
   field: SitePageFieldsEnum;
 };
-
 
 export type SitePageConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1869,26 +1792,21 @@ export type SitePageGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type SitePageGroupConnectionDistinctArgs = {
   field: SitePageFieldsEnum;
 };
-
 
 export type SitePageGroupConnectionMaxArgs = {
   field: SitePageFieldsEnum;
 };
 
-
 export type SitePageGroupConnectionMinArgs = {
   field: SitePageFieldsEnum;
 };
 
-
 export type SitePageGroupConnectionSumArgs = {
   field: SitePageFieldsEnum;
 };
-
 
 export type SitePageGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -1928,26 +1846,21 @@ export type SitePluginConnection = {
   group: Array<SitePluginGroupConnection>;
 };
 
-
 export type SitePluginConnectionDistinctArgs = {
   field: SitePluginFieldsEnum;
 };
-
 
 export type SitePluginConnectionMaxArgs = {
   field: SitePluginFieldsEnum;
 };
 
-
 export type SitePluginConnectionMinArgs = {
   field: SitePluginFieldsEnum;
 };
 
-
 export type SitePluginConnectionSumArgs = {
   field: SitePluginFieldsEnum;
 };
-
 
 export type SitePluginConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -2097,26 +2010,21 @@ export type SitePluginGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type SitePluginGroupConnectionDistinctArgs = {
   field: SitePluginFieldsEnum;
 };
-
 
 export type SitePluginGroupConnectionMaxArgs = {
   field: SitePluginFieldsEnum;
 };
 
-
 export type SitePluginGroupConnectionMinArgs = {
   field: SitePluginFieldsEnum;
 };
 
-
 export type SitePluginGroupConnectionSumArgs = {
   field: SitePluginFieldsEnum;
 };
-
 
 export type SitePluginGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -2141,26 +2049,21 @@ export type SiteBuildMetadataConnection = {
   group: Array<SiteBuildMetadataGroupConnection>;
 };
 
-
 export type SiteBuildMetadataConnectionDistinctArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
-
 
 export type SiteBuildMetadataConnectionMaxArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
 
-
 export type SiteBuildMetadataConnectionMinArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
 
-
 export type SiteBuildMetadataConnectionSumArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
-
 
 export type SiteBuildMetadataConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;
@@ -2277,26 +2180,21 @@ export type SiteBuildMetadataGroupConnection = {
   fieldValue?: Maybe<Scalars["String"]>;
 };
 
-
 export type SiteBuildMetadataGroupConnectionDistinctArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
-
 
 export type SiteBuildMetadataGroupConnectionMaxArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
 
-
 export type SiteBuildMetadataGroupConnectionMinArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
 
-
 export type SiteBuildMetadataGroupConnectionSumArgs = {
   field: SiteBuildMetadataFieldsEnum;
 };
-
 
 export type SiteBuildMetadataGroupConnectionGroupArgs = {
   skip?: Maybe<Scalars["Int"]>;

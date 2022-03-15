@@ -166,7 +166,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay/>}
+                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent

@@ -2,11 +2,11 @@
 
 ## Prerequisites:
 
-- understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if
-  you want to read more about it, check
-  out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog
-  post.
-- React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
+-   understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if
+    you want to read more about it, check
+    out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog
+    post.
+-   React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
 
 ## Getting started
 
@@ -16,7 +16,7 @@ collections.
 
 ### Key Differences
 
-- Axios needs to be imported
+-   Axios needs to be imported
 
 ```javascript
     npm install axios
