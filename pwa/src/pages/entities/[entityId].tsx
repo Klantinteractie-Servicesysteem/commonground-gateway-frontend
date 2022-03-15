@@ -57,7 +57,7 @@ const IndexPage = (props) => {
           <div className="page-top-item">
             {entityId && (
               <Tabs
-                items={[
+                tabs={[
                   {
                     name: "Overview",
                     id: "overview",

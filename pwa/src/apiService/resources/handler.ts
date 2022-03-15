@@ -12,12 +12,12 @@ export default class Handler {
     return Send(this._instance, "GET", `/handlers/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return Send(this._instance, "POST", "/handlers", data);
-  };
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/handlers/${id}`, data);
+    }
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/handlers/${id}`, data);
+    return Send(this._instance, "POST", "/handlers", data);
   };
 
   public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {

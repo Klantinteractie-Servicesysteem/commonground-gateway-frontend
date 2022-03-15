@@ -16,12 +16,12 @@ export default class ObjectEntity {
     return Send(this._instance, "GET", `/object_entities/${id}/sync`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return Send(this._instance, "POST", "/object_entities", data);
-  };
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/object_entities/${id}`, data);
+    }
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/object_entities/${id}`, data);
+    return Send(this._instance, "POST", "/object_entities", data);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {

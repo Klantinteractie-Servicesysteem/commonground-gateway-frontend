@@ -113,37 +113,18 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
       return;
     }
 
-    if (!sourceId) {
-      // unset id means we're creating a new entry
-      API.Source.create(body)
-        .then(() => {
-          setAlert({ type: "success", message: "Saved source" });
-          navigate("/sources");
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create source error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (sourceId) {
-      // set id means we're updating a existing entry
-      API.Source.update(body, sourceId)
-        .then((res) => {
-          setAlert({ type: "success", message: "Updated source" });
-          setSource(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update source error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Source.createOrUpdate(body, sourceId)
+      .then(() => {
+        setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
+        navigate("/sources");
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error("Create or update source error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -189,19 +170,15 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                 ) : (
                   <>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.name !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"name"}
-                            id={"nameInput"}
-                            data={source.name}
-                            nameOverride={"Name"}
-                          />
-                        ) : (
-                          <GenericInputComponent type={"text"} name={"name"} id={"nameInput"} nameOverride={"Name"} />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          name={"name"}
+                          id={"nameInput"}
+                          data={source?.name}
+                          nameOverride={"Name"}
+                        />
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
@@ -217,246 +194,136 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.type !== null ? (
-                          <SelectInputComponent
-                            options={[
-                              { name: "json", value: "json" },
-                              { name: "xml", value: "xml" },
-                              { name: "soaps", value: "soaps" },
-                              { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" },
-                            ]}
-                            name={"type"}
-                            id={"typeInput"}
-                            nameOverride={"Type"}
-                            data={source.type}
-                            required={true}
-                          />
-                        ) : (
-                          <SelectInputComponent
-                            options={[
-                              { name: "json", value: "json" },
-                              { name: "xml", value: "xml" },
-                              { name: "soaps", value: "soaps" },
-                              { name: "ftp", value: "ftp" },
-                              { name: "sftp", value: "sftp" },
-                            ]}
-                            name={"type"}
-                            id={"typeInput"}
-                            nameOverride={"Type"}
-                            required={true}
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={[
+                            { name: "json", value: "json" },
+                            { name: "xml", value: "xml" },
+                            { name: "soap", value: "soap" },
+                            { name: "ftp", value: "ftp" },
+                            { name: "sftp", value: "sftp" },
+                          ]}
+                          name={"type"}
+                          id={"typeInput"}
+                          nameOverride={"Type"}
+                          data={source?.type}
+                          required={true}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.auth !== null ? (
-                          <SelectInputComponent
-                            options={[
-                              { name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" },
-                            ]}
-                            name={"auth"}
-                            id={"authInput"}
-                            nameOverride={"Auth"}
-                            required={true}
-                            data={source.auth}
-                          />
-                        ) : (
-                          <SelectInputComponent
-                            options={[
-                              { name: "apikey", value: "apikey" },
-                              { name: "jwt", value: "jwt" },
-                              { name: "username-password", value: "username-password" },
-                            ]}
-                            name={"auth"}
-                            id={"authInput"}
-                            nameOverride={"Auth"}
-                            required={true}
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={[
+                            { name: "apikey", value: "apikey" },
+                            { name: "jwt", value: "jwt" },
+                            { name: "username-password", value: "username-password" },
+                          ]}
+                          name={"auth"}
+                          id={"authInput"}
+                          nameOverride={"Auth"}
+                          required={true}
+                          data={source?.auth}
+                        />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.accept !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Accept (accept header used for this source)"}
-                            name={"accept"}
-                            id={"acceptInput"}
-                            data={source.accept}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Accept (accept header used for this source)"}
-                            name={"accept"}
-                            id={"acceptInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Accept (accept header used for this source)"}
+                          name={"accept"}
+                          id={"acceptInput"}
+                          data={source?.accept}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.locale !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Locale"}
-                            name={"locale"}
-                            id={"localeInput"}
-                            data={source.locale}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Locale"}
-                            name={"locale"}
-                            id={"localeInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Locale"}
+                          name={"locale"}
+                          id={"localeInput"}
+                          data={source?.locale}
+                        />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.jwt !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Jwt"}
-                            name={"jwt"}
-                            id={"jwtInput"}
-                            data={source.jwt}
-                          />
-                        ) : (
-                          <GenericInputComponent type={"text"} nameOverride={"Jwt"} name={"jwt"} id={"jwtInput"} />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Jwt"}
+                          name={"jwt"}
+                          id={"jwtInput"}
+                          data={source?.jwt}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.jwtId !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"JwtId"}
-                            name={"jwtId"}
-                            id={"jwtIdInput"}
-                            data={source.jwtId}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"JwtId"}
-                            name={"jwtId"}
-                            id={"jwtIdInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"JwtId"}
+                          name={"jwtId"}
+                          id={"jwtIdInput"}
+                          data={source?.jwtId}
+                        />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.secret !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Secret"}
-                            name={"secret"}
-                            id={"secretInput"}
-                            data={source.secret}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Secret"}
-                            name={"secret"}
-                            id={"secretInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Secret"}
+                          name={"secret"}
+                          id={"secretInput"}
+                          data={source?.secret}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.apikey !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Apikey"}
-                            name={"apikey"}
-                            id={"apikeyInput"}
-                            data={source.apikey}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Apikey"}
-                            name={"apikey"}
-                            id={"apikeyInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Apikey"}
+                          name={"apikey"}
+                          id={"apikeyInput"}
+                          data={source?.apikey}
+                        />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.documentation !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Documentation(url)"}
-                            name={"documentation"}
-                            id={"documentationInput"}
-                            data={source.documentation}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Documentation(url)"}
-                            name={"documentation"}
-                            id={"documentationInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Documentation(url)"}
+                          name={"documentation"}
+                          id={"documentationInput"}
+                          data={source?.documentation}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.authorizationHeader !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"AuthorizationHeader"}
-                            name={"authorizationHeader"}
-                            id={"authorizationHeaderInput"}
-                            data={source.authorizationHeader}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"AuthorizationHeader"}
-                            name={"authorizationHeader"}
-                            id={"authorizationHeaderInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"AuthorizationHeader"}
+                          name={"authorizationHeader"}
+                          id={"authorizationHeaderInput"}
+                          data={source?.authorizationHeader}
+                        />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {source !== null && source.username !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Username"}
-                            name={"username"}
-                            id={"usernameInput"}
-                            data={source.username}
-                          />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Username"}
-                            name={"username"}
-                            id={"usernameInput"}
-                          />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Username"}
+                          name={"username"}
+                          id={"usernameInput"}
+                          data={source?.username}
+                        />
                       </div>
                       <div className="col-6">
-                        {source !== null && source.password !== null ? (
-                          <GenericInputComponent
-                            type={"text"}
-                            nameOverride={"Password"}
-                            name={"password"}
-                            id={"passwordInput"}
-                            data={source.password}
-                          />
-                        ) : (
-                          <GenericInputComponent type={"text"} name={"password"} id={"passwordInput"} />
-                        )}
+                        <GenericInputComponent
+                          type={"text"}
+                          nameOverride={"Password"}
+                          name={"password"}
+                          id={"passwordInput"}
+                          data={source?.password}
+                        />
                       </div>
                     </div>
                     <Accordion

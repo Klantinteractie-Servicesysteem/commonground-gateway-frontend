@@ -64,7 +64,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const handleSetSources = () => {
     API.Source.getAll()
       .then((res) => {
-        setSources(res.data);
+        const _sources = res.data.map((source) => ({
+          name: source.name,
+          value: `/admin/gateways/${source.id}`,
+        }));
+        setSources(_sources);
       })
       .catch((err) => {
         setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
@@ -106,37 +110,18 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
       return;
     }
 
-    if (!entityId) {
-      // unset id means we're creating a new entry
-      API.Entity.create(body)
-        .then(() => {
-          setAlert({ message: "Saved object type", type: "success" });
-          navigate("/entities");
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (entityId) {
-      // set id means we're updating a existing entry
-      API.Entity.update(body, entityId)
-        .then((res) => {
-          setAlert({ message: "Updated object type", type: "success" });
-          setEntity(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Entity.createOrUpdate(body, entityId)
+      .then(() => {
+        setAlert({ message: `${entityId ? "Updated" : "Saved"} object type`, type: "success" });
+        navigate("/entities");
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error("Create or update entity error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -182,7 +167,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -208,7 +193,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -228,44 +213,20 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
-                        {sources !== null && sources.length > 0 ? (
-                          <>
-                            {entity !== null && entity.gateway !== undefined && entity.gateway !== null ? (
-                              <SelectInputComponent
-                                options={sources}
-                                data={entity.gateway.name}
-                                name={"gateway"}
-                                id={"gatewayInput"}
-                                nameOverride={"Source"}
-                                value={"/admin/gateways/"}
-                              />
-                            ) : (
-                              <SelectInputComponent
-                                options={sources}
-                                name={"gateway"}
-                                id={"gatewayInput"}
-                                nameOverride={"Source"}
-                                value={"/admin/gateways/"}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <SelectInputComponent
-                            data="Please wait, gettings sources from the Gateway..."
-                            options={[
-                              {
-                                name: "Please wait, gettings sources from the Gateway...",
-                                value: "Please wait, gettings sources from the Gateway...",
-                              },
-                            ]}
-                            name={"gateway"}
-                            id={"gatewayInput"}
-                            nameOverride={"Source"}
-                            disabled
-                          />
-                        )}
+                        <SelectInputComponent
+                          options={
+                            sources !== null && sources.length > 0
+                              ? sources
+                              : [{ name: "Please create a source  first.", value: null }]
+                          }
+                          data={entity?.gateway?.name}
+                          name={"source"}
+                          id={"sourceInput"}
+                          nameOverride={"Source"}
+                          value={"admin/gateways/"}
+                        />
                       </div>
                       <div className="col-6">
                         <TextareaGroup
@@ -275,7 +236,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-12">
                         <div className="form-check">
                           <Checkbox

@@ -118,37 +118,18 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
       return;
     }
 
-    if (!objectId) {
-      // unset id means we're creating a new entry
-      API.ObjectEntity.create(body)
-        .then(() => {
-          setAlert({ message: "Saved object entities", type: "success" });
-          navigate(`/entities/${entityId}`);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("CREATE object entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (objectEntity) {
-      // set id means we're updating a existing entry
-      API.ObjectEntity.update(body, objectId)
-        .then((res) => {
-          setAlert({ message: "Updated object entities", type: "success" });
-          setObjectEntity(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("UPDATE object entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.ObjectEntity.createOrUpdate(body, objectId)
+      .then(() => {
+        setAlert({ message: `${objectId ? "Updated" : "Created"} object entities`, type: "success" });
+        navigate(`/entities/${entityId}`);
+      })
+      .catch((err) => {
+        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        throw new Error(`Create or update object entity error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (

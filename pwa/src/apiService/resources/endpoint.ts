@@ -16,12 +16,12 @@ export default class Endpoint {
     return Send(this._instance, "GET", `/endpoints/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return Send(this._instance, "POST", "/endpoints", data);
-  };
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/endpoints/${id}`, data);
+    }
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/endpoints/${id}`, data);
+    return Send(this._instance, "POST", "/endpoints", data);
   };
 
   public delete = (id: string): Promise<AxiosResponse> => {

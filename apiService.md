@@ -2,11 +2,11 @@
 
 ## Prerequisites:
 
-- understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if
-  you want to read more about it, check
-  out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog
-  post.
-- React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
+-   understanding of HTTP requests with [Axios](https://www.npmjs.com/package/axios). Axios has a lot of advantages and if
+    you want to read more about it, check
+    out [this](https://betterprogramming.pub/why-javascript-developers-should-prefer-axios-over-fetch-294b28a96e2c) blog
+    post.
+-   React [State](https://reactjs.org/docs/hooks-state.html) and [Context](https://reactjs.org/docs/context.html)
 
 ## Getting started
 
@@ -16,7 +16,7 @@ collections.
 
 ### Key Differences
 
-- Axios needs to be imported
+-   Axios needs to be imported
 
 ```javascript
     npm install axios
@@ -64,7 +64,7 @@ The wrapping is enough to make this data accessible in your application when you
 props (`value={API}`) to the `APIProvider` component. The Provider in our application is the `apiContext` exported
 as `<APIProvider />` component.
 
-# How to implement the API service
+## How to implement the API service
 
 First you will need to import both the `APIContext` and `APIService` in the following manner:
 
@@ -103,3 +103,7 @@ API.Attribute.getAll()
 ```
 
 > This is an example of everything implemented
+
+## Automatic session validation
+
+With the `APIService` its generic `Send()` method, we automatically validate the user's session **before** fulfilling a send request. This way, invalid requests are never sent. In the case of an invalid request, the user will be logged out.

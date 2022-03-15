@@ -40,7 +40,7 @@ export default function Layout({ children, pageContext }) {
         <HeaderProvider value={[header, setHeader]}>
           <Alert />
           <Helmet>
-            <title>Gateway Admin Dashboard</title>
+            <title>Conductor Admin Dashboard</title>
           </Helmet>
           <div className="utrecht-document conduction-theme">
             <div className="utrecht-page">
