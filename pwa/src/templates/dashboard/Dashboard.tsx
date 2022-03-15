@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
           <h3 className="dashboard-dividerTitle">Recent activity</h3>
 
           <Card
-            title="Recent activity"
+            title="Incoming calls"
             cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
             cardHeader={() => (
               <>
