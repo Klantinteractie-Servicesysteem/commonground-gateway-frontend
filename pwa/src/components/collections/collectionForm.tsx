@@ -5,7 +5,8 @@ import {
   Spinner,
   Card,
   Modal,
-  Accordion, SelectInputComponent
+  Accordion,
+  SelectInputComponent,
 } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
@@ -34,6 +35,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
 
   React.useEffect(() => {
     setHeader(
@@ -147,8 +149,8 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
     let body: any = {
       name: event.target.name.value,
       description: event.target.description.value ?? null,
-      source: event.target.source.value ?? null,
-      sourceType: event.target.sourceType.value ?? null,
+      source: !event.target.source.disabled ? event.target.source.value : null,
+      sourceType: !event.target.sourceType.disabled ? event.target.sourceType.value : null,
       sourceBranch: event.target.sourceBranch.value ?? null,
       applications,
       endpoints,
@@ -250,41 +252,60 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                             { name: "url", value: "url" },
                             { name: "GitHub", value: "GitHub" },
                           ]}
+                          onChange={(e) => setSelectedSourceType(e.target.value)}
                           data={collection?.sourceType}
                           name={"sourceType"}
                           id={"sourceTypeInput"}
                           nameOverride={"Source Type"}
+                          disabled={collection?.source?.name}
                         />
                       </div>
                       <div className="col-6">
-                        <SelectInputComponent
-                          options={
-                            sources !== null && sources.length > 0
-                              ? sources
-                              : [{ name: "Please create a source  first.", value: null }]
-                          }
-                          data={collection?.gateway?.name}
-                          name={"source"}
-                          id={"sourceInput"}
-                          nameOverride={"Source"}
-                          value={"admin/gateways/"}
-                        />
+                        {
+                          selectedSourceType === 'url' ? (
+                            <SelectInputComponent
+                              options={
+                                sources !== null && sources.length > 0
+                                  ? sources
+                                  : [{ name: "Please create a source  first.", value: null }]
+                              }
+                              data={collection?.source?.name}
+                              name={"source"}
+                              id={"sourceInput"}
+                              nameOverride={"Source url"}
+                              disabled={collection?.source?.name}
+                            />
+                          ) : (
+                            <GenericInputComponent
+                              type={"text"}
+                              name={"source"}
+                              id={"sourceInput"}
+                              data={collection?.source?.name}
+                              nameOverride={selectedSourceType === "GitHub" ? "Source GitHub url" : "Source url"}
+                              disabled={!selectedSourceType}
+                              infoTooltip={!selectedSourceType && !collection?.source?.name && {
+                                content: <span>Please select a source type first.</span>,
+                              }}
+                            />
+                          )
+                        }
                       </div>
                     </div>
-                    <div className="row form-row">
-                      <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"sourceBranch"}
-                          id={"sourceBranchInput"}
-                          data={collection?.sourceBranch}
-                          nameOverride={"Source Branch (url)"}
-                          infoTooltip={{
-                            content: <p>Enter the source branch here</p>,
-                          }}
-                        />
-                      </div>
-                    </div>
+                    {
+                      selectedSourceType === 'GitHub' && (
+                        <div className="row form-row">
+                          <div className="col-6">
+                            <GenericInputComponent
+                              type={"text"}
+                              name={"sourceBranch"}
+                              id={"sourceBranchInput"}
+                              data={collection?.sourceBranch}
+                              nameOverride={"Source GitHub Branch"}
+                            />
+                          </div>
+                        </div>
+                      )
+                    }
 
                     <Accordion
                       id="collectionAccordion"
@@ -312,7 +333,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                             return endpoints ? (
                               <MultiSelect
                                 id=""
-                                label="Applications"
+                                label="Endpoints"
                                 data={collection?.endpoints}
                                 options={endpoints}
                               />
