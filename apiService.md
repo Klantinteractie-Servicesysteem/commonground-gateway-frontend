@@ -64,7 +64,7 @@ The wrapping is enough to make this data accessible in your application when you
 props (`value={API}`) to the `APIProvider` component. The Provider in our application is the `apiContext` exported
 as `<APIProvider />` component.
 
-# How to implement the API service
+## How to implement the API service
 
 First you will need to import both the `APIContext` and `APIService` in the following manner:
 
@@ -103,3 +103,7 @@ API.Attribute.getAll()
 ```
 
 > This is an example of everything implemented
+
+## Automatic session validation
+
+With the `APIService` its generic `Send()` method, we automatically validate the user's session **before** fulfilling a send request. This way, invalid requests are never sent. In the case of an invalid request, the user will be logged out.
