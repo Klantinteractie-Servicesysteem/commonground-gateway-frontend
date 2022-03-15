@@ -60,7 +60,7 @@ const MultiDimensionalArrayInput: React.FC<MultiDimensionalArrayInputProps> = ({
       </div>
       <br />
       <div className="separator-solid" />
-      <h5>Create {label ?? id}</h5>
+      <span className="font-weight-bold">Create {label ?? id}</span>
       <div className="d-flex">
         <div>
           <div className="form-group">

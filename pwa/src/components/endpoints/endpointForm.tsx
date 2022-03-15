@@ -172,10 +172,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
             <div className="row">
               <div className="col-12">
                 {showSpinner === true ? (
-                  <Spinner />
+                  <Spinner/>
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
+                    {loadingOverlay && <LoadingOverlay/>}
                     <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -222,7 +222,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                                 options={applications}
                               />
                             ) : (
-                              <Spinner />
+                              <Spinner/>
                             );
                           },
                         },

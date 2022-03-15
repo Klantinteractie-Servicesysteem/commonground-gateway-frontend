@@ -75,7 +75,7 @@ const ElementCreationNew: React.FC<ElementCreationNewProps> = ({ id, label, data
       )}
 
       <div className="row">
-        <h5>Create {label}</h5>
+        <span className="font-weight-bold">Create {label}</span>
         <div className="col-10">
           <input
             type="text"

@@ -93,7 +93,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, data, options }) =
       )}
 
       <div className="row">
-        <h5>{label}</h5>
+        <span className="font-weight-bold">Add {label}</span>
         <div className="col-10">
           <div className="input-group">
             <select
