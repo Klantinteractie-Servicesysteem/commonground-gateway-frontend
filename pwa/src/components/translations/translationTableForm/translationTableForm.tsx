@@ -58,7 +58,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };

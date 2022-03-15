@@ -53,7 +53,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setEntity(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
@@ -71,7 +71,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setSources(_sources);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       });
   };
@@ -82,7 +82,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET documentation error: " + err);
       });
   };
@@ -105,7 +105,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -116,7 +116,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         navigate("/entities");
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error("Create or update entity error: " + err);
       })
       .finally(() => {

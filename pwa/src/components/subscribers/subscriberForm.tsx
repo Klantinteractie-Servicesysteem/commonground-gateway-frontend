@@ -67,7 +67,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSubscriber(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET subscriber error: " + err);
       });
   };
@@ -78,7 +78,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       });
   };
@@ -89,7 +89,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setEndpoint(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET endpoints error: " + err);
       });
   };
@@ -140,13 +140,13 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name, body.type])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (body.conditions && !validateJSON(body.conditions)) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Conditions is not valid JSON" });
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
@@ -159,7 +159,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         });
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error(`Create or update subscriber error: ${err}`);
       })
       .finally(() => {
