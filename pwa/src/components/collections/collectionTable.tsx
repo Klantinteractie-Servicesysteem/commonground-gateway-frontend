@@ -1,6 +1,6 @@
 import * as React from "react";
+import { Card, Table, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import { Table, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
@@ -10,9 +10,9 @@ import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
-export default function SourcesTable() {
+export default function CollectionTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [sources, setSources] = React.useState(null);
+  const [collections, setCollections] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -20,53 +20,38 @@ export default function SourcesTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader("Sources");
+    setHeader("Collections");
   }, [setHeader]);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    handleSetSources();
+    handleSetCollections();
   }, [API]);
 
-  const handleSetSources = () => {
+  const handleSetCollections = () => {
     setShowSpinner(true);
-    API.Source.getAll()
+    API.Collection.getAll()
       .then((res) => {
-        setSources(res.data);
+        setCollections(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET Sources error: " + err);
+        throw new Error("GET Collections error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("sources")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteSource = (id): void => {
+  const handleDeleteCollection = (id): void => {
     setLoadingOverlay(true);
-    API.Source.delete(id)
+    API.Collection.delete(id)
       .then(() => {
-        setAlert({ message: "Deleted source", type: "success" });
-        handleSetSources();
+        setAlert({ message: "Deleted collection", type: "success" });
+        handleSetCollections();
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE Sources error: " + err);
+        throw new Error("DELETE collection error: " + err);
       })
       .finally(() => {
         setLoadingOverlay(false);
@@ -75,24 +60,24 @@ export default function SourcesTable() {
 
   return (
     <Card
-      title={"Sources"}
+      title={"Collections"}
       cardHeader={function () {
         return (
           <>
-            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#sourceHelpModal">
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#collectionHelpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
             <Modal
-              title="Source Documentation"
-              id="sourceHelpModal"
+              title="Endpoint Documentation"
+              id="collectionHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetSources}>
+            <a className="utrecht-link" onClick={handleSetCollections}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/sources/new">
+            <Link to="/collections/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -107,7 +92,7 @@ export default function SourcesTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : sources ? (
+              ) : collections ? (
                 <>
                   {loadingOverlay && <LoadingOverlay />}
                   <Table
@@ -117,8 +102,8 @@ export default function SourcesTable() {
                         field: "name",
                       },
                       {
-                        headerName: "Location",
-                        field: "location",
+                        headerName: "Description",
+                        field: "description",
                       },
                       {
                         field: "id",
@@ -133,8 +118,8 @@ export default function SourcesTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteSource} resourceId={item.id} />
-                              <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
+                              <DeleteModal resourceDelete={handleDeleteCollection} resourceId={item.id} />
+                              <Link className="utrecht-link d-flex justify-content-end" to={`/collections/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit
                                 </button>
@@ -144,7 +129,7 @@ export default function SourcesTable() {
                         },
                       },
                     ]}
-                    rows={sources}
+                    rows={collections}
                   />
                 </>
               ) : (
@@ -155,11 +140,16 @@ export default function SourcesTable() {
                       field: "name",
                     },
                     {
-                      headerName: "Location",
-                      field: "location",
+                      headerName: "Description",
+                      field: "description",
                     },
                   ]}
-                  rows={[]}
+                  rows={[
+                    {
+                      name: "No results found",
+                      description: " ",
+                    },
+                  ]}
                 />
               )}
             </div>

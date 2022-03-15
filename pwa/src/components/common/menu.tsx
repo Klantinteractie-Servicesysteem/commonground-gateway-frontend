@@ -69,6 +69,11 @@ export default function MainMenu() {
                     </Link>
                   </li>
                   <li className="utrecht-topnav__item">
+                    <Link to={"/collections"} className="utrecht-topnav__link">
+                      Collections
+                    </Link>
+                  </li>
+                  <li className="utrecht-topnav__item">
                     <a className="utrecht-topnav__link">
                       <span onClick={handleLogout}>
                         <i className="fas fa-sign-out-alt mr-2"></i>

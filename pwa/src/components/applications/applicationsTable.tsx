@@ -69,7 +69,7 @@ export default function ApplicationsTable() {
         handleSetApplications();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE application error: " + err);
       })
       .finally(() => {

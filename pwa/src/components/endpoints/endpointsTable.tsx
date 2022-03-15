@@ -65,7 +65,7 @@ export default function EndpointsTable() {
         handleSetEndpoints();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE endpoint error: " + err);
       })
       .finally(() => {
