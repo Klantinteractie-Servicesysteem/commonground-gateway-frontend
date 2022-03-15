@@ -236,3 +236,12 @@ a:hover {
 .utrecht-button:disabled:hover {
   cursor: not-allowed;
 }
+
+.conduction-alert span {
+    display: block;
+}
+
+.conduction-alert-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
