@@ -10,9 +10,9 @@ import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
-export default function EndpointsTable() {
+export default function CollectionTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [endpoints, setEndpoints] = React.useState(null);
+  const [collections, setCollections] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -20,53 +20,38 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   React.useEffect(() => {
-    setHeader("Endpoints");
+    setHeader("Collections");
   }, [setHeader]);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
-    handleSetEndpoints();
+    handleSetCollections();
   }, [API]);
 
-  const handleSetEndpoints = () => {
+  const handleSetCollections = () => {
     setShowSpinner(true);
-    API.Endpoint.getAll()
+    API.Collection.getAll()
       .then((res) => {
-        setEndpoints(res.data);
+        setCollections(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET Endpoints error: " + err);
+        throw new Error("GET Collections error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
       });
   };
 
-  const handleSetDocumentation = (): void => {
-    API.Documentation.get("endpoints")
-      .then((res) => {
-        setDocumentation(res.data.content);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteEndpoint = (id): void => {
+  const handleDeleteCollection = (id): void => {
     setLoadingOverlay(true);
-    API.Endpoint.delete(id)
+    API.Collection.delete(id)
       .then(() => {
-        setAlert({ message: "Deleted endpoint", type: "success" });
-        handleSetEndpoints();
+        setAlert({ message: "Deleted collection", type: "success" });
+        handleSetCollections();
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE endpoint error: " + err);
+        throw new Error("DELETE collection error: " + err);
       })
       .finally(() => {
         setLoadingOverlay(false);
@@ -75,24 +60,24 @@ export default function EndpointsTable() {
 
   return (
     <Card
-      title={"Endpoints"}
+      title={"Collections"}
       cardHeader={function () {
         return (
           <>
-            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#endpointHelpModal">
+            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#collectionHelpModal">
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
             <Modal
               title="Endpoint Documentation"
-              id="endpointHelpModal"
+              id="collectionHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetEndpoints}>
+            <a className="utrecht-link" onClick={handleSetCollections}>
               <i className="fas fa-sync-alt mr-1" />
               <span className="mr-2">Refresh</span>
             </a>
-            <Link to="/endpoints/new">
+            <Link to="/collections/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
                 Create
@@ -107,7 +92,7 @@ export default function EndpointsTable() {
             <div className="col-12">
               {showSpinner === true ? (
                 <Spinner />
-              ) : endpoints ? (
+              ) : collections ? (
                 <>
                   {loadingOverlay && <LoadingOverlay />}
                   <Table
@@ -117,8 +102,13 @@ export default function EndpointsTable() {
                         field: "name",
                       },
                       {
-                        headerName: "Path",
-                        field: "path",
+                        headerName: "Description",
+                        field: "description",
+                      },
+                      {
+                        headerName: "Date Created",
+                        field: "dateCreated",
+                        renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
                       },
                       {
                         field: "id",
@@ -133,8 +123,8 @@ export default function EndpointsTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteEndpoint} resourceId={item.id} />
-                              <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
+                              <DeleteModal resourceDelete={handleDeleteCollection} resourceId={item.id} />
+                              <Link className="utrecht-link d-flex justify-content-end" to={`/collections/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit
                                 </button>
@@ -144,7 +134,7 @@ export default function EndpointsTable() {
                         },
                       },
                     ]}
-                    rows={endpoints}
+                    rows={collections}
                   />
                 </>
               ) : (
@@ -157,6 +147,10 @@ export default function EndpointsTable() {
                     {
                       headerName: "Description",
                       field: "description",
+                    },
+                    {
+                      headerName: "Date Created",
+                      field: "dateCreated",
                     },
                   ]}
                   rows={[

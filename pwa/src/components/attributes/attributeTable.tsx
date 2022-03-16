@@ -61,7 +61,7 @@ export default function AttributeTable({ entityId }) {
         handleSetAttributes();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE attribute error: " + err);
       })
       .finally(() => {
