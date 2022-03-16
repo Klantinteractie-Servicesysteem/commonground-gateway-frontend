@@ -363,15 +363,15 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                     <table className="mt-3">
                       <tr>
                         <th>Last synced at</th>
-                        <td>{collection?.syncedAt ? new Date(collection?.syncedAt).toLocaleString("nl-NL") : 'Not synced yet' }</td>
+                        <td>{collection?.syncedAt ? new Date(collection?.syncedAt).toLocaleString('nl-NL') : 'Not synced yet'}</td>
                       </tr>
                       <tr>
-                        <th>Last updated at</th>
-                        <td>{collection?.updatedAt && new Date(collection?.updatedAt).toLocaleString("nl-NL") }</td>
+                        <th>Date modified</th>
+                        <td>{collection?.dateModified && new Date(collection?.dateModified).toLocaleString('nl-NL')}</td>
                       </tr>
                       <tr>
-                        <th>Created at</th>
-                        <td>{collection?.createdAt && new Date(collection?.createdAt).toLocaleString("nl-NL") }</td>
+                        <th>Date created</th>
+                        <td>{collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString('nl-NL')}</td>
                       </tr>
                     </table>
                   </div>
