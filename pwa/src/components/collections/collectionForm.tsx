@@ -17,6 +17,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
+import "./collectionForm.css";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -360,20 +361,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                         },
                       ]}
                     />
-                    <table className="mt-3">
-                      <tr>
-                        <th>Last synced at</th>
-                        <td>{collection?.syncedAt ? new Date(collection?.syncedAt).toLocaleString('nl-NL') : 'Not synced yet'}</td>
-                      </tr>
-                      <tr>
-                        <th>Date modified</th>
-                        <td>{collection?.dateModified && new Date(collection?.dateModified).toLocaleString('nl-NL')}</td>
-                      </tr>
-                      <tr>
-                        <th>Date created</th>
-                        <td>{collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString('nl-NL')}</td>
-                      </tr>
-                    </table>
+                    <div className="collectionFormContainer">
+                      <span><strong>Last synced at: </strong> {collection?.syncedAt ? new Date(collection?.syncedAt).toLocaleString('nl-NL') : 'Not synced yet'}</span>
+                      <span><strong>Date modified: </strong> {collection?.dateModified && new Date(collection?.dateModified).toLocaleString('nl-NL')}</span>
+                      <span><strong>Date created: </strong> {collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString('nl-NL')}</span>
+                    </div>
                   </div>
                 )}
               </div>
