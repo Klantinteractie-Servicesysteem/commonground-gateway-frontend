@@ -22,6 +22,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
+import { validateJSON } from "../../services/validateJSON";
 
 interface SourceFormProps {
   sourceId: string;
@@ -182,7 +183,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
-                          type={"text"}
+                          type={"url"}
                           name={"location"}
                           id={"locationInput"}
                           data={source?.location}
@@ -289,7 +290,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                     <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
-                          type={"text"}
+                          type={"url"}
                           nameOverride={"Documentation(url)"}
                           name={"documentation"}
                           id={"documentationInput"}
@@ -318,7 +319,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                       </div>
                       <div className="col-6">
                         <GenericInputComponent
-                          type={"text"}
+                          type={"password"}
                           nameOverride={"Password"}
                           name={"password"}
                           id={"passwordInput"}
