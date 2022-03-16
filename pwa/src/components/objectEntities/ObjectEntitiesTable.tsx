@@ -34,7 +34,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
 
   React.useEffect(() => {
     setShowSpinner(true);
-    entity && getFormIOSchema();
+    entity && entity.endpoint && getFormIOSchema();
     setShowSpinner(false);
   }, [API, entity]);
 
@@ -50,7 +50,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
   }, [formIOSchema]);
 
   const getFormIOSchema = () => {
-    API.FormIO.getSchema(entity.name)
+    API.FormIO.getSchema(entity.endpoint)
       .then((res) => {
         setFormIOSchema(res.data);
       })
@@ -64,7 +64,7 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     let body = event.data;
     body.submit = undefined;
 
-    API.ApiCalls.createObject(entity?.name, body)
+    API.ApiCalls.createObject(entity?.endpoint, body)
       .catch((err) => {
         throw new Error("Create object error: " + err);
       })
