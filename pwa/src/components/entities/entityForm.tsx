@@ -206,6 +206,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
+                          maxLength={1406}
                           name={"route"}
                           id={"routeInput"}
                           data={entity?.route}
