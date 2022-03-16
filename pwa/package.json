@@ -4,7 +4,9 @@
   "private": true,
   "description": "pwa",
   "author": "Gino",
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
     "develop": "gatsby develop",
     "start": "gatsby develop",
@@ -43,6 +45,6 @@
   "devDependencies": {
     "dotenv": "^10.0.0",
     "gatsby-link": "^4.3.0",
-    "prettier": "2.5.1"
+    "prettier": "^2.5.1"
   }
 }
