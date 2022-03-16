@@ -65,7 +65,7 @@ export default function SourcesTable() {
         handleSetSources();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {
