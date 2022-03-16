@@ -233,6 +233,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                           name={"description"}
                           id={"descriptionInput"}
                           defaultValue={entity?.description}
+                          label={"description"}
                         />
                       </div>
                     </div>

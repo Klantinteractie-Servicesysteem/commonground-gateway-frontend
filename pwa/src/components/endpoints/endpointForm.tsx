@@ -204,6 +204,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           name={"description"}
                           id={"descriptionInput"}
                           defaultValue={endpoint?.description}
+                          label={"description"}
                         />
                       </div>
                     </div>
