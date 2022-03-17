@@ -56,7 +56,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         });
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET endpoints error: " + err);
       })
       .finally(() => {
@@ -73,7 +73,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setApplications(_applications);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET application error: " + err);
       });
   };
@@ -84,7 +84,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -99,7 +99,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error(`Create or update endpoint error: ${err}`);
       })
       .finally(() => {
