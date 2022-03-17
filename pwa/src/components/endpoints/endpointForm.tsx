@@ -7,9 +7,8 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import MultiSelect from "../common/multiSelect";
 import { useForm } from "react-hook-form";
-import { InputText, Textarea } from "../formFields";
+import { InputText, Textarea, SelectMultiple } from "../formFields";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -25,11 +24,14 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const fields = ["name", "path", "description", "applications"];
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
+    setValue,
+    control,
   } = useForm();
 
   React.useEffect(() => {
@@ -47,10 +49,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         const endpoint = res.data;
 
         endpoint.applications = res.data.applications.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+          return { label: endpoint.name, value: `/admin/applications/${endpoint.id}` };
         });
 
-        reset(endpoint);
+        fields.map((field) => {
+          setValue(field, endpoint[field]);
+        });
       })
       .catch((err) => {
         setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
@@ -65,7 +69,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     API.Application.getAll()
       .then((res) => {
         const _applications = res.data?.map((application) => {
-          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` };
+          return { label: application.name, value: `/admin/applications/${application.id}` };
         });
         setApplications(_applications);
       })
@@ -87,9 +91,9 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   };
 
   const onSubmit = (data): void => {
-    console.log(data);
-
     setLoadingOverlay(true);
+
+    data.applications = data.applications.map((application) => application.value);
 
     API.Endpoint.createOrUpdate(data, endpointId)
       .then(() => {
@@ -172,14 +176,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           id: "applicationsAccordion",
                           render: function () {
                             return applications ? (
-                              <></>
+                              <SelectMultiple
+                                label="Applications"
+                                name="applications"
+                                options={applications}
+                                {...{ control, register, errors }}
+                              />
                             ) : (
-                              // <MultiSelect
-                              //   id=""
-                              //   label="Applications"
-                              //   data={endpoint?.applications}
-                              //   options={applications}
-                              // />
                               <Spinner />
                             );
                           },
