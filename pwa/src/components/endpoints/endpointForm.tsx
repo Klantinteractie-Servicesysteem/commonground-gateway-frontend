@@ -23,7 +23,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-
   const fields = ["name", "path", "description", "applications"];
 
   const {

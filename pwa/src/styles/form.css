@@ -1,3 +1,28 @@
 .form-row {
   margin-bottom: 15px;
 }
+
+.FormField-group {
+  flex-direction: column;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.FormField-field {
+  font-size: 14px !important;
+  border-color: #ebedf2 !important;
+  padding: 0.6rem 1rem !important;
+  height: inherit !important;
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.5 !important;
+  color: #495057 !important;
+  background-color: #fff !important;
+  background-clip: padding-box !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
