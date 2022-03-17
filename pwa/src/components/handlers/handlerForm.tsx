@@ -65,7 +65,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         setHandler(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET handler error: " + err);
       })
       .finally(() => {
@@ -79,7 +79,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         setEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET entities error: " + err);
       });
   };
@@ -130,13 +130,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (!validateJSON(body.conditions)) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Conditions is not valid JSON" });
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
@@ -147,7 +147,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         navigate(`/endpoints/${endpointId}/handlers`);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error(`Create or update handler error: ${err}`);
       })
       .finally(() => {

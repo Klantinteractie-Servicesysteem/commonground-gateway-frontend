@@ -14,6 +14,7 @@ import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import Subscriber from "./resources/subscriber";
+import Collection from "./resources/collection";
 import { isLoggedIn, logout, validateSession } from "../services/auth";
 
 export default class APIService {
@@ -117,6 +118,11 @@ export default class APIService {
   public get Subscriber(): Subscriber {
     return new Subscriber(this.adminClient);
   }
+
+  public get Collection(): Collection {
+    return new Collection(this.adminClient);
+  }
+
 
   public get Test(): Test {
     return new Test(this.apiClient);
