@@ -3,26 +3,23 @@
 }
 
 .FormField-group {
-  flex-direction: column;
-  position: relative;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: stretch;
-  width: 100%;
+  flex-direction: column;
 }
 
 .FormField-field {
-  font-size: 14px !important;
-  border-color: #ebedf2 !important;
-  padding: 0.6rem 1rem !important;
-  height: inherit !important;
-  display: block !important;
-  width: 100% !important;
-  line-height: 1.5 !important;
-  color: #495057 !important;
-  background-color: #fff !important;
-  background-clip: padding-box !important;
-  border: 1px solid #ced4da !important;
-  border-radius: 0.25rem !important;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  font-size: 14px;
+  border-color: #ebedf2;
+  padding: 0.6rem 1rem;
+  height: inherit;
+  display: block;
+  width: 100%;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
 }
