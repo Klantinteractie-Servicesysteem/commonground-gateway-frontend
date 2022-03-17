@@ -8,7 +8,7 @@ export interface IReactHookFormProps {
   };
 }
 
-export interface IFormGroupProps {
+export interface IFormFieldProps {
   label: string;
   name: string;
 }

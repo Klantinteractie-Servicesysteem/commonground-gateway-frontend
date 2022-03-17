@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { InputGroup } from "./formGroup";
-import { IFormGroupProps, IReactHookFormProps } from "./types";
+import { InputGroup } from "./formFieldGroup";
+import { IFormFieldProps, IReactHookFormProps } from "./types";
 
-export const Textarea: React.FC<IFormGroupProps & IReactHookFormProps> = ({
+export const Textarea: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   name,
   label,
   errors,

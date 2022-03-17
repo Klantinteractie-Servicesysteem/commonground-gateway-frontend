@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import Select from "react-select";
-import { InputGroup } from "./formGroup";
-import { IFormGroupProps, IReactHookFormProps } from "./types";
+import { InputGroup } from "./formFieldGroup";
+import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 interface ISelectProps {
   control: Control<FieldValues, any>;
@@ -12,7 +12,7 @@ interface ISelectProps {
   }[];
 }
 
-export const SelectMultiple: React.FC<ISelectProps & IFormGroupProps & IReactHookFormProps> = ({
+export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHookFormProps> = ({
   name,
   label,
   options,

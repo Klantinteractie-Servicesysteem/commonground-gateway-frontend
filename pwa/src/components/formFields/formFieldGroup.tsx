@@ -1,14 +1,13 @@
 import * as React from "react";
 import { FieldErrors } from "react-hook-form";
+import { IFormFieldProps } from "./types";
 
-interface IInputGroupProps {
-  name: string;
-  label: string;
+interface IFormFieldGroupProps {
   errors: FieldErrors;
   required?: boolean;
 }
 
-export const InputGroup: React.FC<IInputGroupProps> = (props) => (
+export const InputGroup: React.FC<IFormFieldGroupProps & IFormFieldProps> = (props) => (
   <div className="FormField-group">
     <label htmlFor={props.name}>
       {props.label}
