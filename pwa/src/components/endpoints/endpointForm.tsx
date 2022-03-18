@@ -59,8 +59,22 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     onMutate: () => {
       setLoadingOverlay(true);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries("endpoints");
+    onSuccess: async (newEndpoint) => {
+      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
+      await queryClient.cancelQueries("endpoints");
+
+      if (endpointId) {
+        const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
+        previousEndpoints[index] = newEndpoint;
+        queryClient.setQueryData("endpoints", previousEndpoints);
+        queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
+      }
+
+      if (!endpointId) {
+        queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
+        queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
+      }
+
       setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
       navigate("/endpoints");
     },
@@ -69,6 +83,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     },
     onSettled: () => {
       setLoadingOverlay(false);
+      queryClient.invalidateQueries("endpoints");
     },
   });
 
@@ -127,15 +142,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         cardHeader={function () {
           return (
             <div>
-              <button
+              <a
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#endpointHelpModal"
-                onClick={(e) => e.preventDefault()}
+                onClick={handleSetDocumentation}
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
-              </button>
+              </a>
               <Modal
                 title="Endpoint Documentation"
                 id="endpointHelpModal"
