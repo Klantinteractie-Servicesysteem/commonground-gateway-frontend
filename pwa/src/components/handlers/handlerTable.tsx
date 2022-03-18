@@ -130,7 +130,10 @@ export default function HandlersTable({ endpointId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteHandler} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteHandler({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/endpoints/${endpointId}/handlers/${item.id}/`}

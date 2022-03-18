@@ -145,7 +145,7 @@ export default function TranslationTable({ tableName }) {
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
                               <DeleteModal
-                                resourceDelete={handleDeleteTranslation}
+                                resourceDelete={() => handleDeleteTranslation({ id: item.id })}
                                 resourceId={item.id}
                                 optionalMessage={
                                   translations.length === 1 && (

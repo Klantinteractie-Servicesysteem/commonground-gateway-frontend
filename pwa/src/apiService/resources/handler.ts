@@ -24,7 +24,7 @@ export default class Handler {
     return Send(this._instance, "GET", `/handlers?endpoint.id=${endpointId}`);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/handlers/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/handlers/${variables.id}`);
   };
 }

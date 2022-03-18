@@ -114,7 +114,10 @@ export default function SubscribersTable({ entityId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteSubscriber} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteSubscriber({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/entities/${entityId}/subscribers/${item.id}`}

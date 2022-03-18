@@ -64,7 +64,11 @@ export default function CollectionTable() {
       cardHeader={function () {
         return (
           <>
-            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#collectionHelpModal">
+            <button
+              className="utrecht-link button-no-style"
+              data-bs-toggle="modal"
+              data-bs-target="#collectionHelpModal"
+            >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
@@ -108,7 +112,8 @@ export default function CollectionTable() {
                       {
                         headerName: "Date Created",
                         field: "dateCreated",
-                        renderCell: (item: { dateCreated: string }) => new Date(item.dateCreated).toLocaleString("nl-NL"),
+                        renderCell: (item: { dateCreated: string }) =>
+                          new Date(item.dateCreated).toLocaleString("nl-NL"),
                       },
                       {
                         field: "id",
@@ -123,7 +128,10 @@ export default function CollectionTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteCollection} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteCollection({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/collections/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

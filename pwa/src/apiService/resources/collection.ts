@@ -24,7 +24,7 @@ export default class Collection {
     return Send(this._instance, "POST", "/collections", data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/collections/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/collections/${variables.id}`);
   };
 }
