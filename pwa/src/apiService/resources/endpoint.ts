@@ -8,8 +8,9 @@ export default class Endpoint {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", "/endpoints");
+  public getAll = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/endpoints");
+    return data;
   };
 
   public getOne = (id: string): Promise<AxiosResponse> => {
@@ -24,7 +25,8 @@ export default class Endpoint {
     return Send(this._instance, "POST", "/endpoints", data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/endpoints/${id}`);
+  public delete = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "DELETE", `/endpoints/${id}`);
+    return data;
   };
 }
