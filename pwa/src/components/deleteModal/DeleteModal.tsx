@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 interface DeleteModalProps {
-  resourceDelete: (resourceId) => void;
+  resourceDelete: (id) => void;
   resourceId: string;
   optionalMessage?: JSX.Element;
 }
@@ -28,7 +28,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ resourceDelete, resourceId, o
               </button>
               <button
                 className="utrecht-button btn-sm btn-danger mr-2"
-                onClick={() => resourceDelete(resourceId)}
+                onClick={(id) => resourceDelete(id)}
                 data-bs-dismiss="modal"
               >
                 <FontAwesomeIcon icon={faTrash} /> Delete

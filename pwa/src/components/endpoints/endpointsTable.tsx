@@ -17,25 +17,32 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   const queryClient = useQueryClient();
-  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll);
-  const deleteEndpointMutation = useMutation<any, Error, any>(API.Endpoint.delete);
+
+  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll, {
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+  });
+
+  const deleteEndpointMutation = useMutation<any, Error, any>(API.Endpoint.delete, {
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSuccess: async (_, variables) => {
+      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
+      await queryClient.cancelQueries("endpoints");
+
+      const newEndpoints = previousEndpoints.filter((endpoint) => endpoint.id !== variables.id);
+      queryClient.setQueryData("endpoints", [...newEndpoints]);
+
+      queryClient.invalidateQueries("endpoints");
+      setAlert({ message: "Deleted endpoint", type: "success" });
+    },
+  });
 
   React.useEffect(() => {
     setHeader("Endpoints");
   }, [setHeader]);
-
-  React.useEffect(() => {
-    getEndpointsQuery.isError && setAlert({ message: getEndpointsQuery.error.message, type: "danger" });
-  }, [getEndpointsQuery.isError]);
-
-  React.useEffect(() => {
-    deleteEndpointMutation.isError && setAlert({ message: deleteEndpointMutation.error.message, type: "danger" });
-
-    if (deleteEndpointMutation.isSuccess) {
-      deleteEndpointMutation.isSuccess && setAlert({ message: "Deleted endpoint", type: "success" });
-      queryClient.invalidateQueries("endpoints");
-    }
-  }, [deleteEndpointMutation.isError, deleteEndpointMutation.isSuccess]);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("endpoints")
@@ -54,10 +61,15 @@ export default function EndpointsTable() {
       cardHeader={function () {
         return (
           <>
-            <button className="utrecht-link button-no-style" data-bs-toggle="modal" data-bs-target="#endpointHelpModal">
+            <a
+              className="utrecht-link button-no-style"
+              data-bs-toggle="modal"
+              data-bs-target="#endpointHelpModal"
+              onClick={handleSetDocumentation}
+            >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
-            </button>
+            </a>
             <Modal
               title="Endpoint Documentation"
               id="endpointHelpModal"
@@ -113,7 +125,10 @@ export default function EndpointsTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={deleteEndpointMutation.mutateAsync} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => deleteEndpointMutation.mutateAsync({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

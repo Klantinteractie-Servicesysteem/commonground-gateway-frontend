@@ -75,6 +75,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
       }
 
+      queryClient.invalidateQueries("endpoints");
       setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
       navigate("/endpoints");
     },
@@ -83,7 +84,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     },
     onSettled: () => {
       setLoadingOverlay(false);
-      queryClient.invalidateQueries("endpoints");
     },
   });
 

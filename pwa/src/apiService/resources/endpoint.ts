@@ -35,8 +35,8 @@ export default class Endpoint {
     return data;
   };
 
-  public delete = async (id: string): Promise<any> => {
-    const { data } = await Send(this._instance, "DELETE", `/endpoints/${id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { data } = await Send(this._instance, "DELETE", `/endpoints/${variables.id}`);
     return data;
   };
 }
