@@ -64,11 +64,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const handleSetSources = () => {
     API.Source.getAll()
       .then((res) => {
-        const _sources = res.data.map((source) => ({
-          name: source.name,
-          value: `/admin/gateways/${source.id}`,
-        }));
-        setSources(_sources);
+        setSources(res.data);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -222,7 +218,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                               : [{ name: "Please create a source  first.", value: null }]
                           }
                           data={entity?.gateway?.name}
-                          name={"source"}
+                          name={"gateway"}
                           id={"sourceInput"}
                           nameOverride={"Source"}
                           value={"admin/gateways/"}
