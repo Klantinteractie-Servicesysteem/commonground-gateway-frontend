@@ -8,43 +8,34 @@ import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export default function EndpointsTable() {
-  const [documentation, setDocumentation] = React.useState<string>(null);
-  const [endpoints, setEndpoints] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
+  const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+
+  const queryClient = useQueryClient();
+  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll);
+  const deleteEndpointMutation = useMutation<any, Error, any>(API.Endpoint.delete);
 
   React.useEffect(() => {
     setHeader("Endpoints");
   }, [setHeader]);
 
   React.useEffect(() => {
-    handleSetDocumentation();
-  });
+    getEndpointsQuery.isError && setAlert({ message: getEndpointsQuery.error.message, type: "danger" });
+  }, [getEndpointsQuery.isError]);
 
   React.useEffect(() => {
-    handleSetEndpoints();
-  }, [API]);
+    deleteEndpointMutation.isError && setAlert({ message: deleteEndpointMutation.error.message, type: "danger" });
 
-  const handleSetEndpoints = () => {
-    setShowSpinner(true);
-    API.Endpoint.getAll()
-      .then((res) => {
-        setEndpoints(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Endpoints error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+    if (deleteEndpointMutation.isSuccess) {
+      deleteEndpointMutation.isSuccess && setAlert({ message: "Deleted endpoint", type: "success" });
+      queryClient.invalidateQueries("endpoints");
+    }
+  }, [deleteEndpointMutation.isError, deleteEndpointMutation.isSuccess]);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("endpoints")
@@ -54,22 +45,6 @@ export default function EndpointsTable() {
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteEndpoint = (id): void => {
-    setLoadingOverlay(true);
-    API.Endpoint.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted endpoint", type: "success" });
-        handleSetEndpoints();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE endpoint error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
       });
   };
 
@@ -88,10 +63,16 @@ export default function EndpointsTable() {
               id="endpointHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetEndpoints}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getEndpointsQuery.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("endpoints");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getEndpointsQuery.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -105,11 +86,10 @@ export default function EndpointsTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getEndpointsQuery.isLoading ? (
                 <Spinner />
-              ) : endpoints ? (
+              ) : (
                 <>
-                  {loadingOverlay && <LoadingOverlay />}
                   <Table
                     columns={[
                       {
@@ -133,7 +113,7 @@ export default function EndpointsTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteEndpoint} resourceId={item.id} />
+                              <DeleteModal resourceDelete={deleteEndpointMutation.mutateAsync} resourceId={item.id} />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit
@@ -144,28 +124,9 @@ export default function EndpointsTable() {
                         },
                       },
                     ]}
-                    rows={endpoints}
+                    rows={getEndpointsQuery.data ?? []}
                   />
                 </>
-              ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Description",
-                      field: "description",
-                    },
-                  ]}
-                  rows={[
-                    {
-                      name: "No results found",
-                      description: " ",
-                    },
-                  ]}
-                />
               )}
             </div>
           </div>
