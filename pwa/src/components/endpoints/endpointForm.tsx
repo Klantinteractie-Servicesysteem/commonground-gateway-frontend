@@ -47,13 +47,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
    */
   const queryClient = useQueryClient();
 
-  const getEndpoint =
-    endpointId &&
-    useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
-      onError: (error) => {
-        setAlert({ message: error.message, type: "danger" });
-      },
-    });
+  const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
+    initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    enabled: !!endpointId,
+  });
 
   const createOrEditEndpoint = useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
     onMutate: () => {
@@ -78,7 +78,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   React.useEffect(() => {
     setHeader("Endpoint");
 
-    if (getEndpoint?.isSuccess) {
+    if (getEndpoint.isSuccess) {
       setHeader(
         <>
           Endpoint: <i>{getEndpoint.data.name}</i>
@@ -89,7 +89,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setValue(field, getEndpoint.data[field]);
       });
     }
-  }, [getEndpoint?.isSuccess]);
+  }, [getEndpoint.isSuccess]);
 
   React.useEffect(() => {
     handleSetApplications();
@@ -162,7 +162,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {getEndpoint?.isLoading ? (
+                {getEndpoint.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
