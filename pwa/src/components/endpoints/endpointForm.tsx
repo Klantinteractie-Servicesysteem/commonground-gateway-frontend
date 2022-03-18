@@ -38,7 +38,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   } = useForm();
 
   const onSubmit = (data): void => {
-    data.applications = data.applications.map((application) => application.value);
+    data.applications = data.applications?.map((application) => application.value);
     createOrEditEndpoint.mutate({ payload: data, id: endpointId });
   };
 
