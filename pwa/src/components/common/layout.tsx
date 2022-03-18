@@ -12,8 +12,6 @@ import WelcomeModal from "../welcomeModal/welcomeModal";
 import Alert from "../alert/alert";
 import { HeaderProvider } from "../../context/headerContext";
 import Header from "./header";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 /**
  * This components renders a layout which is renders the menu, footer and container surrounding main body of pages.
@@ -26,8 +24,6 @@ export default function Layout({ children, pageContext }) {
   const [alert, setAlert] = React.useState<AlertProps>(null);
   const [header, setHeader] = React.useState(null);
 
-  const queryClient = new QueryClient();
-
   React.useEffect(() => {
     if (!isLoggedIn()) {
       setAPI(null);
@@ -39,32 +35,29 @@ export default function Layout({ children, pageContext }) {
   }, [API, isLoggedIn()]);
 
   return API ? (
-    <QueryClientProvider client={queryClient}>
-      <APIProvider value={API}>
-        <AlertProvider value={[alert, setAlert]}>
-          <HeaderProvider value={[header, setHeader]}>
-            <Alert />
-            <Helmet>
-              <title>Conductor Admin Dashboard</title>
-            </Helmet>
-            <div className="utrecht-document conduction-theme">
-              <div className="utrecht-page">
-                <MainMenu />
-                <div className="utrecht-page__content">
-                  <header className="utrecht-page-header">
-                    <Header {...{ pageContext }} />
-                  </header>
-                  <div className="container py-4">{children}</div>
-                </div>
-                <Footer />
+    <APIProvider value={API}>
+      <AlertProvider value={[alert, setAlert]}>
+        <HeaderProvider value={[header, setHeader]}>
+          <Alert />
+          <Helmet>
+            <title>Conductor Admin Dashboard</title>
+          </Helmet>
+          <div className="utrecht-document conduction-theme">
+            <div className="utrecht-page">
+              <MainMenu />
+              <div className="utrecht-page__content">
+                <header className="utrecht-page-header">
+                  <Header {...{ pageContext }} />
+                </header>
+                <div className="container py-4">{children}</div>
               </div>
+              <Footer />
             </div>
-            <WelcomeModal />
-            <ReactQueryDevtools />
-          </HeaderProvider>
-        </AlertProvider>
-      </APIProvider>
-    </QueryClientProvider>
+          </div>
+          <WelcomeModal />
+        </HeaderProvider>
+      </AlertProvider>
+    </APIProvider>
   ) : (
     <Login />
   );
