@@ -9,10 +9,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function EndpointsTable() {
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
@@ -25,6 +27,9 @@ export default function EndpointsTable() {
   });
 
   const deleteEndpointMutation = useMutation<any, Error, any>(API.Endpoint.delete, {
+    onMutate: () => {
+      setLoadingOverlay(true);
+    },
     onError: (error) => {
       setAlert({ message: error.message, type: "danger" });
     },
@@ -37,6 +42,9 @@ export default function EndpointsTable() {
 
       queryClient.invalidateQueries("endpoints");
       setAlert({ message: "Deleted endpoint", type: "success" });
+    },
+    onSettled: () => {
+      setLoadingOverlay(false);
     },
   });
 
@@ -102,6 +110,7 @@ export default function EndpointsTable() {
                 <Spinner />
               ) : (
                 <>
+                  {loadingOverlay && <LoadingOverlay />}
                   <Table
                     columns={[
                       {
