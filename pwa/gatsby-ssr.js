@@ -20,9 +20,7 @@ export const onRouteUpdate = () => {
 };
 
 export const wrapRootElement = ({ element }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
-  });
+  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

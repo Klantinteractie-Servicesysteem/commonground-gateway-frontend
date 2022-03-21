@@ -1,5 +1,6 @@
 import { Send } from "../apiService";
 import { AxiosInstance } from "axios";
+import { resourceArrayToSelectArray } from "./../../services/resourceArrayToSelectArray";
 
 export default class Endpoint {
   private _instance: AxiosInstance;
@@ -25,9 +26,7 @@ export default class Endpoint {
   public getOne = async (id: string): Promise<any> => {
     const { data } = await Send(this._instance, "GET", `/endpoints/${id}`);
 
-    data.applications = data.applications.map((application) => {
-      return { label: application.name, value: `/admin/applications/${application.id}` };
-    });
+    data.applications = resourceArrayToSelectArray(data.applications, "applications");
 
     return data;
   };
