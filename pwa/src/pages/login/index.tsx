@@ -5,6 +5,7 @@ import { setUser } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 import Particles from "react-tsparticles";
+import { isLoggedIn } from "../../services/auth";
 
 const Login: React.FC = () => {
   const [username, setUsername] = React.useState<string>(null);
@@ -12,6 +13,12 @@ const Login: React.FC = () => {
   const [error, setError] = React.useState<string>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const API: APIService = new APIService("");
+
+  React.useEffect(() => {
+    if (isLoggedIn()) {
+      navigate("/");
+    }
+  }, [isLoggedIn()]);
 
   const handleLogin = (): void => {
     setLoading(true);
