@@ -4,7 +4,9 @@
   "private": true,
   "description": "pwa",
   "author": "Gino",
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
     "develop": "gatsby develop",
     "start": "gatsby develop",
@@ -36,13 +38,15 @@
     "react-dom": "^17.0.1",
     "react-flash-message": "^1.0.8",
     "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.28.0",
     "react-movable": "^3.0.2",
+    "react-select": "^5.2.2",
     "react-tsparticles": "^1.41.2",
     "typescript": "^4.4.4"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
     "gatsby-link": "^4.3.0",
-    "prettier": "2.5.1"
+    "prettier": "^2.5.1"
   }
 }

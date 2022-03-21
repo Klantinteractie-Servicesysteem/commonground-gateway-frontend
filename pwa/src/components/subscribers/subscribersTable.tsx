@@ -45,7 +45,7 @@ export default function SubscribersTable({ entityId }) {
         handleSetSubscribers();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE Subscriber error: " + err);
       })
       .finally(() => {
