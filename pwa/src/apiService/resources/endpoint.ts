@@ -16,6 +16,7 @@ export default class Endpoint {
 
   public getSelect = async (): Promise<any> => {
     const { data } = await Send(this._instance, "GET", "/endpoints");
+
     const selectData = data.map((endpoint) => {
       return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
     });
