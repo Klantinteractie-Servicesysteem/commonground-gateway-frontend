@@ -24,7 +24,7 @@ export default class Entity {
     return Send(this._instance, "POST", "/entities", data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/entities/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/entities/${variables.id}`);
   };
 }

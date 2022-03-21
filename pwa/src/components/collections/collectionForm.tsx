@@ -18,6 +18,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import "./collectionForm.css";
+import { useQuery } from "react-query";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -38,6 +39,12 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [__, setHeader] = React.useContext(HeaderContext);
   const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
 
+  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+  });
+
   React.useEffect(() => {
     setHeader(
       <>
@@ -49,7 +56,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   React.useEffect(() => {
     handleSetSources();
     handleSetApplications();
-    handleSetEndpoints();
     handleSetEntities();
     collectionId && handleSetCollection();
   }, [API, collectionId]);
@@ -108,20 +114,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET application error: " + err);
-      });
-  };
-
-  const handleSetEndpoints = () => {
-    API.Endpoint.getAll()
-      .then((res) => {
-        const _endpoints = res.data?.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
-        });
-        setEndpoints(_endpoints);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET endpoints error: " + err);
       });
   };
 
@@ -208,10 +200,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                   Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-              >
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -240,6 +229,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                       </div>
                       <div className="col-6">
                         <TextareaGroup
+                          label="Description"
                           name={"description"}
                           id={"descriptionInput"}
                           defaultValue={collection?.description}
@@ -262,51 +252,50 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                         />
                       </div>
                       <div className="col-6">
-                        {
-                          selectedSourceType === 'url' ? (
-                            <SelectInputComponent
-                              options={
-                                sources !== null && sources.length > 0
-                                  ? sources
-                                  : [{ name: "Please create a source  first.", value: null }]
-                              }
-                              data={collection?.source?.name}
-                              name={"source"}
-                              id={"sourceInput"}
-                              nameOverride={"Source url"}
-                              disabled={collection?.source?.name}
-                            />
-                          ) : (
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"source"}
-                              id={"sourceInput"}
-                              data={collection?.source?.name}
-                              nameOverride={selectedSourceType === "GitHub" ? "Source GitHub url" : "Source url"}
-                              disabled={!selectedSourceType}
-                              infoTooltip={!selectedSourceType && !collection?.source?.name && {
+                        {selectedSourceType === "url" ? (
+                          <SelectInputComponent
+                            options={
+                              sources !== null && sources.length > 0
+                                ? sources
+                                : [{ name: "Please create a source  first.", value: null }]
+                            }
+                            data={collection?.source?.name}
+                            name={"source"}
+                            id={"sourceInput"}
+                            nameOverride={"Source url"}
+                            disabled={collection?.source?.name}
+                          />
+                        ) : (
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"source"}
+                            id={"sourceInput"}
+                            data={collection?.source?.name}
+                            nameOverride={selectedSourceType === "GitHub" ? "Source GitHub url" : "Source url"}
+                            disabled={!selectedSourceType}
+                            infoTooltip={
+                              !selectedSourceType &&
+                              !collection?.source?.name && {
                                 content: <span>Please select a source type first.</span>,
-                              }}
-                            />
-                          )
-                        }
+                              }
+                            }
+                          />
+                        )}
                       </div>
                     </div>
-                    {
-                      selectedSourceType === 'GitHub' && (
-                        <div className="row form-row">
-                          <div className="col-6">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"sourceBranch"}
-                              id={"sourceBranchInput"}
-                              data={collection?.sourceBranch}
-                              nameOverride={"Source GitHub Branch"}
-                            />
-                          </div>
+                    {selectedSourceType === "GitHub" && (
+                      <div className="row form-row">
+                        <div className="col-6">
+                          <GenericInputComponent
+                            type={"text"}
+                            name={"sourceBranch"}
+                            id={"sourceBranchInput"}
+                            data={collection?.sourceBranch}
+                            nameOverride={"Source GitHub Branch"}
+                          />
                         </div>
-                      )
-                    }
+                      </div>
+                    )}
 
                     <Accordion
                       id="collectionAccordion"
@@ -331,12 +320,12 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            return endpoints ? (
+                            return getEndpointsSelectQuery.isSuccess ? (
                               <MultiSelect
                                 id=""
                                 label="Endpoints"
                                 data={collection?.endpoints}
-                                options={endpoints}
+                                options={getEndpointsSelectQuery.data}
                               />
                             ) : (
                               <Spinner />
@@ -348,12 +337,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           id: "entitiesAccordion",
                           render: function () {
                             return entities ? (
-                              <MultiSelect
-                                id=""
-                                label="Entities"
-                                data={collection?.entities}
-                                options={entities}
-                              />
+                              <MultiSelect id="" label="Entities" data={collection?.entities} options={entities} />
                             ) : (
                               <Spinner />
                             );
@@ -362,9 +346,20 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                       ]}
                     />
                     <div className="collectionFormContainer">
-                      <span><strong>Last synced at: </strong> {collection?.syncedAt ? new Date(collection?.syncedAt).toLocaleString('nl-NL') : 'Not synced yet'}</span>
-                      <span><strong>Date modified: </strong> {collection?.dateModified && new Date(collection?.dateModified).toLocaleString('nl-NL')}</span>
-                      <span><strong>Date created: </strong> {collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString('nl-NL')}</span>
+                      <span>
+                        <strong>Last synced at: </strong>{" "}
+                        {collection?.syncedAt
+                          ? new Date(collection?.syncedAt).toLocaleString("nl-NL")
+                          : "Not synced yet"}
+                      </span>
+                      <span>
+                        <strong>Date modified: </strong>{" "}
+                        {collection?.dateModified && new Date(collection?.dateModified).toLocaleString("nl-NL")}
+                      </span>
+                      <span>
+                        <strong>Date created: </strong>{" "}
+                        {collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString("nl-NL")}
+                      </span>
                     </div>
                   </div>
                 )}

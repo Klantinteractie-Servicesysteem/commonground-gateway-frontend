@@ -9,13 +9,13 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple } from "../formFields";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 interface EndpointFormProps {
   endpointId: string;
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
@@ -23,6 +23,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+
+  /**
+   * Form fields and logic
+   */
   const fields = ["name", "path", "description", "applications"];
 
   const {
@@ -33,36 +37,78 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     control,
   } = useForm();
 
+  const onSubmit = (data): void => {
+    data.applications = data.applications?.map((application) => application.value);
+    createOrEditEndpoint.mutate({ payload: data, id: endpointId });
+  };
+
+  /**
+   * Queries and mutations
+   */
+  const queryClient = useQueryClient();
+
+  const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
+    initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    enabled: !!endpointId,
+  });
+
+  const createOrEditEndpoint = useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
+    onMutate: () => {
+      setLoadingOverlay(true);
+    },
+    onSuccess: async (newEndpoint) => {
+      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
+      await queryClient.cancelQueries("endpoints");
+
+      if (endpointId) {
+        const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
+        previousEndpoints[index] = newEndpoint;
+        queryClient.setQueryData("endpoints", previousEndpoints);
+        queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
+      }
+
+      if (!endpointId) {
+        queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
+        queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
+      }
+
+      queryClient.invalidateQueries("endpoints");
+      setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
+      navigate("/endpoints");
+    },
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSettled: () => {
+      setLoadingOverlay(false);
+    },
+  });
+
+  /**
+   * Effects
+   */
+  React.useEffect(() => {
+    setHeader("Endpoint");
+
+    if (getEndpoint.isSuccess) {
+      setHeader(
+        <>
+          Endpoint: <i>{getEndpoint.data.name}</i>
+        </>,
+      );
+
+      fields.map((field) => {
+        setValue(field, getEndpoint.data[field]);
+      });
+    }
+  }, [getEndpoint.isSuccess]);
+
   React.useEffect(() => {
     handleSetApplications();
-    endpointId && handleSetEndpoint();
   }, [API, endpointId]);
-
-  const handleSetEndpoint = () => {
-    setShowSpinner(true);
-
-    API.Endpoint.getOne(endpointId)
-      .then((res) => {
-        setHeader(res.data.name);
-
-        const endpoint = res.data;
-
-        endpoint.applications = res.data.applications.map((endpoint) => {
-          return { label: endpoint.name, value: `/admin/applications/${endpoint.id}` };
-        });
-
-        fields.map((field) => {
-          setValue(field, endpoint[field]);
-        });
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET endpoints error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
 
   const handleSetApplications = () => {
     API.Application.getAll()
@@ -89,24 +135,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       });
   };
 
-  const onSubmit = (data): void => {
-    setLoadingOverlay(true);
-
-    data.applications = data.applications.map((application) => application.value);
-
-    API.Endpoint.createOrUpdate(data, endpointId)
-      .then(() => {
-        setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update endpoint error: ${err}`);
-      })
-      .finally(() => {
-        navigate("/endpoints");
-      });
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card
@@ -114,15 +142,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         cardHeader={function () {
           return (
             <div>
-              <button
+              <a
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#endpointHelpModal"
-                onClick={(e) => e.preventDefault()}
+                onClick={handleSetDocumentation}
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
-              </button>
+              </a>
               <Modal
                 title="Endpoint Documentation"
                 id="endpointHelpModal"
@@ -149,7 +177,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getEndpoint.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>

@@ -24,7 +24,7 @@ export default class Source {
     return Send(this._instance, "POST", "/gateways", data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/gateways/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/gateways/${variables.id}`);
   };
 }

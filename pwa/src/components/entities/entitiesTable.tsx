@@ -144,7 +144,10 @@ export default function EntitiesTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteObjectType} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteObjectType({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

@@ -24,8 +24,8 @@ export default class Translation {
     return Send(this._instance, "POST", "/translations", data);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/translations/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/translations/${variables.id}`);
   };
 
   public getTableNames = (): Promise<AxiosResponse> => {
