@@ -4,12 +4,30 @@ export interface IReactHookFormProps {
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
   validation?: {
-    required?: boolean;
-    maxLenght?: number;
-    minLength?: number;
-    max?: number;
-    min?: number;
-    pattern?: RegExp;
+    required?: {
+      value: boolean;
+      message?: string;
+    };
+    maxLenght?: {
+      value: number;
+      message?: string;
+    };
+    minLength?: {
+      value: number;
+      message?: string;
+    };
+    max?: {
+      value: number;
+      message?: string;
+    };
+    min?: {
+      value: number;
+      message?: string;
+    };
+    pattern?: {
+      value: RegExp;
+      message?: string;
+    };
   };
 }
 
