@@ -5,6 +5,11 @@ export interface IReactHookFormProps {
   errors: FieldErrors;
   validation?: {
     required?: boolean;
+    maxLenght?: number;
+    minLength?: number;
+    max?: number;
+    min?: number;
+    pattern?: RegExp;
   };
 }
 

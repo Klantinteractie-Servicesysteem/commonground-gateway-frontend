@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import Select from "react-select";
-import { InputGroup } from "./formFieldGroup";
+import { InputGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 interface ISelectProps {
@@ -26,7 +26,7 @@ export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHoo
         {...{ control, name }}
         rules={validation}
         render={({ field: { onChange, value } }) => {
-          return <Select isMulti {...{ options, value, onChange }} />;
+          return <Select isMulti {...{ options, value, onChange }} className="Select" />;
         }}
       />
     </InputGroup>

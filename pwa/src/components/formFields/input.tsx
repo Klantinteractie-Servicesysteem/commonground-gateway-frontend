@@ -1,5 +1,5 @@
 import * as React from "react";
-import { InputGroup } from "./formFieldGroup";
+import { InputGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({
@@ -10,11 +10,6 @@ export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   register,
 }) => (
   <InputGroup {...{ name, label, errors }} required={validation?.required}>
-    <input
-      id={name}
-      type="text"
-      className="FormField-field"
-      {...{ label, errors, ...register(name, { ...validation }) }}
-    />
+    <input id={name} type="text" className="FormField-field" {...{ label, ...register(name, { ...validation }) }} />
   </InputGroup>
 );
