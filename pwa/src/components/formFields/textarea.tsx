@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { InputGroup } from "./formFieldGroup/formFieldGroup";
+import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 export const Textarea: React.FC<IFormFieldProps & IReactHookFormProps> = ({
@@ -10,7 +10,7 @@ export const Textarea: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   validation,
   register,
 }) => (
-  <InputGroup {...{ name, label, errors }} required={validation?.required}>
+  <FormFieldGroup {...{ name, label, errors }} required={validation?.required}>
     <textarea id={name} className="FormField-field" {...{ label, ...register(name, { ...validation }) }} />
-  </InputGroup>
+  </FormFieldGroup>
 );

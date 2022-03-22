@@ -8,7 +8,7 @@ interface IFormFieldGroupProps {
   required?: boolean;
 }
 
-export const InputGroup: React.FC<IFormFieldGroupProps & IFormFieldProps> = (props) => {
+export const FormFieldGroup: React.FC<IFormFieldGroupProps & IFormFieldProps> = (props) => {
   const hasError: boolean = props.errors[props.name];
 
   return (
