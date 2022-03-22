@@ -21,7 +21,7 @@ export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHoo
   validation,
 }) => {
   return (
-    <FormFieldGroup {...{ name, label, errors }} required={validation?.required}>
+    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}
