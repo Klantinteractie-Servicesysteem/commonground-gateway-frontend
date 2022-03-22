@@ -184,20 +184,10 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText
-                          label="Name"
-                          name="name"
-                          {...{ register, errors }}
-                          validation={{ required: { value: true } }}
-                        />
+                        <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <InputText
-                          label="Path"
-                          name="path"
-                          {...{ register, errors }}
-                          validation={{ required: { value: true } }}
-                        />
+                        <InputText label="Path" name="path" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -217,6 +207,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                                 label="Applications"
                                 name="applications"
                                 options={applications}
+                                validation={{ required: true }}
                                 {...{ control, register, errors }}
                               />
                             ) : (
