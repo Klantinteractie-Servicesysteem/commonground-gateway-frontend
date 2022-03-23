@@ -29,7 +29,7 @@ export default function SubscribersTable({ entityId }) {
         setSubscribers(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Subscribers error: " + err);
       })
       .finally(() => {
@@ -45,7 +45,7 @@ export default function SubscribersTable({ entityId }) {
         handleSetSubscribers();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE Subscriber error: " + err);
       })
       .finally(() => {
@@ -114,7 +114,10 @@ export default function SubscribersTable({ entityId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteSubscriber} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteSubscriber({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/entities/${entityId}/subscribers/${item.id}`}

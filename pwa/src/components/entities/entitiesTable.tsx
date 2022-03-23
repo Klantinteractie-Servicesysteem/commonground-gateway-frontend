@@ -38,7 +38,7 @@ export default function EntitiesTable() {
         setEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Entities error: " + err);
       })
       .finally(() => {
@@ -52,7 +52,7 @@ export default function EntitiesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -65,7 +65,7 @@ export default function EntitiesTable() {
         handleSetEntities();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {
@@ -144,7 +144,10 @@ export default function EntitiesTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteObjectType} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteObjectType({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

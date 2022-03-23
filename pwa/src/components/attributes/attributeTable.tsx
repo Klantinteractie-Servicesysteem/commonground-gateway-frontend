@@ -34,7 +34,7 @@ export default function AttributeTable({ entityId }) {
         setAttributes(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET attributes from entity error: " + err);
       })
       .finally(() => {
@@ -48,7 +48,7 @@ export default function AttributeTable({ entityId }) {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -61,7 +61,7 @@ export default function AttributeTable({ entityId }) {
         handleSetAttributes();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE attribute error: " + err);
       })
       .finally(() => {
@@ -148,7 +148,10 @@ export default function AttributeTable({ entityId }) {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteAttribute} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteAttribute({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link
                                 className="utrecht-link d-flex justify-content-end"
                                 to={`/entities/${entityId}/attributes/${item.id}`}

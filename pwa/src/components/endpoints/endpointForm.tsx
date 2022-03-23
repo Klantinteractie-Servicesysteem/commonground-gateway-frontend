@@ -1,29 +1,21 @@
 import * as React from "react";
-import {
-  GenericInputComponent,
-  TextareaGroup,
-  Spinner,
-  Card,
-  Modal,
-  Accordion,
-} from "@conductionnl/nl-design-system/lib";
+import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArrayWithName } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import MultiSelect from "../common/multiSelect";
+import { useForm } from "react-hook-form";
+import { InputText, Textarea, SelectMultiple } from "../formFields";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 interface EndpointFormProps {
   endpointId: string;
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [endpoint, setEndpoint] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
@@ -32,52 +24,102 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => {
-    setHeader(
-      <>
-        Endpoint <i>{endpoint && endpoint.name}</i>
-      </>,
-    );
-  }, [setHeader, endpoint]);
+  /**
+   * Form fields and logic
+   */
+  const fields = ["name", "path", "description", "applications"];
 
-  React.useEffect(() => {
-    handleSetDocumentation();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    control,
+  } = useForm();
+
+  const onSubmit = (data): void => {
+    data.applications = data.applications?.map((application) => application.value);
+    createOrEditEndpoint.mutate({ payload: data, id: endpointId });
+  };
+
+  /**
+   * Queries and mutations
+   */
+  const queryClient = useQueryClient();
+
+  const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
+    initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    enabled: !!endpointId,
   });
+
+  const createOrEditEndpoint = useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
+    onMutate: () => {
+      setLoadingOverlay(true);
+    },
+    onSuccess: async (newEndpoint) => {
+      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
+      await queryClient.cancelQueries("endpoints");
+
+      if (endpointId) {
+        const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
+        previousEndpoints[index] = newEndpoint;
+        queryClient.setQueryData("endpoints", previousEndpoints);
+        queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
+      }
+
+      if (!endpointId) {
+        queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
+        queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
+      }
+
+      queryClient.invalidateQueries("endpoints");
+      setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
+      navigate("/endpoints");
+    },
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSettled: () => {
+      setLoadingOverlay(false);
+    },
+  });
+
+  /**
+   * Effects
+   */
+  React.useEffect(() => {
+    setHeader("Endpoint");
+
+    if (getEndpoint.isSuccess) {
+      setHeader(
+        <>
+          Endpoint: <i>{getEndpoint.data.name}</i>
+        </>,
+      );
+
+      fields.map((field) => {
+        setValue(field, getEndpoint.data[field]);
+      });
+    }
+  }, [getEndpoint.isSuccess]);
 
   React.useEffect(() => {
     handleSetApplications();
-    endpointId && handleSetEndpoint();
   }, [API, endpointId]);
-
-  const handleSetEndpoint = () => {
-    setShowSpinner(true);
-
-    API.Endpoint.getOne(endpointId)
-      .then((res) => {
-        res.data.applications = res.data.applications.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
-        });
-        setEndpoint(res.data);
-      })
-      .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
-        throw new Error("GET endpoints error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
 
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
         const _applications = res.data?.map((application) => {
-          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` };
+          return { label: application.name, value: `/admin/applications/${application.id}` };
         });
         setApplications(_applications);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET application error: " + err);
       });
   };
@@ -88,63 +130,27 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
 
-  const saveEndpoint = (event) => {
-    event.preventDefault();
-    setLoadingOverlay(true);
-
-    let applications: any[] = retrieveFormArrayAsOArrayWithName(event.target, "applications");
-
-    let body: any = {
-      name: event.target.name.value,
-      description: event.target.description.value ?? null,
-      path: event.target.path.value,
-      applications,
-    };
-
-    // This removes empty values from the body
-    body = removeEmptyObjectValues(body);
-
-    if (!checkValues([body.name, body.path])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
-      return;
-    }
-
-    API.Endpoint.createOrUpdate(body, endpointId)
-      .then(() => {
-        setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
-        navigate("/endpoints");
-      })
-      .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-        throw new Error(`Create or update endpoint error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
-  };
-
   return (
-    <form id="dataForm" onSubmit={saveEndpoint}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card
         title={title}
         cardHeader={function () {
           return (
             <div>
-              <button
+              <a
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#endpointHelpModal"
-                onClick={(e) => e.preventDefault()}
+                onClick={handleSetDocumentation}
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
-              </button>
+              </a>
               <Modal
                 title="Endpoint Documentation"
                 id="endpointHelpModal"
@@ -171,41 +177,22 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getEndpoint.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={endpoint && endpoint.name && endpoint.name}
-                          nameOverride={"Name"}
-                          required
-                        />
+                        <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          nameOverride={"Path"}
-                          name={"path"}
-                          data={endpoint?.path}
-                          type={"text"}
-                          id={"pathInput"}
-                          required
-                        />
+                        <InputText label="Path" name="path" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <TextareaGroup
-                          label="Description"
-                          name="description"
-                          id="descriptionInput"
-                          defaultValue={endpoint?.description}
-                        />
+                        <Textarea label="Description" name="description" {...{ register, errors }} />
                       </div>
                     </div>
                     <Accordion
@@ -216,11 +203,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           id: "applicationsAccordion",
                           render: function () {
                             return applications ? (
-                              <MultiSelect
-                                id=""
+                              <SelectMultiple
                                 label="Applications"
-                                data={endpoint?.applications}
+                                name="applications"
                                 options={applications}
+                                validation={{ required: true }}
+                                {...{ control, register, errors }}
                               />
                             ) : (
                               <Spinner />

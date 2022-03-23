@@ -52,7 +52,7 @@ export default function SourcesTable() {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -65,7 +65,7 @@ export default function SourcesTable() {
         handleSetSources();
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {
@@ -133,7 +133,10 @@ export default function SourcesTable() {
                               >
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
-                              <DeleteModal resourceDelete={handleDeleteSource} resourceId={item.id} />
+                              <DeleteModal
+                                resourceDelete={() => handleDeleteSource({ id: item.id })}
+                                resourceId={item.id}
+                              />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
                                 <button className="utrecht-button btn-sm btn-success">
                                   <FontAwesomeIcon icon={faEdit} /> Edit

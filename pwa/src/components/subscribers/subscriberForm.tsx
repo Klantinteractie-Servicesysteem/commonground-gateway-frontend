@@ -24,6 +24,7 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import MultiSelect from "../common/multiSelect";
 import { validateJSON } from "../../services/validateJSON";
+import { useQuery } from "react-query";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -39,8 +40,17 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [sources, setSources] = React.useState<any>(null);
-  const [endpoints, setEndpoint] = React.useState<any>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
+
+  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+    onError: (error) => {
+      console.log("error!!");
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSuccess: () => {
+      console.log("success");
+    },
+  });
 
   React.useEffect(() => {
     setHeader(
@@ -53,13 +63,12 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   React.useEffect(() => {
     subscriberId && handleSetSubscriber();
     handleSetSources();
-    handleSetEndpoints();
     handleSetTableNames();
   }, [API, subscriberId]);
 
   React.useEffect(() => {
-    setShowSpinner(!sources || !endpoints || !tableNames || (subscriberId && !subscriber));
-  }, [subscriber, sources, endpoints, tableNames, subscriberId]);
+    setShowSpinner(!sources || !getEndpointsSelectQuery.isSuccess || !tableNames || (subscriberId && !subscriber));
+  }, [subscriber, sources, getEndpointsSelectQuery.isSuccess, tableNames, subscriberId]);
 
   const handleSetSubscriber = () => {
     API.Subscriber.getOne(subscriberId)
@@ -67,7 +76,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSubscriber(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET subscriber error: " + err);
       });
   };
@@ -78,19 +87,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         setSources(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
-      });
-  };
-
-  const handleSetEndpoints = () => {
-    API.Endpoint.getAll()
-      .then((res) => {
-        setEndpoint(res.data);
-      })
-      .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
-        throw new Error("GET endpoints error: " + err);
       });
   };
 
@@ -140,13 +138,13 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name, body.type])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (body.conditions && !validateJSON(body.conditions)) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Conditions is not valid JSON" });
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
@@ -159,7 +157,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         });
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error(`Create or update subscriber error: ${err}`);
       })
       .finally(() => {
@@ -282,11 +280,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <SelectInputComponent
-                          options={
-                            endpoints !== null && endpoints.length > 0
-                              ? endpoints
-                              : [{ name: "Please create an endpoint first.", value: null }]
-                          }
+                          options={getEndpointsSelectQuery.data ?? []}
                           data={subscriber?.endpoint?.name}
                           name={"endpoint"}
                           id={"endpointInput"}

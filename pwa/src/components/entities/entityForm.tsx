@@ -53,7 +53,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setEntity(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET entity error: " + err);
       })
       .finally(() => {
@@ -64,14 +64,10 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const handleSetSources = () => {
     API.Source.getAll()
       .then((res) => {
-        const _sources = res.data.map((source) => ({
-          name: source.name,
-          value: `/admin/gateways/${source.id}`,
-        }));
-        setSources(_sources);
+        setSources(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
       });
   };
@@ -82,7 +78,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET documentation error: " + err);
       });
   };
@@ -105,7 +101,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
@@ -116,7 +112,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         navigate("/entities");
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
+        setAlert({ type: "danger", message: err.message });
         throw new Error("Create or update entity error: " + err);
       })
       .finally(() => {
@@ -222,7 +218,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                               : [{ name: "Please create a source  first.", value: null }]
                           }
                           data={entity?.gateway?.name}
-                          name={"source"}
+                          name={"gateway"}
                           id={"sourceInput"}
                           nameOverride={"Source"}
                           value={"admin/gateways/"}
@@ -234,6 +230,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                           name="description"
                           id="descriptionInput"
                           defaultValue={entity?.description}
+                          label={"description"}
                         />
                       </div>
                     </div>

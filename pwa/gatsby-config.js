@@ -87,6 +87,14 @@ module.exports = {
             crumbLabel: "Translation",
           },
           {
+            pathname: "/collections",
+            crumbLabel: "Collections",
+          },
+          {
+            pathname: "/collections/[collectionId]",
+            crumbLabel: "Collections",
+          },
+          {
             pathname: "/sessions/[sessionId]",
             crumbLabel: "Session",
           },

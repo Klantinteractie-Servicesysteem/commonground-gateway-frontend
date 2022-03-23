@@ -24,7 +24,7 @@ export default class Subscriber {
     return Send(this._instance, "GET", `/subscribers?entity.id=${entityId}`);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/subscribers/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/subscribers/${variables.id}`);
   };
 }
