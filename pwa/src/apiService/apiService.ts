@@ -16,6 +16,7 @@ import ApiCalls from "./resources/apiCalls";
 import Subscriber from "./resources/subscriber";
 import Collection from "./resources/collection";
 import { isLoggedIn, logout, validateSession } from "../services/auth";
+import Repository from "./resources/repository";
 
 export default class APIService {
   private _jwtToken: string;
@@ -121,6 +122,10 @@ export default class APIService {
 
   public get Collection(): Collection {
     return new Collection(this.adminClient);
+  }
+
+  public get Repository(): Repository {
+    return new Repository(this.adminClient);
   }
 
 
