@@ -6,10 +6,6 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useQuery, useQueryClient } from "react-query";
-import { Link } from "gatsby";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfo } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/fontawesome-free";
 
 interface ShopDetailProps {
   repositoryId: string;
