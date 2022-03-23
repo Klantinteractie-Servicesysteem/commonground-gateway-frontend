@@ -36,9 +36,9 @@ const IndexPage = () => {
         </div>
       </div>
       {getRepositoriesQuery.isSuccess && getRepositoriesQuery.data.map((repository) => (
-        <div className="row">
+        <div className="row" key={`row-${repository.repository.id}`}>
           <div className="col-12">
-            <ShopCard repository={repository.repository} key={repository.id} />
+            <ShopCard repository={repository.repository} />
           </div>
         </div>
       ))}

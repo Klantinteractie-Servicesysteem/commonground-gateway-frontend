@@ -18,6 +18,7 @@ export const ShopCard: React.FC<ShopCardProps> = ({ repository }) => {
 
   return (
     <Card
+      key={repository.id}
       title={repository.name}
       cardHeader={function() {
         return (
