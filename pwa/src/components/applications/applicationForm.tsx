@@ -228,8 +228,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                       <div className="col-6">
                         <TextareaGroup
                           label="Description"
-                          name={"description"}
-                          id={"descriptionInput"}
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={application?.description}
                         />
                       </div>
