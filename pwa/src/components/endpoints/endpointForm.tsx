@@ -8,7 +8,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
-import { InputText, Textarea, SelectMultiple } from "../formFields";
+import { InputText, Textarea, SelectMultiple, SelectSingle } from "../formFields";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 interface EndpointFormProps {
@@ -182,7 +182,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                             <SelectMultiple
                               label="Applications"
                               name="applications"
-                              options={getEndpoint.data.applications}
+                              options={getEndpoint.data.applications} //TODO: this should be all applications again...
                               validation={{ required: true }}
                               {...{ control, register, errors }}
                             />
