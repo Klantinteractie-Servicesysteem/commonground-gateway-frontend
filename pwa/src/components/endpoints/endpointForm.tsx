@@ -16,7 +16,6 @@ interface EndpointFormProps {
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
-  const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
@@ -106,24 +105,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     }
   }, [getEndpoint.isSuccess]);
 
-  React.useEffect(() => {
-    handleSetApplications();
-  }, [API, endpointId]);
-
-  const handleSetApplications = () => {
-    API.Application.getAll()
-      .then((res) => {
-        const _applications = res.data?.map((application) => {
-          return { label: application.name, value: `/admin/applications/${application.id}` };
-        });
-        setApplications(_applications);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET application error: " + err);
-      });
-  };
-
   const handleSetDocumentation = (): void => {
     API.Documentation.get("endpoints")
       .then((res) => {
@@ -162,11 +143,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-                disabled={!setApplications}
-              >
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -201,19 +178,15 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: function () {
-                            return applications ? (
-                              <SelectMultiple
-                                label="Applications"
-                                name="applications"
-                                options={applications}
-                                validation={{ required: true }}
-                                {...{ control, register, errors }}
-                              />
-                            ) : (
-                              <Spinner />
-                            );
-                          },
+                          render: () => (
+                            <SelectMultiple
+                              label="Applications"
+                              name="applications"
+                              options={getEndpoint.data.applications}
+                              validation={{ required: true }}
+                              {...{ control, register, errors }}
+                            />
+                          ),
                         },
                       ]}
                     />
