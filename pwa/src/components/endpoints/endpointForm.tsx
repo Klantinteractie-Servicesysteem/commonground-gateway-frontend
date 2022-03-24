@@ -10,12 +10,14 @@ import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple, SelectSingle } from "../formFields";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 interface EndpointFormProps {
   endpointId: string;
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
+  const [applications, setApplications] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
@@ -105,6 +107,21 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     }
   }, [getEndpoint.isSuccess]);
 
+  React.useEffect(() => {
+    handleSetApplications();
+  }, [API]);
+
+  const handleSetApplications = () => {
+    API.Application.getAll()
+      .then((res) => {
+        setApplications(resourceArrayToSelectArray(res.data, "applications"));
+      })
+      .catch((err) => {
+        setAlert({ message: err, type: "danger" });
+        throw new Error("GET application error: " + err);
+      });
+  };
+
   const handleSetDocumentation = (): void => {
     API.Documentation.get("endpoints")
       .then((res) => {
@@ -178,15 +195,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: () => (
-                            <SelectMultiple
-                              label="Applications"
-                              name="applications"
-                              options={getEndpoint.data.applications} //TODO: this should be all applications again...
-                              validation={{ required: true }}
-                              {...{ control, register, errors }}
-                            />
-                          ),
+                          render: () =>
+                            applications ? (
+                              <SelectMultiple
+                                label="Applications"
+                                name="applications"
+                                options={applications}
+                                validation={{ required: true }}
+                                {...{ control, register, errors }}
+                              />
+                            ) : (
+                              <Spinner />
+                            ),
                         },
                       ]}
                     />
