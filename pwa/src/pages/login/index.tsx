@@ -15,8 +15,8 @@ const Login: React.FC = () => {
   const API: APIService = new APIService("");
 
   React.useEffect(() => {
-    if (isLoggedIn()) {
-      // navigate("/");
+    if (isLoggedIn() && window.location.pathname.includes("login")) {
+      navigate("/");
     }
   }, [isLoggedIn()]);
 

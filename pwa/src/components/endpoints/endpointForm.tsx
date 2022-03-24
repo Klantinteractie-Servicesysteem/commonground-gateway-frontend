@@ -10,6 +10,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple } from "../formFields";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -108,15 +109,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
 
   React.useEffect(() => {
     handleSetApplications();
-  }, [API, endpointId]);
+  }, [API]);
 
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        const _applications = res.data?.map((application) => {
-          return { label: application.name, value: `/admin/applications/${application.id}` };
-        });
-        setApplications(_applications);
+        setApplications(resourceArrayToSelectArray(res.data, "applications"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -162,11 +160,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-                disabled={!setApplications}
-              >
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -201,8 +195,8 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: function () {
-                            return applications ? (
+                          render: () =>
+                            applications ? (
                               <SelectMultiple
                                 label="Applications"
                                 name="applications"
@@ -212,8 +206,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                               />
                             ) : (
                               <Spinner />
-                            );
-                          },
+                            ),
                         },
                       ]}
                     />
