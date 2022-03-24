@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  GenericInputComponent,
-  TextareaGroup,
-  Spinner,
-  Card,
-  Accordion,
-  Modal,
-} from "@conductionnl/nl-design-system/lib";
+import { Spinner, Card, Accordion, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import { navigate } from "gatsby-link";
 import {
@@ -21,8 +14,9 @@ import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
-import MultiSelect from "../common/multiSelect";
 import { useQuery } from "react-query";
+import { useForm } from "react-hook-form";
+import { InputText, SelectMultiple, Textarea } from "../formFields";
 
 interface IApplication {
   name: string;
@@ -40,7 +34,6 @@ interface ApplicationFormProps {
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [application, setApplication] = React.useState<IApplication>(null);
-  const [endpoints, setEndpoints] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -48,6 +41,17 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    control,
+  } = useForm();
+
+  const onSubmit = (data): void => {
+    console.log(data);
+  };
 
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
@@ -141,7 +145,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   };
 
   return (
-    <form id="applicationForm" onSubmit={saveApplication}>
+    <form id="applicationForm" onSubmit={handleSubmit(onSubmit)}>
       <Card
         title={title}
         cardHeader={function () {
@@ -185,53 +189,23 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={application && application.name && application.name}
-                          nameOverride={"Name"}
-                          required
-                        />
+                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"resource"}
-                          id={"resourceInput"}
-                          data={application && application.resource && application.resource}
-                          nameOverride={"Resource"}
-                        />
+                        <InputText name="resource" label="Resource" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"public"}
-                          id={"publicInput"}
-                          data={application && application.public && application.public}
-                          nameOverride={"Public"}
-                        />
+                        <InputText name="public" label="Public" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"secret"}
-                          id={"secretInput"}
-                          data={application && application.secret && application.secret}
-                          nameOverride={"Secret"}
-                        />
+                        <InputText name="secret" label="Secret" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <TextareaGroup
-                          label="Description"
-                          name="description"
-                          id="descriptionInput"
-                          defaultValue={application?.description}
-                        />
+                        <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
                     <Accordion
@@ -249,11 +223,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                           id: "endpointsAccordion",
                           render: function () {
                             return getEndpointsSelectQuery.isSuccess ? (
-                              <MultiSelect
-                                id=""
-                                label="endpoints"
-                                data={application?.endpoints}
+                              <SelectMultiple
+                                name="endpoints"
+                                label="Endpoints"
                                 options={getEndpointsSelectQuery.data}
+                                {...{ register, errors, control }}
                               />
                             ) : (
                               <Spinner />
