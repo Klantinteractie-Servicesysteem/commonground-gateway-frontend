@@ -9,7 +9,7 @@ export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   validation,
   register,
 }) => (
-  <FormFieldGroup {...{ name, label, errors }} required={validation?.required}>
+  <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
     <input id={name} type="text" className="FormField-field" {...{ label, ...register(name, { ...validation }) }} />
   </FormFieldGroup>
 );
