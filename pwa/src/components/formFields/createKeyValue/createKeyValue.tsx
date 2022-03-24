@@ -9,7 +9,7 @@ import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 /**
  * Export KeyValue input component (wrapped in FormFieldGroup)
  */
-interface IKeyValueProps {
+interface CreateKeyValueProps {
   control: Control<FieldValues, any>;
   data?: IKeyValue[];
 }
@@ -19,7 +19,7 @@ interface IKeyValue {
   value: string;
 }
 
-export const KeyValue: React.FC<IKeyValueProps & IFormFieldProps & IReactHookFormProps> = ({
+export const CreateKeyValue: React.FC<CreateKeyValueProps & IFormFieldProps & IReactHookFormProps> = ({
   name,
   label,
   errors,
@@ -43,12 +43,12 @@ export const KeyValue: React.FC<IKeyValueProps & IFormFieldProps & IReactHookFor
 /**
  * Internal KeyValueComponent (contains all required logic)
  */
-interface KeyValueComponentProps {
+interface CreateKeyValueComponentProps {
   data?: IKeyValue[];
   handleChange: (...event: any[]) => void;
 }
 
-const KeyValueComponent: React.FC<KeyValueComponentProps> = ({ data, handleChange }) => {
+const KeyValueComponent: React.FC<CreateKeyValueComponentProps> = ({ data, handleChange }) => {
   const [currentKey, setCurrentKey] = React.useState<string>("");
   const [currentValue, setCurrentValue] = React.useState<string>("");
   const [keyValues, setKeyValues] = React.useState<IKeyValue[]>(data ?? []);

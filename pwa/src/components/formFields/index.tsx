@@ -1,6 +1,6 @@
 import { InputText } from "./input";
 import { Textarea } from "./textarea";
 import { SelectMultiple } from "./select";
-import { KeyValue } from "./keyValue/keyValue";
+import { CreateKeyValue } from "./createKeyValue/createKeyValue";
 
-export { InputText, Textarea, SelectMultiple, KeyValue };
+export { InputText, Textarea, SelectMultiple, CreateKeyValue };
