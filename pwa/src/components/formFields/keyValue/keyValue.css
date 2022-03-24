@@ -1,0 +1,27 @@
+.KeyValue {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.KeyValue > .KeyValue-table .KeyValue-table-tdDelete {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.KeyValue > .KeyValue-form {
+  width: 100%;
+  display: flex;
+}
+
+.KeyValue > .KeyValue-form > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.KeyValue > .KeyValue-form > input {
+  flex: 5;
+}
+
+.KeyValue > .KeyValue-form > button {
+  flex: 2;
+}
