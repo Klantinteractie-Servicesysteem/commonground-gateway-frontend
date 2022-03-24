@@ -2,14 +2,11 @@ import * as React from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import ReactSelect from "react-select";
 import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
-import { IFormFieldProps, IReactHookFormProps } from "./types";
+import { IFormFieldProps, IReactHookFormProps, ISelectValue } from "./types";
 
 interface ISelectProps {
   control: Control<FieldValues, any>;
-  options: {
-    value: string;
-    label: string;
-  }[];
+  options: ISelectValue[];
   isMulti?: boolean;
 }
 

@@ -10,3 +10,8 @@ export interface IFormFieldProps {
   label: string;
   name: string;
 }
+
+export interface ISelectValue {
+  label: string;
+  value: string;
+}
