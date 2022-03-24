@@ -11,7 +11,12 @@ export default class Endpoint {
 
   public getAll = async (): Promise<any> => {
     const { data } = await Send(this._instance, "GET", "/endpoints");
-    return data;
+
+    const mappedEndpoints = data.map((endpoint) => {
+      return { ...endpoint, applications: resourceArrayToSelectArray(endpoint.applications, "applications") };
+    });
+
+    return mappedEndpoints;
   };
 
   public getSelect = async (): Promise<any> => {
@@ -37,10 +42,12 @@ export default class Endpoint {
 
     if (id) {
       const { data } = await Send(this._instance, "PUT", `/endpoints/${id}`, payload);
+      data.applications = resourceArrayToSelectArray(data.applications, "applications");
       return data;
     }
 
     const { data } = await Send(this._instance, "POST", "/endpoints", payload);
+    data.applications = resourceArrayToSelectArray(data.applications, "applications");
     return data;
   };
 
