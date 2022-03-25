@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Checkbox, Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
@@ -18,7 +18,6 @@ interface EntityFormProps {
 
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -26,8 +25,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-
-  const fields = ["name", "function", "endpoint", "route", "gateway", "description", "extend"];
 
   const functionSelectOptions: ISelectValue[] = [
     { label: "Organization", value: "organization" },
@@ -37,30 +34,23 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
 
   React.useEffect(() => {
     setHeader("Object Type");
-  }, [setHeader, entity]);
-
-  React.useEffect(() => {
     handleSetSources();
     entityId && handleSetEntity();
   }, [API, entityId]);
-
-  React.useEffect(() => {}, [entity, sources]);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
-    setValue,
     control,
+    setValue,
   } = useForm();
 
   const onSubmit = (data): void => {
     setLoadingOverlay(true);
 
-    data.function = data.function?.value;
-    data.gateway = data.gateway?.value;
-
-    console.log(data);
+    data.function = data.function && data.function.value;
+    data.gateway = data.gateway && data.gateway.value;
 
     API.Entity.createOrUpdate(data, entityId)
       .then(() => {
@@ -81,18 +71,16 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
 
     API.Entity.getOne(entityId)
       .then((res) => {
-        res.data.function =
-          res.data?.function && functionSelectOptions.find((option) => option.value === res.data.function);
-        res.data.gateway = res.data?.gateway && {
-          label: res.data.gateway.name,
-          value: `/admin/gateways/${res.data.gateway.id}`,
-        };
-
-        setEntity(res.data);
-
-        fields.map((field) => {
-          setValue(field, res.data[field]);
-        });
+        setValue("name", res.data.name);
+        setValue(
+          "function",
+          functionSelectOptions.find((option) => option.value === res.data.function),
+        );
+        setValue("endpoint", res.data.endpoint);
+        setValue("route", res.data.route);
+        res.data.gateway &&
+          setValue("gateway", { label: res.data.gateway.name, value: `/admin/gateways/${res.data.gateway.id}` });
+        setValue("description", res.data.description);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -201,13 +189,13 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                     <div className="row form-row">
                       <div className="col-12">
                         <div className="form-check">
-                          <Checkbox
+                          {/* <Checkbox
                             type={"checkbox"}
                             id={"extendInput"}
                             nameLabel={"Extend"}
                             nameAttribute={"extend"}
                             data={entity && entity.extend && entity.extend}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>

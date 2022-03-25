@@ -7,7 +7,6 @@ import { IFormFieldProps, IReactHookFormProps, ISelectValue } from "./types";
 interface ISelectProps {
   control: Control<FieldValues, any>;
   options: ISelectValue[];
-  isMulti?: boolean;
 }
 
 export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHookFormProps> = ({
@@ -45,7 +44,7 @@ export const SelectSingle: React.FC<ISelectProps & IFormFieldProps & IReactHookF
         {...{ control, name }}
         rules={validation}
         render={({ field: { onChange, value } }) => {
-          return <ReactSelect {...{ options, value, onChange }} isClearable className="Select" />;
+          return <ReactSelect {...{ options, onChange, value }} isClearable className="Select" />;
         }}
       />
     </FormFieldGroup>
