@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./createKeyValue.css";
+import "./createArray.css";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { FormFieldGroup } from "../formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "../types";
@@ -7,19 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 /**
- * Export KeyValue input component (wrapped in FormFieldGroup)
+ * Export CreateArray input component (wrapped in FormFieldGroup)
  */
-interface CreateKeyValueProps {
+interface CreateArrayProps {
   control: Control<FieldValues, any>;
-  data?: IKeyValue[];
+  data?: string[];
 }
 
-interface IKeyValue {
-  key: string;
-  value: string;
-}
-
-export const CreateKeyValue: React.FC<CreateKeyValueProps & IFormFieldProps & IReactHookFormProps> = ({
+export const CreateArray: React.FC<CreateArrayProps & IFormFieldProps & IReactHookFormProps> = ({
   name,
   label,
   errors,
@@ -41,54 +36,47 @@ export const CreateKeyValue: React.FC<CreateKeyValueProps & IFormFieldProps & IR
 };
 
 /**
- * Internal KeyValueComponent (contains all required logic)
+ * Internal CreateArray (contains all required logic)
  */
-interface CreateKeyValueComponentProps {
-  data?: IKeyValue[];
+interface CreateArrayComponentProps {
+  data?: string[];
   handleChange: (...event: any[]) => void;
 }
 
-const KeyValueComponent: React.FC<CreateKeyValueComponentProps> = ({ data, handleChange }) => {
-  const [currentKey, setCurrentKey] = React.useState<string>("");
+const KeyValueComponent: React.FC<CreateArrayComponentProps> = ({ data, handleChange }) => {
   const [currentValue, setCurrentValue] = React.useState<string>("");
-  const [keyValues, setKeyValues] = React.useState<IKeyValue[]>(data ?? []);
+  const [values, setValues] = React.useState<string[]>(data ?? []);
 
-  const currentKeyRef = React.useRef(null);
   const currentValueRef = React.useRef(null);
 
   const handleCreate = (): void => {
-    const keyValue: IKeyValue = { key: currentKey, value: currentValue };
+    setValues([...values, currentValue]);
 
-    setCurrentKey("");
     setCurrentValue("");
-
-    setKeyValues([...keyValues, keyValue]);
   };
 
   React.useEffect(() => {
-    handleChange(keyValues);
-  }, [keyValues]);
+    handleChange(values);
+  }, [values]);
 
   return (
-    <div className="KeyValue">
-      {keyValues && (
-        <table className="KeyValue-table table">
+    <div className="CreateArray">
+      {values && (
+        <table className="CreateArray-table table">
           <thead>
             <tr>
-              <th>Key</th>
               <th>Value</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {keyValues.map((keyValue, idx) => (
-              <tr key={`${keyValue}${idx}`}>
-                <td>{keyValue.key}</td>
-                <td>{keyValue.value}</td>
-                <td className="KeyValue-table-tdDelete">
+            {values.map((value, idx) => (
+              <tr key={`${value}${idx}`}>
+                <td>{value}</td>
+                <td className="CreateArray-table-tdDelete">
                   <button
                     className="utrecht-button btn-danger"
-                    onClick={() => setKeyValues(keyValues.filter((_keyValue) => _keyValue !== keyValue))}
+                    onClick={() => setValues(values.filter((_value) => _value !== value))}
                   >
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </button>
@@ -99,15 +87,7 @@ const KeyValueComponent: React.FC<CreateKeyValueComponentProps> = ({ data, handl
         </table>
       )}
 
-      <div className="KeyValue-form">
-        <input
-          type="text"
-          placeholder="Key"
-          value={currentKey}
-          ref={currentKeyRef}
-          className="FormField-field"
-          onChange={(e) => setCurrentKey(e.target.value)}
-        />
+      <div className="CreateArray-form">
         <input
           type="text"
           placeholder="Value"
@@ -117,12 +97,7 @@ const KeyValueComponent: React.FC<CreateKeyValueComponentProps> = ({ data, handl
           onChange={(e) => setCurrentValue(e.target.value)}
         />
 
-        <button
-          type="button"
-          className="utrecht-button btn-success"
-          onClick={handleCreate}
-          disabled={!currentKey || !currentValue}
-        >
+        <button type="button" className="utrecht-button btn-success" onClick={handleCreate} disabled={!currentValue}>
           <FontAwesomeIcon icon={faPlus} /> Create
         </button>
       </div>

@@ -1,0 +1,34 @@
+.CreateArray {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.CreateArray > .CreateArray-table td,
+.CreateArray > .CreateArray-table th {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.CreateArray > .CreateArray-table .CreateArray-table-tdDelete {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.CreateArray > .CreateArray-form {
+  width: 100%;
+  display: flex;
+}
+
+.CreateArray > .CreateArray-form > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.CreateArray > .CreateArray-form > input {
+  flex: 5;
+}
+
+.CreateArray > .CreateArray-form > button {
+  flex: 2;
+  max-width: fit-content;
+}
