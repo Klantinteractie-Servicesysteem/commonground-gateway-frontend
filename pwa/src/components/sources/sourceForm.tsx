@@ -56,6 +56,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   }, [sourceId, API, setHeader]);
 
   const onSubmit = (data): void => {
+    setLoadingOverlay(true);
+
     data.type = data.type && data.type.value;
     data.auth = data.auth && data.auth.value;
 
