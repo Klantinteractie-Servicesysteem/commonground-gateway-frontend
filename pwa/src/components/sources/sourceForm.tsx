@@ -59,7 +59,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
     data.type = data.type && data.type.value;
     data.auth = data.auth && data.auth.value;
 
-    console.log(data);
     API.Source.createOrUpdate(data, sourceId)
       .then(() => {
         setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
