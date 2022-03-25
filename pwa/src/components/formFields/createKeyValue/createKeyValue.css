@@ -4,6 +4,12 @@
   flex-direction: column;
 }
 
+.KeyValue > .KeyValue-table td,
+.KeyValue > .KeyValue-table th {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .KeyValue > .KeyValue-table .KeyValue-table-tdDelete {
   display: flex;
   justify-content: flex-end;
@@ -24,4 +30,5 @@
 
 .KeyValue > .KeyValue-form > button {
   flex: 2;
+  max-width: fit-content;
 }
