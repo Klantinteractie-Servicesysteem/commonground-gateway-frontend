@@ -1,11 +1,11 @@
-.TranslationTableForm-heading {
-  color: black;
+.TranslationTableForm-dividerHeading {
+  font-size: 22px;
+  display: flex;
+  flex-direction: column;
+  margin: 32px 0;
 }
 
-.TranslationTableForm-heading-h2 {
-  font-size: 24px;
-}
-
-.TranslationTableForm-heading-h4 {
-  font-size: 18px;
+.TranslationTableForm-dividerHeading > .subtitle {
+  color: grey;
+  font-size: 16px;
 }
