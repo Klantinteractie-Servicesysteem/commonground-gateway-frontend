@@ -3,7 +3,7 @@ import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 interface IInputProps {
-  type: "text" | "checkbox" | "url";
+  type: "text" | "checkbox" | "url" | "password";
 }
 
 export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps> = ({
@@ -29,4 +29,8 @@ export const InputCheckbox: React.FC<IFormFieldProps & IReactHookFormProps> = ({
 
 export const InputUrl: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
   <Input type="url" {...rest} />
+);
+
+export const InputPassword: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
+  <Input type="password" {...rest} />
 );

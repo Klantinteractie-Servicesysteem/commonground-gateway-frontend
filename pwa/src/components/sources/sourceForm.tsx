@@ -16,7 +16,6 @@ interface SourceFormProps {
 }
 
 export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
-  const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
