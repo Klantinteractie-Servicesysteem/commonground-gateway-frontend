@@ -2,7 +2,12 @@ import * as React from "react";
 import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
-export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({
+interface IInputProps {
+  type: "text" | "checkbox";
+}
+
+export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps> = ({
+  type,
   name,
   label,
   errors,
@@ -10,6 +15,14 @@ export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   register,
 }) => (
   <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
-    <input id={name} type="text" className="FormField-field" {...{ label, ...register(name, { ...validation }) }} />
+    <input id={name} className="FormField-field" {...{ label, type, ...register(name, { ...validation }) }} />
   </FormFieldGroup>
+);
+
+export const InputText: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
+  <Input type="text" {...rest} />
+);
+
+export const InputCheckbox: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
+  <Input type="checkbox" {...rest} />
 );

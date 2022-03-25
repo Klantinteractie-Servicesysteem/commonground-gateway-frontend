@@ -8,7 +8,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
-import { InputText, SelectSingle, Textarea } from "../formFields";
+import { InputText, InputCheckbox, SelectSingle, Textarea } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { ISelectValue } from "../formFields/types";
 
@@ -81,6 +81,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         res.data.gateway &&
           setValue("gateway", { label: res.data.gateway.name, value: `/admin/gateways/${res.data.gateway.id}` });
         setValue("description", res.data.description);
+        setValue("extend", res.data.extend);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -187,16 +188,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                       </div>
                     </div>
                     <div className="row form-row">
-                      <div className="col-12">
-                        <div className="form-check">
-                          {/* <Checkbox
-                            type={"checkbox"}
-                            id={"extendInput"}
-                            nameLabel={"Extend"}
-                            nameAttribute={"extend"}
-                            data={entity && entity.extend && entity.extend}
-                          /> */}
-                        </div>
+                      <div className="col-6">
+                        <InputCheckbox name="extend" label="Extend" {...{ register, errors }} />
                       </div>
                     </div>
                   </div>
