@@ -25,11 +25,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  /**
-   * Form fields and logic
-   */
-  const fields = ["name", "path", "description", "applications"];
-
   const {
     register,
     formState: { errors },
@@ -43,9 +38,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     createOrEditEndpoint.mutate({ payload: data, id: endpointId });
   };
 
-  /**
-   * Queries and mutations
-   */
+  const handleSetFormValues = (source): void => {
+    const basicFields: string[] = ["name", "path", "description", "applications"];
+    basicFields.forEach((field) => setValue(field, source[field]));
+  };
+
   const queryClient = useQueryClient();
 
   const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
@@ -88,9 +85,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     },
   });
 
-  /**
-   * Effects
-   */
   React.useEffect(() => {
     setHeader("Endpoint");
 
@@ -101,9 +95,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         </>,
       );
 
-      fields.map((field) => {
-        setValue(field, getEndpoint.data[field]);
-      });
+      handleSetFormValues(getEndpoint.data);
     }
   }, [getEndpoint.isSuccess]);
 
