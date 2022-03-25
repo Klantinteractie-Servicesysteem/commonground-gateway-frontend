@@ -23,11 +23,6 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
-  const languageSelectOptions: ISelectValue[] = [
-    { label: "Nederlands (NL)", value: "nl_NL" },
-    { label: "English (EN)", value: "en_EN" },
-  ];
-
   const {
     register,
     setValue,
@@ -159,7 +154,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                   ) : (
                     <>
                       {loadingOverlay && <LoadingOverlay />}
-                      <TranslationFormFields {...{ control, errors, register, languageSelectOptions }} />
+                      <TranslationFormFields {...{ control, errors, register }} />
                     </>
                   )}
                 </div>
@@ -177,15 +172,9 @@ interface TranslationFormFields {
   control: Control<FieldValues, any>;
   errors: FieldErrors;
   register: UseFormRegister<FieldValues>;
-  languageSelectOptions: ISelectValue[];
 }
 
-export const TranslationFormFields: React.FC<TranslationFormFields> = ({
-  register,
-  errors,
-  control,
-  languageSelectOptions,
-}) => {
+export const TranslationFormFields: React.FC<TranslationFormFields> = ({ register, errors, control }) => {
   return (
     <div className="row form-row">
       <div className="col-4">
@@ -212,3 +201,8 @@ export const TranslationFormFields: React.FC<TranslationFormFields> = ({
     </div>
   );
 };
+
+export const languageSelectOptions: ISelectValue[] = [
+  { label: "Nederlands (NL)", value: "nl_NL" },
+  { label: "English (EN)", value: "en_EN" },
+];
