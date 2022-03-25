@@ -1,21 +1,16 @@
 import * as React from "react";
-import {
-  GenericInputComponent,
-  Checkbox,
-  SelectInputComponent,
-  Card,
-  Modal,
-  Spinner,
-  TextareaGroup,
-} from "@conductionnl/nl-design-system/lib";
+import { Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { useForm } from "react-hook-form";
+import { InputText, InputCheckbox, SelectSingle, Textarea } from "../formFields";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { ISelectValue } from "../formFields/types";
 
 interface EntityFormProps {
   entityId: string;
@@ -23,7 +18,6 @@ interface EntityFormProps {
 
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [entity, setEntity] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -32,25 +26,62 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const functionSelectOptions: ISelectValue[] = [
+    { label: "Organization", value: "organization" },
+    { label: "User", value: "user" },
+    { label: "User group", value: "userGroup" },
+  ];
+
   React.useEffect(() => {
     setHeader("Object Type");
-  }, [setHeader, entity]);
-
-  React.useEffect(() => {
-    handleSetDocumentation();
-  });
-
-  React.useEffect(() => {
     handleSetSources();
     entityId && handleSetEntity();
   }, [API, entityId]);
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    control,
+    setValue,
+  } = useForm();
+
+  const onSubmit = (data): void => {
+    setLoadingOverlay(true);
+
+    data.function = data.function && data.function.value;
+    data.gateway = data.gateway && data.gateway.value;
+
+    API.Entity.createOrUpdate(data, entityId)
+      .then(() => {
+        setAlert({ message: `${entityId ? "Updated" : "Saved"} object type`, type: "success" });
+        navigate("/entities");
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error("Create or update entity error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
+  };
 
   const handleSetEntity = () => {
     setShowSpinner(true);
 
     API.Entity.getOne(entityId)
       .then((res) => {
-        setEntity(res.data);
+        setValue("name", res.data.name);
+        setValue(
+          "function",
+          functionSelectOptions.find((option) => option.value === res.data.function),
+        );
+        setValue("endpoint", res.data.endpoint);
+        setValue("route", res.data.route);
+        res.data.gateway &&
+          setValue("gateway", { label: res.data.gateway.name, value: `/admin/gateways/${res.data.gateway.id}` });
+        setValue("description", res.data.description);
+        setValue("extend", res.data.extend);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -64,7 +95,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const handleSetSources = () => {
     API.Source.getAll()
       .then((res) => {
-        setSources(res.data);
+        setSources(resourceArrayToSelectArray(res.data, "gateways"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -83,45 +114,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
       });
   };
 
-  const saveEntity = (event) => {
-    event.preventDefault();
-    setLoadingOverlay(true);
-
-    let body: any = {
-      name: event.target.name.value,
-      description: event.target.description.value ?? null,
-      route: event.target.route.value ?? null,
-      endpoint: event.target.endpoint.value ?? null,
-      gateway: event.target.gateway.value ?? null,
-      extend: event.target.extend.checked,
-      function: event.target.function.value ?? null,
-    };
-
-    // This removes empty values from the body
-    body = removeEmptyObjectValues(body);
-
-    if (!checkValues([body.name])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
-      return;
-    }
-
-    API.Entity.createOrUpdate(body, entityId)
-      .then(() => {
-        setAlert({ message: `${entityId ? "Updated" : "Saved"} object type`, type: "success" });
-        navigate("/entities");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error("Create or update entity error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
-  };
-
   return (
-    <form id="dataForm" onSubmit={saveEntity}>
+    <form id="dataForm" onSubmit={handleSubmit(onSubmit)}>
       <Card
         title={title}
         cardHeader={function () {
@@ -158,93 +152,44 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {showSpinner ? (
                   <Spinner />
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={entity?.name}
-                          nameOverride={"Name"}
-                          required
-                        />
+                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <SelectInputComponent
-                          options={[
-                            { name: "Organization", value: "organization" },
-                            { name: "User", value: "user" },
-                            { name: "User group", value: "userGroup" },
-                          ]}
-                          data={entity?.function ?? null}
-                          name={"function"}
-                          id={"functionInput"}
-                          nameOverride={"Function"}
-                          required
+                        <SelectSingle
+                          name="function"
+                          label="Function"
+                          options={functionSelectOptions}
+                          validation={{ required: true }}
+                          {...{ control, errors }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"endpoint"}
-                          id={"endpointInput"}
-                          data={entity?.endpoint}
-                          nameOverride={"Endpoint"}
-                        />
+                        <InputText name="endpoint" label="Endpoint" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"route"}
-                          id={"routeInput"}
-                          data={entity?.route}
-                          nameOverride={"Route"}
-                        />
+                        <InputText name="route" label="Route" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <SelectInputComponent
-                          options={
-                            sources !== null && sources.length > 0
-                              ? sources
-                              : [{ name: "Please create a source  first.", value: null }]
-                          }
-                          data={entity?.gateway?.name}
-                          name={"gateway"}
-                          id={"sourceInput"}
-                          nameOverride={"Source"}
-                          value={"admin/gateways/"}
-                        />
+                        <SelectSingle name="gateway" label="Source" options={sources ?? []} {...{ control, errors }} />
                       </div>
                       <div className="col-6">
-                        <TextareaGroup
-                          label="Description"
-                          name="description"
-                          id="descriptionInput"
-                          defaultValue={entity?.description}
-                          label={"description"}
-                        />
+                        <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
-                      <div className="col-12">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"extendInput"}
-                            nameLabel={"Extend"}
-                            nameAttribute={"extend"}
-                            data={entity && entity.extend && entity.extend}
-                          />
-                        </div>
+                      <div className="col-6">
+                        <InputCheckbox name="extend" label="Extend" {...{ register, errors }} />
                       </div>
                     </div>
                   </div>
