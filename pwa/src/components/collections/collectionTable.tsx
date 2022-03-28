@@ -87,6 +87,12 @@ export default function CollectionTable() {
                 Create
               </button>
             </Link>
+            <Link to="/shop">
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-light">
+                <i className="fas fa-shopping-cart mr-2"/>
+                Import
+              </button>
+            </Link>
           </>
         );
       }}
