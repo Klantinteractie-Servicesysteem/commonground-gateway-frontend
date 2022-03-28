@@ -14,6 +14,7 @@ import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
 import { useQuery } from "react-query";
+import { Link } from "gatsby";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
@@ -28,6 +29,7 @@ const Dashboard: React.FC = () => {
   }, [API]);
 
   const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll);
+  const getRepositoriesQuery = useQuery<any[], Error>("repositories", API.Repository.getAll);
 
   const handleSetLogs = (): void => {
     logs && setLogs(null);
@@ -99,6 +101,15 @@ const Dashboard: React.FC = () => {
             icon={<img src={endpointsIcon} alt="endpoints" />}
             subtitle="View all endpoints"
             linkTo="endpoints"
+          />
+
+          <DashboardCard
+            amount={getRepositoriesQuery.isSuccess ? getRepositoriesQuery.data.length : 0}
+            title="Github Shop"
+            iconBackgroundColor="5bc0de"
+            icon={<i className="fas fa-shopping-cart fa-lg"/>}
+            subtitle="View all github repositories"
+            linkTo="shop"
           />
         </div>
       </div>
