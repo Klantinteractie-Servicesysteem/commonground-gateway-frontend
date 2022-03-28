@@ -146,6 +146,8 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
       "format",
       formatSelectOptions.find((option) => source.format === option.value),
     );
+    source.inversedBy &&
+      setValue("inversedBy", { label: source.inversedBy.name, value: `/admin/attributes/${source.inversedBy.id}` });
   };
 
   React.useEffect(() => {
@@ -269,7 +271,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                         <SelectSingle
                           name="inversedBy"
                           label="Inversed by"
-                          options={attributes}
+                          options={attributes ?? []}
                           {...{ control, errors }}
                         />
                       </div>
