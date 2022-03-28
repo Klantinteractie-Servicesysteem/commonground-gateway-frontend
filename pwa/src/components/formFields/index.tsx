@@ -1,5 +1,17 @@
-import { InputText } from "./input";
+import { InputText, InputCheckbox, InputUrl, InputPassword } from "./input";
 import { Textarea } from "./textarea";
-import { SelectMultiple } from "./select";
+import { SelectMultiple, SelectSingle } from "./select";
+import { CreateKeyValue } from "./createKeyValue/createKeyValue";
+import { CreateArray } from "./createArray/createArray";
 
-export { InputText, Textarea, SelectMultiple };
+export {
+  InputText,
+  InputCheckbox,
+  InputUrl,
+  InputPassword,
+  Textarea,
+  SelectMultiple,
+  SelectSingle,
+  CreateKeyValue,
+  CreateArray,
+};

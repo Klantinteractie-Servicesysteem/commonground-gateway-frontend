@@ -1,0 +1,9 @@
+.FormField-group .FormField-group-errorMessage {
+  color: #dc3545;
+}
+
+.FormField-group.FormField-group--error input,
+.FormField-group.FormField-group--error textarea,
+.FormField-group.FormField-group--error .Select {
+  outline: #dc3545 auto 1px;
+}

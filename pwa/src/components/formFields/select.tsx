@@ -1,15 +1,12 @@
 import * as React from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
-import Select from "react-select";
-import { InputGroup } from "./formFieldGroup";
-import { IFormFieldProps, IReactHookFormProps } from "./types";
+import ReactSelect from "react-select";
+import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
+import { IFormFieldProps, IReactHookFormProps, ISelectValue } from "./types";
 
 interface ISelectProps {
   control: Control<FieldValues, any>;
-  options: {
-    value: string;
-    label: string;
-  }[];
+  options: ISelectValue[];
 }
 
 export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHookFormProps> = ({
@@ -21,14 +18,35 @@ export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHoo
   validation,
 }) => {
   return (
-    <InputGroup {...{ name, label, errors }} required={validation?.required}>
+    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}
         render={({ field: { onChange, value } }) => {
-          return <Select isMulti {...{ options, value, onChange }} />;
+          return <ReactSelect isMulti {...{ options, value, onChange }} className="Select" />;
         }}
       />
-    </InputGroup>
+    </FormFieldGroup>
+  );
+};
+
+export const SelectSingle: React.FC<ISelectProps & IFormFieldProps & IReactHookFormProps> = ({
+  name,
+  label,
+  options,
+  errors,
+  control,
+  validation,
+}) => {
+  return (
+    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+      <Controller
+        {...{ control, name }}
+        rules={validation}
+        render={({ field: { onChange, value } }) => {
+          return <ReactSelect {...{ options, onChange, value }} isClearable className="Select" />;
+        }}
+      />
+    </FormFieldGroup>
   );
 };

@@ -324,8 +324,9 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                     <div className="row form-row">
                       <div className="col-12">
                         <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
+                          label="Description"
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={attribute?.description}
                         />
                       </div>

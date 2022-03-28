@@ -10,6 +10,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple } from "../formFields";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -24,11 +25,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  /**
-   * Form fields and logic
-   */
-  const fields = ["name", "path", "description", "applications"];
-
   const {
     register,
     formState: { errors },
@@ -42,9 +38,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     createOrEditEndpoint.mutate({ payload: data, id: endpointId });
   };
 
-  /**
-   * Queries and mutations
-   */
+  const handleSetFormValues = (source): void => {
+    const basicFields: string[] = ["name", "path", "description", "applications"];
+    basicFields.forEach((field) => setValue(field, source[field]));
+  };
+
   const queryClient = useQueryClient();
 
   const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
@@ -87,9 +85,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     },
   });
 
-  /**
-   * Effects
-   */
   React.useEffect(() => {
     setHeader("Endpoint");
 
@@ -100,23 +95,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
         </>,
       );
 
-      fields.map((field) => {
-        setValue(field, getEndpoint.data[field]);
-      });
+      handleSetFormValues(getEndpoint.data);
     }
   }, [getEndpoint.isSuccess]);
 
   React.useEffect(() => {
     handleSetApplications();
-  }, [API, endpointId]);
+  }, [API]);
 
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        const _applications = res.data?.map((application) => {
-          return { label: application.name, value: `/admin/applications/${application.id}` };
-        });
-        setApplications(_applications);
+        setApplications(resourceArrayToSelectArray(res.data, "applications"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -162,11 +152,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   Back
                 </button>
               </Link>
-              <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
-                type="submit"
-                disabled={!setApplications}
-              >
+              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit">
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -201,18 +187,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: function () {
-                            return applications ? (
+                          render: () =>
+                            applications ? (
                               <SelectMultiple
                                 label="Applications"
                                 name="applications"
                                 options={applications}
+                                validation={{ required: true }}
                                 {...{ control, register, errors }}
                               />
                             ) : (
                               <Spinner />
-                            );
-                          },
+                            ),
                         },
                       ]}
                     />
