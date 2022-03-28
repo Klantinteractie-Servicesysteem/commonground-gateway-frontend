@@ -36,11 +36,9 @@ export const InputPassword: React.FC<IFormFieldProps & IReactHookFormProps> = ({
 );
 
 export const InputNumber: React.FC<IFormFieldProps & IReactHookFormProps> = ({ validation, ...rest }) => {
-  if (validation) {
-    validation.validate = (v) => (isNaN(v) ? "" : v);
-  }
+  const _validation = { ...validation, setValueAs: (v) => (!isNaN(parseInt(v)) ? parseInt(v) : null) };
 
-  return <Input type="number" {...{ validation }} {...rest} />;
+  return <Input type="number" validation={_validation} {...rest} />;
 };
 
 export const InputDate: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
