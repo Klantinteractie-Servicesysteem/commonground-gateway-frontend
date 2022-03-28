@@ -1,14 +1,34 @@
-# todo: NOTE: When changing this .yaml from dev to stag or acc. Don't forget to change the organization_parentOrganization defaultValue!!!
+# # todo: NOTE: When changing this .yaml from dev to stag or acc. Don't forget to change the organization_parentOrganization defaultValue!!!
+
 App\Entity\Endpoint:
     weerEndpoint:
-        name: Weer handler
+        name: Weer Endpoint get collection
         description: endpoint voor dingen rondom weer
-        path: weer
+        operationType: 'collection'
+        path: ['weer']
+
+    weerEndpointPost:
+        name: Weer Endpoint post
+        description: endpoint voor dingen rondom weer
+        operationType: 'item'
+        path: ['weer']
+
+    weerEndpointGetItem:
+        name: Weer Endpoint get item
+        description: endpoint voor dingen rondom weer
+        operationType: 'item'
+        path: ['weer', '{id}']
+
+    weerEndpointPut:
+        name: Weer Endpoint put
+        description: endpoint voor dingen rondom weer
+        operationType: 'item'
+        path: ['weer', '{id}']
 
 App\Entity\Entity:
     weekWeather:
         route: "/api/weer"
-        name: weer
+        name: Weer Entity
         description: Dit endpoint behandeld weer.
         endpoint: "weer"
 
