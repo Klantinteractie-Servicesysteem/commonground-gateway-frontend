@@ -1,17 +1,18 @@
 import * as React from "react";
-import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
+import { Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { navigate } from "gatsby-link";
 
-interface ShopDetailProps {
+interface GeneralDetailsProps {
   repositoryId: string;
 }
 
-export const ShopDetail: React.FC<ShopDetailProps> = ({ repositoryId }) => {
+export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) => {
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
@@ -28,6 +29,22 @@ export const ShopDetail: React.FC<ShopDetailProps> = ({ repositoryId }) => {
       setAlert({ message: error.message, type: "danger" });
     },
     enabled: !!repositoryId,
+  });
+
+  const installRepository = useMutation<any, Error, any>(["repositories", repositoryId], () => API.Repository.install(repositoryId), {
+    onMutate: () => {
+      setLoadingOverlay(true);
+    },
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSuccess: async (_) => {
+      setAlert({ message: "Installed repository", type: "success" });
+      navigate("/collections");
+    },
+    onSettled: () => {
+      setLoadingOverlay(false);
+    },
   });
 
   /**
@@ -55,7 +72,8 @@ export const ShopDetail: React.FC<ShopDetailProps> = ({ repositoryId }) => {
           return (
             <div>
               <button
-                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                onClick={() => installRepository.mutateAsync({ id: getRepository.data.id })}
+                className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
                 type="submit"
               >
                 Install
@@ -86,4 +104,4 @@ export const ShopDetail: React.FC<ShopDetailProps> = ({ repositoryId }) => {
     )
   );
 };
-export default ShopDetail;
+export default GeneralDetails;

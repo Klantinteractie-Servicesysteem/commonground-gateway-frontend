@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import ShopDetail from "../../components/shop/shopDetail";
+import GeneralDetails from "../../components/shop/generalDetails";
+import { OrganizationDetails } from "../../components/shop/organizationDetails";
 
 const IndexPage = (props) => {
   const repositoryId: string = props.params.repositoryId;
-  // const activeTab: string = props.location.state.activeTab;
+  const activeTab: string = props.location.state.activeTab;
 
-  console.log(repositoryId)
   return (
     <main>
       <div className="row">
@@ -18,12 +18,12 @@ const IndexPage = (props) => {
                   {
                     name: "Overview",
                     id: "overview",
-                    // active: activeTab !== "organization",
+                    active: activeTab !== "organization",
                   },
                   {
                     name: "Organization",
                     id: "organization",
-                    // active: activeTab === "organization",
+                    active: activeTab === "organization",
                   },
                 ]}
               />
@@ -37,7 +37,7 @@ const IndexPage = (props) => {
               aria-labelledby="overview-tab"
             >
               <br />
-              <ShopDetail {...{ repositoryId }} />
+              <GeneralDetails {...{ repositoryId }} />
             </div>
             <div
               className={`tab-pane`}
@@ -46,7 +46,7 @@ const IndexPage = (props) => {
               aria-labelledby="organization-tab"
             >
               <br />
-              {/*<HandlersTable {...{ repositoryId }} />*/}
+              <OrganizationDetails {...{ repositoryId }} />
             </div>
           </div>
         </div>

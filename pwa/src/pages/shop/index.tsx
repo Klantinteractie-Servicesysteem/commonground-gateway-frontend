@@ -4,6 +4,7 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { useQuery } from "react-query";
 import { ShopCard } from "../../components/shop/shopCard";
+import Spinner from "../../components/common/spinner";
 
 const IndexPage = () => {
   const API: APIService = React.useContext(APIContext);
@@ -35,13 +36,17 @@ const IndexPage = () => {
           </div>
         </div>
       </div>
-      {getRepositoriesQuery.isSuccess && getRepositoriesQuery.data.map((repository) => (
+      {getRepositoriesQuery.isLoading ? (
+        <div className="container">
+          <Spinner />
+        </div>
+      ) : (getRepositoriesQuery.data.map((repository) => (
         <div className="row" key={`row-${repository.repository.id}`}>
           <div className="col-12">
             <ShopCard repository={repository.repository} />
           </div>
         </div>
-      ))}
+      )))}
     </main>
   );
 };

@@ -4,6 +4,11 @@ import { HeaderContext } from "../../context/headerContext";
 import { Link } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { useMutation } from "react-query";
+import { AlertContext } from "../../context/alertContext";
+import APIService from "../../apiService/apiService";
+import APIContext from "../../apiService/apiContext";
+import { navigate } from "gatsby-link";
 
 interface ShopCardProps {
   repository: any;
@@ -11,6 +16,25 @@ interface ShopCardProps {
 
 export const ShopCard: React.FC<ShopCardProps> = ({ repository }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useState<boolean>(false);
+  const [_, setAlert] = React.useContext(AlertContext);
+  const API: APIService = React.useContext(APIContext);
+
+  const installRepository = useMutation<any, Error, any>(["repositories", repository.id], () => API.Repository.install(repository.id), {
+    onMutate: () => {
+      setLoadingOverlay(true);
+    },
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+    onSuccess: async (_) => {
+      setAlert({ message: "Installed repository", type: "success" });
+      navigate("/collections");
+    },
+    onSettled: () => {
+      setLoadingOverlay(false);
+    },
+  });
 
   React.useEffect(() => {
     setHeader("Repositories");
@@ -29,7 +53,8 @@ export const ShopCard: React.FC<ShopCardProps> = ({ repository }) => {
               </button>
             </Link>
             <button
-              className="utrecht-button utrecht-button-sm btn-sm btn-success"
+              onClick={() => installRepository.mutateAsync({ id: repository.id })}
+              className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
               type="submit"
             >
               Install
