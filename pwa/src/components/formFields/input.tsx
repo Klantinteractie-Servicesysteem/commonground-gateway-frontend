@@ -3,7 +3,7 @@ import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 interface IInputProps {
-  type: "text" | "checkbox" | "url" | "password";
+  type: "text" | "checkbox" | "url" | "password" | "number" | "date";
 }
 
 export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps> = ({
@@ -33,4 +33,16 @@ export const InputUrl: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...r
 
 export const InputPassword: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
   <Input type="password" {...rest} />
+);
+
+export const InputNumber: React.FC<IFormFieldProps & IReactHookFormProps> = ({ validation, ...rest }) => {
+  if (validation) {
+    validation.validate = (v) => (isNaN(v) ? "" : v);
+  }
+
+  return <Input type="number" {...{ validation }} {...rest} />;
+};
+
+export const InputDate: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
+  <Input type="date" {...rest} />
 );
