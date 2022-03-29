@@ -1,35 +1,26 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
-} from "../utility/inputHandler";
-import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
-import {
-  GenericInputComponent,
-  Checkbox,
-  SelectInputComponent,
-  TextareaGroup,
-  Accordion,
-  Spinner,
-  Card,
-} from "@conductionnl/nl-design-system/lib";
+import { validateJSON } from "../../services/validateJSON";
+import { Checkbox, Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import MultiSelect from "../common/multiSelect";
-import { validateJSON } from "../../services/validateJSON";
+import { ISelectValue } from "../formFields/types";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
-import { Textarea, CreateArray, CreateKeyValue, InputText, SelectSingle, SelectMultiple, InputUrl } from "../formFields";
-import { isTemplateExpression } from "typescript";
+import {
+  Textarea,
+  InputNumber,
+  CreateKeyValue,
+  InputText,
+  SelectSingle,
+  SelectMultiple,
+  InputCheckbox,
+} from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
-
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -47,13 +38,21 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const [sources, setSources] = React.useState<any>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
 
+  const typeSelectOptions: ISelectValue[] = [
+    { label: "Extern Source", value: "externSource" },
+    { label: "Intern Gateway", value: "internGateway" },
+  ];
+
+  const methodSelectOptions: ISelectValue[] = [
+    { label: "GET", value: "GET" },
+    { label: "POST", value: "POST" },
+    { label: "PUT", value: "PUT" },
+    { label: "PATCH", value: "PATCH" },
+  ];
+
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
-      console.log("error!!");
       setAlert({ message: error.message, type: "danger" });
-    },
-    onSuccess: () => {
-      console.log("success");
     },
   });
 
@@ -72,7 +71,9 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   }, [API, subscriberId]);
 
   React.useEffect(() => {
-    setShowSpinner(!sources || !getEndpointsSelectQuery.isSuccess || !tableNames || (subscriberId && !subscriber));
+    setShowSpinner(
+      !sources || !getEndpointsSelectQuery.isSuccess || tableNames === null || (subscriberId && !subscriber),
+    );
   }, [subscriber, sources, getEndpointsSelectQuery.isSuccess, tableNames, subscriberId]);
 
   const handleSetSubscriber = () => {
@@ -81,18 +82,17 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         const subscriber = res.data;
         setHeader(
           <>
-            Source <i>{subscriber && subscriber.name}</i>
+            Subscriber <i>{subscriber && subscriber.name}</i>
           </>,
         );
+
+        setSubscriber(subscriber);
 
         handleSetFormValues(subscriber);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET subscriber error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
       });
   };
 
@@ -110,7 +110,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const handleSetTableNames = () => {
     API.Translation.getTableNames()
       .then((res) => {
-        const mappedTableNames = res.data.results.map((value, idx) => ({ id: idx, name: value, value: value }));
+        const mappedTableNames = res.data.results.map((value) => ({ label: value, value: value }));
+
         setTableNames(mappedTableNames);
       })
       .catch((err) => {
@@ -119,80 +120,21 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       });
   };
 
-  // const saveSubscriber = (event) => {
-  //   event.preventDefault();
-  //   setLoadingOverlay(true);
-
-  //   let headers: {} = retrieveFormArrayAsObject(event.target, "headers");
-  //   let queryParameters: {} = retrieveFormArrayAsObject(event.target, "queryParameters");
-  //   let mappingIn: {} = retrieveFormArrayAsObject(event.target, "mappingIn");
-  //   let mappingOut: {} = retrieveFormArrayAsObject(event.target, "mappingOut");
-  //   let translationsIn: any[] = retrieveFormArrayAsOArray(event.target, "translationsIn");
-  //   let translationsOut: any[] = retrieveFormArrayAsOArray(event.target, "translationsOut");
-
-  //   let body: any = {
-  //     name: event.target.name.value,
-  //     description: event.target.description.value ?? null,
-  //     type: event.target.type.value,
-  //     entity: `admin/entities/${entityId}`,
-  //     endpoint: event.target.endpoint.value ?? null,
-  //     gateway: event.target.source.value ?? null,
-  //     method: event.target.method.value,
-  //     conditions: event.target.conditions.value ?? null,
-  //     runOrder: event.target.runOrder.value ? parseInt(event.target.runOrder.value) : 0,
-  //     asynchronous: event.target.asynchronous.checked,
-  //     blocking: event.target.blocking.checked,
-  //     mappingIn,
-  //     mappingOut,
-  //     translationsIn,
-  //     translationsOut,
-  //     headers,
-  //     queryParameters,
-  //   };
-
-  //   body = removeEmptyObjectValues(body);
-
-  //   if (!checkValues([body.name, body.type])) {
-  //     setAlert({ type: "danger", message: "Required fields are empty" });
-  //     setLoadingOverlay(false);
-  //     return;
-  //   }
-
-
-
-  //   API.Subscriber.createOrUpdate(body, subscriberId)
-  //     .then(() => {
-  //       setAlert({ message: `${subscriberId ? "Updated" : "Created"} subscriber`, type: "success" });
-  //       navigate(`/entities/${entityId}`, {
-  //         state: { activeTab: "subscribers" },
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       setAlert({ type: "danger", message: err.message });
-  //       throw new Error(`Create or update subscriber error: ${err}`);
-  //     })
-  //     .finally(() => {
-  //       setLoadingOverlay(false);
-  //     });
-  // };
-  
   const onSubmit = (data): void => {
     setLoadingOverlay(true);
 
-    data.method = data.method.value;
-    data.type = data.type.value;
-    data.source = data.source.value;
-
-    if (data.conditions && !validateJSON(data.conditions)) {
-      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
-      setLoadingOverlay(false);
-      return;
-    }
+    data.entity = `/admin/entities/${entityId}`;
+    data.method = data.method && data.method.value;
+    data.type = data.type && data.type.value;
+    data.gateway = data.gateway && data.gateway.value;
+    data.endpoint = data.endpoint && data.endpoint.value;
 
     API.Subscriber.createOrUpdate(data, subscriberId)
       .then(() => {
         setAlert({ type: "success", message: `${subscriberId ? "Updated" : "Created"} subscriber` });
-        // navigate("/sources");
+        navigate(`/entities/${entityId}`, {
+          state: { activeTab: "subscribers" },
+        });
       })
       .catch((err) => {
         setAlert({ type: "danger", message: err.message });
@@ -213,15 +155,10 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   } = useForm();
 
   const handleSetFormValues = (subscriber): void => {
-    console.log(subscriber);
     const basicFields: string[] = [
       "name",
       "description",
-      "type",
       "entity",
-      "endpoint",
-      "gateway",
-      "method",
       "conditions",
       "runOrder",
       "asynchronous",
@@ -234,6 +171,20 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       "queryParameters",
     ];
     basicFields.forEach((field) => setValue(field, subscriber[field]));
+
+    setValue(
+      "type",
+      typeSelectOptions.find((option) => subscriber.type === option.value),
+    );
+    setValue(
+      "method",
+      methodSelectOptions.find((option) => subscriber.method === option.value),
+    );
+    subscriber.endpoint &&
+      setValue("endpoint", { label: subscriber.endpoint.name, value: `/admin/endpoints/${subscriber.endpoint.id}` });
+
+    subscriber.gateway &&
+      setValue("gateway", { label: subscriber.gateway.name, value: `/admin/gateways/${subscriber.gateway.id}` });
   };
 
   return (
@@ -267,107 +218,69 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText 
-                          name="name"
-                          label="Name" 
-                          {...{ register, errors }} 
-                          validation={{ required: true }} 
-                        />
+                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <Textarea 
-                          name="description"
-                          label="Description" 
-                          {...{ register, errors }} 
-                        />
+                        <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <SelectSingle 
-                          options={[
-                            { label: "GET", value: "GET" },
-                            { label: "POST", value: "POST" },
-                            { label: "PUT", value: "PUT" },
-                            { label: "PATCH", value: "PATCH" },
-                          ]}
+                        <SelectSingle
+                          options={methodSelectOptions}
                           name="method"
-                          label="Method" 
-                          {...{ control, errors }} 
-                          validation={{ required: true }} 
-                        />
-                      </div>
-                      <div className="col-6">
-                        <InputText 
-                          name="Run order"
-                          label="runOrder" 
-                          {...{ register, errors }} 
-                        />
-                      </div>
-                    </div>
-                    <div className="row form-row">
-                      <div className="col-6">
-                        <Textarea 
-                          name="conditions"
-                          label={'Conditions (JSON Logic)'} 
-                          {...{ register, errors }} 
-                        />
-                      </div>
-                      <div className="col-6">
-                        <SelectSingle 
-                          options={sources ?? []}
-                          name="source"
-                          label="Source" 
-                          {...{ control, errors }} 
-                          validation={{ required: true }} 
-                        />
-                      </div>
-                    </div>
-                    <div className="row form-row">
-                      <div className="col-6">
-                        <SelectSingle 
-                          options={[
-                            { label: "Extern Source", value: "externSource" },
-                            { label: "Intern Gateway", value: "internGateway" },
-                          ]}
-                          name={"type"}
-                          label="Type" 
-                          {...{ control, errors }} 
+                          label="Method"
+                          {...{ control, errors }}
                           validation={{ required: true }}
                         />
                       </div>
                       <div className="col-6">
-                        <SelectSingle 
-                          options={getEndpointsSelectQuery.data ??  []}
+                        <InputNumber name="runOrder" label="Run order" {...{ register, errors }} />
+                      </div>
+                    </div>
+                    <div className="row form-row">
+                      <div className="col-6">
+                        <Textarea
+                          name="conditions"
+                          label={"Conditions (JSON Logic)"}
+                          tooltipContent={
+                            <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">
+                              Read more about the use of JSON Logic
+                            </a>
+                          }
+                          {...{ register, errors }}
+                          validation={{ validate: () => validateJSON(getValues("conditions")) }}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <SelectSingle options={sources ?? []} name="gateway" label="Source" {...{ control, errors }} />
+                      </div>
+                    </div>
+                    <div className="row form-row">
+                      <div className="col-6">
+                        <SelectSingle
+                          options={typeSelectOptions}
+                          name={"type"}
+                          label="Type"
+                          {...{ control, errors }}
+                          validation={{ required: true }}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <SelectSingle
+                          options={getEndpointsSelectQuery.data ?? []}
                           name="endpoint"
-                          label="Endpoint" 
-                          {...{ control, errors }} 
+                          label="Endpoint"
+                          {...{ control, errors }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"asynchronousInput"}
-                            nameLabel={"Asynchronous"}
-                            nameAttribute={"asynchronous"}
-                            data={subscriber?.asynchronous}
-                            defaultValue={"true"}
-                          />
-                        </div>
+                        <InputCheckbox name="asynchronous" label="Asynchronous" {...{ register, errors }} />
                       </div>
                       <div className="col-12 col-sm-6 ">
-                        <div className="form-check">
-                          <Checkbox
-                            type={"checkbox"}
-                            id={"blockingInput"}
-                            nameLabel={"Blocking"}
-                            nameAttribute={"blocking"}
-                            data={subscriber?.blocking}
-                          />
-                        </div>
+                        <InputCheckbox name="blocking" label="Blocking" {...{ register, errors }} />
                       </div>
                     </div>
 
@@ -383,7 +296,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 name="translationsIn"
                                 label="Translations in"
                                 options={tableNames}
-                                {...{ control, errors }} 
+                                {...{ control, errors }}
                               />
                             ) : (
                               <>
@@ -401,7 +314,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 name="translationsOut"
                                 label="Translations out"
                                 options={tableNames}
-                                {...{ control, errors }} 
+                                {...{ control, errors }}
                               />
                             ) : (
                               <>
@@ -420,7 +333,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                               data={getValues("mappingIn")}
                               {...{ control, errors }}
                             />
-                          )
+                          ),
                         },
                         {
                           title: "Mapping out",
@@ -432,7 +345,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                               data={getValues("mappingOut")}
                               {...{ control, errors }}
                             />
-                          )
+                          ),
                         },
                         {
                           title: "Headers",
@@ -444,7 +357,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                               data={getValues("headers")}
                               {...{ control, errors }}
                             />
-                          )
+                          ),
                         },
                         {
                           title: "Query parameters",
@@ -456,7 +369,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                               data={getValues("queryParameters")}
                               {...{ control, errors }}
                             />
-                          )
+                          ),
                         },
                       ]}
                     />
