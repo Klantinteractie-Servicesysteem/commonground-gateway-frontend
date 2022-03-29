@@ -15,8 +15,8 @@ import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import Subscriber from "./resources/subscriber";
 import Collection from "./resources/collection";
-import { isLoggedIn, logout, validateSession } from "../services/auth";
 import Repository from "./resources/repository";
+import { logout, validateSession } from "../services/auth";
 
 export default class APIService {
   private _jwtToken: string;
