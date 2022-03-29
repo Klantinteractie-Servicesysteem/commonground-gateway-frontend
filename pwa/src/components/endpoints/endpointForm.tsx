@@ -8,9 +8,10 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
-import { InputText, Textarea, SelectMultiple } from "../formFields";
+import { InputText, Textarea, SelectMultiple, SelectSingle, CreateArray } from "../formFields";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { ISelectValue } from "../formFields/types";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -25,22 +26,35 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const operationTypeSelectOptions: ISelectValue[] = [
+    { label: "Item", value: "item" },
+    { label: "Collection", value: "collection" },
+  ];
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
+    getValues,
     control,
   } = useForm();
 
   const onSubmit = (data): void => {
     data.applications = data.applications?.map((application) => application.value);
+    data.operationType = data.operationType && data.operationType.value;
+
     createOrEditEndpoint.mutate({ payload: data, id: endpointId });
   };
 
-  const handleSetFormValues = (source): void => {
+  const handleSetFormValues = (endpoint): void => {
     const basicFields: string[] = ["name", "path", "description", "applications"];
-    basicFields.forEach((field) => setValue(field, source[field]));
+    basicFields.forEach((field) => setValue(field, endpoint[field]));
+
+    setValue(
+      "operationType",
+      operationTypeSelectOptions.find((option) => endpoint.operationType === option.value),
+    );
   };
 
   const queryClient = useQueryClient();
@@ -173,7 +187,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                         <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <InputText label="Path" name="path" {...{ register, errors }} validation={{ required: true }} />
+                        <SelectSingle
+                          name="operationType"
+                          label="Operation type"
+                          options={operationTypeSelectOptions}
+                          validation={{ required: true }}
+                          {...{ control, errors }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -185,7 +205,20 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                       id="endpointAccordion"
                       items={[
                         {
-                          title: "Applications",
+                          title: "Paths*",
+                          id: "pathsAccordion",
+                          render: () => (
+                            <CreateArray
+                              name="path"
+                              label="Paths"
+                              data={getValues("path")}
+                              {...{ control, errors }}
+                              validation={{ required: true }}
+                            />
+                          ),
+                        },
+                        {
+                          title: "Applications*",
                           id: "applicationsAccordion",
                           render: () =>
                             applications ? (
