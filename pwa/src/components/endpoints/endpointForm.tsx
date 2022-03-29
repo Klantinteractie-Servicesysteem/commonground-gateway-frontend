@@ -35,7 +35,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const queryClient = useQueryClient();
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpoint = _useEndpoint.getOne(endpointId);
-  const createOrEditEndpoint = _useEndpoint.createOrEdit(setLoadingOverlay);
+  const createOrEditEndpoint = _useEndpoint.createOrEdit(setLoadingOverlay, endpointId);
 
   const {
     register,

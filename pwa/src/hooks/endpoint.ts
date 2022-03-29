@@ -55,22 +55,26 @@ export const useEndpoint = (queryClient: QueryClient) => {
         setLoadingOverlay(true);
       },
       onSuccess: async (newEndpoint) => {
-        const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
         await queryClient.cancelQueries("endpoints");
+        const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
 
-        if (endpointId) {
+        if (!previousEndpoints) {
+          endpointId && queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
+          !endpointId && queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
+        }
+
+        if (previousEndpoints && endpointId) {
           const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
           previousEndpoints[index] = newEndpoint;
           queryClient.setQueryData("endpoints", previousEndpoints);
-          queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
         }
 
-        if (!endpointId) {
+        if (previousEndpoints && !endpointId) {
           queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
-          queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
         }
 
         queryClient.invalidateQueries("endpoints");
+
         setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
         navigate("/endpoints");
       },
