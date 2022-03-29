@@ -95,11 +95,11 @@ module.exports = {
             crumbLabel: "Collections",
           },
           {
-            pathname: "/shop",
+            pathname: "/collectionStore",
             crumbLabel: "Shop",
           },
           {
-            pathname: "/shop/[repositoryId]",
+            pathname: "/collectionStore/[repositoryId]",
             crumbLabel: "Repository",
           },
           {

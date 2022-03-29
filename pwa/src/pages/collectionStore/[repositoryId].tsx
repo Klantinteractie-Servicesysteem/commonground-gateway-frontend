@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Tabs } from "@conductionnl/nl-design-system/lib/Tabs/src/tabs";
-import GeneralDetails from "../../components/shop/generalDetails";
-import { OrganizationDetails } from "../../components/shop/organizationDetails";
+import GeneralDetails from "../../components/collectionStore/generalDetails";
+import { OrganizationDetails } from "../../components/collectionStore/organizationDetails";
 
 const IndexPage = (props) => {
   const repositoryId: string = props.params.repositoryId;

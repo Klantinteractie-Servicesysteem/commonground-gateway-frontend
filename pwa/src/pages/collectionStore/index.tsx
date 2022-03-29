@@ -3,7 +3,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { useQuery } from "react-query";
-import { ShopCard } from "../../components/shop/shopCard";
+import { CollectionStoreCard } from "../../components/collectionStore/collectionStoreCard";
 import Spinner from "../../components/common/spinner";
 
 const IndexPage = () => {
@@ -43,7 +43,7 @@ const IndexPage = () => {
       ) : (getRepositoriesQuery.data.map((repository) => (
         <div className="row" key={`row-${repository.repository.id}`}>
           <div className="col-12">
-            <ShopCard repository={repository.repository} />
+            <CollectionStoreCard repository={repository.repository} />
           </div>
         </div>
       )))}
