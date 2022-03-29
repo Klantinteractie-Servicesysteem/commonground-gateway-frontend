@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
 
           <DashboardCard
             amount={getRepositoriesQuery.isSuccess ? getRepositoriesQuery.data.length : 0}
-            title="Github Shop"
+            title="Collection Store"
             iconBackgroundColor="5bc0de"
             icon={<i className="fas fa-shopping-cart fa-lg"/>}
             subtitle="View all github repositories"
