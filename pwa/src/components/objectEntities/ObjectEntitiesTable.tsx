@@ -32,46 +32,46 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
     handleSetDocumentation();
   }, [API, entityId]);
 
-  React.useEffect(() => {
-    setShowSpinner(true);
-    entity && entity.endpoint && getFormIOSchema();
-    setShowSpinner(false);
-  }, [API, entity]);
+  // React.useEffect(() => {
+  //   setShowSpinner(true);
+  //   entity && entity.endpoint && getFormIOSchema();
+  //   setShowSpinner(false);
+  // }, [API, entity]);
 
-  React.useEffect(() => {
-    if (!formIOSchema) return;
-    setShowSpinner(true);
+  // React.useEffect(() => {
+  //   if (!formIOSchema) return;
+  //   setShowSpinner(true);
 
-    import("@formio/react").then((formio) => {
-      const { Form } = formio;
-      setFormIO(<Form src={formIOSchema} onSubmit={saveObject} />);
-    });
-    setShowSpinner(false);
-  }, [formIOSchema]);
+  //   import("@formio/react").then((formio) => {
+  //     const { Form } = formio;
+  //     setFormIO(<Form src={formIOSchema} onSubmit={saveObject} />);
+  //   });
+  //   setShowSpinner(false);
+  // }, [formIOSchema]);
 
-  const getFormIOSchema = () => {
-    API.FormIO.getSchema(entity.endpoint)
-      .then((res) => {
-        setFormIOSchema(res.data);
-      })
-      .catch((err) => {
-        throw new Error("GET form.io schema error: " + err);
-      });
-  };
+  // const getFormIOSchema = () => {
+  //   API.FormIO.getSchema(entity.endpoint)
+  //     .then((res) => {
+  //       setFormIOSchema(res.data);
+  //     })
+  //     .catch((err) => {
+  //       throw new Error("GET form.io schema error: " + err);
+  //     });
+  // };
 
-  const saveObject = (event) => {
-    setShowSpinner(true);
-    let body = event.data;
-    body.submit = undefined;
+  // const saveObject = (event) => {
+  //   setShowSpinner(true);
+  //   let body = event.data;
+  //   body.submit = undefined;
 
-    API.ApiCalls.createObject(entity?.endpoint, body)
-      .catch((err) => {
-        throw new Error("Create object error: " + err);
-      })
-      .finally(() => {
-        handleSetObjectEntities();
-      });
-  };
+  //   API.ApiCalls.createObject(entity?.endpoint, body)
+  //     .catch((err) => {
+  //       throw new Error("Create object error: " + err);
+  //     })
+  //     .finally(() => {
+  //       handleSetObjectEntities();
+  //     });
+  // };
 
   const getEntity = () => {
     setShowSpinner(true);
@@ -167,15 +167,12 @@ const ObjectEntitiesTable: React.FC<ObjectEntitiesTableProps> = ({ entityId }) =
               className="utrecht-button utrecht-button-sm btn-sm btn-success"
               data-bs-toggle="modal"
               data-bs-target="#objectModal"
+              aria-disabled="true"
+              disabled
             >
               <i className="fas fa-plus mr-2" />
               Create
             </button>
-            <Modal
-              title={`Create a new ${entity?.name} object`}
-              id="objectModal"
-              body={() => <>{FormIO && FormIO}</>}
-            />
           </>
         );
       }}
