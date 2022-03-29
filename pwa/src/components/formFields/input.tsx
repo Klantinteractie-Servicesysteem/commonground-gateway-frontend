@@ -12,9 +12,10 @@ export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps
   label,
   errors,
   validation,
+  tooltipContent,
   register,
 }) => (
-  <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+  <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
     <input id={name} className="FormField-field" {...{ label, type, ...register(name, { ...validation }) }} />
   </FormFieldGroup>
 );
