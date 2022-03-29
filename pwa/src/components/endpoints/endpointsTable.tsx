@@ -8,8 +8,9 @@ import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { useEndpoint } from "../../hooks/endpoint";
 
 export default function EndpointsTable() {
   const API: APIService = React.useContext(APIContext);
@@ -19,34 +20,7 @@ export default function EndpointsTable() {
   const [__, setHeader] = React.useContext(HeaderContext);
 
   const queryClient = useQueryClient();
-
-  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
-
-  const deleteEndpointMutation = useMutation<any, Error, any>(API.Endpoint.delete, {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSuccess: async (_, variables) => {
-      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
-      await queryClient.cancelQueries("endpoints");
-
-      const newEndpoints = previousEndpoints.filter((endpoint) => endpoint.id !== variables.id);
-      queryClient.setQueryData("endpoints", [...newEndpoints]);
-
-      queryClient.invalidateQueries("endpoints");
-      setAlert({ message: "Deleted endpoint", type: "success" });
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    },
-  });
+  const { getEndpoints, deleteEndpoint } = useEndpoint(queryClient, setLoadingOverlay);
 
   React.useEffect(() => {
     setHeader("Endpoints");
@@ -85,13 +59,13 @@ export default function EndpointsTable() {
             />
             <button
               className="button-no-style utrecht-link"
-              disabled={getEndpointsQuery.isFetching}
+              disabled={getEndpoints.isFetching}
               onClick={() => {
                 queryClient.invalidateQueries("endpoints");
               }}
             >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">{getEndpointsQuery.isFetching ? "Fetching data..." : "Refresh"}</span>
+              <span className="mr-2">{getEndpoints.isFetching ? "Fetching data..." : "Refresh"}</span>
             </button>
             <Link to="/endpoints/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
@@ -106,7 +80,7 @@ export default function EndpointsTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {getEndpointsQuery.isLoading ? (
+              {getEndpoints.isLoading ? (
                 <Spinner />
               ) : (
                 <>
@@ -135,7 +109,7 @@ export default function EndpointsTable() {
                                 <FontAwesomeIcon icon={faTrash} /> Delete
                               </button>
                               <DeleteModal
-                                resourceDelete={() => deleteEndpointMutation.mutateAsync({ id: item.id })}
+                                resourceDelete={() => deleteEndpoint.mutateAsync({ id: item.id })}
                                 resourceId={item.id}
                               />
                               <Link className="utrecht-link d-flex justify-content-end" to={`/endpoints/${item.id}`}>
@@ -148,7 +122,7 @@ export default function EndpointsTable() {
                         },
                       },
                     ]}
-                    rows={getEndpointsQuery.data ?? []}
+                    rows={getEndpoints.data ?? []}
                   />
                 </>
               )}
