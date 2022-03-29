@@ -15,10 +15,11 @@ export const SelectMultiple: React.FC<ISelectProps & IFormFieldProps & IReactHoo
   options,
   errors,
   control,
+  tooltipContent,
   validation,
 }) => {
   return (
-    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+    <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}
@@ -36,10 +37,11 @@ export const SelectSingle: React.FC<ISelectProps & IFormFieldProps & IReactHookF
   options,
   errors,
   control,
+  tooltipContent,
   validation,
 }) => {
   return (
-    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+    <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}

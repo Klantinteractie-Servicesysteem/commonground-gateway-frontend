@@ -1,0 +1,13 @@
+.Tooltip > .Tooltip-button {
+  cursor: pointer;
+  color: var(--utrecht-topnav-list-background-color);
+}
+
+.Tooltip > .Tooltip-tooltip {
+  pointer-events: auto !important;
+}
+
+.Tooltip > .Tooltip-tooltip:hover {
+  visibility: visible !important;
+  opacity: 1 !important;
+}

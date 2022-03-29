@@ -20,10 +20,11 @@ export const CreateArray: React.FC<CreateArrayProps & IFormFieldProps & IReactHo
   errors,
   control,
   validation,
+  tooltipContent,
   data,
 }) => {
   return (
-    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+    <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}

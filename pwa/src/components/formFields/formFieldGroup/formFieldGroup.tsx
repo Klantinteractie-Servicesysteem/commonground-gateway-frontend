@@ -2,6 +2,7 @@ import * as React from "react";
 import "./formFieldGroup.css";
 import { FieldErrors } from "react-hook-form";
 import { IFormFieldProps } from "../types";
+import { Tooltip } from "./../../tooltip/tooltip";
 
 interface IFormFieldGroupProps {
   errors: FieldErrors;
@@ -16,6 +17,11 @@ export const FormFieldGroup: React.FC<IFormFieldGroupProps & IFormFieldProps> = 
       <label htmlFor={props.name}>
         {props.label}
         {props.required && <b>*</b>}
+        {props.tooltipContent && (
+          <span className="FormField-tooltip">
+            <Tooltip content={props.tooltipContent} />
+          </span>
+        )}
       </label>
       {props.children}
 
