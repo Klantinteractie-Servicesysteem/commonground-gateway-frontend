@@ -22,8 +22,8 @@ export default function EndpointsTable() {
   const queryClient = useQueryClient();
 
   const _useEndpoint = useEndpoint(queryClient);
-  const getEndpoints = _useEndpoint.getEndpoints();
-  const deleteEndpoint = _useEndpoint.deleteEndpoint(setLoadingOverlay);
+  const getEndpoints = _useEndpoint.getAll();
+  const deleteEndpoint = _useEndpoint.remove(setLoadingOverlay);
 
   React.useEffect(() => {
     setHeader("Endpoints");
