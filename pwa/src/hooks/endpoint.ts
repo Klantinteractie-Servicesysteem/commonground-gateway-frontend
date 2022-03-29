@@ -4,19 +4,29 @@ import { QueryClient, useMutation, useQuery } from "react-query";
 import APIService from "../apiService/apiService";
 import APIContext from "../apiService/apiContext";
 import { AlertContext } from "../context/alertContext";
+import { navigate } from "gatsby-link";
 
 export const useEndpoint = (queryClient: QueryClient) => {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
 
-  const getEndpoints = () =>
+  const getOne = (endpointId: string) =>
+    useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
+      initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+      onError: (error) => {
+        setAlert({ message: error.message, type: "danger" });
+      },
+      enabled: !!endpointId,
+    });
+
+  const getAll = () =>
     useQuery<any[], Error>("endpoints", API.Endpoint.getAll, {
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
       },
     });
 
-  const deleteEndpoint = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>) =>
+  const remove = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>) =>
     useMutation<any, Error, any>(API.Endpoint.delete, {
       onMutate: () => {
         setLoadingOverlay(true);
@@ -39,5 +49,38 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  return { getEndpoints, deleteEndpoint };
+  const createOrEdit = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>, endpointId?: string) =>
+    useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
+      onMutate: () => {
+        setLoadingOverlay(true);
+      },
+      onSuccess: async (newEndpoint) => {
+        const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
+        await queryClient.cancelQueries("endpoints");
+
+        if (endpointId) {
+          const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
+          previousEndpoints[index] = newEndpoint;
+          queryClient.setQueryData("endpoints", previousEndpoints);
+          queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
+        }
+
+        if (!endpointId) {
+          queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
+          queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
+        }
+
+        queryClient.invalidateQueries("endpoints");
+        setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
+        navigate("/endpoints");
+      },
+      onError: (error) => {
+        setAlert({ message: error.message, type: "danger" });
+      },
+      onSettled: () => {
+        setLoadingOverlay(false);
+      },
+    });
+
+  return { getOne, getAll, remove, createOrEdit };
 };

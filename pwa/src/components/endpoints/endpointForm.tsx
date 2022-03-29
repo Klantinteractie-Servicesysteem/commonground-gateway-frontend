@@ -9,9 +9,10 @@ import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple, SelectSingle, CreateArray } from "../formFields";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { ISelectValue } from "../formFields/types";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -30,6 +31,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
     { label: "Item", value: "item" },
     { label: "Collection", value: "collection" },
   ];
+
+  const queryClient = useQueryClient();
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpoint = _useEndpoint.getOne(endpointId);
+  const createOrEditEndpoint = _useEndpoint.createOrEdit(setLoadingOverlay);
 
   const {
     register,
@@ -56,48 +62,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       operationTypeSelectOptions.find((option) => endpoint.operationType === option.value),
     );
   };
-
-  const queryClient = useQueryClient();
-
-  const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
-    initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    enabled: !!endpointId,
-  });
-
-  const createOrEditEndpoint = useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onSuccess: async (newEndpoint) => {
-      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
-      await queryClient.cancelQueries("endpoints");
-
-      if (endpointId) {
-        const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
-        previousEndpoints[index] = newEndpoint;
-        queryClient.setQueryData("endpoints", previousEndpoints);
-        queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
-      }
-
-      if (!endpointId) {
-        queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
-        queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
-      }
-
-      queryClient.invalidateQueries("endpoints");
-      setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
-      navigate("/endpoints");
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    },
-  });
 
   React.useEffect(() => {
     setHeader("Endpoint");
