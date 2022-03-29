@@ -70,15 +70,24 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       });
   };
 
-  const handleSetFormValues = (source): void => {
-    const basicFields: string[] = ["name", "description", "sourceBranch", "applications", "endpoints", "entities"];
-    basicFields.forEach((field) => setValue(field, source[field]));
+  const handleSetFormValues = (collection): void => {
+    const basicFields: string[] = [
+      "name",
+      "description",
+      "sourceBranch",
+      "applications",
+      "collections",
+      "endpoints",
+      "entities",
+    ];
+    basicFields.forEach((field) => setValue(field, collection[field]));
 
     setValue(
       "sourceType",
-      sourceTypeSelectOptions.find((option) => source.sourceType === option.value),
+      sourceTypeSelectOptions.find((option) => collection.sourceType === option.value),
     );
-    source.source && setValue("source", { label: source.source.name, value: `/admin/gateways/${source.source.id}` });
+    collection.source &&
+      setValue("source", { label: collection.source.name, value: `/admin/gateways/${collection.source.id}` });
   };
 
   React.useEffect(() => {
