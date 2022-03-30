@@ -116,8 +116,10 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                       <tr>
                         <th>{log.type === "out" ? "Source" : "Route"}</th>
                         <td>
-                          {log.type === "out" ? (
-                            <Link to={`/sources/${log.source.id}`}>{log.source.name}</Link>
+                          {log.type === "out" && log.gateway ? (
+                            <Link to={`/sources/${log.gateway.id}`}>{log.gateway.name}</Link>
+                          ) : log.type === "out" ? (
+                            <span>This Log has nog Source</span>
                           ) : (
                             log.routeName
                           )}
