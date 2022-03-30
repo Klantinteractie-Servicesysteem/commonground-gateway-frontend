@@ -20,6 +20,12 @@
   gap: 20px;
 }
 
+.dashboard .dashboard-stores {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  flex: 2;
+}
+
 .dashboard .dashboard-quickOverview > * {
   flex: 1;
 }

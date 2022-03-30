@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "@conductionnl/nl-design-system/lib";
+import { Card, InfoTooltip } from "@conductionnl/nl-design-system/lib";
 import { HeaderContext } from "../../context/headerContext";
 import { Link } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { navigate } from "gatsby-link";
 import "./collectionStoreCard.css";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
 interface CollectionStoreCardProps {
   repository: any;
@@ -37,6 +38,8 @@ export const CollectionStoreCard: React.FC<CollectionStoreCardProps> = ({ reposi
     }
   });
 
+  console.log({repository})
+
   React.useEffect(() => {
     setHeader("Repositories");
   }, [setHeader]);
@@ -44,7 +47,7 @@ export const CollectionStoreCard: React.FC<CollectionStoreCardProps> = ({ reposi
   return (
     <Card
       key={repository.id}
-      title={ repository.name}
+      title={repository.name}
       cardHeader={function() {
         return (
           <div>
@@ -69,12 +72,37 @@ export const CollectionStoreCard: React.FC<CollectionStoreCardProps> = ({ reposi
             <div className="container">
               <img src={repository?.owner?.avatar_url} alt="url" />
               <div className="row">
-                <div className="col-4"><span className="card-text">Org: </span><span className="text-truncate">{repository.owner['login']}</span></div>
-                <div className="col-4"><span className="card-text">Repo: </span><span className="text-truncate">{repository.name}</span></div>
+                <div className="col-4">
+                  <span className="card-text">{repository.owner?.type === "Organization" ? "Org: " : "User"}</span>
+                  <span className="text-truncate">{repository.owner["login"]}</span>
+                </div>
+                <div className="col-4">
+                  <span className="card-text">Repo: </span>
+                  <span className="text-truncate">{repository.name}</span>
+                </div>
               </div>
               <div className="row">
-                <div className="col-4"><span className="card-text">Version: </span><span className="text-truncate"/></div>
-                <div className="col-4"><span className="card-text">App Version: </span><span className="text-truncate"/></div>
+                <div className="col-12">
+                  <span className="card-text">Languages: </span>
+                  {repository.languages?.map(([$key, _], idx) => (
+                    <span key={idx} className="text-truncate">{$key} </span>
+                  ))}
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <span className="card-text">Labels: </span>
+                  {repository.labels?.map(($item, idx) => (
+                    <span key={idx} className="text-truncate">
+                    <InfoTooltip
+                      content={$item.description}
+                      placement={"bottom"}
+                      layoutClassName="genericInput-tooltip"
+                    />
+                    <LabelWithBackground color={$item.color} label={$item.name} />
+                  </span>
+                  ))}
+                </div>
               </div>
               <div className="row card-description">
                 <div className="col-12">

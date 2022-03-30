@@ -96,7 +96,7 @@ module.exports = {
           },
           {
             pathname: "/collectionStore",
-            crumbLabel: "Shop",
+            crumbLabel: "Collection store",
           },
           {
             pathname: "/collectionStore/[repositoryId]",

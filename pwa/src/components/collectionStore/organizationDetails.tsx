@@ -73,59 +73,95 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
     getRepository.isLoading ? (
       <Spinner />
     ) : (
-      <Card
-        title={getRepository.data.owner.login}
-        cardHeader={function () {
-          return (
-            <div>
-              <button
-                onClick={() => installRepository.mutateAsync({ id: getRepository.data.id })}
-                className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
-                type="submit"
-              >
-                Install
-              </button>
-              <a href={getRepository.data?.html_url}>
-                <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
-                  Github
-                </button>
-              </a>
-            </div>
-          );
-        }}
-        cardBody={function () {
-          return (
-            <div className="row">
-              <div className="col-12">
+      <div className="row">
+        <div className="col-8">
+          <Card
+            title={"getRepository.data"}
+            cardHeader={function() {
+              return (
                 <div>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <div className="row">
-                    <div className="container">
-                      {
-                        ownerDetail ? (
-                          <table className="mt-3 logTable-table">
-                            <tbody>
-                            {ownerDetail.map((owner, idx) => {
-                              return (
-                                <tr key={owner.key + idx}>
-                                  <th>{owner.key}</th>
-                                  <td>{owner.value}</td>
-                                </tr>
-                              );
-                            })}
-                            </tbody>
-                          </table>
-                        ) : (
-                          <p className="utrecht-paragraph">No organization details found found</p>
-                        )}
+                  <button
+                    onClick={() => installRepository.mutateAsync({ id: getRepository.data.id })}
+                    className="utrecht-button utrecht-button-sm btn-sm btn-success mr-2"
+                    type="submit"
+                  >
+                    Install
+                  </button>
+                  <a href={getRepository.data?.html_url}>
+                    <button className="utrecht-button utrecht-button-sm btn-sm btn btn-light mr-2">
+                      Github
+                    </button>
+                  </a>
+                </div>
+              );
+            }}
+            cardBody={function() {
+              return (
+                <div className="row">
+                  <div className="col-12">
+                    <div>
+                      {loadingOverlay && <LoadingOverlay />}
+                      <div className="row">
+                        <div className="container">
+                          <div>
+                            <div className="row">
+                              <span>{getRepository.data.description}</span>
+                              <span>{getRepository.data.subscribers ? getRepository.data.subscribers["login"] : null}</span>
+                              <span>{getRepository.data?.subscribers?.map(($item, idx) => (
+                                <span key={idx} className="text-truncate">
+                                  {$item["login"]}
+                                </span>
+                              ))}
+                              </span>
+                              <span>{getRepository.data.owner?.repos?.map(($item, idx) => (
+                                <span key={idx} className="text-truncate">
+                                  {$item?.name} {$item?.full_name} {$item?.private}
+                                </span>))}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          );
-        }}
-      />
+              );
+            }}
+          />
+        </div>
+        <div className="col-4">
+          <Card
+            title={"Owner"}
+            cardHeader={function() {
+              return (
+                <a href={getRepository.data?.owner?.html_url}>
+                  <button className="utrecht-button utrecht-button btn btn btn-light mr-2">
+                    {getRepository.data?.owner?.["login"]}
+                  </button>
+                </a>
+              );
+            }}
+            cardBody={function() {
+              return (
+                <div className="row">
+                  <div className="col-12">
+                    <div>
+                      {loadingOverlay && <LoadingOverlay />}
+                      <div className="container">
+                        <div className="row">
+                          <div className="col-12">
+                            <img src={getRepository.data?.owner?.publiccode?.logo} alt="url" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }}
+          />
+        </div>
+      </div>
     )
   );
 };

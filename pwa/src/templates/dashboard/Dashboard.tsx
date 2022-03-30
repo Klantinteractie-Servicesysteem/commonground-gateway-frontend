@@ -102,16 +102,18 @@ const Dashboard: React.FC = () => {
             subtitle="View all endpoints"
             linkTo="endpoints"
           />
+      </div>
 
+      <div className="dashboard-row-stores">
+        <h3 className="dashboard-dividerTitle">Store's</h3>
           <DashboardCard
-            amount={getRepositoriesQuery.isSuccess ? getRepositoriesQuery.data.length : 0}
+            amount={getRepositoriesQuery.isSuccess ? getRepositoriesQuery.data?.length : 0}
             title="Collection Store"
             iconBackgroundColor="5bc0de"
             icon={<i className="fas fa-shopping-cart fa-lg"/>}
             subtitle="View all github repositories"
-            linkTo="shop"
+            linkTo="collectionStore"
           />
-        </div>
       </div>
 
       <div className="dashboard-row-logsAndDocumentation">
@@ -146,6 +148,7 @@ const Dashboard: React.FC = () => {
               </>
             )}
           />
+        </div>
         </div>
 
         <div className="dashboard-externalLinks">
