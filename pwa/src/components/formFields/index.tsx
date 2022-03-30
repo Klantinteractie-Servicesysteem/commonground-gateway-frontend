@@ -1,4 +1,4 @@
-import { InputText, InputCheckbox, InputUrl, InputPassword } from "./input";
+import { InputText, InputCheckbox, InputUrl, InputPassword, InputNumber, InputDate } from "./input";
 import { Textarea } from "./textarea";
 import { SelectMultiple, SelectSingle } from "./select";
 import { CreateKeyValue } from "./createKeyValue/createKeyValue";
@@ -9,6 +9,8 @@ export {
   InputCheckbox,
   InputUrl,
   InputPassword,
+  InputNumber,
+  InputDate,
   Textarea,
   SelectMultiple,
   SelectSingle,

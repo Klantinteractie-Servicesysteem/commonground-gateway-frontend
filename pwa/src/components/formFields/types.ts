@@ -9,6 +9,7 @@ export interface IReactHookFormProps {
 export interface IFormFieldProps {
   label: string;
   name: string;
+  tooltipContent?: JSX.Element | string;
 }
 
 export interface ISelectValue {

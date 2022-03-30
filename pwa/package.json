@@ -42,8 +42,10 @@
     "react-movable": "^3.0.2",
     "react-query": "^3.34.16",
     "react-select": "^5.2.2",
+    "react-tooltip": "^4.2.21",
     "react-tsparticles": "^1.41.2",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

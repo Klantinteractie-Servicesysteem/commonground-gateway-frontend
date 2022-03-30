@@ -25,10 +25,11 @@ export const CreateKeyValue: React.FC<CreateKeyValueProps & IFormFieldProps & IR
   errors,
   control,
   validation,
+  tooltipContent,
   data,
 }) => {
   return (
-    <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+    <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
       <Controller
         {...{ control, name }}
         rules={validation}

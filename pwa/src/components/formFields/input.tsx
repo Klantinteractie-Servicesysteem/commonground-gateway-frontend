@@ -3,7 +3,7 @@ import { FormFieldGroup } from "./formFieldGroup/formFieldGroup";
 import { IFormFieldProps, IReactHookFormProps } from "./types";
 
 interface IInputProps {
-  type: "text" | "checkbox" | "url" | "password";
+  type: "text" | "checkbox" | "url" | "password" | "number" | "date";
 }
 
 export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps> = ({
@@ -12,9 +12,10 @@ export const Input: React.FC<IInputProps & IFormFieldProps & IReactHookFormProps
   label,
   errors,
   validation,
+  tooltipContent,
   register,
 }) => (
-  <FormFieldGroup {...{ name, label, errors }} required={!!validation?.required}>
+  <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
     <input id={name} className="FormField-field" {...{ label, type, ...register(name, { ...validation }) }} />
   </FormFieldGroup>
 );
@@ -33,4 +34,14 @@ export const InputUrl: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...r
 
 export const InputPassword: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
   <Input type="password" {...rest} />
+);
+
+export const InputNumber: React.FC<IFormFieldProps & IReactHookFormProps> = ({ validation, ...rest }) => {
+  const _validation = { ...validation, setValueAs: (v) => (!isNaN(parseInt(v)) ? parseInt(v) : null) };
+
+  return <Input type="number" validation={_validation} {...rest} />;
+};
+
+export const InputDate: React.FC<IFormFieldProps & IReactHookFormProps> = ({ ...rest }) => (
+  <Input type="date" {...rest} />
 );
