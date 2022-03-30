@@ -70,73 +70,79 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   aria-labelledby="logGeneral-tab"
                 >
                   <table className="mt-3 logTable-table">
-                    <tr>
-                      <th>Status</th>
-                      <td>
-                        <LabelWithBackground label={log.responseStatusCode} type={statusClass} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Type</th>
-                      <td>{log.type === "in" ? "Incoming" : "Outcoming"}</td>
-                    </tr>
-                    <tr>
-                      <th>Call ID</th>
-                      <td>
-                        <Link
-                          to={`/calls/${log.callId}`}
-                          aria-label="Close"
-                          type="button"
-                          data-bs-dismiss="modal"
-                          onClick={() => navigate(`/calls/${log.callId}`)}
-                        >
-                          {log.callId}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Session ID</th>
-                      <td>
-                        <Link
-                          to={`/sessions/${log.session}`}
-                          aria-label="Close"
-                          type="button"
-                          data-bs-dismiss="modal"
-                          onClick={() => navigate(`/sessions/${log.session}`)}
-                        >
-                          {log.session}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Response time</th>
-                      <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
-                    </tr>
-                    <tr>
-                      <th>{log.type === "out" ? "Source" : "Route"}</th>
-                      <td>{log.type === "out" ? <Link to={`/sources/${log.source.id}`}>{log.source.name}</Link> : log.routeName}</td>
-                    </tr>
-                    <tr>
-                      <th>Endpoint</th>
-                      <td>
-                        <Link
-                          to={"/endpoints/" + log.id}
-                          type="button"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          onClick={() => {
-                            navigate("/endpoints/" + log.id);
-                          }}
-                        >
-                          {log.endpoint?.name}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Application</th>
-                      <td>
-                        {
-                          log.application ? (
+                    <tbody>
+                      <tr>
+                        <th>Status</th>
+                        <td>
+                          <LabelWithBackground label={log.responseStatusCode} type={statusClass} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Type</th>
+                        <td>{log.type === "in" ? "Incoming" : "Outcoming"}</td>
+                      </tr>
+                      <tr>
+                        <th>Call ID</th>
+                        <td>
+                          <Link
+                            to={`/calls/${log.callId}`}
+                            aria-label="Close"
+                            type="button"
+                            data-bs-dismiss="modal"
+                            onClick={() => navigate(`/calls/${log.callId}`)}
+                          >
+                            {log.callId}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Session ID</th>
+                        <td>
+                          <Link
+                            to={`/sessions/${log.session}`}
+                            aria-label="Close"
+                            type="button"
+                            data-bs-dismiss="modal"
+                            onClick={() => navigate(`/sessions/${log.session}`)}
+                          >
+                            {log.session}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Response time</th>
+                        <td>{log && `${log.responseTime}ms (${msToSeconds(log.responseTime)}s)`}</td>
+                      </tr>
+                      <tr>
+                        <th>{log.type === "out" ? "Source" : "Route"}</th>
+                        <td>
+                          {log.type === "out" ? (
+                            <Link to={`/sources/${log.source.id}`}>{log.source.name}</Link>
+                          ) : (
+                            log.routeName
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Endpoint</th>
+                        <td>
+                          <Link
+                            to={"/endpoints/" + log.id}
+                            type="button"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onClick={() => {
+                              navigate("/endpoints/" + log.id);
+                            }}
+                          >
+                            {log.endpoint?.name}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Application</th>
+                        <td>
+                          {log.application ? (
                             <Link
                               to={"/applications/" + log?.id}
                               type="button"
