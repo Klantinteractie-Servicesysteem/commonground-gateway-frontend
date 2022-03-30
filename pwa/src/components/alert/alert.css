@@ -1,42 +1,55 @@
-.conduction-alert {
-    position: fixed;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
-    color: #ffffff;
-    padding: 32px;
-    top: 100px;
-    left: 50%;
-    z-index: 10;
-    transform: translateX(-50%);
+.Alert {
+  position: fixed;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 32px;
+  top: 100px;
+  left: 50%;
+  z-index: 10;
+  transform: translateX(-50%);
 }
 
-.conduction-alert.conduction-alert-success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
+.Alert.Alert--success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
 }
 
-.conduction-alert.conduction-alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
+.Alert.Alert--danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
 
-.conduction-alert-closeContainer {
-    top: 8px;
-    right: 8px;
-    width: 24px;
-    height: 24px;
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: background-color 100ms ease-in-out;
+.Alert .Alert-messageContainer {
+  display: flex;
+  flex-direction: column;
 }
 
-.conduction-alert-closeContainer:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, .3);
+.Alert .Alert-messageContainer > *:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.Alert-header {
+  font-weight: bold;
+}
+
+.Alert-closeContainer {
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 100ms ease-in-out;
+}
+
+.Alert-closeContainer:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
 }

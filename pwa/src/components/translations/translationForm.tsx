@@ -5,9 +5,9 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { HeaderContext } from "../../context/headerContext";
-import { checkValues, removeEmptyObjectValues } from "../utility/inputHandler";
-import { getDefaultLibFileName } from "typescript";
+import { Control, FieldErrors, FieldValues, useForm, UseFormRegister } from "react-hook-form";
+import { InputText, SelectSingle } from "../formFields";
+import { ISelectValue } from "../formFields/types";
 
 interface TranslationFormProps {
   id?: string;
@@ -17,12 +17,50 @@ interface TranslationFormProps {
 export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const [translation, setTranslation] = React.useState<any>(null);
   const title: string = id ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [tableName_, setTableName] = React.useState<string>(null);
+  const [_tableName, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
+
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data): void => {
+    setLoadingOverlay(true);
+
+    data.translationTable = _tableName;
+    data.language = data.language && data.language.value;
+
+    API.Translation.createOrUpdate(data, id)
+      .then(() => {
+        setAlert({ message: `${id ? "Updated" : "Created"} translation`, type: "success" });
+      })
+      .catch((err) => {
+        setAlert({ message: `Error creating translation: ${err}`, type: "danger" });
+        throw new Error("CREATE or UPDATE translation error: " + err);
+      })
+      .finally(() => {
+        setShowSpinner(false);
+        setLoadingOverlay(false);
+        navigate(`/translation-tables/${tableName}/translations`);
+      });
+  };
+
+  const handleSetFormValues = (translation): void => {
+    const basicFields: string[] = ["translateFrom", "translateTo"];
+    basicFields.forEach((field) => setValue(field, translation[field]));
+
+    setValue(
+      "language",
+      languageSelectOptions.find((option) => translation.language === option.value),
+    );
+  };
 
   React.useEffect(() => {
     id && getTranslation(id);
@@ -47,7 +85,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
     setShowSpinner(true);
     API.Translation.getOne(id)
       .then((res) => {
-        setTranslation(res.data);
+        handleSetFormValues(res.data);
       })
       .catch((err) => {
         throw new Error("GET translation error: " + err);
@@ -57,46 +95,6 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       });
   };
 
-  const saveTranslation = (event) => {
-    event.preventDefault();
-    setLoadingOverlay(true);
-
-    let body = {
-      translationTable: tableName_,
-      language: event.target.language ? event.target.language.value : null,
-      translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
-      translateTo: event.target.translateTo ? event.target.translateTo.value : null,
-    };
-
-    if (!id) {
-      API.Translation.create(body)
-        .then((res) => {
-          setTranslation(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET translation error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-          setLoadingOverlay(false);
-          navigate(`/translation-tables/${tableName}/translations`);
-        });
-    }
-
-    if (id) {
-      API.Translation.update(body, id)
-        .then((res) => {
-          setTranslation(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET translation error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-          setLoadingOverlay(false);
-        });
-    }
-  };
   React.useEffect(() => {
     handleSetDocumentation();
   });
@@ -107,14 +105,14 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
 
   return (
     <>
-      <form id="dataForm" onSubmit={saveTranslation}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Card
           title={title}
           cardHeader={function () {
@@ -156,7 +154,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
                   ) : (
                     <>
                       {loadingOverlay && <LoadingOverlay />}
-                      <TransForm translation={translation} />
+                      <TranslationFormFields {...{ control, errors, register }} />
                     </>
                   )}
                 </div>
@@ -170,51 +168,41 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
 };
 export default TranslationForm;
 
-interface TransFormProps {
-  translation: any;
+interface TranslationFormFields {
+  control: Control<FieldValues, any>;
+  errors: FieldErrors;
+  register: UseFormRegister<FieldValues>;
 }
 
-export const TransForm: React.FC<TransFormProps> = ({ translation }) => {
+export const TranslationFormFields: React.FC<TranslationFormFields> = ({ register, errors, control }) => {
   return (
-    <div className="row">
+    <div className="row form-row">
       <div className="col-4">
         <div className="form-group">
-          <GenericInputComponent
-            type={"text"}
-            name={"translateFrom"}
-            id={"translateFromInput"}
-            data={translation?.translateFrom && translation.translateFrom}
-            nameOverride={"From"}
-            required
-          />
+          <InputText name="translateFrom" label="From" {...{ register, errors }} validation={{ required: true }} />
         </div>
       </div>
       <div className="col-4">
         <div className="form-group">
-          <GenericInputComponent
-            type={"text"}
-            name={"translateTo"}
-            id={"translateToInput"}
-            data={translation?.translateTo && translation.translateTo}
-            nameOverride={"To"}
-            required
-          />
+          <InputText name="translateTo" label="To" {...{ register, errors }} validation={{ required: true }} />
         </div>
       </div>
       <div className="col-4">
         <div className="form-group">
-          <SelectInputComponent
-            options={[
-              { name: "Nederlands (NL)", value: "nl_NL" },
-              { name: "English (EN)", value: "en_EN" },
-            ]}
-            name={"language"}
-            id={"languageInput"}
-            nameOverride={"Language"}
-            data={translation?.language}
+          <SelectSingle
+            name="language"
+            label="Langauge"
+            options={languageSelectOptions}
+            {...{ control, errors }}
+            validation={{ required: true }}
           />
         </div>
       </div>
     </div>
   );
 };
+
+export const languageSelectOptions: ISelectValue[] = [
+  { label: "Nederlands (NL)", value: "nl_NL" },
+  { label: "English (EN)", value: "en_EN" },
+];

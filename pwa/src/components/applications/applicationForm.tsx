@@ -12,7 +12,8 @@ import { navigate } from "gatsby-link";
 import {
   checkValues,
   removeEmptyObjectValues,
-  retrieveFormArrayAsOArray, retrieveFormArrayAsOArrayWithName,
+  retrieveFormArrayAsOArray,
+  retrieveFormArrayAsOArrayWithName,
 } from "../utility/inputHandler";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
@@ -21,6 +22,7 @@ import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
 import MultiSelect from "../common/multiSelect";
+import { useQuery } from "react-query";
 
 interface IApplication {
   name: string;
@@ -47,6 +49,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+    onError: (error) => {
+      setAlert({ message: error.message, type: "danger" });
+    },
+  });
+
   React.useEffect(() => {
     setHeader(
       <>
@@ -60,7 +68,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   });
 
   React.useEffect(() => {
-    handleSetEndpoints();
     id && handleSetApplications();
   }, [API, id]);
 
@@ -70,30 +77,16 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
     API.Application.getOne(id)
       .then((res) => {
         res.data.endpoints = res.data.endpoints.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-        })
+          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+        });
         setApplication(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET application error: " + err);
       })
       .finally(() => {
         setShowSpinner(false);
-      });
-  };
-
-  const handleSetEndpoints = () => {
-    API.Endpoint.getAll()
-      .then((res) => {
-        const _endpoints = res.data?.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` }
-        })
-        setEndpoints(_endpoints);
-      })
-      .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
-        throw new Error("GET endpoints error: " + err);
       });
   };
 
@@ -103,7 +96,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -122,48 +115,29 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
       secret: event.target.secret.value ? event.target.secret.value : null,
       resource: event.target.resource.value ? event.target.resource.value : null,
       domains,
-      endpoints
+      endpoints,
     };
 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name, body.domains])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!id) {
-      // unset id means we're creating a new entry
-      API.Application.create(body)
-        .then(() => {
-          setAlert({ message: "Saved application", type: "success" });
-          navigate("/applications");
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (id) {
-      // set id means we're updating a existing entry
-      API.Application.update(body, id)
-        .then((res) => {
-          setAlert({ message: "Updated application", type: "success" });
-          setApplication(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Update application error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Application.createOrUpdate(body, id)
+      .then(() => {
+        setAlert({ message: `${id ? "Updated" : "Created"} application`, type: "success" });
+        navigate("/applications");
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error(`Create or update application error ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -209,7 +183,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                 ) : (
                   <div>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -230,7 +204,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
                           type={"text"}
@@ -250,11 +224,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                         />
                       </div>
                     </div>
-                    <div className="row">
-                      <div className="col-12">
+                    <div className="row form-row">
+                      <div className="col-6">
                         <TextareaGroup
-                          name={"description"}
-                          id={"descriptionInput"}
+                          label="Description"
+                          name="description"
+                          id="descriptionInput"
                           defaultValue={application?.description}
                         />
                       </div>
@@ -273,18 +248,18 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            return endpoints ? (
+                            return getEndpointsSelectQuery.isSuccess ? (
                               <MultiSelect
                                 id=""
                                 label="endpoints"
                                 data={application?.endpoints}
-                                options={endpoints}
+                                options={getEndpointsSelectQuery.data}
                               />
                             ) : (
-                                <Spinner />
+                              <Spinner />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                     />
                   </div>

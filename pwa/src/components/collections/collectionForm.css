@@ -1,0 +1,10 @@
+.collectionFormContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.collectionFormContainer > *:not(:last-child) {
+    margin-bottom: 5px;
+}

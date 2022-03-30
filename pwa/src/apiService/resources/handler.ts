@@ -8,23 +8,23 @@ export default class Handler {
     this._instance = _instance;
   }
 
-  public getOne = (id: string): Promise<AxiosResponse | {}> => {
+  public getOne = (id: string): Promise<AxiosResponse> => {
     return Send(this._instance, "GET", `/handlers/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse | {}> => {
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/handlers/${id}`, data);
+    }
+
     return Send(this._instance, "POST", "/handlers", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
-    return Send(this._instance, "PUT", `/handlers/${id}`, data);
+  public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
+    return Send(this._instance, "GET", `/handlers?endpoints.id=${endpointId}`);
   };
 
-  public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse | {}> => {
-    return Send(this._instance, "GET", `/handlers?endpoint.id=${endpointId}`);
-  };
-
-  public delete = (id: string): Promise<AxiosResponse | {}> => {
-    return Send(this._instance, "DELETE", `/handlers/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/handlers/${variables.id}`);
   };
 }

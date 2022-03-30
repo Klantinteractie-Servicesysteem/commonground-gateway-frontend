@@ -55,7 +55,7 @@ export const IndexPage = (props) => {
           <div className="page-top-item">
             {endpointId && (
               <Tabs
-                items={[
+                tabs={[
                   {
                     name: "Overview",
                     id: "overview",
@@ -104,22 +104,24 @@ export const IndexPage = (props) => {
                       className="utrecht-link button-no-style"
                       data-bs-toggle="modal"
                       data-bs-target="#logsHelpModal"
-                      onClick={handleSetLogsDocumentation}
+                      onClick={() => {
+                        !logsDocumentation && handleSetLogsDocumentation();
+                      }}
                     >
-                      <Modal
-                        title="Logs Documentation"
-                        id="logsHelpModal"
-                        body={() =>
-                          logsDocumentation ? (
-                            <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} />
-                          ) : (
-                            <Spinner />
-                          )
-                        }
-                      />
                       <i className="fas fa-question mr-1" />
                       <span className="mr-2">Help</span>
                     </button>
+                    <Modal
+                      title="Logs Documentation"
+                      id="logsHelpModal"
+                      body={() =>
+                        logsDocumentation ? (
+                          <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} />
+                        ) : (
+                          <Spinner />
+                        )
+                      }
+                    />
                     <a className="utrecht-link" onClick={handleSetLogs}>
                       <i className="fas fa-sync-alt mr-1" />
                       <span className="mr-2">Refresh</span>

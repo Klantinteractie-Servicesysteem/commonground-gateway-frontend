@@ -8,23 +8,23 @@ export default class Application {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse | {}> => {
+  public getAll = (): Promise<AxiosResponse> => {
     return Send(this._instance, "GET", "/applications");
   };
 
-  public getOne = (id: string): Promise<AxiosResponse | {}> => {
+  public getOne = (id: string): Promise<AxiosResponse> => {
     return Send(this._instance, "GET", `/applications/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse | {}> => {
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/applications/${id}`, data);
+    }
+
     return Send(this._instance, "POST", "/applications", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse | {}> => {
-    return Send(this._instance, "PUT", `/applications/${id}`, data);
-  };
-
-  public delete = (id: string): Promise<AxiosResponse | {}> => {
-    return Send(this._instance, "DELETE", `/applications/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/applications/${variables.id}`);
   };
 }

@@ -13,19 +13,21 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
+import { useQuery } from "react-query";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
   const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
   const [sourcesCount, setSourcesCount] = React.useState<number>(0);
-  const [endpointsCount, setEndpointsCount] = React.useState<number>(0);
   const API: APIService = React.useContext(APIContext);
 
   React.useEffect(() => {
     handleSetCounts();
     handleSetLogs();
   }, [API]);
+
+  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll);
 
   const handleSetLogs = (): void => {
     logs && setLogs(null);
@@ -65,14 +67,6 @@ const Dashboard: React.FC = () => {
       .catch((err) => {
         throw new Error(`GET sources error: ${err}`);
       });
-
-    API.Endpoint.getAll()
-      .then((res) => {
-        setEndpointsCount(res.data.length);
-      })
-      .catch((err) => {
-        throw new Error(`GET endpoints error: ${err}`);
-      });
   };
 
   return (
@@ -99,7 +93,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={endpointsCount}
+            amount={getEndpointsQuery.isSuccess ? getEndpointsQuery.data.length : 0}
             title="Endpoints"
             iconBackgroundColor="31CE36"
             icon={<img src={endpointsIcon} alt="endpoints" />}
@@ -114,7 +108,7 @@ const Dashboard: React.FC = () => {
           <h3 className="dashboard-dividerTitle">Recent activity</h3>
 
           <Card
-            title="Recent activity"
+            title="Incoming calls"
             cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
             cardHeader={() => (
               <>
@@ -124,16 +118,16 @@ const Dashboard: React.FC = () => {
                   data-bs-target="#logsHelpModal"
                   onClick={handleSetLogsDocumentation}
                 >
-                  <Modal
-                    title="Logs Documentation"
-                    id="logsHelpModal"
-                    body={() =>
-                      logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
-                    }
-                  />
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
                 </button>
+                <Modal
+                  title="Logs Documentation"
+                  id="logsHelpModal"
+                  body={() =>
+                    logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
+                  }
+                />
                 <a className="utrecht-link" onClick={handleSetLogs}>
                   <i className="fas fa-sync-alt mr-1" />
                   <span className="mr-2">Refresh</span>

@@ -14,6 +14,7 @@ import Test from "./resources/test";
 import Handler from "./resources/handler";
 import ApiCalls from "./resources/apiCalls";
 import Subscriber from "./resources/subscriber";
+import Collection from "./resources/collection";
 import { isLoggedIn, logout, validateSession } from "../services/auth";
 
 export default class APIService {
@@ -118,6 +119,11 @@ export default class APIService {
     return new Subscriber(this.adminClient);
   }
 
+  public get Collection(): Collection {
+    return new Collection(this.adminClient);
+  }
+
+
   public get Test(): Test {
     return new Test(this.apiClient);
   }
@@ -145,13 +151,20 @@ export const Send = (
   method: "GET" | "POST" | "PUT" | "DELETE",
   endpoint: string,
   payload?: JSON,
-): Promise<AxiosResponse | {}> => {
+): Promise<AxiosResponse> => {
   const _payload = JSON.stringify(payload);
 
   if (!validateSession()) {
     logout();
 
-    return Promise.resolve({ data: [] });
+    return Promise.resolve({
+      // return fake AxiosInstance for calls to not break
+      data: [],
+      status: -1,
+      statusText: "Session invalid",
+      config: {},
+      headers: {},
+    });
   }
 
   switch (method) {

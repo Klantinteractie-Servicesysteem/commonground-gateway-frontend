@@ -8,7 +8,7 @@ export const createElement = (
   attributes = {},
   value = "",
   innerText = "",
-  onclick = null
+  onclick = null,
 ) => {
   // create element
   const element = document.createElement(tagName);
@@ -42,7 +42,7 @@ export const addElement = (
   newValue: any,
   inputName: any,
   onClickFunction?: any,
-  label = true
+  label = true,
 ) => {
   const key = document.getElementById(newKey) as HTMLInputElement;
   const value = document.getElementById(newValue) as HTMLInputElement;
@@ -70,9 +70,9 @@ export const addElement = (
     {
       type: "text",
       id: value.value,
-      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`
+      name: `${inputName}[${key.value.replaceAll(" ", "-")}]`,
     },
-    `${value.value}`
+    `${value.value}`,
   );
 
   //create delete button
@@ -83,7 +83,7 @@ export const addElement = (
     { type: "button" },
     `${key.value}`,
     "Delete",
-    onClickFunction
+    onClickFunction,
   );
 
   // adds the inputs in the div form-group
