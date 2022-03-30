@@ -38,6 +38,11 @@ export default function MainMenu() {
               </li>
               {isLoggedIn() ? (
                 <>
+                <li className="utrecht-topnav__item">
+                  <Link to={"/collections"} className="utrecht-topnav__link">
+                    Collections
+                  </Link>
+                </li>
                   <li className="utrecht-topnav__item">
                     <Link to={"/sources"} className="utrecht-topnav__link">
                       Sources

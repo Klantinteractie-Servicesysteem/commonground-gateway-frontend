@@ -4,7 +4,6 @@ import * as React from "react";
 const UserContext = createContext(undefined);
 
 export function UserContextWrapper({ children }) {
-
   let storedUser = null;
 
   if (typeof window != "undefined") {
@@ -18,10 +17,12 @@ export function UserContextWrapper({ children }) {
   const [user, setUser] = useState(storedUser);
 
   return (
-    <UserContext.Provider value={{
-      user,
-      setUser
-    }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -30,4 +31,3 @@ export function UserContextWrapper({ children }) {
 export function useUserContext() {
   return useContext(UserContext);
 }
-

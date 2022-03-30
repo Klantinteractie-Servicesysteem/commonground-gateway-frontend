@@ -16,15 +16,15 @@ export default class Application {
     return Send(this._instance, "GET", `/applications/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/applications/${id}`, data);
+    }
+
     return Send(this._instance, "POST", "/applications", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/applications/${id}`, data);
-  };
-
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/applications/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/applications/${variables.id}`);
   };
 }

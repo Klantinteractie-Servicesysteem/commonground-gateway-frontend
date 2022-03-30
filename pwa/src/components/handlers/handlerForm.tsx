@@ -65,7 +65,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         setHandler(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET handler error: " + err);
       })
       .finally(() => {
@@ -79,7 +79,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         setEntities(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET entities error: " + err);
       });
   };
@@ -130,49 +130,29 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body.name])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (!validateJSON(body.conditions)) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Conditions is not valid JSON" });
+      setAlert({ type: "danger", message: "Conditions is not valid JSON" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!handlerId) {
-      // unset id means we're creating a new entry
-      API.Handler.create(body)
-        .then(() => {
-          setAlert({ message: "Saved Handler", type: "success" });
-          navigate(`/endpoints/${endpointId}/handlers`);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("Create handler error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (handlerId) {
-      // set id means we're updating a existing entry
-      API.Handler.update(body, handlerId)
-        .then((res) => {
-          setAlert({ message: "Updated handler", type: "success" });
-          setHandler(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-
-          throw new Error("Update handler error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.Handler.createOrUpdate(body, handlerId)
+      .then(() => {
+        setAlert({ message: `${handlerId ? "Updated" : "Created"} Handler`, type: "success" });
+        navigate(`/endpoints/${endpointId}/handlers`);
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error(`Create or update handler error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (
@@ -313,9 +293,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                     <div className="row">
                       <div className="col-6">
                         <TextareaGroup
-                          name={"conditions"}
-                          label={"Conditions (JSON)"}
-                          id={"conditionsInput"}
+                          name="conditions"
+                          label={<span>Conditions (JSON Logic) <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">Read more about the use of JSON Logic</a></span>}
+                          id="conditionsInput"
                           defaultValue={handler?.conditions}
                           required
                         />

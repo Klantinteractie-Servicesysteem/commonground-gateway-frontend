@@ -9,11 +9,11 @@ App\Entity\Gateway:
 App\Entity\Entity:
     # User object
     user:
-        route: '/api/users'
+        route: "/api/users"
         name: users
         description: Dit endpoint behandeld alle functionaliteit rondom users of gebruikers.
-        gateway: '@example_gateway'
-        endpoint: 'users'
+        gateway: "@example_gateway"
+        endpoint: "users"
         extend: false
         availableProperties:
             - username
@@ -32,7 +32,6 @@ App\Entity\Entity:
             - person
             - currentPassword
 App\Entity\Attribute:
-
     # User attributes
     user_username:
         name: username
@@ -40,6 +39,6 @@ App\Entity\Attribute:
         type: string
         maxLength: 255
         required: true
-        entity: '@user'
+        entity: "@user"
         mustBeUnique: true
         persistToGateway: true

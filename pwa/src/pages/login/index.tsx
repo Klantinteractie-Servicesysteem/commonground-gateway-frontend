@@ -5,20 +5,26 @@ import { setUser } from "../../services/auth";
 import { navigate } from "gatsby-link";
 import Footer from "../../components/footer/footer";
 import Particles from "react-tsparticles";
+import { isLoggedIn } from "../../services/auth";
+import { useForm } from "react-hook-form";
+import { InputPassword, InputText } from "../../components/formFields";
 
 const Login: React.FC = () => {
-  const [username, setUsername] = React.useState<string>(null);
-  const [password, setPassword] = React.useState<string>(null);
   const [error, setError] = React.useState<string>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const API: APIService = new APIService("");
 
-  const handleLogin = (): void => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data): void => {
     setLoading(true);
 
-    const body = { ...{ username, password } };
-
-    API.Login.login(body)
+    API.Login.login(data)
       .then((res) => {
         const user = { username: res.data.username };
 
@@ -29,12 +35,20 @@ const Login: React.FC = () => {
         navigate("/");
       })
       .catch((err) => {
+        setValue("username", "");
+        setValue("password", "");
         setError(err.response.data.message);
       })
       .finally(() => {
         setLoading(false);
       });
   };
+
+  React.useEffect(() => {
+    if (isLoggedIn() && window.location.pathname.includes("login")) {
+      navigate("/");
+    }
+  }, [isLoggedIn()]);
 
   return (
     <div className="login">
@@ -88,30 +102,15 @@ const Login: React.FC = () => {
       <div className="login-container">
         <h1>Welcome to Conductor!</h1>
 
-        <form className="login-form">
+        <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
           <h2>Login</h2>
 
-          <input
-            type="text"
-            placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
-            disabled={loading}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-            required
-          />
+          <InputText label="Username" name="username" {...{ register, errors }} validation={{ required: true }} />
+          <InputPassword label="Password" name="password" {...{ register, errors }} validation={{ required: true }} />
 
           {error && <span className="login-form-error">{error}</span>}
 
-          <button onClick={handleLogin} disabled={loading || !username || !password}>
-            {!loading ? "Login" : "Loading..."}
-          </button>
+          <button>{!loading ? "Login" : "Loading..."}</button>
         </form>
       </div>
 

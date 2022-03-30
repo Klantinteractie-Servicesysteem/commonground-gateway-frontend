@@ -1,15 +1,15 @@
 .breadcrumbs {
-    font-size: 16px;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style-type: none;
+  font-size: 16px;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style-type: none;
 }
 
 .breadcrumbs > li {
-    display: inline;
+  display: inline;
 }
 
 .breadcrumbs > li > .divider {
-    margin-left: 5px;
-    margin-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }

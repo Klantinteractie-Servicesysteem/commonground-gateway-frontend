@@ -53,7 +53,7 @@ const IndexPage = (props) => {
           <div className="page-top-item">
             {sourceId && (
               <Tabs
-                items={[
+                tabs={[
                   {
                     name: "Overview",
                     id: "overview",

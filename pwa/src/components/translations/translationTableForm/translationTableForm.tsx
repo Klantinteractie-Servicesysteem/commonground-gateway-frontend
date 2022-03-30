@@ -1,12 +1,15 @@
 import * as React from "react";
+import "./translationTableForm.css";
 import { GenericInputComponent, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
 import LoadingOverlay from "../../loadingOverlay/loadingOverlay";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { AlertContext } from "../../../context/alertContext";
-import { TransForm } from "../translationForm";
-import "./translationTableForm.css";
+import { TranslationFormFields } from "../translationForm";
+
+import { useForm } from "react-hook-form";
+import { InputText } from "../../formFields";
 
 interface TranslationTableFormProps {
   tableName?: string;
@@ -15,28 +18,29 @@ interface TranslationTableFormProps {
 export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const [translation, setTranslation] = React.useState<any>(null);
   const title: string = "Create table";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
 
-  const saveTranslation = (event) => {
-    event.preventDefault();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data): void => {
     setLoadingOverlay(true);
 
-    let body = {
-      translationTable: event.target.translationTable ? event.target.translationTable.value : null,
-      language: event.target.language ? event.target.language.value : null,
-      translateFrom: event.target.translateFrom ? event.target.translateFrom.value : null,
-      translateTo: event.target.translateTo ? event.target.translateTo.value : null,
-    };
+    data.language = data.language && data.language.value;
 
-    API.Translation.create(body)
-      .then((res) => {
-        setTranslation(res.data);
+    API.Translation.createOrUpdate(data)
+      .then(() => {
+        setAlert({ message: "Created translation table", type: "success" });
       })
       .catch((err) => {
+        setAlert({ message: `Error creating translation table: ${err}`, type: "danger" });
         throw new Error("Save translation table error: " + err);
       })
       .finally(() => {
@@ -56,14 +60,14 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", type: "danger", message: err });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
 
   return (
     <>
-      <form id="dataForm" onSubmit={saveTranslation}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Card
           title={title}
           cardHeader={function () {
@@ -73,7 +77,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                   className="utrecht-link button-no-style"
                   data-bs-toggle="modal"
                   data-bs-target="#translationHelpModal"
-                  onClick={(e) => e.preventDefault()}
+                  type="button"
                 >
                   <i className="fas fa-question mr-1" />
                   <span className="mr-2">Help</span>
@@ -108,26 +112,24 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                       <div className="row">
                         <div className="col-12">
                           <div className="form-group">
-                            <GenericInputComponent
-                              type={"text"}
-                              name={"translationTable"}
-                              id={"translationTableInput"}
-                              data={translation && translation.translationTable && translation.translationTable}
-                              nameOverride={"Name"}
-                              required
+                            <InputText
+                              name="translationTable"
+                              label="Table name"
+                              {...{ errors, register }}
+                              validation={{ required: true }}
                             />
                           </div>
                         </div>
                       </div>
-                      <hr />
-                      <h2 className="utrecht-heading-2 utrecht-heading-2--distanced TranslationTableForm-heading TranslationTableForm-heading-h2 mb-1">
-                        Add your first translation to this table
-                      </h2>
-                      <h4 className="utrecht-heading-4 utrecht-heading-4--distanced TranslationTableForm-heading TranslationTableForm-heading-h4 TranslationTableForm-h4 mb-2">
-                        You need to create at least one translation when creating a new table
-                      </h4>
 
-                      <TransForm translation={translation} />
+                      <span className="TranslationTableForm-dividerHeading">
+                        Add your first translation to this table
+                        <span className="subtitle">
+                          You need to create at least one translation when creating a new table
+                        </span>
+                      </span>
+
+                      <TranslationFormFields {...{ errors, register, control }} />
                     </>
                   )}
                 </div>

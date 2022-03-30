@@ -5,31 +5,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const AlertComponent = () => {
-  const [alert, setAlert] = React.useContext(AlertContext)
+  const [alert, setAlert] = React.useContext(AlertContext);
 
   React.useEffect(() => {
     alert && setTimeout(() => setAlert(null), 5000);
-  }, [alert])
+  }, [alert]);
 
   if (alert) {
-    return (
-      <div className={`conduction-alert conduction-alert-${alert.type}`}>
-        {
-          alert.title && (
-            <h5>{alert.title}</h5>
-          )
-        }
-        <p>{alert.message}</p>
+    let title: string;
+    switch (alert.type) {
+      case "danger":
+        title = "Oops something went wrong";
+        break;
+      case "success":
+        title = "Success";
+        break;
+    }
 
-        <div className="conduction-alert-closeContainer" onClick={() => setAlert(null)}>
-          <FontAwesomeIcon className="conduction-alert-close" icon={faTimes} />
+    return (
+      <div className={`Alert Alert--${alert.type}`}>
+        <div className="Alert-messageContainer">
+          <span className="Alert-header">{title}</span>
+          <span>{alert.message}</span>
+        </div>
+
+        <div className="Alert-closeContainer" onClick={() => setAlert(null)}>
+          <FontAwesomeIcon icon={faTimes} />
         </div>
       </div>
-    )
+    );
   }
 
-  return <></>
-}
+  return <></>;
+};
 
-
-export default AlertComponent
+export default AlertComponent;

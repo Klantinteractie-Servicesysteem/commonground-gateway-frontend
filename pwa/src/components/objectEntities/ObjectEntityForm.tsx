@@ -55,7 +55,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setObjectEntity(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET object entity error: " + err);
       })
       .finally(() => {
@@ -68,7 +68,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setApplications(res.data);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET applications error: " + err);
       });
   };
@@ -78,7 +78,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         setDocumentation(res.data.content);
       })
       .catch((err) => {
-        setAlert({ title: "Oops something went wrong", message: err, type: "danger" });
+        setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
       });
   };
@@ -107,48 +107,29 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
     body = removeEmptyObjectValues(body);
 
     if (!checkValues([body["uri"]])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "Required fields are empty" });
+      setAlert({ type: "danger", message: "Required fields are empty" });
       setLoadingOverlay(false);
       return;
     }
 
     if (body["externalId"] !== null && !isValidUUIDV4(body["externalId"])) {
-      setAlert({ title: "Oops something went wrong", type: "danger", message: "External Id is not a valid UUID" });
+      setAlert({ type: "danger", message: "External Id is not a valid UUID" });
       setLoadingOverlay(false);
       return;
     }
 
-    if (!objectId) {
-      // unset id means we're creating a new entry
-      API.ObjectEntity.create(body)
-        .then(() => {
-          setAlert({ message: "Saved object entities", type: "success" });
-          navigate(`/entities/${entityId}`);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("CREATE object entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
-
-    if (objectEntity) {
-      // set id means we're updating a existing entry
-      API.ObjectEntity.update(body, objectId)
-        .then((res) => {
-          setAlert({ message: "Updated object entities", type: "success" });
-          setObjectEntity(res.data);
-        })
-        .catch((err) => {
-          setAlert({ title: "Oops something went wrong", type: "danger", message: err.message });
-          throw new Error("UPDATE object entity error: " + err);
-        })
-        .finally(() => {
-          setLoadingOverlay(false);
-        });
-    }
+    API.ObjectEntity.createOrUpdate(body, objectId)
+      .then(() => {
+        setAlert({ message: `${objectId ? "Updated" : "Created"} object entities`, type: "success" });
+        navigate(`/entities/${entityId}`);
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error(`Create or update object entity error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
   };
 
   return (

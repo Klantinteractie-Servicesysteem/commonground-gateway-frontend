@@ -21,7 +21,6 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
   subtitle,
   linkTo,
 }) => {
-
   return (
     <Link to={linkTo} className="dashboardCard">
       <div className="dashboardCard-icon" style={{ backgroundColor: `#${iconBackgroundColor}` }}>

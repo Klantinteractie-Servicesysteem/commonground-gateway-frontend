@@ -16,16 +16,16 @@ export default class Translation {
     return Send(this._instance, "GET", `/translations/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/translations/${id}`, data);
+    }
+
     return Send(this._instance, "POST", "/translations", data);
   };
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/translations/${id}`, data);
-  };
-
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/translations/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/translations/${variables.id}`);
   };
 
   public getTableNames = (): Promise<AxiosResponse> => {

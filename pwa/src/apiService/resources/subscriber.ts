@@ -12,19 +12,19 @@ export default class Subscriber {
     return Send(this._instance, "GET", `/subscribers/${id}`);
   };
 
-  public create = (data: any): Promise<AxiosResponse> => {
-    return Send(this._instance, "POST", "/subscribers", data);
-  };
+  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+    if (id) {
+      return Send(this._instance, "PUT", `/subscribers/${id}`, data);
+    }
 
-  public update = (data: any, id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "PUT", `/subscribers/${id}`, data);
+    return Send(this._instance, "POST", "/subscribers", data);
   };
 
   public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
     return Send(this._instance, "GET", `/subscribers?entity.id=${entityId}`);
   };
 
-  public delete = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/subscribers/${id}`);
+  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
+    return Send(this._instance, "DELETE", `/subscribers/${variables.id}`);
   };
 }

@@ -6,14 +6,9 @@ import * as React from "react";
  * @returns TSX of the generated Spinner.
  */
 export default function Spinner() {
-
   return (
     <div className="text-center px-5">
-      <div
-        className="spinner-border text-primary"
-        style={{ width: "3rem", height: "3rem" }}
-        role="status"
-      >
+      <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
         <span className="sr-only">Loading...</span>
       </div>
     </div>
