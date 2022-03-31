@@ -1,12 +1,14 @@
-export const validateJSON = (_json: string): boolean => {
+export const validateJSON = (data: string): boolean | string => {
   const RegExp: RegExp = /^[0-9]+$/;
+  const invalidMessage = "This field contains invalid JSON";
 
-  if (RegExp.test(_json)) return false;
+  if (!data) return true; // empty data should not be validated
+
+  if (RegExp.test(data)) return invalidMessage;
 
   try {
-    JSON.parse(_json);
-    return true;
+    return JSON.parse(data) && true;
   } catch {
-    return false;
+    return invalidMessage;
   }
 };
