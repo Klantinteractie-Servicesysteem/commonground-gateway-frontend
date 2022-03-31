@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import { validateJSON } from "../../services/validateJSON";
-import { Checkbox, Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
+import { Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
@@ -36,7 +36,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [sources, setSources] = React.useState<any>(null);
-  const [tableNames, setTableNames] = React.useState<Array<any>>(null);
+  const [tableNames, setTableNames] = React.useState<any>(null);
 
   const typeSelectOptions: ISelectValue[] = [
     { label: "Extern Source", value: "externSource" },
@@ -92,7 +92,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET subscriber error: " + err);
+        throw new Error(`GET subscriber error: ${err}`);
       });
   };
 
@@ -103,7 +103,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET sources error: " + err);
+        throw new Error(`GET sources error: ${err}`);
       });
   };
 
@@ -116,7 +116,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
-        throw new Error("GET table names error: " + err);
+        throw new Error(`GET table names error: ${err}`);
       });
   };
 
@@ -138,7 +138,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       })
       .catch((err) => {
         setAlert({ type: "danger", message: err.message });
-        throw new Error("Create or update subscriber error: " + err);
+        throw new Error(`Create or update subscriber error: ${err}`);
       })
       .finally(() => {
         setLoadingOverlay(false);
@@ -290,8 +290,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         {
                           title: "Translations in",
                           id: "translationsInAccordion",
-                          render: function () {
-                            return tableNames ? (
+                          render: () =>
+                            tableNames ? (
                               <SelectMultiple
                                 name="translationsIn"
                                 label="Translations in"
@@ -299,17 +299,14 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 {...{ control, errors }}
                               />
                             ) : (
-                              <>
-                                <Spinner />
-                              </>
-                            );
-                          },
+                              <Spinner />
+                            ),
                         },
                         {
                           title: "Translations out",
                           id: "translationsOutAccordion",
-                          render: function () {
-                            return tableNames ? (
+                          render: () =>
+                            tableNames ? (
                               <SelectMultiple
                                 name="translationsOut"
                                 label="Translations out"
@@ -317,11 +314,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                                 {...{ control, errors }}
                               />
                             ) : (
-                              <>
-                                <Spinner />
-                              </>
-                            );
-                          },
+                              <Spinner />
+                            ),
                         },
                         {
                           title: "Mapping in",
