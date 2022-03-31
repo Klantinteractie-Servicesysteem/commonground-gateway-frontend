@@ -5,19 +5,19 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function EntitiesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [entities, setEntities] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   React.useEffect(() => {
     setHeader("Object types");
@@ -58,7 +58,7 @@ export default function EntitiesTable() {
   };
 
   const handleDeleteObjectType = (id): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
     API.Entity.delete(id)
       .then(() => {
         setAlert({ message: "Deleted object type", type: "success" });
@@ -69,7 +69,7 @@ export default function EntitiesTable() {
         throw new Error("DELETE Sources error: " + err);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -108,59 +108,56 @@ export default function EntitiesTable() {
               {showSpinner === true ? (
                 <Spinner />
               ) : entities ? (
-                <>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <Table
-                    columns={[
-                      {
-                        headerName: "Name",
-                        field: "name",
+                <Table
+                  columns={[
+                    {
+                      headerName: "Name",
+                      field: "name",
+                    },
+                    {
+                      headerName: "Endpoint",
+                      field: "endpoint",
+                    },
+                    {
+                      headerName: "Path",
+                      field: "route",
+                    },
+                    {
+                      headerName: "Source",
+                      field: "gateway",
+                      valueFormatter: (item) => {
+                        return item ? item.name : "";
                       },
-                      {
-                        headerName: "Endpoint",
-                        field: "endpoint",
-                      },
-                      {
-                        headerName: "Path",
-                        field: "route",
-                      },
-                      {
-                        headerName: "Source",
-                        field: "gateway",
-                        valueFormatter: (item) => {
-                          return item ? item.name : "";
-                        },
-                      },
-                      {
-                        field: "id",
-                        headerName: "",
-                        renderCell: (item) => {
-                          return (
-                            <div className="utrecht-link d-flex justify-content-end">
-                              <button
-                                className="utrecht-button btn-sm btn-danger mr-2"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
-                              >
-                                <FontAwesomeIcon icon={faTrash} /> Delete
+                    },
+                    {
+                      field: "id",
+                      headerName: "",
+                      renderCell: (item) => {
+                        return (
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
+                            </button>
+                            <DeleteModal
+                              resourceDelete={() => handleDeleteObjectType({ id: item.id })}
+                              resourceId={item.id}
+                            />
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
-                              <DeleteModal
-                                resourceDelete={() => handleDeleteObjectType({ id: item.id })}
-                                resourceId={item.id}
-                              />
-                              <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success">
-                                  <FontAwesomeIcon icon={faEdit} /> Edit
-                                </button>
-                              </Link>
-                            </div>
-                          );
-                        },
+                            </Link>
+                          </div>
+                        );
                       },
-                    ]}
-                    rows={entities}
-                  />
-                </>
+                    },
+                  ]}
+                  rows={entities}
+                />
               ) : (
                 <Table
                   columns={[

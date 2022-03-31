@@ -4,6 +4,7 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
@@ -14,10 +15,10 @@ export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = entityId === "new" ? "Create Attribute" : "Edit Attribute";
   const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -54,7 +55,7 @@ export default function AttributeTable({ entityId }) {
   };
 
   const handleDeleteAttribute = (id): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
     API.Attribute.delete(id)
       .then(() => {
         setAlert({ message: "Deleted attribute", type: "success" });
@@ -65,7 +66,7 @@ export default function AttributeTable({ entityId }) {
         throw new Error("DELETE attribute error: " + err);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -109,65 +110,62 @@ export default function AttributeTable({ entityId }) {
               {showSpinner === true ? (
                 <Spinner />
               ) : attributes ? (
-                <>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <Table
-                    columns={[
-                      {
-                        headerName: "Name",
-                        field: "name",
-                      },
-                      {
-                        headerName: "Type",
-                        field: "type",
-                      },
-                      {
-                        headerName: "Format",
-                        field: "format",
-                      },
-                      {
-                        headerName: "Required",
-                        field: "required",
-                        renderCell: (item: { required: boolean }) =>
-                          item.required ? (
-                            <LabelWithBackground label="required" type="primary" />
-                          ) : (
-                            <LabelWithBackground label="optional" type="secondary" />
-                          ),
-                      },
-                      {
-                        field: "id",
-                        headerName: " ",
-                        renderCell: (item: { id: string }) => {
-                          return (
-                            <div className="utrecht-link d-flex justify-content-end">
-                              <button
-                                className="utrecht-button btn-sm btn-danger mr-2"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
-                              >
-                                <FontAwesomeIcon icon={faTrash} /> Delete
+                <Table
+                  columns={[
+                    {
+                      headerName: "Name",
+                      field: "name",
+                    },
+                    {
+                      headerName: "Type",
+                      field: "type",
+                    },
+                    {
+                      headerName: "Format",
+                      field: "format",
+                    },
+                    {
+                      headerName: "Required",
+                      field: "required",
+                      renderCell: (item: { required: boolean }) =>
+                        item.required ? (
+                          <LabelWithBackground label="required" type="primary" />
+                        ) : (
+                          <LabelWithBackground label="optional" type="secondary" />
+                        ),
+                    },
+                    {
+                      field: "id",
+                      headerName: " ",
+                      renderCell: (item: { id: string }) => {
+                        return (
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
+                            </button>
+                            <DeleteModal
+                              resourceDelete={() => handleDeleteAttribute({ id: item.id })}
+                              resourceId={item.id}
+                            />
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/entities/${entityId}/attributes/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
-                              <DeleteModal
-                                resourceDelete={() => handleDeleteAttribute({ id: item.id })}
-                                resourceId={item.id}
-                              />
-                              <Link
-                                className="utrecht-link d-flex justify-content-end"
-                                to={`/entities/${entityId}/attributes/${item.id}`}
-                              >
-                                <button className="utrecht-button btn-sm btn-success">
-                                  <FontAwesomeIcon icon={faEdit} /> Edit
-                                </button>
-                              </Link>
-                            </div>
-                          );
-                        },
+                            </Link>
+                          </div>
+                        );
                       },
-                    ]}
-                    rows={attributes}
-                  />
-                </>
+                    },
+                  ]}
+                  rows={attributes}
+                />
               ) : (
                 <Table
                   columns={[

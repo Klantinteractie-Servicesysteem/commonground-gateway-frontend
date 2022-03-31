@@ -4,7 +4,6 @@ import {
   checkValues,
   removeEmptyObjectValues,
   retrieveFormArrayAsOArray,
-  retrieveFormArrayAsOArrayWithName,
   retrieveFormArrayAsObject,
 } from "../utility/inputHandler";
 import {
@@ -18,11 +17,11 @@ import {
 } from "@conductionnl/nl-design-system/lib";
 import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
 import { navigate } from "gatsby-link";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import MultiSelect from "../common/multiSelect";
 import ElementCreationNew from "../common/elementCreationNew";
 import { validateJSON } from "../../services/validateJSON";
@@ -35,13 +34,13 @@ interface HandlerFormProps {
 export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
   const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   React.useEffect(() => {
     getTableNames();
@@ -99,7 +98,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
   const saveHandler = (event) => {
     event.preventDefault();
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     let skeletonIn: any[] = retrieveFormArrayAsOArray(event.target, "skeletonIn");
     let skeletonOut: any[] = retrieveFormArrayAsOArray(event.target, "skeletonOut");
@@ -131,13 +130,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
     if (!checkValues([body.name])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
     if (!validateJSON(body.conditions)) {
       setAlert({ type: "danger", message: "Conditions is not valid JSON" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
@@ -151,7 +150,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         throw new Error(`Create or update handler error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -197,7 +196,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                   <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -294,7 +292,14 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                       <div className="col-6">
                         <TextareaGroup
                           name="conditions"
-                          label={<span>Conditions (JSON Logic) <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">Read more about the use of JSON Logic</a></span>}
+                          label={
+                            <span>
+                              Conditions (JSON Logic){" "}
+                              <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">
+                                Read more about the use of JSON Logic
+                              </a>
+                            </span>
+                          }
                           id="conditionsInput"
                           defaultValue={handler?.conditions}
                           required

@@ -19,9 +19,9 @@ import {
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import MultiSelect from "../common/multiSelect";
 import { validateJSON } from "../../services/validateJSON";
 import { useQuery } from "react-query";
@@ -34,11 +34,11 @@ interface SubscriberFormProps {
 export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, entityId }) => {
   const [subscriber, setSubscriber] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = subscriberId ? "Edit Subscriber" : "Create Subscriber";
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const [sources, setSources] = React.useState<any>(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
 
@@ -106,7 +106,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
 
   const saveSubscriber = (event) => {
     event.preventDefault();
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     let headers: {} = retrieveFormArrayAsObject(event.target, "headers");
     let queryParameters: {} = retrieveFormArrayAsObject(event.target, "queryParameters");
@@ -139,13 +139,13 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
 
     if (!checkValues([body.name, body.type])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
     if (body.conditions && !validateJSON(body.conditions)) {
       setAlert({ type: "danger", message: "Conditions is not valid JSON" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
@@ -161,7 +161,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         throw new Error(`Create or update subscriber error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -193,7 +193,6 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent
@@ -244,7 +243,14 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       <div className="col-6">
                         <TextareaGroup
                           name="conditions"
-                          label={<span>Conditions (JSON Logic) <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">Read more about the use of JSON Logic</a></span>}
+                          label={
+                            <span>
+                              Conditions (JSON Logic){" "}
+                              <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">
+                                Read more about the use of JSON Logic
+                              </a>
+                            </span>
+                          }
                           id="conditionsInput"
                           defaultValue={subscriber?.conditions}
                         />

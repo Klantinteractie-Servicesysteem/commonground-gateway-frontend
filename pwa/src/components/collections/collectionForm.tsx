@@ -5,9 +5,9 @@ import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
@@ -24,12 +24,12 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [sources, setSources] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
   const [entities, setEntities] = React.useState<any>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
 
   const sourceTypeSelectOptions: ISelectValue[] = [
@@ -48,7 +48,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.sourceType = data.sourceType && data.sourceType.value;
     data.source = data.source && data.source.value;
@@ -66,7 +66,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
         throw new Error(`Create or update collection error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -214,7 +214,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
