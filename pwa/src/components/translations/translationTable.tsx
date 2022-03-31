@@ -4,18 +4,18 @@ import { Link, navigate } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 
 export default function TranslationTable({ tableName }) {
   const [translations, setTranslations] = React.useState<Array<any>>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   React.useEffect(() => {
     handleSetDocumentation();
@@ -51,7 +51,7 @@ export default function TranslationTable({ tableName }) {
   };
 
   const handleDeleteTranslation = (id): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
     API.Translation.delete(id)
       .then(() => {
         setAlert({ message: "Deleted translation", type: "success" });
@@ -63,7 +63,7 @@ export default function TranslationTable({ tableName }) {
         throw new Error("DELETE translation error: " + err);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -115,62 +115,59 @@ export default function TranslationTable({ tableName }) {
               {showSpinner === true ? (
                 <Spinner />
               ) : translations ? (
-                <>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <Table
-                    columns={[
-                      {
-                        headerName: "Translate From",
-                        field: "translateFrom",
-                      },
-                      {
-                        headerName: "Translate To",
-                        field: "translateTo",
-                      },
-                      {
-                        headerName: "Language",
-                        field: "language",
-                      },
-                      {
-                        field: "id",
-                        headerName: " ",
-                        renderCell: (item: { id: string; translationTable: string }) => {
-                          return (
-                            <div className="utrecht-link d-flex justify-content-end">
-                              <button
-                                className="utrecht-button btn-sm btn-danger mr-2"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
-                              >
-                                <FontAwesomeIcon icon={faTrash} /> Delete
+                <Table
+                  columns={[
+                    {
+                      headerName: "Translate From",
+                      field: "translateFrom",
+                    },
+                    {
+                      headerName: "Translate To",
+                      field: "translateTo",
+                    },
+                    {
+                      headerName: "Language",
+                      field: "language",
+                    },
+                    {
+                      field: "id",
+                      headerName: " ",
+                      renderCell: (item: { id: string; translationTable: string }) => {
+                        return (
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
+                            </button>
+                            <DeleteModal
+                              resourceDelete={() => handleDeleteTranslation({ id: item.id })}
+                              resourceId={item.id}
+                              optionalMessage={
+                                translations.length === 1 && (
+                                  <>
+                                    If you delete this translation <b>you wil also delete the Translation Table!</b>
+                                  </>
+                                )
+                              }
+                            />
+                            <Link
+                              className="utrecht-link d-flex justify-content-end"
+                              to={`/translation-tables/${item.id}/translations/${item.id}`}
+                            >
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
                               </button>
-                              <DeleteModal
-                                resourceDelete={() => handleDeleteTranslation({ id: item.id })}
-                                resourceId={item.id}
-                                optionalMessage={
-                                  translations.length === 1 && (
-                                    <>
-                                      If you delete this translation <b>you wil also delete the Translation Table!</b>
-                                    </>
-                                  )
-                                }
-                              />
-                              <Link
-                                className="utrecht-link d-flex justify-content-end"
-                                to={`/translation-tables/${item.id}/translations/${item.id}`}
-                              >
-                                <button className="utrecht-button btn-sm btn-success">
-                                  <FontAwesomeIcon icon={faEdit} /> Edit
-                                </button>
-                              </Link>
-                            </div>
-                          );
-                        },
+                            </Link>
+                          </div>
+                        );
                       },
-                    ]}
-                    rows={translations}
-                  />
-                </>
+                    },
+                  ]}
+                  rows={translations}
+                />
               ) : (
                 <Table
                   columns={[

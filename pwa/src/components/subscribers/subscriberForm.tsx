@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { validateJSON } from "../../services/validateJSON";
 import { Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
+import { validateJSON } from "../../services/validateJSON";
 import { ISelectValue } from "../formFields/types";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
@@ -30,11 +30,11 @@ interface SubscriberFormProps {
 export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, entityId }) => {
   const [subscriber, setSubscriber] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = subscriberId ? "Edit Subscriber" : "Create Subscriber";
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const [sources, setSources] = React.useState<any>(null);
   const [tableNames, setTableNames] = React.useState<any>(null);
 
@@ -121,7 +121,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   };
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.entity = `/admin/entities/${entityId}`;
     data.method = data.method && data.method.value;
@@ -141,7 +141,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
         throw new Error(`Create or update subscriber error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -215,7 +215,6 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
@@ -242,7 +241,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       <div className="col-6">
                         <Textarea
                           name="conditions"
-                          label={"Conditions (JSON Logic)"}
+                          label="Conditions (JSON Logic)"
                           tooltipContent={
                             <a target="_blank" href="https://docs.conductor-gateway.app/en/latest/features/handlers/">
                               Read more about the use of JSON Logic

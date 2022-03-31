@@ -1,10 +1,8 @@
 import * as React from "react";
 import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
@@ -20,7 +18,6 @@ interface EndpointFormProps {
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [applications, setApplications] = React.useState<any>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -35,7 +32,7 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const queryClient = useQueryClient();
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpoint = _useEndpoint.getOne(endpointId);
-  const createOrEditEndpoint = _useEndpoint.createOrEdit(setLoadingOverlay, endpointId);
+  const createOrEditEndpoint = _useEndpoint.createOrEdit(endpointId);
 
   const {
     register,
@@ -145,7 +142,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />

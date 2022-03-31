@@ -2,11 +2,11 @@ import * as React from "react";
 import { Link } from "gatsby";
 import { Accordion, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { validateJSON } from "../../services/validateJSON";
 import { useForm } from "react-hook-form";
 import {
@@ -28,13 +28,13 @@ interface HandlerFormProps {
 
 export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const templateTypeSelectOptions: ISelectValue[] = [
     { label: "Twig", value: "twig" },
@@ -52,7 +52,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.endpoints = [`/admin/endpoints/${endpointId}`];
     data.templateType = data.templateType && data.templateType.value;
@@ -70,7 +70,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         throw new Error(`Create or update handler error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -193,7 +193,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                   <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />

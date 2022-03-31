@@ -1,14 +1,15 @@
 import * as React from "react";
-import { Dispatch, SetStateAction } from "react";
 import { QueryClient, useMutation, useQuery } from "react-query";
 import APIService from "../apiService/apiService";
 import APIContext from "../apiService/apiContext";
 import { AlertContext } from "../context/alertContext";
+import { LoadingOverlayContext } from "../context/loadingOverlayContext";
 import { navigate } from "gatsby-link";
 
 export const useEndpoint = (queryClient: QueryClient) => {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const getOne = (endpointId: string) =>
     useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
@@ -26,10 +27,10 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  const remove = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>) =>
+  const remove = () =>
     useMutation<any, Error, any>(API.Endpoint.delete, {
       onMutate: () => {
-        setLoadingOverlay(true);
+        setLoadingOverlay({ isLoading: true });
       },
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
@@ -45,14 +46,14 @@ export const useEndpoint = (queryClient: QueryClient) => {
         setAlert({ message: "Deleted endpoint", type: "success" });
       },
       onSettled: () => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       },
     });
 
-  const createOrEdit = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>, endpointId?: string) =>
+  const createOrEdit = (endpointId?: string) =>
     useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
       onMutate: () => {
-        setLoadingOverlay(true);
+        setLoadingOverlay({ isLoading: true });
       },
       onSuccess: async (newEndpoint) => {
         await queryClient.cancelQueries("endpoints");
@@ -82,7 +83,7 @@ export const useEndpoint = (queryClient: QueryClient) => {
         setAlert({ message: error.message, type: "danger" });
       },
       onSettled: () => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       },
     });
 

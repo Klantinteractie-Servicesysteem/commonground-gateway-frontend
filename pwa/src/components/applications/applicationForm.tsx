@@ -4,9 +4,9 @@ import { Link } from "gatsby";
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 import { CreateArray, InputText, SelectMultiple, Textarea } from "../formFields";
@@ -18,12 +18,12 @@ interface ApplicationFormProps {
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = applicationId ? "Edit Application" : "Create Application";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const {
     register,
@@ -35,7 +35,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.endpoints = data.endpoints?.map((endpoint) => endpoint.value);
 
@@ -49,7 +49,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
         throw new Error(`Create or update application error ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -147,7 +147,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />

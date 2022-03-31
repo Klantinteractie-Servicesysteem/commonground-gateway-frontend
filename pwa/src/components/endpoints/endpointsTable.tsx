@@ -9,13 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
 import { useQueryClient } from "react-query";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { useEndpoint } from "../../hooks/endpoint";
 
 export default function EndpointsTable() {
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
@@ -23,7 +21,7 @@ export default function EndpointsTable() {
 
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpoints = _useEndpoint.getAll();
-  const deleteEndpoint = _useEndpoint.remove(setLoadingOverlay);
+  const deleteEndpoint = _useEndpoint.remove();
 
   React.useEffect(() => {
     setHeader("Endpoints");
@@ -87,7 +85,6 @@ export default function EndpointsTable() {
                 <Spinner />
               ) : (
                 <>
-                  {loadingOverlay && <LoadingOverlay />}
                   <Table
                     columns={[
                       {
