@@ -2,7 +2,6 @@ import * as React from "react";
 import { Spinner, Card, Accordion, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
 import { navigate } from "gatsby-link";
-import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
@@ -10,14 +9,14 @@ import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
 import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
-import { InputText, SelectMultiple, Textarea } from "../formFields";
+import { CreateArray, InputText, SelectMultiple, Textarea } from "../formFields";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 interface ApplicationFormProps {
   applicationId?: string;
 }
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId }) => {
-  const [application, setApplication] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -26,12 +25,12 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  const fields = ["name", "resource", "public", "secret", "description", "endpoints"];
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
+    getValues,
     control,
   } = useForm();
 
@@ -54,6 +53,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
       });
   };
 
+  const handleSetFormValues = (source): void => {
+    const basicFields: string[] = ["name", "resource", "public", "secret", "description", "endpoints", "domains"];
+    basicFields.forEach((field) => setValue(field, source[field]));
+  };
+
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
       setAlert({ message: error.message, type: "danger" });
@@ -61,33 +65,25 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
   });
 
   React.useEffect(() => {
-    setHeader(
-      <>
-        Application <i>{application && application.name}</i>
-      </>,
-    );
-  }, [setHeader, application]);
-
-  React.useEffect(() => {
-    applicationId && handleSetApplications();
+    setHeader("Application");
+    applicationId && handleSetApplication();
   }, [API, applicationId]);
 
-  const handleSetApplications = () => {
+  const handleSetApplication = () => {
     setShowSpinner(true);
 
     API.Application.getOne(applicationId)
       .then((res) => {
-        res.data.endpoints = res.data.endpoints.map((endpoint) => {
-          return {
-            label: endpoint.name,
-            value: `/admin/endpoints/${endpoint.id}`,
-          };
-        });
-        setApplication(res.data);
+        const application = res.data;
 
-        fields.map((field) => {
-          setValue(field, res.data[field]);
-        });
+        setHeader(
+          <>
+            Application <i>{application.name}</i>
+          </>,
+        );
+
+        application.endpoints = resourceArrayToSelectArray(application.endpoints, "endpoints");
+        handleSetFormValues(application);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -160,6 +156,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                         <InputText name="resource" label="Resource" {...{ register, errors }} />
                       </div>
                     </div>
+
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="public" label="Public" {...{ register, errors }} />
@@ -168,20 +165,27 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                         <InputText name="secret" label="Secret" {...{ register, errors }} />
                       </div>
                     </div>
+
                     <div className="row form-row">
                       <div className="col-6">
                         <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
+
                     <Accordion
                       id="applicationAccordion"
                       items={[
                         {
-                          title: "Domains *",
+                          title: "Domains",
                           id: "domainsAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="domains" label="Domains" data={application?.domains} />;
-                          },
+                          render: () => (
+                            <CreateArray
+                              name="domains"
+                              label="Domains"
+                              data={getValues("domains")}
+                              {...{ control, errors }}
+                            />
+                          ),
                         },
                         {
                           title: "Endpoints",
