@@ -28,10 +28,10 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  const remove = (setLoadingOverlay: Dispatch<SetStateAction<boolean>>) =>
+  const remove = () =>
     useMutation<any, Error, any>(API.Endpoint.delete, {
       onMutate: () => {
-        setLoadingOverlay(true);
+        setLoadingOverlay({ isLoading: true });
       },
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
@@ -47,7 +47,7 @@ export const useEndpoint = (queryClient: QueryClient) => {
         setAlert({ message: "Deleted endpoint", type: "success" });
       },
       onSettled: () => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       },
     });
 
