@@ -70,10 +70,6 @@ const KeyValueComponent: React.FC<CreateKeyValueComponentProps> = ({ data, handl
     handleChange(keyValues);
   }, [keyValues]);
 
-  React.useEffect(() => {
-    setKeyValues(data);
-  }, [data]);
-
   return (
     <div className="KeyValue">
       {keyValues && (
