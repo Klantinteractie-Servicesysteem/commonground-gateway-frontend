@@ -83,6 +83,8 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       "conditions",
       "mappingIn",
       "mappingOut",
+      "translationsIn",
+      "translationsOut",
       "skeletonIn",
       "skeletonOut",
     ];
