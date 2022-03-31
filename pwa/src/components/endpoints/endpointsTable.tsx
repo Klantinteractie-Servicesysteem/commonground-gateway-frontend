@@ -5,7 +5,6 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
@@ -17,7 +16,6 @@ export default function EndpointsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const queryClient = useQueryClient();
 

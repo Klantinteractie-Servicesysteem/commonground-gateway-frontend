@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Dispatch, SetStateAction } from "react";
 import { QueryClient, useMutation, useQuery } from "react-query";
 import APIService from "../apiService/apiService";
 import APIContext from "../apiService/apiContext";
