@@ -27,7 +27,6 @@ interface HandlerFormProps {
 }
 
 export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
-  const [handler, setHandler] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
@@ -56,6 +55,10 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     setLoadingOverlay(true);
 
     data.endpoint = `/admin/endpoints/${endpointId}`;
+    data.templateType = data.templateType && data.templateType.value;
+    data.entity = data.entity && data.entity.value;
+    data.translationIn = data.translationIn && data.translationIn;
+    data.translationOut = data.translationOut && data.translationOut;
 
     API.Handler.createOrUpdate(data, handlerId)
       .then(() => {
@@ -71,26 +74,48 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       });
   };
 
+  const handleSetFormValues = (handler): void => {
+    const basicFields: string[] = [
+      "name",
+      "description",
+      "sequence",
+      "template",
+      "conditions",
+      "mappingIn",
+      "mappingOut",
+      "skeletonIn",
+      "skeletonOut",
+    ];
+    basicFields.forEach((field) => setValue(field, handler[field]));
+
+    setValue(
+      "templateType",
+      templateTypeSelectOptions.find((option) => handler.templateType === option.value),
+    );
+
+    handler.entity && setValue("entity", { label: handler.entity.name, value: `/admin/entities/${handler.entity.id}` });
+  };
+
   React.useEffect(() => {
     handleSetTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
   }, [API, handlerId]);
 
-  React.useEffect(() => {
-    setHeader(
-      <>
-        Handler <i>{handler && handler.name}</i>
-      </>,
-    );
-  }, [setHeader, handler]);
-
   const handleSetHandler = () => {
     setShowSpinner(true);
 
     API.Handler.getOne(handlerId)
       .then((res) => {
-        setHandler(res.data);
+        const handler = res.data;
+
+        setHeader(
+          <>
+            Handler <i>{handler && handler.name}</i>
+          </>,
+        );
+
+        handleSetFormValues(handler);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
