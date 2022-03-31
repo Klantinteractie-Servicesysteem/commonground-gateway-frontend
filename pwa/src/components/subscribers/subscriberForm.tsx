@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { validateJSON } from "../../services/validateJSON";
 import { Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
