@@ -269,7 +269,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="headers"
                               label="Headers"
                               data={getValues("headers")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },
@@ -277,12 +277,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           title: "OAS",
                           id: "oasAccordion",
                           render: () => (
-                            <CreateArray
-                              name="oas"
-                              label="OAS"
-                              data={getValues("oas")}
-                              {...{ register, control, errors }}
-                            />
+                            <CreateArray name="oas" label="OAS" data={getValues("oas")} {...{ control, errors }} />
                           ),
                         },
                         {
@@ -293,7 +288,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="paths"
                               label="Paths"
                               data={getValues("paths")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },
