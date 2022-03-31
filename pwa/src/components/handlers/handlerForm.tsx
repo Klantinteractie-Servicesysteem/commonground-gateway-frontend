@@ -54,7 +54,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   const onSubmit = (data): void => {
     setLoadingOverlay(true);
 
-    data.endpoint = `/admin/endpoints/${endpointId}`;
+    data.endpoints = [`/admin/endpoints/${endpointId}`];
     data.templateType = data.templateType && data.templateType.value;
     data.entity = data.entity && data.entity.value;
     data.translationIn = data.translationIn && data.translationIn;
