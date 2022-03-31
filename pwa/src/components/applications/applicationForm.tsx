@@ -18,9 +18,9 @@ import {
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import MultiSelect from "../common/multiSelect";
 import { useQuery } from "react-query";
 
@@ -40,14 +40,13 @@ interface ApplicationFormProps {
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
   const [application, setApplication] = React.useState<IApplication>(null);
-  const [endpoints, setEndpoints] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = id ? "Edit Application" : "Create Application";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
@@ -103,7 +102,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
   const saveApplication = (event) => {
     event.preventDefault();
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     let domains = retrieveFormArrayAsOArray(event.target, "domains");
     let endpoints = retrieveFormArrayAsOArrayWithName(event.target, "endpoints");
@@ -122,7 +121,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
 
     if (!checkValues([body.name, body.domains])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
@@ -136,7 +135,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
         throw new Error(`Create or update application error ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -182,7 +181,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ id }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <GenericInputComponent

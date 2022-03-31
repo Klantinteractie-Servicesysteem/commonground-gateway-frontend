@@ -5,11 +5,11 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import { isLoggedIn, logout, validateSession } from "../../services/auth";
+import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
 import { LoadingOverlayProvider, LoadingOverlayProps } from "../../context/loadingOverlayContext";
-import LoadingOverlayHook from "../loadingOverlay/loadingOverlayHook";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import Alert from "../alert/alert";
 import { HeaderProvider } from "../../context/headerContext";
@@ -43,7 +43,7 @@ export default function Layout({ children, pageContext }) {
         <LoadingOverlayProvider value={[loadingOverlay, setLoadingOverlay]}>
           <HeaderProvider value={[header, setHeader]}>
             <Alert />
-            <LoadingOverlayHook />
+            <LoadingOverlay />
             <Helmet>
               <title>Conductor Admin Dashboard</title>
             </Helmet>
