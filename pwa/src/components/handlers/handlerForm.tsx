@@ -97,6 +97,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   };
 
   React.useEffect(() => {
+    setHeader("Create Handler");
     handleSetTableNames();
     handlerId && handleSetHandler();
     handleSetEntities();
@@ -191,7 +192,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                 ) : (
                   <>
                     {loadingOverlay && <LoadingOverlay />}
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
@@ -199,8 +200,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <InputNumber
                           name="sequence"
@@ -219,8 +219,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         />
                       </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <InputText name="template" label="Template" {...{ register, errors }} />
                       </div>
@@ -228,7 +227,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         <SelectSingle name="entity" label="Entity" options={entities ?? []} {...{ control, errors }} />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <Textarea
                           name="conditions"
