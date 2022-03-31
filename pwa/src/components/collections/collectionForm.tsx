@@ -1,24 +1,18 @@
 import * as React from "react";
-import {
-  GenericInputComponent,
-  TextareaGroup,
-  Spinner,
-  Card,
-  Modal,
-  Accordion,
-  SelectInputComponent,
-} from "@conductionnl/nl-design-system/lib";
+import "./collectionForm.css";
+import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
 import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import { checkValues, removeEmptyObjectValues, retrieveFormArrayAsOArrayWithName } from "../utility/inputHandler";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import MultiSelect from "../common/multiSelect";
-import "./collectionForm.css";
 import { useQuery } from "react-query";
+import { useForm } from "react-hook-form";
+import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
+import { ISelectValue } from "../formFields/types";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -29,7 +23,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [collection, setCollection] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
   const [applications, setApplications] = React.useState<any>(null);
-  const [endpoints, setEndpoints] = React.useState<any>(null);
   const [entities, setEntities] = React.useState<any>(null);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
@@ -38,6 +31,69 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
+
+  const sourceTypeSelectOptions: ISelectValue[] = [
+    { label: "URL", value: "url" },
+    { label: "GitHub", value: "GitHub" },
+  ];
+
+  const {
+    register,
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data): void => {
+    setLoadingOverlay(true);
+
+    data.sourceType = data.sourceType && data.sourceType.value;
+    data.source = data.source && data.source.value;
+    data.applications = data.applications?.map((application) => application.value);
+    data.endpoints = data.endpoints?.map((endpoint) => endpoint.value);
+    data.entities = data.entities?.map((entity) => entity.value);
+
+    API.Collection.createOrUpdate(data, collectionId)
+      .then(() => {
+        setAlert({ message: `${collectionId ? "Updated" : "Created"} collection`, type: "success" });
+        navigate("/collections");
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error(`Create or update collection error: ${err}`);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
+  };
+
+  const handleSetFormValues = (collection): void => {
+    const basicFields: string[] = [
+      "name",
+      "description",
+      "sourceBranch",
+      "applications",
+      "collections",
+      "endpoints",
+      "entities",
+    ];
+    basicFields.forEach((field) => setValue(field, collection[field]));
+
+    setValue(
+      "sourceType",
+      sourceTypeSelectOptions.find((option) => collection.sourceType === option.value),
+    );
+    collection.source &&
+      setValue("source", { label: collection.source.name, value: `/admin/gateways/${collection.source.id}` });
+  };
+
+  React.useEffect(() => {
+    const sourceType = getValues("sourceType");
+    setSelectedSourceType(sourceType?.value);
+  }, [watch("sourceType")]);
 
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
@@ -65,19 +121,14 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
 
     API.Collection.getOne(collectionId)
       .then((res) => {
-        res.data.applications = res.data.applications.map((application) => {
-          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` };
-        });
+        const collection = res.data;
 
-        res.data.endpoints = res.data.endpoints.map((endpoint) => {
-          return { name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
-        });
+        collection.applications = resourceArrayToSelectArray(collection.applications, "applications");
+        collection.endpoints = resourceArrayToSelectArray(collection.endpoints, "endpoints");
+        collection.entities = resourceArrayToSelectArray(collection.entities, "entities");
 
-        res.data.entities = res.data.entities.map((entity) => {
-          return { name: entity.name, id: entity.name, value: `/admin/entities/${entity.id}` };
-        });
-
-        setCollection(res.data);
+        handleSetFormValues(collection);
+        setCollection(collection);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -91,11 +142,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const handleSetSources = () => {
     API.Source.getAll()
       .then((res) => {
-        const _sources = res.data.map((source) => ({
-          name: source.name,
-          value: `/admin/gateways/${source.id}`,
-        }));
-        setSources(_sources);
+        setSources(resourceArrayToSelectArray(res.data, "gateways"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -106,10 +153,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const handleSetApplications = () => {
     API.Application.getAll()
       .then((res) => {
-        const _applications = res.data?.map((application) => {
-          return { name: application.name, id: application.name, value: `/admin/applications/${application.id}` };
-        });
-        setApplications(_applications);
+        setApplications(resourceArrayToSelectArray(res.data, "applications"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -120,10 +164,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const handleSetEntities = () => {
     API.Entity.getAll()
       .then((res) => {
-        const _entities = res.data?.map((entity) => {
-          return { name: entity.name, id: entity.name, value: `/admin/entities/${entity.id}` };
-        });
-        setEntities(_entities);
+        setEntities(resourceArrayToSelectArray(res.data, "entities"));
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -131,50 +172,8 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       });
   };
 
-  const saveCollection = (event) => {
-    event.preventDefault();
-    setLoadingOverlay(true);
-
-    let applications: any[] = retrieveFormArrayAsOArrayWithName(event.target, "applications");
-    let endpoints: any[] = retrieveFormArrayAsOArrayWithName(event.target, "endpoints");
-    let entities: any[] = retrieveFormArrayAsOArrayWithName(event.target, "entities");
-
-    let body: any = {
-      name: event.target.name.value,
-      description: event.target.description.value ?? null,
-      source: !event.target.source.disabled ? event.target.source.value : null,
-      sourceType: !event.target.sourceType.disabled ? event.target.sourceType.value : null,
-      sourceBranch: event.target.sourceBranch.value ?? null,
-      applications,
-      endpoints,
-      entities,
-    };
-
-    // This removes empty values from the body
-    body = removeEmptyObjectValues(body);
-
-    if (!checkValues([body.name])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
-      return;
-    }
-
-    API.Collection.createOrUpdate(body, collectionId)
-      .then(() => {
-        setAlert({ message: `${collectionId ? "Updated" : "Created"} collection`, type: "success" });
-        navigate("/collections");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update collection error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
-  };
-
   return (
-    <form id="collectionForm" onSubmit={saveCollection}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card
         title={title}
         cardHeader={function () {
@@ -184,7 +183,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#collectionHelpModal"
-                onClick={(e) => e.preventDefault()}
+                type="button"
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -218,84 +217,52 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={collection?.name}
-                          nameOverride={"Name"}
-                          required
-                        />
+                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <TextareaGroup
-                          label="Description"
-                          name={"description"}
-                          id={"descriptionInput"}
-                          defaultValue={collection?.description}
-                        />
+                        <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
-                      <div className="col-6">
-                        <SelectInputComponent
-                          options={[
-                            { name: "url", value: "url" },
-                            { name: "GitHub", value: "GitHub" },
-                          ]}
-                          onChange={(e) => setSelectedSourceType(e.target.value)}
-                          data={collection?.sourceType}
-                          name={"sourceType"}
-                          id={"sourceTypeInput"}
-                          nameOverride={"Source Type"}
-                          disabled={collection?.source?.name}
+                      <div className="col-12">
+                        <SelectSingle
+                          name="sourceType"
+                          label="Source Type"
+                          options={sourceTypeSelectOptions}
+                          validation={{ required: true }}
+                          {...{ errors, control }}
                         />
                       </div>
+                    </div>
+
+                    <div className="row form-row">
                       <div className="col-6">
-                        {selectedSourceType === "url" ? (
-                          <SelectInputComponent
-                            options={
-                              sources !== null && sources.length > 0
-                                ? sources
-                                : [{ name: "Please create a source  first.", value: null }]
-                            }
-                            data={collection?.source?.name}
-                            name={"source"}
-                            id={"sourceInput"}
-                            nameOverride={"Source url"}
-                            disabled={collection?.source?.name}
+                        {selectedSourceType === "GitHub" && (
+                          <InputUrl
+                            name="source"
+                            label="GitHub URL"
+                            {...{ register, errors }}
+                            validation={{ required: true }}
                           />
-                        ) : (
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"source"}
-                            id={"sourceInput"}
-                            data={collection?.source?.name}
-                            nameOverride={selectedSourceType === "GitHub" ? "Source GitHub url" : "Source url"}
-                            disabled={!selectedSourceType}
-                            infoTooltip={
-                              !selectedSourceType &&
-                              !collection?.source?.name && {
-                                content: <span>Please select a source type first.</span>,
-                              }
-                            }
+                        )}
+
+                        {selectedSourceType === "url" && (
+                          <SelectSingle
+                            name="source"
+                            label="Source URL"
+                            options={sources}
+                            validation={{ required: true }}
+                            {...{ control, errors }}
                           />
                         )}
                       </div>
-                    </div>
-                    {selectedSourceType === "GitHub" && (
-                      <div className="row form-row">
-                        <div className="col-6">
-                          <GenericInputComponent
-                            type={"text"}
-                            name={"sourceBranch"}
-                            id={"sourceBranchInput"}
-                            data={collection?.sourceBranch}
-                            nameOverride={"Source GitHub Branch"}
-                          />
-                        </div>
+
+                      <div className="col-6">
+                        {selectedSourceType === "GitHub" && (
+                          <InputText name="sourceBranch" label="GitHub Branch" {...{ register, errors }} />
+                        )}
                       </div>
-                    )}
+                    </div>
 
                     <Accordion
                       id="collectionAccordion"
@@ -303,45 +270,47 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                         {
                           title: "Applications",
                           id: "applicationsAccordion",
-                          render: function () {
-                            return applications ? (
-                              <MultiSelect
-                                id=""
+                          render: () =>
+                            applications ? (
+                              <SelectMultiple
                                 label="Applications"
-                                data={collection?.applications}
+                                name="applications"
                                 options={applications}
+                                {...{ control, register, errors }}
                               />
                             ) : (
                               <Spinner />
-                            );
-                          },
+                            ),
                         },
                         {
                           title: "Endpoints",
                           id: "endpointsAccordion",
-                          render: function () {
-                            return getEndpointsSelectQuery.isSuccess ? (
-                              <MultiSelect
-                                id=""
+                          render: () =>
+                            getEndpointsSelectQuery.isSuccess ? (
+                              <SelectMultiple
                                 label="Endpoints"
-                                data={collection?.endpoints}
+                                name="endpoints"
                                 options={getEndpointsSelectQuery.data}
+                                {...{ control, register, errors }}
                               />
                             ) : (
                               <Spinner />
-                            );
-                          },
+                            ),
                         },
                         {
                           title: "Entities",
                           id: "entitiesAccordion",
-                          render: function () {
-                            return entities ? (
-                              <MultiSelect id="" label="Entities" data={collection?.entities} options={entities} />
+                          render: () =>
+                            entities ? (
+                              <SelectMultiple
+                                label="Entities"
+                                name="entities"
+                                options={entities}
+                                {...{ control, register, errors }}
+                              />
                             ) : (
                               <Spinner />
-                            );
-                          },
+                            ),
                         },
                       ]}
                     />

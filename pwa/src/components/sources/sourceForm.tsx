@@ -1,34 +1,21 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import {
-  checkValues,
-  removeEmptyObjectValues,
-  retrieveFormArrayAsOArray,
-  retrieveFormArrayAsObject,
-} from "../utility/inputHandler";
-import {
-  GenericInputComponent,
-  Accordion,
-  Card,
-  Spinner,
-  SelectInputComponent,
-  Modal,
-} from "@conductionnl/nl-design-system/lib";
-import ElementCreationNew from "../common/elementCreationNew";
+import { Accordion, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import { navigate } from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
 import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import MultiDimensionalArrayInput from "../common/multiDimensionalArrayInput";
+import { useForm } from "react-hook-form";
+import { ISelectValue } from "../formFields/types";
+import { CreateArray, CreateKeyValue, InputText, SelectSingle, InputUrl } from "../formFields";
 
 interface SourceFormProps {
   sourceId: string;
 }
 
 export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
-  const [source, setSource] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
@@ -37,25 +24,100 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  React.useEffect(() => {
-    setHeader(
-      <>
-        Source <i>{source && source.name}</i>
-      </>,
-    );
-  }, [setHeader, source]);
+  const typeSelectOptions: ISelectValue[] = [
+    { label: "JSON", value: "json" },
+    { label: "SML", value: "xml" },
+    { label: "SOAP", value: "soap" },
+    { label: "FTP", value: "ftp" },
+    { label: "SFTP", value: "sftp" },
+  ];
+
+  const authSelectOptions: ISelectValue[] = [
+    { label: "API Key", value: "apikey" },
+    { label: "JWT", value: "jwt" },
+    { label: "Username and Password", value: "username-password" },
+  ];
+
+  const {
+    register,
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   React.useEffect(() => {
+    setHeader("Source");
+
     handleSetDocumentation();
     sourceId && handleSetSource();
-  }, [sourceId, API]);
+  }, [sourceId, API, setHeader]);
+
+  const onSubmit = (data): void => {
+    setLoadingOverlay(true);
+
+    data.type = data.type && data.type.value;
+    data.auth = data.auth && data.auth.value;
+
+    API.Source.createOrUpdate(data, sourceId)
+      .then(() => {
+        setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
+        navigate("/sources");
+      })
+      .catch((err) => {
+        setAlert({ type: "danger", message: err.message });
+        throw new Error("Create or update source error: " + err);
+      })
+      .finally(() => {
+        setLoadingOverlay(false);
+      });
+  };
+
+  const handleSetFormValues = (source): void => {
+    const basicFields: string[] = [
+      "name",
+      "location",
+      "accept",
+      "locale",
+      "jwt",
+      "jwtId",
+      "secret",
+      "apikey",
+      "documentation",
+      "authorizationHeader",
+      "username",
+      "password",
+      "headers",
+      "oas",
+      "paths",
+    ];
+    basicFields.forEach((field) => setValue(field, source[field]));
+
+    setValue(
+      "type",
+      typeSelectOptions.find((option) => source.type === option.value),
+    );
+    setValue(
+      "auth",
+      authSelectOptions.find((option) => source.auth === option.value),
+    );
+  };
 
   const handleSetSource = () => {
     setShowSpinner(true);
 
     API.Source.getOne(sourceId)
       .then((res) => {
-        setSource(res.data);
+        const source = res.data;
+
+        setHeader(
+          <>
+            Source <i>{source && source.name}</i>
+          </>,
+        );
+
+        handleSetFormValues(source);
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -76,59 +138,8 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
       });
   };
 
-  const saveSource = (event) => {
-    event.preventDefault();
-    setLoadingOverlay(true);
-
-    let headers = retrieveFormArrayAsObject(event.target, "headers");
-    let oas = retrieveFormArrayAsOArray(event.target, "oas");
-    let paths = retrieveFormArrayAsOArray(event.target, "paths");
-
-    let body: any = {
-      name: event.target.name.value,
-      description: event.target.description ? event.target.description.value : null,
-      type: event.target.type.value,
-      auth: event.target.auth.value,
-      locale: event.target.locale.value,
-      location: event.target.location.value,
-      accept: event.target.accept.value,
-      jwt: event.target.jwt.value,
-      jwtId: event.target.jwtId.value,
-      secret: event.target.secret.value,
-      username: event.target.username.value,
-      password: event.target.password.value,
-      apikey: event.target.apikey.value,
-      documentation: event.target.documentation.value,
-      authorizationHeader: event.target.authorizationHeader.value,
-      headers,
-      oas,
-      paths,
-    };
-
-    body = removeEmptyObjectValues(body);
-
-    if (!checkValues([body.name, body.location, body.type, body.auth])) {
-      setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
-      return;
-    }
-
-    API.Source.createOrUpdate(body, sourceId)
-      .then(() => {
-        setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
-        navigate("/sources");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error("Create or update source error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
-  };
-
   return (
-    <form id="dataForm" onSubmit={saveSource}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card
         title={title}
         cardHeader={function () {
@@ -172,158 +183,79 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                     {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"name"}
-                          id={"nameInput"}
-                          data={source?.name}
-                          nameOverride={"Name"}
-                        />
+                        <InputText name="name" label="Name" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          name={"location"}
-                          id={"locationInput"}
-                          data={source?.location}
-                          nameOverride={"Location (url)"}
-                          required
-                          infoTooltip={{
-                            content: <p>Enter the source location here</p>,
-                          }}
+                        <InputUrl
+                          name="location"
+                          label="Location (URL)"
+                          {...{ register, errors }}
+                          validation={{ required: true }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <SelectInputComponent
-                          options={[
-                            { name: "json", value: "json" },
-                            { name: "xml", value: "xml" },
-                            { name: "soap", value: "soap" },
-                            { name: "ftp", value: "ftp" },
-                            { name: "sftp", value: "sftp" },
-                          ]}
-                          name={"type"}
-                          id={"typeInput"}
-                          nameOverride={"Type"}
-                          data={source?.type}
-                          required={true}
+                        <SelectSingle
+                          name="type"
+                          label="Type"
+                          options={typeSelectOptions}
+                          {...{ control, errors }}
+                          validation={{ required: true }}
                         />
                       </div>
                       <div className="col-6">
-                        <SelectInputComponent
-                          options={[
-                            { name: "apikey", value: "apikey" },
-                            { name: "jwt", value: "jwt" },
-                            { name: "username-password", value: "username-password" },
-                          ]}
-                          name={"auth"}
-                          id={"authInput"}
-                          nameOverride={"Auth"}
-                          required={true}
-                          data={source?.auth}
+                        <SelectSingle
+                          name="auth"
+                          label="Auth"
+                          options={authSelectOptions}
+                          {...{ control, errors }}
+                          validation={{ required: true }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Accept (accept header used for this source)"}
-                          name={"accept"}
-                          id={"acceptInput"}
-                          data={source?.accept}
+                        <InputText
+                          name="accept"
+                          label="Accept (accept header used for this source)"
+                          {...{ register, errors }}
                         />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Locale"}
-                          name={"locale"}
-                          id={"localeInput"}
-                          data={source?.locale}
-                        />
+                        <InputText name="locale" label="Locale" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Jwt"}
-                          name={"jwt"}
-                          id={"jwtInput"}
-                          data={source?.jwt}
-                        />
+                        <InputText name="jwt" label="JWT" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"JwtId"}
-                          name={"jwtId"}
-                          id={"jwtIdInput"}
-                          data={source?.jwtId}
-                        />
+                        <InputText name="jwtId" label="JWT ID" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Secret"}
-                          name={"secret"}
-                          id={"secretInput"}
-                          data={source?.secret}
-                        />
+                        <InputText name="secret" label="Secret" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Apikey"}
-                          name={"apikey"}
-                          id={"apikeyInput"}
-                          data={source?.apikey}
-                        />
+                        <InputText name="apikey" label="API Key" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Documentation(url)"}
-                          name={"documentation"}
-                          id={"documentationInput"}
-                          data={source?.documentation}
-                        />
+                        <InputUrl name="documentation" label="Documentation (URL)" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"AuthorizationHeader"}
-                          name={"authorizationHeader"}
-                          id={"authorizationHeaderInput"}
-                          data={source?.authorizationHeader}
-                        />
+                        <InputText name="authorizationHeader" label="Authorization Header" {...{ register, errors }} />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Username"}
-                          name={"username"}
-                          id={"usernameInput"}
-                          data={source?.username}
-                        />
+                        <InputText name="username" label="Username" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <GenericInputComponent
-                          type={"text"}
-                          nameOverride={"Password"}
-                          name={"password"}
-                          id={"passwordInput"}
-                          data={source?.password}
-                        />
+                        <InputText name="password" label="Password" {...{ register, errors }} />
                       </div>
                     </div>
                     <Accordion
@@ -332,38 +264,38 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         {
                           title: "Headers",
                           id: "headersAccordion",
-                          render: function () {
-                            return (
-                              <MultiDimensionalArrayInput
-                                id="headers"
-                                label="Headers"
-                                data={
-                                  source && source.headers
-                                    ? [
-                                        {
-                                          key: "headers",
-                                          value: source.headers,
-                                        },
-                                      ]
-                                    : null
-                                }
-                              />
-                            );
-                          },
+                          render: () => (
+                            <CreateKeyValue
+                              name="headers"
+                              label="Headers"
+                              data={getValues("headers")}
+                              {...{ register, control, errors }}
+                            />
+                          ),
                         },
                         {
                           title: "OAS",
                           id: "oasAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="oas" label="OAS" data={source?.oas} />;
-                          },
+                          render: () => (
+                            <CreateArray
+                              name="oas"
+                              label="OAS"
+                              data={getValues("oas")}
+                              {...{ register, control, errors }}
+                            />
+                          ),
                         },
                         {
                           title: "Paths",
                           id: "pathsAccordion",
-                          render: function () {
-                            return <ElementCreationNew id="paths" label="Paths" data={source?.paths} />;
-                          },
+                          render: () => (
+                            <CreateArray
+                              name="paths"
+                              label="Paths"
+                              data={getValues("paths")}
+                              {...{ register, control, errors }}
+                            />
+                          ),
                         },
                       ]}
                     />

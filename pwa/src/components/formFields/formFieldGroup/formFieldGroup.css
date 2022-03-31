@@ -1,3 +1,11 @@
+.FormField-group > label {
+  display: flex;
+}
+
+.FormField-group .FormField-tooltip {
+  margin-left: 5px;
+}
+
 .FormField-group .FormField-group-errorMessage {
   color: #dc3545;
 }

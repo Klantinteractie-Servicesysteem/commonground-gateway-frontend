@@ -8,9 +8,10 @@ export const Textarea: React.FC<IFormFieldProps & IReactHookFormProps> = ({
   label,
   errors,
   validation,
+  tooltipContent,
   register,
 }) => (
-  <FormFieldGroup {...{ name, label, errors }} required={validation?.required}>
+  <FormFieldGroup {...{ name, label, errors, tooltipContent }} required={!!validation?.required}>
     <textarea id={name} className="FormField-field" {...{ label, ...register(name, { ...validation }) }} />
   </FormFieldGroup>
 );

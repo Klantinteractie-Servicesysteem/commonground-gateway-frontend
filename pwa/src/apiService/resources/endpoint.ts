@@ -23,7 +23,7 @@ export default class Endpoint {
     const { data } = await Send(this._instance, "GET", "/endpoints");
 
     const selectData = data.map((endpoint) => {
-      return { name: endpoint.name, id: endpoint.name, label: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
+      return { label: endpoint.name, name: endpoint.name, id: endpoint.name, value: `/admin/endpoints/${endpoint.id}` };
     });
 
     return selectData;
