@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
-import { InputText, Textarea, SelectMultiple } from "../formFields";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { InputText, Textarea, SelectMultiple, SelectSingle, CreateArray } from "../formFields";
+import { useQueryClient } from "react-query";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { ISelectValue } from "../formFields/types";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface EndpointFormProps {
   endpointId: string;
@@ -18,72 +18,47 @@ interface EndpointFormProps {
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   const [applications, setApplications] = React.useState<any>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const operationTypeSelectOptions: ISelectValue[] = [
+    { label: "Item", value: "item" },
+    { label: "Collection", value: "collection" },
+  ];
+
+  const queryClient = useQueryClient();
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpoint = _useEndpoint.getOne(endpointId);
+  const createOrEditEndpoint = _useEndpoint.createOrEdit(endpointId);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
+    getValues,
     control,
   } = useForm();
 
   const onSubmit = (data): void => {
     data.applications = data.applications?.map((application) => application.value);
+    data.operationType = data.operationType && data.operationType.value;
+
     createOrEditEndpoint.mutate({ payload: data, id: endpointId });
   };
 
-  const handleSetFormValues = (source): void => {
+  const handleSetFormValues = (endpoint): void => {
     const basicFields: string[] = ["name", "path", "description", "applications"];
-    basicFields.forEach((field) => setValue(field, source[field]));
+    basicFields.forEach((field) => setValue(field, endpoint[field]));
+
+    setValue(
+      "operationType",
+      operationTypeSelectOptions.find((option) => endpoint.operationType === option.value),
+    );
   };
-
-  const queryClient = useQueryClient();
-
-  const getEndpoint = useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
-    initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    enabled: !!endpointId,
-  });
-
-  const createOrEditEndpoint = useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onSuccess: async (newEndpoint) => {
-      const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
-      await queryClient.cancelQueries("endpoints");
-
-      if (endpointId) {
-        const index = previousEndpoints.findIndex((endpoint) => endpoint.id === endpointId);
-        previousEndpoints[index] = newEndpoint;
-        queryClient.setQueryData("endpoints", previousEndpoints);
-        queryClient.setQueryData(["endpoints", endpointId], newEndpoint);
-      }
-
-      if (!endpointId) {
-        queryClient.setQueryData("endpoints", [newEndpoint, ...previousEndpoints]);
-        queryClient.setQueryData(["endpoints", newEndpoint.id], newEndpoint);
-      }
-
-      queryClient.invalidateQueries("endpoints");
-      setAlert({ message: `${endpointId ? "Updated" : "Created"} endpoint`, type: "success" });
-      navigate("/endpoints");
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    },
-  });
 
   React.useEffect(() => {
     setHeader("Endpoint");
@@ -167,13 +142,18 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />
                       </div>
                       <div className="col-6">
-                        <InputText label="Path" name="path" {...{ register, errors }} validation={{ required: true }} />
+                        <SelectSingle
+                          name="operationType"
+                          label="Operation type"
+                          options={operationTypeSelectOptions}
+                          validation={{ required: true }}
+                          {...{ control, errors }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -185,7 +165,20 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                       id="endpointAccordion"
                       items={[
                         {
-                          title: "Applications",
+                          title: "Paths*",
+                          id: "pathsAccordion",
+                          render: () => (
+                            <CreateArray
+                              name="path"
+                              label="Paths"
+                              data={getValues("path")}
+                              {...{ control, errors }}
+                              validation={{ required: true }}
+                            />
+                          ),
+                        },
+                        {
+                          title: "Applications*",
                           id: "applicationsAccordion",
                           render: () =>
                             applications ? (
