@@ -7,8 +7,6 @@ import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
-import MultiSelect from "../common/multiSelect";
-import ElementCreationNew from "../common/elementCreationNew";
 import { validateJSON } from "../../services/validateJSON";
 import { useForm } from "react-hook-form";
 import {
@@ -54,7 +52,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({isLoading: true});
 
     data.endpoints = [`/admin/endpoints/${endpointId}`];
     data.templateType = data.templateType && data.templateType.value;
@@ -72,7 +70,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         throw new Error(`Create or update handler error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({isLoading: false});
       });
   };
 
