@@ -52,7 +52,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay({isLoading: true});
+    setLoadingOverlay({ isLoading: true });
 
     data.endpoints = [`/admin/endpoints/${endpointId}`];
     data.templateType = data.templateType && data.templateType.value;
@@ -70,7 +70,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
         throw new Error(`Create or update handler error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay({isLoading: false});
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -193,7 +193,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                   <Spinner />
                 ) : (
                   <>
-                    <div className="row">
+                    <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
                       </div>

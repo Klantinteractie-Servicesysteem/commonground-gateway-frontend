@@ -67,7 +67,7 @@ module.exports = {
             crumbLabel: "Handler",
           },
           {
-            pathname: "/applications/[id]",
+            pathname: "/applications/[applicationId]",
             crumbLabel: "Application",
           },
           {
