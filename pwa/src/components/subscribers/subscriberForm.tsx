@@ -9,7 +9,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { validateJSON } from "../../services/validateJSON";
 import { ISelectValue } from "../formFields/types";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import {
   Textarea,
@@ -21,6 +21,7 @@ import {
   InputCheckbox,
 } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useSubscriber } from "../../hooks/subscriber";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -50,6 +51,12 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     { label: "PATCH", value: "PATCH" },
   ];
 
+  const queryClient = useQueryClient();
+
+  const _useSubscriber = useSubscriber(queryClient);
+  const getSubscriber = _useSubscriber.getOne(subscriberId);
+  const createOrEditSubscriber = _useSubscriber.createOrEdit(entityId, subscriberId);
+
   const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
     onError: (error) => {
       setAlert({ message: error.message, type: "danger" });
@@ -57,15 +64,22 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   });
 
   React.useEffect(() => {
-    setHeader(
-      <>
-        Subscriber <i>{subscriber && subscriber.name}</i>
-      </>,
-    );
-  }, [setHeader, subscriber]);
+    setHeader("Subscriber");
+
+    if (getSubscriber.isSuccess) {
+      const subscriber = getSubscriber.data;
+
+      setHeader(
+        <>
+          Subscriber: <i>{subscriber.name}</i>
+        </>,
+      );
+
+      handleSetFormValues(subscriber);
+    }
+  }, [getSubscriber.isSuccess]);
 
   React.useEffect(() => {
-    subscriberId && handleSetSubscriber();
     handleSetSources();
     handleSetTableNames();
   }, [API, subscriberId]);
@@ -75,26 +89,6 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
       !sources || !getEndpointsSelectQuery.isSuccess || tableNames === null || (subscriberId && !subscriber),
     );
   }, [subscriber, sources, getEndpointsSelectQuery.isSuccess, tableNames, subscriberId]);
-
-  const handleSetSubscriber = () => {
-    API.Subscriber.getOne(subscriberId)
-      .then((res) => {
-        const subscriber = res.data;
-        setHeader(
-          <>
-            Subscriber <i>{subscriber && subscriber.name}</i>
-          </>,
-        );
-
-        setSubscriber(subscriber);
-
-        handleSetFormValues(subscriber);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error(`GET subscriber error: ${err}`);
-      });
-  };
 
   const handleSetSources = () => {
     API.Source.getAll()
@@ -129,20 +123,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     data.gateway = data.gateway && data.gateway.value;
     data.endpoint = data.endpoint && data.endpoint.value;
 
-    API.Subscriber.createOrUpdate(data, subscriberId)
-      .then(() => {
-        setAlert({ type: "success", message: `${subscriberId ? "Updated" : "Created"} subscriber` });
-        navigate(`/entities/${entityId}`, {
-          state: { activeTab: "subscribers" },
-        });
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update subscriber error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditSubscriber.mutate({ payload: data, id: subscriberId });
   };
 
   const {
@@ -211,7 +192,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getSubscriber.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
