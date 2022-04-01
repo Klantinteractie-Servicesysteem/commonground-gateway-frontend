@@ -4,39 +4,26 @@ import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
+import { useQueryClient } from "react-query";
+import { useHandler } from "./../../hooks/handler";
 
 export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [handlers, setHandlers] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = endpointId === "new" ? "Create Handler" : "Edit Handler";
   const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
+
+  const queryClient = useQueryClient();
+  const _useHandler = useHandler(queryClient);
+  const getHandlers = _useHandler.getAllFromEndpoint(endpointId);
+  const deleteHandler = _useHandler.remove();
 
   React.useEffect(() => {
-    handleSetHandlers();
     handleSetDocumentation();
   }, [API]);
-
-  const handleSetHandlers = () => {
-    setShowSpinner(true);
-    API.Handler.getAllFromEndpoint(endpointId)
-      .then((res) => {
-        setHandlers(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET handler from endpoint error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("attributes")
@@ -46,22 +33,6 @@ export default function HandlersTable({ endpointId }) {
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteHandler = (id): void => {
-    setLoadingOverlay({ isLoading: true });
-    API.Handler.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted handler", type: "success" });
-        handleSetHandlers();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE handler error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -85,10 +56,16 @@ export default function HandlersTable({ endpointId }) {
               id="handlerHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetHandlers}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getHandlers.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("handlers");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getHandlers.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to={`/endpoints/${endpointId}/handlers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -102,9 +79,9 @@ export default function HandlersTable({ endpointId }) {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getHandlers.isLoading ? (
                 <Spinner />
-              ) : handlers ? (
+              ) : (
                 <Table
                   columns={[
                     {
@@ -129,7 +106,7 @@ export default function HandlersTable({ endpointId }) {
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <DeleteModal
-                              resourceDelete={() => handleDeleteHandler({ id: item.id })}
+                              resourceDelete={() => deleteHandler.mutateAsync({ id: item.id })}
                               resourceId={item.id}
                             />
                             <Link
@@ -145,21 +122,7 @@ export default function HandlersTable({ endpointId }) {
                       },
                     },
                   ]}
-                  rows={handlers}
-                />
-              ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Description",
-                      field: "description",
-                    },
-                  ]}
-                  rows={[]}
+                  rows={getHandlers.data ?? []}
                 />
               )}
             </div>

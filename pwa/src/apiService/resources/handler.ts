@@ -1,5 +1,5 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 
 export default class Handler {
   private _instance: AxiosInstance;
@@ -8,23 +8,32 @@ export default class Handler {
     this._instance = _instance;
   }
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/handlers/${id}`);
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/handlers/${id}`);
+
+    return data;
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public getAllFromEndpoint = async (endpointId: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/handlers?endpoints.id=${endpointId}`);
+
+    return data;
+  };
+
+  public createOrUpdate = async (variables: { payload: any; id: string }): Promise<any> => {
+    const { payload, id } = variables;
+
     if (id) {
-      return Send(this._instance, "PUT", `/handlers/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/handlers/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/handlers", data);
+    const { data } = await Send(this._instance, "POST", "/handlers", payload);
+    return data;
   };
 
-  public getAllFromEndpoint = (endpointId: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/handlers?endpoints.id=${endpointId}`);
-  };
-
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/handlers/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { data } = await Send(this._instance, "DELETE", `/handlers/${variables.id}`);
+    return data;
   };
 }
