@@ -4,26 +4,26 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { Modal } from "@conductionnl/nl-design-system";
 import "./welcomeModal.css";
+import { useQueryClient } from "react-query";
+import { useApplication } from "../../hooks/application";
 
 const WelcomeModal: React.FC = () => {
   const API: APIService = React.useContext(APIContext);
   const buttonRef = React.useRef(null);
 
+  const queryClient = useQueryClient();
+
+  const _useApplication = useApplication(queryClient);
+  const getApplications = _useApplication.getAll();
+
   React.useEffect(() => {
-    // Check route
     !window.location.pathname.includes("applications") && renderOptionalWelcomeModal();
-  }, [API, buttonRef]);
+  }, [API, buttonRef, getApplications.isSuccess]);
 
   const renderOptionalWelcomeModal = (): void => {
-    API.Application.getAll()
-      .then((res) => {
-        if (buttonRef.current && res.data.length === 0) {
-          buttonRef.current.click();
-        }
-      })
-      .catch((err) => {
-        throw new Error("GET applications error: " + err);
-      });
+    if (getApplications.isSuccess && getApplications.data.length === 0 && buttonRef.current) {
+      buttonRef.current.click();
+    }
   };
 
   const welcomeModalBody = (): JSX.Element => {
@@ -49,7 +49,7 @@ const WelcomeModal: React.FC = () => {
           data-bs-dismiss="modal"
           aria-label="Close"
           onClick={() => {
-            navigate("/applications");
+            navigate("/applications/new");
           }}
         >
           <button className="btn btn-success btn-block">Create an application</button>
