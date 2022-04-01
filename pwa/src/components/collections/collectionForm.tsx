@@ -39,9 +39,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   ];
 
   const queryClient = useQueryClient();
+
   const _useApplication = useApplication(queryClient);
-  const _useEndpoint = useEndpoint(queryClient);
   const getApplicationsSelect = _useApplication.getSelect();
+
+  const _useEndpoint = useEndpoint(queryClient);
   const getEndpointsSelect = _useEndpoint.getSelect();
 
   const {

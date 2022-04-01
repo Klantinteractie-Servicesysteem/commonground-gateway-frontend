@@ -5,11 +5,12 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { CreateArray, InputText, SelectMultiple, Textarea } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useApplication } from "../../hooks/application";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface ApplicationFormProps {
   applicationId?: string;
@@ -23,9 +24,13 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
   const [__, setHeader] = React.useContext(HeaderContext);
 
   const queryClient = useQueryClient();
+
   const _useApplication = useApplication(queryClient);
   const getApplication = _useApplication.getOne(applicationId);
   const createOrEditApplication = _useApplication.createOrEdit(applicationId);
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
 
   const {
     register,
@@ -46,12 +51,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
     const basicFields: string[] = ["name", "resource", "public", "secret", "description", "endpoints", "domains"];
     basicFields.forEach((field) => setValue(field, source[field]));
   };
-
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
 
   React.useEffect(() => {
     setHeader("Application");
@@ -166,11 +165,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            return getEndpointsSelectQuery.isSuccess ? (
+                            return getEndpointsSelect.isSuccess ? (
                               <SelectMultiple
                                 name="endpoints"
                                 label="Endpoints"
-                                options={getEndpointsSelectQuery.data}
+                                options={getEndpointsSelect.data}
                                 {...{ register, errors, control }}
                               />
                             ) : (

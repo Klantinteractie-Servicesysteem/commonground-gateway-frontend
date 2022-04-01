@@ -24,10 +24,11 @@ const Dashboard: React.FC = () => {
   const API: APIService = React.useContext(APIContext);
 
   const queryClient = useQueryClient();
-  const _useApplication = useApplication(queryClient);
-  const _useEndpoint = useEndpoint(queryClient);
 
+  const _useEndpoint = useEndpoint(queryClient);
   const getEndpoints = _useEndpoint.getAll();
+
+  const _useApplication = useApplication(queryClient);
   const getApplications = _useApplication.getAll();
 
   React.useEffect(() => {

@@ -17,13 +17,15 @@ const WelcomeModal: React.FC = () => {
   const getApplications = _useApplication.getAll();
 
   React.useEffect(() => {
-    !window.location.pathname.includes("applications") && renderOptionalWelcomeModal();
+    if (window.location.pathname.includes("applications")) return;
+
+    if (getApplications.isSuccess && getApplications.data.length === 0 && buttonRef.current) {
+      renderOptionalWelcomeModal();
+    }
   }, [API, buttonRef, getApplications.isSuccess]);
 
   const renderOptionalWelcomeModal = (): void => {
-    if (getApplications.isSuccess && getApplications.data.length === 0 && buttonRef.current) {
-      buttonRef.current.click();
-    }
+    buttonRef.current.click();
   };
 
   const welcomeModalBody = (): JSX.Element => {
