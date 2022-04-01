@@ -18,9 +18,9 @@ import {
   Textarea,
 } from "../formFields";
 import { ISelectValue } from "../formFields/types";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useQueryClient } from "react-query";
 import { useHandler } from "../../hooks/handler";
+import { useEntity } from "../../hooks/entity";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -28,11 +28,9 @@ interface HandlerFormProps {
 }
 
 export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
-  const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = handlerId ? "Edit Handler" : "Create Handler";
   const API: APIService = React.useContext(APIContext);
-  const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
@@ -43,9 +41,13 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   ];
 
   const queryClient = useQueryClient();
+
   const _useEndpoint = useHandler(queryClient);
   const getHandler = _useEndpoint.getOne(handlerId);
   const createOrEditHandler = _useEndpoint.createOrEdit(endpointId, handlerId);
+
+  const _useEntity = useEntity(queryClient);
+  const getEntitiesSelect = _useEntity.getSelect();
 
   const {
     register,
@@ -94,7 +96,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
   React.useEffect(() => {
     handleSetTableNames();
-    handleSetEntities();
   }, [API, handlerId]);
 
   React.useEffect(() => {
@@ -110,17 +111,6 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
       handleSetFormValues(getHandler.data);
     }
   }, [getHandler.isSuccess]);
-
-  const handleSetEntities = () => {
-    API.Entity.getAll()
-      .then((res) => {
-        setEntities(resourceArrayToSelectArray(res.data, "entities"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET entities error: " + err);
-      });
-  };
 
   const handleSetTableNames = () => {
     API.Translation.getTableNames()
@@ -207,7 +197,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                         <InputText name="template" label="Template" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <SelectSingle name="entity" label="Entity" options={entities ?? []} {...{ control, errors }} />
+                        <SelectSingle
+                          name="entity"
+                          label="Entity"
+                          options={getEntitiesSelect.data ?? []}
+                          {...{ control, errors }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
