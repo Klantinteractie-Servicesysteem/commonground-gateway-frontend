@@ -13,21 +13,28 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
+import { useApplication } from "../../hooks/application";
+import { useEndpoint } from "../../hooks/endpoint";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
-  const [applicationsCount, setApplicationsCount] = React.useState<number>(0);
   const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const API: APIService = React.useContext(APIContext);
+
+  const queryClient = useQueryClient();
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpoints = _useEndpoint.getAll();
+
+  const _useApplication = useApplication(queryClient);
+  const getApplications = _useApplication.getAll();
 
   React.useEffect(() => {
     handleSetCounts();
     handleSetLogs();
   }, [API]);
-
-  const getEndpointsQuery = useQuery<any[], Error>("endpoints", API.Endpoint.getAll);
 
   const handleSetLogs = (): void => {
     logs && setLogs(null);
@@ -52,14 +59,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSetCounts = (): void => {
-    API.Application.getAll()
-      .then((res) => {
-        setApplicationsCount(res.data.length);
-      })
-      .catch((err) => {
-        throw new Error(`GET applications error: ${err}`);
-      });
-
     API.Source.getAll()
       .then((res) => {
         setSourcesCount(res.data.length);
@@ -75,7 +74,7 @@ const Dashboard: React.FC = () => {
         <h3 className="dashboard-dividerTitle">Quick overview</h3>
         <div className="dashboard-quickOverview">
           <DashboardCard
-            amount={applicationsCount}
+            amount={getApplications.isSuccess ? getApplications.data.length : 0}
             title="Applications"
             iconBackgroundColor="6861CE"
             icon={<img src={applicationsIcon} alt="applications" />}
@@ -93,7 +92,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={getEndpointsQuery.isSuccess ? getEndpointsQuery.data.length : 0}
+            amount={getEndpoints.isSuccess ? getEndpoints.data.length : 0}
             title="Endpoints"
             iconBackgroundColor="31CE36"
             icon={<img src={endpointsIcon} alt="endpoints" />}

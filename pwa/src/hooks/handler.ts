@@ -7,42 +7,35 @@ import { LoadingOverlayContext } from "../context/loadingOverlayContext";
 import { navigate } from "gatsby-link";
 import { addItem, deleteItem, updateItem } from "../services/mutateQueries";
 
-export const useEndpoint = (queryClient: QueryClient) => {
+export const useHandler = (queryClient: QueryClient) => {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
-  const getOne = (endpointId: string) =>
-    useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
-      initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+  const getOne = (handlerId: string) =>
+    useQuery<any, Error>(["handlers", handlerId], () => API.Handler.getOne(handlerId), {
+      initialData: () => queryClient.getQueryData<any[]>("handlers")?.find((handler) => handler.id === handlerId),
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
       },
-      enabled: !!endpointId,
+      enabled: !!handlerId,
     });
 
-  const getAll = () =>
-    useQuery<any[], Error>("endpoints", API.Endpoint.getAll, {
-      onError: (error) => {
-        setAlert({ message: error.message, type: "danger" });
-      },
-    });
-
-  const getSelect = () =>
-    useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+  const getAllFromEndpoint = (handlerId: string) =>
+    useQuery<any[], Error>("handlers", () => API.Handler.getAllFromEndpoint(handlerId), {
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
       },
     });
 
   const remove = () =>
-    useMutation<any, Error, any>(API.Endpoint.delete, {
+    useMutation<any, Error, any>(API.Handler.delete, {
       onMutate: () => {
         setLoadingOverlay({ isLoading: true });
       },
       onSuccess: async (_, variables) => {
-        deleteItem(queryClient, "endpoints", variables.id);
-        setAlert({ message: "Deleted endpoint", type: "success" });
+        deleteItem(queryClient, "handlers", variables.id);
+        setAlert({ message: "Deleted handler", type: "success" });
       },
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
@@ -52,22 +45,22 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  const createOrEdit = (endpointId?: string) =>
-    useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
+  const createOrEdit = (endpointId: string, handlerId?: string) =>
+    useMutation<any, Error, any>(API.Handler.createOrUpdate, {
       onMutate: () => {
         setLoadingOverlay({ isLoading: true });
       },
-      onSuccess: async (newEndpoint) => {
-        if (endpointId) {
-          updateItem(queryClient, "endpoints", newEndpoint);
-          setAlert({ message: "Updated endpoint", type: "success" });
-          navigate("/endpoints");
+      onSuccess: async (newHandler) => {
+        if (handlerId) {
+          updateItem(queryClient, "handlers", newHandler);
+          setAlert({ message: "Updated handler", type: "success" });
+          navigate(`/endpoints/${endpointId}/handlers`);
         }
 
-        if (!endpointId) {
-          addItem(queryClient, "endpoints", newEndpoint);
-          setAlert({ message: "Created endpoint", type: "success" });
-          navigate(`/endpoints/${newEndpoint.id}`);
+        if (!handlerId) {
+          addItem(queryClient, "handlers", newHandler);
+          setAlert({ message: "Created handler", type: "success" });
+          navigate(`/endpoints/${endpointId}/handlers/${newHandler.id}`);
         }
       },
       onError: (error) => {
@@ -78,5 +71,5 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  return { getOne, getAll, getSelect, remove, createOrEdit };
+  return { getOne, getAllFromEndpoint, remove, createOrEdit };
 };

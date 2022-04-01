@@ -1,5 +1,5 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 
 export default class Subscriber {
   private _instance: AxiosInstance;
@@ -8,23 +8,31 @@ export default class Subscriber {
     this._instance = _instance;
   }
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/subscribers/${id}`);
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/subscribers/${id}`);
+
+    return data;
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public getAllFromEntity = async (entityId: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/subscribers?entity.id=${entityId}`);
+    return data;
+  };
+
+  public createOrUpdate = async (variables: { payload: any; id: string }): Promise<any> => {
+    const { payload, id } = variables;
+
     if (id) {
-      return Send(this._instance, "PUT", `/subscribers/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/subscribers/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/subscribers", data);
+    const { data } = await Send(this._instance, "POST", "/subscribers", payload);
+    return data;
   };
 
-  public getAllFromEntity = (entityId: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/subscribers?entity.id=${entityId}`);
-  };
-
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/subscribers/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { data } = await Send(this._instance, "DELETE", `/subscribers/${variables.id}`);
+    return data;
   };
 }

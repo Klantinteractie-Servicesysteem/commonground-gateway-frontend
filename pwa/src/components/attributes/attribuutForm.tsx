@@ -4,9 +4,9 @@ import { Accordion, Spinner, Card, Modal } from "@conductionnl/nl-design-system/
 import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { MIMETypes } from "../../data/mimeTypes";
 import { useForm } from "react-hook-form";
 import { ISelectValue } from "../formFields/types";
@@ -32,12 +32,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   const [attribute, setAttribute] = React.useState<any>(null);
   const [attributes, setAttributes] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = attributeId ? "Edit Attribute" : "Create Attribute";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const typeSelectOptions: ISelectValue[] = [
     { label: "String", value: "string" },
@@ -72,7 +72,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.entity = `/admin/entities/${entityId}`;
     data.type = data.type && data.type.value;
@@ -92,7 +92,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
         throw new Error(`Create or update application error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -251,7 +251,6 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />

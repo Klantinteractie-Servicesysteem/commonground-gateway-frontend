@@ -4,9 +4,9 @@ import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useForm } from "react-hook-form";
 import { InputText, InputCheckbox, SelectSingle, Textarea } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
@@ -19,12 +19,12 @@ interface EntityFormProps {
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [sources, setSources] = React.useState<any>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = entityId ? "Edit Object type" : "Create Object type";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const functionSelectOptions: ISelectValue[] = [
     { label: "Organization", value: "organization" },
@@ -47,7 +47,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.function = data.function && data.function.value;
     data.gateway = data.gateway && data.gateway.value;
@@ -62,7 +62,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
         throw new Error("Create or update entity error: " + err);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -156,7 +156,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />

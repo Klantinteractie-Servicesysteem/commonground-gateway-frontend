@@ -1,5 +1,6 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 export default class Application {
   private _instance: AxiosInstance;
@@ -8,23 +9,37 @@ export default class Application {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", "/applications");
+  public getAll = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/applications");
+    return data;
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/applications/${id}`);
+  public getSelect = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/applications");
+
+    return resourceArrayToSelectArray(data, "applications");
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/applications/${id}`);
+    return data;
+  };
+
+  public createOrUpdate = async (variables: { payload: any; id: string }): Promise<any> => {
+    const { payload, id } = variables;
     if (id) {
-      return Send(this._instance, "PUT", `/applications/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/applications/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/applications", data);
+    const { data } = await Send(this._instance, "POST", "/applications", payload);
+    return data;
   };
 
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/applications/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { id } = variables;
+
+    const { data } = await Send(this._instance, "DELETE", `/applications/${id}`);
+    return data;
   };
 }

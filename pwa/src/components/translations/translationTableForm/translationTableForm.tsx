@@ -1,11 +1,11 @@
 import * as React from "react";
 import "./translationTableForm.css";
-import { GenericInputComponent, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
+import { Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
-import LoadingOverlay from "../../loadingOverlay/loadingOverlay";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { AlertContext } from "../../../context/alertContext";
+import { LoadingOverlayContext } from "../../../context/loadingOverlayContext";
 import { TranslationFormFields } from "../translationForm";
 
 import { useForm } from "react-hook-form";
@@ -17,11 +17,11 @@ interface TranslationTableFormProps {
 
 export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = "Create table";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const {
     register,
@@ -31,7 +31,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.language = data.language && data.language.value;
 
@@ -45,7 +45,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
       })
       .finally(() => {
         setShowSpinner(false);
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
         navigate("/translation-tables");
       });
   };
@@ -108,7 +108,6 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                     <Spinner />
                   ) : (
                     <>
-                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="col-12">
                           <div className="form-group">

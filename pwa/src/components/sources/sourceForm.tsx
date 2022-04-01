@@ -4,9 +4,9 @@ import { Accordion, Card, Spinner, Modal } from "@conductionnl/nl-design-system/
 import APIService from "../../apiService/apiService";
 import { navigate } from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useForm } from "react-hook-form";
 import { ISelectValue } from "../formFields/types";
 import { CreateArray, CreateKeyValue, InputText, SelectSingle, InputUrl } from "../formFields";
@@ -17,12 +17,12 @@ interface SourceFormProps {
 
 export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   const [showSpinner, setShowSpinner] = React.useState(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const typeSelectOptions: ISelectValue[] = [
     { label: "JSON", value: "json" },
@@ -55,7 +55,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   }, [sourceId, API, setHeader]);
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.type = data.type && data.type.value;
     data.auth = data.auth && data.auth.value;
@@ -70,7 +70,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
         throw new Error("Create or update source error: " + err);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -180,7 +180,6 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                   <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} />
@@ -269,7 +268,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="headers"
                               label="Headers"
                               data={getValues("headers")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },
@@ -277,12 +276,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           title: "OAS",
                           id: "oasAccordion",
                           render: () => (
-                            <CreateArray
-                              name="oas"
-                              label="OAS"
-                              data={getValues("oas")}
-                              {...{ register, control, errors }}
-                            />
+                            <CreateArray name="oas" label="OAS" data={getValues("oas")} {...{ control, errors }} />
                           ),
                         },
                         {
@@ -293,7 +287,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="paths"
                               label="Paths"
                               data={getValues("paths")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },
