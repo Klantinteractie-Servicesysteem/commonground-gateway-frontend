@@ -40,7 +40,7 @@ export default class APIService {
     return axios.create({
       baseURL: window.GATSBY_API_URL,
       headers: {
-        Accept: "application/form.io",
+        Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + this._jwtToken,
       },
