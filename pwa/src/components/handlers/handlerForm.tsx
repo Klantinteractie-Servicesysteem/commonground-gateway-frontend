@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import { Accordion, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import { AlertContext } from "../../context/alertContext";
@@ -20,6 +19,8 @@ import {
 } from "../formFields";
 import { ISelectValue } from "../formFields/types";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useQueryClient } from "react-query";
+import { useHandler } from "../../hooks/handler";
 
 interface HandlerFormProps {
   handlerId: string;
@@ -27,7 +28,6 @@ interface HandlerFormProps {
 }
 
 export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [entities, setEntities] = React.useState(null);
   const [tableNames, setTableNames] = React.useState<Array<any>>(null);
   const title: string = handlerId ? "Edit Handler" : "Create Handler";
@@ -41,6 +41,11 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     { label: "Markdown", value: "markdown" },
     { label: "Restructured Text", value: "restructuredText" },
   ];
+
+  const queryClient = useQueryClient();
+  const _useEndpoint = useHandler(queryClient);
+  const getHandler = _useEndpoint.getOne(handlerId);
+  const createOrEditHandler = _useEndpoint.createOrEdit(endpointId, handlerId);
 
   const {
     register,
@@ -60,18 +65,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     data.translationIn = data.translationIn && data.translationIn;
     data.translationOut = data.translationOut && data.translationOut;
 
-    API.Handler.createOrUpdate(data, handlerId)
-      .then(() => {
-        setAlert({ message: `${handlerId ? "Updated" : "Created"} Handler`, type: "success" });
-        navigate(`/endpoints/${endpointId}/handlers`);
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update handler error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditHandler.mutate({ payload: data, id: handlerId });
   };
 
   const handleSetFormValues = (handler): void => {
@@ -99,35 +93,23 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
   };
 
   React.useEffect(() => {
-    setHeader("Create Handler");
     handleSetTableNames();
-    handlerId && handleSetHandler();
     handleSetEntities();
   }, [API, handlerId]);
 
-  const handleSetHandler = () => {
-    setShowSpinner(true);
+  React.useEffect(() => {
+    setHeader("Handler");
 
-    API.Handler.getOne(handlerId)
-      .then((res) => {
-        const handler = res.data;
+    if (getHandler.isSuccess) {
+      setHeader(
+        <>
+          Handler: <i>{getHandler.data.name}</i>
+        </>,
+      );
 
-        setHeader(
-          <>
-            Handler <i>{handler && handler.name}</i>
-          </>,
-        );
-
-        handleSetFormValues(handler);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET handler error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+      handleSetFormValues(getHandler.data);
+    }
+  }, [getHandler.isSuccess]);
 
   const handleSetEntities = () => {
     API.Entity.getAll()
@@ -189,7 +171,7 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner ? (
+                {getHandler.isLoading ? (
                   <Spinner />
                 ) : (
                   <>
