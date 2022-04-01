@@ -61,14 +61,14 @@ export const useEndpoint = (queryClient: QueryClient) => {
         if (endpointId) {
           updateItem(queryClient, "endpoints", newEndpoint);
           setAlert({ message: "Updated endpoint", type: "success" });
+          navigate("/endpoints");
         }
 
         if (!endpointId) {
           addItem(queryClient, "endpoints", newEndpoint);
           setAlert({ message: "Created endpoint", type: "success" });
+          navigate(`/endpoints/${newEndpoint.id}`);
         }
-
-        navigate("/endpoints");
       },
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
