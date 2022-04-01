@@ -8,16 +8,15 @@ import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { InputText, Textarea, SelectMultiple, SelectSingle, CreateArray } from "../formFields";
 import { useQueryClient } from "react-query";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { ISelectValue } from "../formFields/types";
 import { useEndpoint } from "../../hooks/endpoint";
+import { useApplication } from "../../hooks/application";
 
 interface EndpointFormProps {
   endpointId: string;
 }
 
 export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
-  const [applications, setApplications] = React.useState<any>(null);
   const title: string = endpointId ? "Edit Endpoint" : "Create Endpoint";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -30,9 +29,13 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
   ];
 
   const queryClient = useQueryClient();
+
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpoint = _useEndpoint.getOne(endpointId);
   const createOrEditEndpoint = _useEndpoint.createOrEdit(endpointId);
+
+  const _useApplication = useApplication(queryClient);
+  const getApplications = _useApplication.getSelect();
 
   const {
     register,
@@ -73,21 +76,6 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
       handleSetFormValues(getEndpoint.data);
     }
   }, [getEndpoint.isSuccess]);
-
-  React.useEffect(() => {
-    handleSetApplications();
-  }, [API]);
-
-  const handleSetApplications = () => {
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(resourceArrayToSelectArray(res.data, "applications"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET application error: " + err);
-      });
-  };
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("endpoints")
@@ -181,11 +169,11 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                           title: "Applications*",
                           id: "applicationsAccordion",
                           render: () =>
-                            applications ? (
+                            getApplications.isSuccess ? (
                               <SelectMultiple
                                 label="Applications"
                                 name="applications"
-                                options={applications}
+                                options={getApplications.data ?? []}
                                 validation={{ required: true }}
                                 {...{ control, register, errors }}
                               />
