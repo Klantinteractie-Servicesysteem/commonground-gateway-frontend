@@ -42,9 +42,9 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
 
   const queryClient = useQueryClient();
 
-  const _useEndpoint = useHandler(queryClient);
-  const getHandler = _useEndpoint.getOne(handlerId);
-  const createOrEditHandler = _useEndpoint.createOrEdit(endpointId, handlerId);
+  const _useHandler = useHandler(queryClient);
+  const getHandler = _useHandler.getOne(handlerId);
+  const createOrEditHandler = _useHandler.createOrEdit(endpointId, handlerId);
 
   const _useEntity = useEntity(queryClient);
   const getEntitiesSelect = _useEntity.getSelect();

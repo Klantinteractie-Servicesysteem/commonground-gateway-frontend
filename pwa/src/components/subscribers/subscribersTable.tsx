@@ -1,57 +1,20 @@
 import * as React from "react";
 import { Table, Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import { AlertContext } from "../../context/alertContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 import DeleteModal from "../deleteModal/DeleteModal";
+import { useQueryClient } from "react-query";
+import { useSubscriber } from "../../hooks/subscriber";
 
 export default function SubscribersTable({ entityId }) {
-  const [subscribers, setSubscribers] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext);
-  const [_, setAlert] = React.useContext(AlertContext);
-  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const title: string = entityId === "new" ? "Create Subscriber" : "Edit Subscriber";
 
-  React.useEffect(() => {
-    handleSetSubscribers();
-  }, [API]);
-
-  const handleSetSubscribers = () => {
-    setShowSpinner(true);
-    API.Subscriber.getAllFromEntity(entityId)
-      .then((res) => {
-        setSubscribers(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Subscribers error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
-  const handleDeleteSubscriber = (id): void => {
-    setLoadingOverlay({ isLoading: true });
-    API.Subscriber.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted subscriber", type: "success" });
-        handleSetSubscribers();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE Subscriber error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
-  };
+  const queryClient = useQueryClient();
+  const _useSubscriber = useSubscriber(queryClient);
+  const getSubscribers = _useSubscriber.getAllFromEntity(entityId);
+  const deleteSubscriber = _useSubscriber.remove();
 
   return (
     <Card
@@ -59,10 +22,16 @@ export default function SubscribersTable({ entityId }) {
       cardHeader={function () {
         return (
           <>
-            <a className="utrecht-link" onClick={handleSetSubscribers}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getSubscribers.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("handlers");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getSubscribers.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to={`/entities/${entityId}/subscribers/new`}>
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -76,9 +45,9 @@ export default function SubscribersTable({ entityId }) {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getSubscribers.isLoading ? (
                 <Spinner />
-              ) : subscribers ? (
+              ) : (
                 <Table
                   columns={[
                     {
@@ -113,7 +82,7 @@ export default function SubscribersTable({ entityId }) {
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <DeleteModal
-                              resourceDelete={() => handleDeleteSubscriber({ id: item.id })}
+                              resourceDelete={() => deleteSubscriber.mutateAsync({ id: item.id })}
                               resourceId={item.id}
                             />
                             <Link
@@ -129,25 +98,7 @@ export default function SubscribersTable({ entityId }) {
                       },
                     },
                   ]}
-                  rows={subscribers}
-                />
-              ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Method",
-                      field: "method",
-                    },
-                    {
-                      headerName: "Endpoint",
-                      field: "endpoint",
-                    },
-                  ]}
-                  rows={[{ name: "No results found" }]}
+                  rows={getSubscribers.data ?? []}
                 />
               )}
             </div>

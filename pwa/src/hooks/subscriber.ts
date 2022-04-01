@@ -7,42 +7,36 @@ import { LoadingOverlayContext } from "../context/loadingOverlayContext";
 import { navigate } from "gatsby-link";
 import { addItem, deleteItem, updateItem } from "../services/mutateQueries";
 
-export const useEndpoint = (queryClient: QueryClient) => {
+export const useSubscriber = (queryClient: QueryClient) => {
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
-  const getOne = (endpointId: string) =>
-    useQuery<any, Error>(["endpoints", endpointId], () => API.Endpoint.getOne(endpointId), {
-      initialData: () => queryClient.getQueryData<any[]>("endpoints")?.find((endpoint) => endpoint.id === endpointId),
+  const getOne = (subscriberId: string) =>
+    useQuery<any, Error>(["subscribers", subscriberId], () => API.Subscriber.getOne(subscriberId), {
+      initialData: () =>
+        queryClient.getQueryData<any[]>("subscribers")?.find((subscriber) => subscriber.id === subscriberId),
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
       },
-      enabled: !!endpointId,
+      enabled: !!subscriberId,
     });
 
-  const getAll = () =>
-    useQuery<any[], Error>("endpoints", API.Endpoint.getAll, {
-      onError: (error) => {
-        setAlert({ message: error.message, type: "danger" });
-      },
-    });
-
-  const getSelect = () =>
-    useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+  const getAllFromEntity = (entityId: string) =>
+    useQuery<any[], Error>("subscribers", () => API.Subscriber.getAllFromEntity(entityId), {
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
       },
     });
 
   const remove = () =>
-    useMutation<any, Error, any>(API.Endpoint.delete, {
+    useMutation<any, Error, any>(API.Subscriber.delete, {
       onMutate: () => {
         setLoadingOverlay({ isLoading: true });
       },
       onSuccess: async (_, variables) => {
-        deleteItem(queryClient, "endpoints", variables.id);
-        setAlert({ message: "Deleted endpoint", type: "success" });
+        deleteItem(queryClient, "subscribers", variables.id);
+        setAlert({ message: "Deleted subscriber", type: "success" });
       },
       onError: (error) => {
         setAlert({ message: error.message, type: "danger" });
@@ -52,22 +46,24 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  const createOrEdit = (endpointId?: string) =>
-    useMutation<any, Error, any>(API.Endpoint.createOrUpdate, {
+  const createOrEdit = (entityId: string, subscriberId?: string) =>
+    useMutation<any, Error, any>(API.Subscriber.createOrUpdate, {
       onMutate: () => {
         setLoadingOverlay({ isLoading: true });
       },
-      onSuccess: async (newEndpoint) => {
-        if (endpointId) {
-          updateItem(queryClient, "endpoints", newEndpoint);
-          setAlert({ message: "Updated endpoint", type: "success" });
-          navigate("/endpoints");
+      onSuccess: async (newSubscriber) => {
+        if (subscriberId) {
+          updateItem(queryClient, "subscribers", newSubscriber);
+          setAlert({ message: "Updated subscriber", type: "success" });
+          navigate(`/entities/${entityId}`, {
+            state: { activeTab: "subscribers" },
+          });
         }
 
-        if (!endpointId) {
-          addItem(queryClient, "endpoints", newEndpoint);
-          setAlert({ message: "Created endpoint", type: "success" });
-          navigate(`/endpoints/${newEndpoint.id}`);
+        if (!subscriberId) {
+          addItem(queryClient, "subscribers", newSubscriber);
+          setAlert({ message: "Created subscriber", type: "success" });
+          navigate(`/entities/${entityId}/subscribers/${newSubscriber.id}`);
         }
       },
       onError: (error) => {
@@ -78,5 +74,5 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  return { getOne, getAll, getSelect, remove, createOrEdit };
+  return { getOne, getAllFromEntity, remove, createOrEdit };
 };
