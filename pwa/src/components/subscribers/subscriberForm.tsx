@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import { Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
@@ -9,7 +8,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { validateJSON } from "../../services/validateJSON";
 import { ISelectValue } from "../formFields/types";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import {
   Textarea,
@@ -22,6 +21,7 @@ import {
 } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useSubscriber } from "../../hooks/subscriber";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -57,11 +57,8 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const getSubscriber = _useSubscriber.getOne(subscriberId);
   const createOrEditSubscriber = _useSubscriber.createOrEdit(entityId, subscriberId);
 
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
 
   React.useEffect(() => {
     setHeader("Subscriber");
@@ -86,9 +83,9 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
 
   React.useEffect(() => {
     setShowSpinner(
-      !sources || !getEndpointsSelectQuery.isSuccess || tableNames === null || (subscriberId && !subscriber),
+      !sources || !getEndpointsSelect.isSuccess || tableNames === null || (subscriberId && !getSubscriber.isSuccess),
     );
-  }, [subscriber, sources, getEndpointsSelectQuery.isSuccess, tableNames, subscriberId]);
+  }, [subscriber, sources, getEndpointsSelect.isSuccess, tableNames, subscriberId]);
 
   const handleSetSources = () => {
     API.Source.getAll()
@@ -192,7 +189,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
           return (
             <div className="row">
               <div className="col-12">
-                {getSubscriber.isLoading ? (
+                {getSubscriber.isLoading || showSpinner ? (
                   <Spinner />
                 ) : (
                   <div>
@@ -248,7 +245,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <SelectSingle
-                          options={getEndpointsSelectQuery.data ?? []}
+                          options={getEndpointsSelect.data ?? []}
                           name="endpoint"
                           label="Endpoint"
                           {...{ control, errors }}
