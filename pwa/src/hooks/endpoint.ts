@@ -28,6 +28,13 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
+  const getSelect = () =>
+    useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
+      onError: (error) => {
+        setAlert({ message: error.message, type: "danger" });
+      },
+    });
+
   const remove = () =>
     useMutation<any, Error, any>(API.Endpoint.delete, {
       onMutate: () => {
@@ -71,5 +78,5 @@ export const useEndpoint = (queryClient: QueryClient) => {
       },
     });
 
-  return { getOne, getAll, remove, createOrEdit };
+  return { getOne, getAll, getSelect, remove, createOrEdit };
 };
