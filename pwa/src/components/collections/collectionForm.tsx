@@ -8,11 +8,13 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
-import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
 import { ISelectValue } from "../formFields/types";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useApplication } from "../../hooks/application";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -22,7 +24,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [collection, setCollection] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [applications, setApplications] = React.useState<any>(null);
   const [entities, setEntities] = React.useState<any>(null);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
   const API: APIService = React.useContext(APIContext);
@@ -36,6 +37,14 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
     { label: "URL", value: "url" },
     { label: "GitHub", value: "GitHub" },
   ];
+
+  const queryClient = useQueryClient();
+
+  const _useApplication = useApplication(queryClient);
+  const getApplicationsSelect = _useApplication.getSelect();
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
 
   const {
     register,
@@ -95,12 +104,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
     setSelectedSourceType(sourceType?.value);
   }, [watch("sourceType")]);
 
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
-
   React.useEffect(() => {
     setHeader(
       <>
@@ -111,7 +114,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
 
   React.useEffect(() => {
     handleSetSources();
-    handleSetApplications();
     handleSetEntities();
     collectionId && handleSetCollection();
   }, [API, collectionId]);
@@ -147,17 +149,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
-      });
-  };
-
-  const handleSetApplications = () => {
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(resourceArrayToSelectArray(res.data, "applications"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET application error: " + err);
       });
   };
 
@@ -270,11 +261,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Applications",
                           id: "applicationsAccordion",
                           render: () =>
-                            applications ? (
+                            getApplicationsSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Applications"
                                 name="applications"
-                                options={applications}
+                                options={getApplicationsSelect.data ?? []}
                                 {...{ control, register, errors }}
                               />
                             ) : (
@@ -285,11 +276,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: () =>
-                            getEndpointsSelectQuery.isSuccess ? (
+                            getEndpointsSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Endpoints"
                                 name="endpoints"
-                                options={getEndpointsSelectQuery.data}
+                                options={getEndpointsSelect.data}
                                 {...{ control, register, errors }}
                               />
                             ) : (

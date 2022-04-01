@@ -1,29 +1,36 @@
 import * as React from "react";
 import { Spinner, Card, Accordion, Modal } from "@conductionnl/nl-design-system/lib";
 import { Link } from "gatsby";
-import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { HeaderContext } from "../../context/headerContext";
 import { AlertContext } from "../../context/alertContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
-import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { CreateArray, InputText, SelectMultiple, Textarea } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useApplication } from "../../hooks/application";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface ApplicationFormProps {
   applicationId?: string;
 }
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = applicationId ? "Edit Application" : "Create Application";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
+
+  const queryClient = useQueryClient();
+
+  const _useApplication = useApplication(queryClient);
+  const getApplication = _useApplication.getOne(applicationId);
+  const createOrEditApplication = _useApplication.createOrEdit(applicationId);
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
 
   const {
     register,
@@ -35,22 +42,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay({ isLoading: true });
-
     data.endpoints = data.endpoints?.map((endpoint) => endpoint.value);
 
-    API.Application.createOrUpdate(data, applicationId)
-      .then(() => {
-        setAlert({ message: `${applicationId ? "Updated" : "Created"} application`, type: "success" });
-        navigate("/applications");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update application error ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditApplication.mutate({ payload: data, id: applicationId });
   };
 
   const handleSetFormValues = (source): void => {
@@ -58,41 +52,22 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
     basicFields.forEach((field) => setValue(field, source[field]));
   };
 
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
-
   React.useEffect(() => {
     setHeader("Application");
-    applicationId && handleSetApplication();
-  }, [API, applicationId]);
 
-  const handleSetApplication = () => {
-    setShowSpinner(true);
+    if (getApplication.isSuccess) {
+      const application = getApplication.data;
 
-    API.Application.getOne(applicationId)
-      .then((res) => {
-        const application = res.data;
+      setHeader(
+        <>
+          Application: <i>{application.name}</i>
+        </>,
+      );
 
-        setHeader(
-          <>
-            Application <i>{application.name}</i>
-          </>,
-        );
-
-        application.endpoints = resourceArrayToSelectArray(application.endpoints, "endpoints");
-        handleSetFormValues(application);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET application error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+      application.endpoints = resourceArrayToSelectArray(application.endpoints, "endpoints");
+      handleSetFormValues(application);
+    }
+  }, [getApplication.isSuccess]);
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("applications")
@@ -116,7 +91,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#applicationHelpModal"
-                onClick={(e) => e.preventDefault()}
+                type="button"
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -143,7 +118,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getApplication.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
@@ -190,11 +165,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: function () {
-                            return getEndpointsSelectQuery.isSuccess ? (
+                            return getEndpointsSelect.isSuccess ? (
                               <SelectMultiple
                                 name="endpoints"
                                 label="Endpoints"
-                                options={getEndpointsSelectQuery.data}
+                                options={getEndpointsSelect.data}
                                 {...{ register, errors, control }}
                               />
                             ) : (
