@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import { Accordion, Spinner, Card } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
@@ -9,7 +8,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { validateJSON } from "../../services/validateJSON";
 import { ISelectValue } from "../formFields/types";
-import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import {
   Textarea,
@@ -21,6 +20,8 @@ import {
   InputCheckbox,
 } from "../formFields";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useSubscriber } from "../../hooks/subscriber";
+import { useEndpoint } from "../../hooks/endpoint";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -50,51 +51,41 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     { label: "PATCH", value: "PATCH" },
   ];
 
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
+  const queryClient = useQueryClient();
+
+  const _useSubscriber = useSubscriber(queryClient);
+  const getSubscriber = _useSubscriber.getOne(subscriberId);
+  const createOrEditSubscriber = _useSubscriber.createOrEdit(entityId, subscriberId);
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
 
   React.useEffect(() => {
-    setHeader(
-      <>
-        Subscriber <i>{subscriber && subscriber.name}</i>
-      </>,
-    );
-  }, [setHeader, subscriber]);
+    setHeader("Subscriber");
+
+    if (getSubscriber.isSuccess) {
+      const subscriber = getSubscriber.data;
+
+      setHeader(
+        <>
+          Subscriber: <i>{subscriber.name}</i>
+        </>,
+      );
+
+      handleSetFormValues(subscriber);
+    }
+  }, [getSubscriber.isSuccess]);
 
   React.useEffect(() => {
-    subscriberId && handleSetSubscriber();
     handleSetSources();
     handleSetTableNames();
   }, [API, subscriberId]);
 
   React.useEffect(() => {
     setShowSpinner(
-      !sources || !getEndpointsSelectQuery.isSuccess || tableNames === null || (subscriberId && !subscriber),
+      !sources || !getEndpointsSelect.isSuccess || tableNames === null || (subscriberId && !getSubscriber.isSuccess),
     );
-  }, [subscriber, sources, getEndpointsSelectQuery.isSuccess, tableNames, subscriberId]);
-
-  const handleSetSubscriber = () => {
-    API.Subscriber.getOne(subscriberId)
-      .then((res) => {
-        const subscriber = res.data;
-        setHeader(
-          <>
-            Subscriber <i>{subscriber && subscriber.name}</i>
-          </>,
-        );
-
-        setSubscriber(subscriber);
-
-        handleSetFormValues(subscriber);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error(`GET subscriber error: ${err}`);
-      });
-  };
+  }, [subscriber, sources, getEndpointsSelect.isSuccess, tableNames, subscriberId]);
 
   const handleSetSources = () => {
     API.Source.getAll()
@@ -129,20 +120,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
     data.gateway = data.gateway && data.gateway.value;
     data.endpoint = data.endpoint && data.endpoint.value;
 
-    API.Subscriber.createOrUpdate(data, subscriberId)
-      .then(() => {
-        setAlert({ type: "success", message: `${subscriberId ? "Updated" : "Created"} subscriber` });
-        navigate(`/entities/${entityId}`, {
-          state: { activeTab: "subscribers" },
-        });
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update subscriber error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditSubscriber.mutate({ payload: data, id: subscriberId });
   };
 
   const {
@@ -211,7 +189,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getSubscriber.isLoading || showSpinner ? (
                   <Spinner />
                 ) : (
                   <div>
@@ -267,7 +245,7 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                       </div>
                       <div className="col-6">
                         <SelectSingle
-                          options={getEndpointsSelectQuery.data ?? []}
+                          options={getEndpointsSelect.data ?? []}
                           name="endpoint"
                           label="Endpoint"
                           {...{ control, errors }}
