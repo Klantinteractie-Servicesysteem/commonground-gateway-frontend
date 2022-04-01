@@ -15,6 +15,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   const API: APIService = React.useContext(APIContext);
   const [entity, setEntity] = React.useState(null);
   const [object, setObject] = React.useState(null);
+  const [objectAPI, setObjectAPI] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
@@ -23,11 +24,12 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   React.useEffect(() => {
     getEntity();
-    objectId && getObject();
+    // objectId && getObject();
   }, [API]);
   React.useEffect(() => {
     entity && getFormIOSchema();
-  }, [entity, object]);
+    // entity && getObjectAPI();
+  }, [entity]);
 
   React.useEffect(() => {
     if ((!entity || !formIO) && !showSpinner) {
@@ -46,25 +48,57 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     });
   }, [formIOSchema]);
 
-  const getObject = () => {
-    setObject(null);
-    let id: string;
-    objectId ? (id = objectId) : (id = null);
-    !id && object && object.id && (id = object.id);
+  // const getObject = () => {
+  //   setObject(null);
+  //   let id: string;
+  //   objectId ? (id = objectId) : (id = null);
+  //   !id && object && object.id && (id = object.id);
 
-    if (id) {
-      API.ObjectEntity.getOne(id)
-        .then((res) => {
-          setObject(res.data);
-        })
-        .catch((err) => {
-          throw new Error("GET objectEntity error: " + err);
-        })
-        .finally(() => {
-          setShowSpinner(false);
-        });
-    }
-  };
+  //   if (id) {
+  //     API.ObjectEntity.getOne(id)
+  //       .then((res) => {
+  //         console.log(res.data.objectValues[0]);
+  //         setObject(res.data);
+  //       })
+  //       .catch((err) => {
+  //         throw new Error("GET objectEntity error: " + err);
+  //       })
+  //       .finally(() => {
+  //         setShowSpinner(false);
+  //       });
+  //   }
+  // };
+
+  // const getObjectAPI = () => {
+  //   setObjectAPI(null);
+  //   let id: string;
+  //   objectId ? (id = objectId) : (id = null);
+  //   !id && object && object.id && (id = object.id);
+
+  //   console.log(entity.handlers[0].endpoints[0].path.join("/") + id);
+  //   let endpointForCall;
+  //   entity.handlers[0].endpoints.forEach((key, endpoint) => {
+  //     if (endpoint.operationType === "collection" && (endpoint.method === "GET" || endpoint.method === "get")) {
+  //       endpointForCall = endpoint;
+  //     }
+  //   });
+
+  //   let url = "weer";
+
+  //   if (id) {
+  //     API.ApiCalls.getOne(url, id)
+  //       .then((res) => {
+  //         console.log(res);
+  //         setObjectAPI(res);
+  //       })
+  //       .catch((err) => {
+  //         throw new Error("GET objectAPI error: " + err);
+  //       })
+  //       .finally(() => {
+  //         setShowSpinner(false);
+  //       });
+  //   }
+  // };
 
   const getEntity = () => {
     setEntity(null);
@@ -78,54 +112,86 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   };
 
   const getFormIOSchema = () => {
+    if (formIOSchema) return;
     setFormIOSchema(null);
-    API.FormIO.getSchema(entity.endpoint)
+    let schemaUrl;
+    let endpointForCall;
+    entity.handlers[0].endpoints.forEach((key, endpoint) => {
+      if (endpoint.operationType === "collection" && (endpoint.method === "GET" || endpoint.method === "get")) {
+        endpointForCall = endpoint;
+      }
+    });
+    // schemaUrl = endpointForCall.path.join("/") + (objectId ? "/" + objectId : "");
+    schemaUrl = "weer/" + objectId;
+    API.FormIO.getSchema(schemaUrl)
       .then((res) => {
-        setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
+        console.log(res.data);
+        setFormIOSchema(res.data);
       })
       .catch((err) => {
         throw new Error("GET form.io schema error: " + err);
       });
   };
 
-  const fillFormIOSchema = (schema: any) => {
-    let schemaWithData = schema;
-    let filledAttributes = [];
-    for (let i = 0; i < schemaWithData.components.length; i++) {
-      // Fill advanced configuration fields
-      if (schemaWithData.components[i].key === "advancedConfiguration") {
-        filledAttributes.push(schemaWithData.components[i].key);
-        for (let k = 0; k < schemaWithData.components[i].components.length; k++) {
-          // if (schemaWithData.components[i].components[k])
-          // schemaWithData.components[i].components[k]
-        }
-        continue;
-      }
-      for (let j = 0; j < object?.objectValues?.length; j++) {
-        if (filledAttributes.includes(object.objectValues[j]?.attribute.name)) {
-          continue;
-        }
-
-        if (schemaWithData.components[i].key === object.objectValues[j]?.attribute.name) {
-          let type = object.objectValues[i].attribute.type;
-          schemaWithData.components[i].defaultValue = object.objectValues[i][`${type}Value`];
-          filledAttributes.push(schemaWithData.components[i].key);
-          break;
-        }
-      }
-    }
-    console.log(schemaWithData);
-    return schemaWithData;
-  };
+  // const fillFormIOSchema = (schema: any) => {
+  //   let schemaWithData = schema;
+  //   let filledAttributes = [];
+  //   const advConfigData = {
+  //     "@application": object.application ? `/admin/applications/${object.application.id}` : null,
+  //     "@organization": object.organization ?? null,
+  //     "@owner": object.owner ?? null,
+  //   };
+  //   for (let i = 0; i < schemaWithData.components.length; i++) {
+  //     // Set advanced configuration defaultValues
+  //     if (schemaWithData.components[i].key === "advancedConfiguration") {
+  //       filledAttributes.push(schemaWithData.components[i].key);
+  //       for (let k = 0; k < schemaWithData.components[i].components.length; k++) {
+  //         if (filledAttributes.includes(schemaWithData.components[i].components[k].key)) {
+  //           continue;
+  //         }
+  //         if (advConfigData[schemaWithData.components[i].components[k].key]) {
+  //           schemaWithData.components[i].components[k].defaultValue =
+  //             advConfigData[schemaWithData.components[i].components[k].key];
+  //           continue;
+  //         }
+  //       }
+  //     }
+  //     // Set defaultValues other attributes
+  //     for (let j = 0; j < object?.objectValues?.length; j++) {
+  //       if (filledAttributes.includes(object?.objectValues[j]?.attribute.name)) {
+  //         continue;
+  //       }
+  //       // Fill entity attributes
+  //       if (
+  //         schemaWithData.components[i].type === "panel" &&
+  //         schemaWithData.components[i].key !== "advancedConfiguration"
+  //       ) {
+  //         schemaWithData.components[i].components.forEach((component, key) => {
+  //           console.log(component.key);
+  //         });
+  //       }
+  //       // Fill normal attribute
+  //       if (schemaWithData.components[i].key === object.objectValues[j]?.attribute.name) {
+  //         let type = object.objectValues[j]?.attribute.type;
+  //         schemaWithData.components[i].defaultValue = object.objectValues[j][`${type}Value`];
+  //         filledAttributes.push(schemaWithData.components[i].key);
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   return schemaWithData;
+  // };
 
   const saveObject = (event) => {
+    // console.log(event);
+    // return;
     setShowSpinner(true);
     setObject(null);
     let body = event.data;
     body.submit = undefined;
 
     if (!objectId) {
-      API.ApiCalls.createObject(entity?.endpoint, body)
+      API.ApiCalls.createObject(entity?.handlers[0].endpoints[0].path.join("/"), body)
         .then(() => {
           navigate(`/entities/${entityId}`, { state: { activeTab: "objects" } });
         })
@@ -134,7 +200,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         });
     }
     if (objectId) {
-      API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
+      API.ApiCalls.updateObject(entity?.handlers[0].endpoints[0].path.join("/"), objectId, body)
         .then((res) => {
           setObject(res);
         })
@@ -143,7 +209,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         })
         .finally(() => {
           setAlert({ message: "Saved object", type: "success" });
-          getObject();
+          // getObject();
         });
     }
   };
@@ -157,15 +223,15 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
             <button
               className="utrecht-link button-no-style"
               data-bs-toggle="modal"
-              data-bs-target="#handlerHelpModal"
+              data-bs-target="#objectEntityHelpModal"
               onClick={(e) => e.preventDefault()}
             >
               <i className="fas fa-question mr-1" />
               <span className="mr-2">Help</span>
             </button>
             <Modal
-              title="Handler Documentation"
-              id="handlerHelpModal"
+              title="ObjectEntity Documentation"
+              id="objectEntityHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: "" }} />}
             />
             <Link className="utrecht-link" to={`/entities/${entityId}`} state={{ activeTab: "objects" }}>
@@ -180,79 +246,37 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       cardBody={function () {
         return (
           <>
-            {showSpinner && <Spinner />}
-            {!showSpinner && formIO && formIO}
-            {!showSpinner && object && (
-              <Accordion
-                id="advancedConfigurationAccordion"
-                items={[
-                  {
-                    title: "Advanced configuration",
-                    id: "advConfigAccordion",
-                    render: function () {
-                      return (
-                        <>
-                          <table className="mt-3 configurationTable-table">
-                            <tr key="URI">
-                              <th>URI</th>
-                              <td>{object?.uri ?? "No URI found"}</td>
-                            </tr>
-                            <tr key="ExternalID">
-                              <th>External ID</th>
-                              <td>{object.externalId ?? "No external ID found"}</td>
-                            </tr>
-                            <tr key="Application">
-                              <th>Application</th>
-                              <td>
-                                {object.application ? (
-                                  <Link to={`/applications/${object.application.id}`}>{object.application.name}</Link>
-                                ) : (
-                                  "No application found"
-                                )}
-                              </td>
-                            </tr>
-                            <tr key="Organization">
-                              <th>Organization</th>
-                              <td>{object.organization ?? "No organization found"}</td>
-                            </tr>
-                            <tr key="Owner">
-                              <th>Owner</th>
-                              <td>{object.owner ?? "No owner found"}</td>
-                            </tr>
-                          </table>
-
-                          <Accordion
-                            id="objectAccordion"
-                            items={[
-                              {
-                                title: "Errors",
-                                id: "errorsAccordion",
-                                render: function () {
-                                  return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                                },
-                              },
-                              {
-                                title: "Promises",
-                                id: "promisesAccordion",
-                                render: function () {
-                                  return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                                },
-                              },
-                              {
-                                title: "External Result",
-                                id: "externalResultAccordion",
-                                render: function () {
-                                  return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                                },
-                              },
-                            ]}
-                          />
-                        </>
-                      );
+            {!formIO && <Spinner />}
+            {formIO && formIO}
+            {!showSpinner && formIO && (
+              <>
+                {/* <Accordion
+                  id="errorsAccordion"
+                  items={[
+                    {
+                      title: "Errors",
+                      id: "errorsAccordion2",
+                      render: function () {
+                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
+                      },
                     },
-                  },
-                ]}
-              />
+                    {
+                      title: "Promises",
+                      id: "promisesAccordion",
+                      render: function () {
+                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
+                      },
+                    },
+                    {
+                      title: "External Result",
+                      id: "externalResultAccordion",
+                      render: function () {
+                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
+                      },
+                    },
+                  ]}
+                /> */}
+              </>
             )}
           </>
         );
