@@ -29,13 +29,16 @@ const updateItem = async (queryClient: QueryClient, queryKey: string, item: any)
 };
 
 const deleteItem = async (queryClient: QueryClient, queryKey: string, itemId: any) => {
-  const previousEndpoints = queryClient.getQueryData<any[]>("endpoints");
-  await queryClient.cancelQueries("endpoints");
+  await queryClient.cancelQueries(queryKey);
 
-  const newEndpoints = previousEndpoints.filter((endpoint) => endpoint.id !== itemId);
-  queryClient.setQueryData("endpoints", [...newEndpoints]);
+  const previousQueryData = queryClient.getQueryData<any[]>(queryKey);
 
-  queryClient.invalidateQueries("endpoints");
+  if (previousQueryData) {
+    const newQueryData = previousQueryData.filter((previousItem) => previousItem.id !== itemId);
+    queryClient.setQueryData(queryKey, [...newQueryData]);
+  }
+
+  queryClient.invalidateQueries(queryKey);
 };
 
 export { addItem, updateItem, deleteItem };
