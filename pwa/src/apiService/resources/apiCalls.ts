@@ -15,4 +15,8 @@ export default class FormIO {
   public updateObject = (endpoint: string, id: string, data: any): Promise<AxiosResponse> => {
     return Send(this._instance, "PUT", `/${endpoint}/${id}`, data);
   };
+
+  public getOne = (endpoint: string, id: string): Promise<AxiosResponse> => {
+    return Send(this._instance, "GET", `/${endpoint}/${id}`);
+  };
 }
