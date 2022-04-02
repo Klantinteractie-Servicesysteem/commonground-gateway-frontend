@@ -3,7 +3,6 @@ import { Link } from "gatsby";
 import { Accordion, Spinner, Card, Modal } from "@conductionnl/nl-design-system/lib";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { validateJSON } from "../../services/validateJSON";
@@ -102,13 +101,14 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
     setHeader("Handler");
 
     if (getHandler.isSuccess) {
+      const handler = getHandler.data;
       setHeader(
         <>
-          Handler: <i>{getHandler.data.name}</i>
+          Handler: <i>{handler.name}</i>
         </>,
       );
 
-      handleSetFormValues(getHandler.data);
+      handleSetFormValues(handler);
     }
   }, [getHandler.isSuccess]);
 
