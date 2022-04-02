@@ -6,27 +6,18 @@ import { CodeBlock, getCodeLanguage } from "../../common/codeBlock/codeBlock";
 import msToSeconds from "../../../services/msToSeconds";
 import LabelWithBackground from "../../LabelWithBackground/LabelWithBackground";
 import LogTable from "../logTable/logTable";
-import APIService from "../../../apiService/apiService";
-import APIContext from "../../../apiService/apiContext";
 import Spinner from "../../common/spinner";
+import { useLog } from "../../../hooks/log";
 
 interface LogModalProps {
   log: any;
 }
 
 const LogModal: React.FC<LogModalProps> = ({ log }) => {
-  const API: APIService = React.useContext(APIContext);
-  const [outgoingCallIdLog, setOutgoingCallIdLog] = React.useState(null);
+  const [getLogs, setGetLogs] = React.useState<boolean>(false);
 
-  const handleSetOutgoingLogs = (): void => {
-    API.Log.getAllOutgoingFromCallId(log.callId)
-      .then((res) => {
-        setOutgoingCallIdLog(res.data);
-      })
-      .catch((err) => {
-        throw new Error(`GET all outgoing Logs from call id error: ${err}`);
-      });
-  };
+  const _useLog = useLog();
+  const getAllOutgoingLogs = getLogs && _useLog.getAllOutgoingFromCallId(log.callId);
 
   const [requestCodeLanguage, setRequestCodeLanguage] = React.useState(null);
   const [responseCodeLanguage, setResponseCodeLanguage] = React.useState(null);
@@ -59,7 +50,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                   { name: "General", id: `logGeneral${log.id}`, active: true },
                   { name: "Request", id: `logRequest${log.id}` },
                   { name: "Response", id: `logResponse${log.id}` },
-                  { name: "Outgoing", id: `outgoing${log.id}`, onClick: handleSetOutgoingLogs },
+                  { name: "Outgoing", id: `outgoing${log.id}`, onClick: () => setGetLogs(true) },
                 ]}
               />
               <div className="tab-content">
@@ -342,7 +333,11 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                 </div>
                 <div className="tab-pane" id={`outgoing${log.id}`} role="tabpanel" aria-labelledby="outgoing-tab">
                   <div className="mt-3">
-                    {outgoingCallIdLog ? <LogTable logs={outgoingCallIdLog} modal={false} /> : <Spinner />}
+                    {getAllOutgoingLogs.isLoading ? (
+                      <Spinner />
+                    ) : (
+                      <LogTable logs={getAllOutgoingLogs.data ?? []} modal={false} />
+                    )}
                   </div>
                 </div>
               </div>
