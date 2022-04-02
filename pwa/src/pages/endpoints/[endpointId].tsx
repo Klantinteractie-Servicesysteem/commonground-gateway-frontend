@@ -8,34 +8,17 @@ import APIContext from "../../apiService/apiContext";
 import { Card, Modal } from "@conductionnl/nl-design-system/lib";
 import { AlertContext } from "../../context/alertContext";
 import Spinner from "../../components/common/spinner";
+import { useLog } from "../../hooks/log";
 
 export const IndexPage = (props) => {
   const endpointId: string = props.params.endpointId === "new" ? null : props.params.endpointId;
   const [logsDocumentation, setLogsDocumentation] = React.useState<string>(null);
   const activeTab: string = props.location.state.activeTab;
   const API: APIService = React.useContext(APIContext);
-  const [logs, setLogs] = React.useState([]);
-  const [showSpinner, setShowSpinner] = React.useState(false);
   const [_, setAlert] = React.useContext(AlertContext);
 
-  React.useEffect(() => {
-    handleSetLogs();
-  }, [API]);
-
-  const handleSetLogs = (): void => {
-    setShowSpinner(true);
-
-    API.Log.getAllFromEndpoint(endpointId)
-      .then((res) => {
-        setLogs(res.data);
-      })
-      .catch((err) => {
-        throw new Error(`GET Endpoint Logs error: ${err}`);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+  const _useLog = useLog();
+  const getLogsFromEndpoint = _useLog.getAllFromEndpoint(endpointId);
 
   const handleSetLogsDocumentation = (): void => {
     API.Documentation.get("logs")
@@ -122,13 +105,21 @@ export const IndexPage = (props) => {
                         )
                       }
                     />
-                    <a className="utrecht-link" onClick={handleSetLogs}>
+                    <button
+                      className="button-no-style utrecht-link"
+                      disabled={getLogsFromEndpoint.isFetching}
+                      onClick={() => {
+                        getLogsFromEndpoint.refetch();
+                      }}
+                    >
                       <i className="fas fa-sync-alt mr-1" />
-                      <span className="mr-2">Refresh</span>
-                    </a>
+                      <span className="mr-2">{getLogsFromEndpoint.isFetching ? "Fetching data..." : "Refresh"}</span>
+                    </button>
                   </>
                 )}
-                cardBody={() => (showSpinner ? <Spinner /> : <LogTable logs={logs} />)}
+                cardBody={() =>
+                  getLogsFromEndpoint.isLoading ? <Spinner /> : <LogTable logs={getLogsFromEndpoint.data ?? []} />
+                }
               />
             </div>
           </div>
