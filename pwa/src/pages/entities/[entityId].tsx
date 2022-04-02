@@ -10,34 +10,17 @@ import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { Card, Modal } from "@conductionnl/nl-design-system";
 import Spinner from "../../components/common/spinner";
+import { useLog } from "../../hooks/log";
 
 const IndexPage = (props) => {
   const entityId: string = props.params.entityId === "new" ? null : props.params.entityId;
   const activeTab: string = props.location.state.activeTab;
   const API: APIService = React.useContext(APIContext);
-  const [logs, setLogs] = React.useState([]);
-  const [showSpinner, setShowSpinner] = React.useState(false);
   const [_, setAlert] = React.useContext(AlertContext);
   const [logsDocumentation, setLogsDocumentation] = React.useState<string>(null);
 
-  React.useEffect(() => {
-    handleSetLogs();
-  }, [API]);
-
-  const handleSetLogs = (): void => {
-    setShowSpinner(true);
-
-    API.Log.getAllFromEntity(entityId)
-      .then((res) => {
-        setLogs(res.data);
-      })
-      .catch((err) => {
-        throw new Error(`GET Entity error: ${err}`);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+  const _useLog = useLog();
+  const getLogsFromEntity = _useLog.getAllFromEntity(entityId);
 
   const handleSetLogsDocumentation = (): void => {
     API.Documentation.get("logs")
@@ -149,13 +132,21 @@ const IndexPage = (props) => {
                         )
                       }
                     />
-                    <a className="utrecht-link" onClick={handleSetLogs}>
+                    <button
+                      className="button-no-style utrecht-link"
+                      disabled={getLogsFromEntity.isFetching}
+                      onClick={() => {
+                        getLogsFromEntity.refetch();
+                      }}
+                    >
                       <i className="fas fa-sync-alt mr-1" />
-                      <span className="mr-2">Refresh</span>
-                    </a>
+                      <span className="mr-2">{getLogsFromEntity.isFetching ? "Fetching data..." : "Refresh"}</span>
+                    </button>
                   </>
                 )}
-                cardBody={() => (showSpinner ? <Spinner /> : <LogTable logs={logs} />)}
+                cardBody={() =>
+                  getLogsFromEntity.isLoading ? <Spinner /> : <LogTable logs={getLogsFromEntity.data ?? []} />
+                }
               />
             </div>
           </div>
