@@ -15,6 +15,7 @@ import { ISelectValue } from "../formFields/types";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
+import { useEntity } from "../../hooks/entity";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -24,7 +25,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [collection, setCollection] = React.useState<any>(null);
   const [sources, setSources] = React.useState<any>(null);
-  const [entities, setEntities] = React.useState<any>(null);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -45,6 +45,9 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
 
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpointsSelect = _useEndpoint.getSelect();
+
+  const _useEntity = useEntity(queryClient);
+  const getEntitiesSelect = _useEntity.getSelect();
 
   const {
     register,
@@ -114,7 +117,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
 
   React.useEffect(() => {
     handleSetSources();
-    handleSetEntities();
     collectionId && handleSetCollection();
   }, [API, collectionId]);
 
@@ -149,17 +151,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET sources error: " + err);
-      });
-  };
-
-  const handleSetEntities = () => {
-    API.Entity.getAll()
-      .then((res) => {
-        setEntities(resourceArrayToSelectArray(res.data, "entities"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET entities error: " + err);
       });
   };
 
@@ -291,11 +282,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Entities",
                           id: "entitiesAccordion",
                           render: () =>
-                            entities ? (
+                            getEntitiesSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Entities"
                                 name="entities"
-                                options={entities}
+                                options={getEntitiesSelect.data ?? []}
                                 {...{ control, register, errors }}
                               />
                             ) : (
