@@ -1,36 +1,26 @@
 import * as React from "react";
 import "./collectionForm.css";
 import { Spinner, Card, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
 import { ISelectValue } from "../formFields/types";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
 import { useEntity } from "../../hooks/entity";
 import { useSource } from "../../hooks/source";
+import { useCollection } from "../../hooks/collection";
 
 interface CollectionFormProps {
   collectionId: string;
 }
 
 export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [collection, setCollection] = React.useState<any>(null);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
-  const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
 
   const sourceTypeSelectOptions: ISelectValue[] = [
@@ -39,6 +29,10 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   ];
 
   const queryClient = useQueryClient();
+
+  const _useCollection = useCollection(queryClient);
+  const createOrEditCollection = _useCollection.createOrEdit(collectionId);
+  const getCollection = _useCollection.getOne(collectionId);
 
   const _useApplication = useApplication(queryClient);
   const getApplicationsSelect = _useApplication.getSelect();
@@ -63,26 +57,13 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay({ isLoading: true });
-
     data.sourceType = data.sourceType && data.sourceType.value;
     data.source = data.source && data.source.value;
     data.applications = data.applications?.map((application) => application.value);
     data.endpoints = data.endpoints?.map((endpoint) => endpoint.value);
     data.entities = data.entities?.map((entity) => entity.value);
 
-    API.Collection.createOrUpdate(data, collectionId)
-      .then(() => {
-        setAlert({ message: `${collectionId ? "Updated" : "Created"} collection`, type: "success" });
-        navigate("/collections");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error(`Create or update collection error: ${err}`);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditCollection.mutate({ payload: data, id: collectionId });
   };
 
   const handleSetFormValues = (collection): void => {
@@ -111,39 +92,17 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   }, [watch("sourceType")]);
 
   React.useEffect(() => {
-    setHeader(
-      <>
-        Collection <i>{collection && collection.name}</i>
-      </>,
-    );
-  }, [setHeader, collection]);
+    setHeader("Collection");
 
-  React.useEffect(() => {
-    collectionId && handleSetCollection();
-  }, [API, collectionId]);
-
-  const handleSetCollection = () => {
-    setShowSpinner(true);
-
-    API.Collection.getOne(collectionId)
-      .then((res) => {
-        const collection = res.data;
-
-        collection.applications = resourceArrayToSelectArray(collection.applications, "applications");
-        collection.endpoints = resourceArrayToSelectArray(collection.endpoints, "endpoints");
-        collection.entities = resourceArrayToSelectArray(collection.entities, "entities");
-
-        handleSetFormValues(collection);
-        setCollection(collection);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Collection error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+    if (getCollection.isSuccess) {
+      setHeader(
+        <>
+          Collection <i>{getCollection.data.name}</i>
+        </>,
+      );
+      handleSetFormValues(getCollection.data);
+    }
+  }, [getCollection.isSuccess]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -183,7 +142,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getCollection.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
@@ -289,17 +248,19 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                     <div className="collectionFormContainer">
                       <span>
                         <strong>Last synced at: </strong>{" "}
-                        {collection?.syncedAt
-                          ? new Date(collection?.syncedAt).toLocaleString("nl-NL")
+                        {getCollection.data?.syncedAt
+                          ? new Date(getCollection.data?.syncedAt).toLocaleString("nl-NL")
                           : "Not synced yet"}
                       </span>
                       <span>
                         <strong>Date modified: </strong>{" "}
-                        {collection?.dateModified && new Date(collection?.dateModified).toLocaleString("nl-NL")}
+                        {getCollection.data?.dateModified &&
+                          new Date(getCollection.data?.dateModified).toLocaleString("nl-NL")}
                       </span>
                       <span>
                         <strong>Date created: </strong>{" "}
-                        {collection?.dateCreated && new Date(collection?.dateCreated).toLocaleString("nl-NL")}
+                        {getCollection.data?.dateCreated &&
+                          new Date(getCollection.data?.dateCreated).toLocaleString("nl-NL")}
                       </span>
                     </div>
                   </div>

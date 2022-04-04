@@ -9,45 +9,30 @@ import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
+import { useQueryClient } from "react-query";
+import { useCollection } from "../../hooks/collection";
 
 export default function CollectionTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [collections, setCollections] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
+  const queryClient = useQueryClient();
+  const _useCollection = useCollection(queryClient);
+  const getCollections = _useCollection.getAll();
+  const deleteCollection =  _useCollection.remove()
+
   React.useEffect(() => {
     setHeader("Collections");
   }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetCollections();
-  }, [API]);
-
-  const handleSetCollections = () => {
-    setShowSpinner(true);
-    API.Collection.getAll()
-      .then((res) => {
-        setCollections(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Collections error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
 
   const handleDeleteCollection = (id): void => {
     setLoadingOverlay({ isLoading: true });
     API.Collection.delete(id)
       .then(() => {
         setAlert({ message: "Deleted collection", type: "success" });
-        handleSetCollections();
       })
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
@@ -77,10 +62,16 @@ export default function CollectionTable() {
               id="collectionHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetCollections}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getCollections.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("collections");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getCollections.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to="/collections/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -94,9 +85,9 @@ export default function CollectionTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getCollections.isLoading ? (
                 <Spinner />
-              ) : collections ? (
+              ) : (
                 <Table
                   columns={[
                     {
@@ -126,7 +117,7 @@ export default function CollectionTable() {
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <DeleteModal
-                              resourceDelete={() => handleDeleteCollection({ id: item.id })}
+                              resourceDelete={() => deleteCollection.mutateAsync({ id: item.id })}
                               resourceId={item.id}
                             />
                             <Link className="utrecht-link d-flex justify-content-end" to={`/collections/${item.id}`}>
@@ -139,30 +130,7 @@ export default function CollectionTable() {
                       },
                     },
                   ]}
-                  rows={collections}
-                />
-              ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Description",
-                      field: "description",
-                    },
-                    {
-                      headerName: "Date Created",
-                      field: "dateCreated",
-                    },
-                  ]}
-                  rows={[
-                    {
-                      name: "No results found",
-                      description: " ",
-                    },
-                  ]}
+                  rows={getCollections.data ?? []}
                 />
               )}
             </div>

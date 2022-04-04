@@ -1,5 +1,5 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 
 export default class Collection {
   private _instance: AxiosInstance;
@@ -8,23 +8,29 @@ export default class Collection {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", "/collections");
+  public getAll = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/collections");
+    return data;
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/collections/${id}`);
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/collections/${id}`);
+    return data;
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public createOrUpdate = async (variables: { payload: any; id?: string }): Promise<any> => {
+    const { payload, id } = variables;
     if (id) {
-      return Send(this._instance, "PUT", `/collections/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/collections/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/collections", data);
+    const { data } = await Send(this._instance, "POST", "/collections", payload);
+    return data;
   };
 
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/collections/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { data } = await Send(this._instance, "DELETE", `/collections/${variables.id}`);
+    return data;
   };
 }
