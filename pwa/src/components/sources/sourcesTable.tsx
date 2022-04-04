@@ -5,19 +5,23 @@ import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
+import { useQueryClient } from "react-query";
+import { useSource } from "../../hooks/source";
 
 export default function SourcesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [sources, setSources] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
+
+  const queryClient = useQueryClient();
+
+  const _useSource = useSource(queryClient);
+  const getSources = _useSource.getAll();
+  const deleteSource = _useSource.remove();
 
   React.useEffect(() => {
     setHeader("Sources");
@@ -27,25 +31,6 @@ export default function SourcesTable() {
     handleSetDocumentation();
   });
 
-  React.useEffect(() => {
-    handleSetSources();
-  }, [API]);
-
-  const handleSetSources = () => {
-    setShowSpinner(true);
-    API.Source.getAll()
-      .then((res) => {
-        setSources(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Sources error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const handleSetDocumentation = (): void => {
     API.Documentation.get("sources")
       .then((res) => {
@@ -54,22 +39,6 @@ export default function SourcesTable() {
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteSource = (id): void => {
-    setLoadingOverlay({ isLoading: true });
-    API.Source.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted source", type: "success" });
-        handleSetSources();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE Sources error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -88,10 +57,16 @@ export default function SourcesTable() {
               id="sourceHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetSources}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getSources.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("endpoints");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getSources.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to="/sources/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -105,9 +80,9 @@ export default function SourcesTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getSources.isLoading ? (
                 <Spinner />
-              ) : sources ? (
+              ) : (
                 <Table
                   columns={[
                     {
@@ -132,7 +107,7 @@ export default function SourcesTable() {
                               <FontAwesomeIcon icon={faTrash} /> Delete
                             </button>
                             <DeleteModal
-                              resourceDelete={() => handleDeleteSource({ id: item.id })}
+                              resourceDelete={() => deleteSource.mutateAsync({ id: item.id })}
                               resourceId={item.id}
                             />
                             <Link className="utrecht-link d-flex justify-content-end" to={`/sources/${item.id}`}>
@@ -145,21 +120,7 @@ export default function SourcesTable() {
                       },
                     },
                   ]}
-                  rows={sources}
-                />
-              ) : (
-                <Table
-                  columns={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                    },
-                    {
-                      headerName: "Location",
-                      field: "location",
-                    },
-                  ]}
-                  rows={[]}
+                  rows={getSources.data ?? []}
                 />
               )}
             </div>

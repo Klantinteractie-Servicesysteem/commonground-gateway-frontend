@@ -1,5 +1,6 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 export default class Source {
   private _instance: AxiosInstance;
@@ -8,23 +9,38 @@ export default class Source {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", "/gateways");
+  public getAll = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/gateways");
+    return data;
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/gateways/${id}`);
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/gateways/${id}`);
+    return data;
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public getSelect = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/gateways");
+
+    return resourceArrayToSelectArray(data, "gateways");
+  };
+
+  public createOrUpdate = async (variables: { payload: any; id?: string }): Promise<any> => {
+    const { payload, id } = variables;
+
     if (id) {
-      return Send(this._instance, "PUT", `/gateways/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/gateways/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/gateways", data);
+    const { data } = await Send(this._instance, "POST", "/gateways", payload);
+    return data;
   };
 
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/gateways/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { id } = variables;
+
+    const { data } = await Send(this._instance, "DELETE", `/gateways/${id}`);
+    return data;
   };
 }
