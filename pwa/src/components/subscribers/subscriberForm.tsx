@@ -19,9 +19,9 @@ import {
   SelectMultiple,
   InputCheckbox,
 } from "../formFields";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useSubscriber } from "../../hooks/subscriber";
 import { useEndpoint } from "../../hooks/endpoint";
+import { useSource } from "../../hooks/source";
 
 interface SubscriberFormProps {
   subscriberId: string;
@@ -36,7 +36,6 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
   const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
-  const [sources, setSources] = React.useState<any>(null);
   const [tableNames, setTableNames] = React.useState<any>(null);
 
   const typeSelectOptions: ISelectValue[] = [
@@ -60,6 +59,9 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   const _useEndpoint = useEndpoint(queryClient);
   const getEndpointsSelect = _useEndpoint.getSelect();
 
+  const _useSource = useSource(queryClient);
+  const getSourcesSelect = _useSource.getSelect();
+
   React.useEffect(() => {
     setHeader("Subscriber");
 
@@ -77,26 +79,17 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
   }, [getSubscriber.isSuccess]);
 
   React.useEffect(() => {
-    handleSetSources();
     handleSetTableNames();
   }, [API, subscriberId]);
 
   React.useEffect(() => {
     setShowSpinner(
-      !sources || !getEndpointsSelect.isSuccess || tableNames === null || (subscriberId && !getSubscriber.isSuccess),
+      !getSourcesSelect.isSuccess ||
+        !getEndpointsSelect.isSuccess ||
+        tableNames === null ||
+        (subscriberId && !getSubscriber.isSuccess),
     );
-  }, [subscriber, sources, getEndpointsSelect.isSuccess, tableNames, subscriberId]);
-
-  const handleSetSources = () => {
-    API.Source.getAll()
-      .then((res) => {
-        setSources(resourceArrayToSelectArray(res.data, "gateways"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error(`GET sources error: ${err}`);
-      });
-  };
+  }, [subscriber, getSourcesSelect.isSuccess, getEndpointsSelect.isSuccess, tableNames, subscriberId]);
 
   const handleSetTableNames = () => {
     API.Translation.getTableNames()
@@ -230,7 +223,12 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                         />
                       </div>
                       <div className="col-6">
-                        <SelectSingle options={sources ?? []} name="gateway" label="Source" {...{ control, errors }} />
+                        <SelectSingle
+                          options={getSourcesSelect.data ?? []}
+                          name="gateway"
+                          label="Source"
+                          {...{ control, errors }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">

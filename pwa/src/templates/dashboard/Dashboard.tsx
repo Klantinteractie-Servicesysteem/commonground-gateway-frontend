@@ -16,11 +16,11 @@ import { Card, Modal } from "@conductionnl/nl-design-system";
 import { useQuery, useQueryClient } from "react-query";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
+import { useSource } from "../../hooks/source";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
-  const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const API: APIService = React.useContext(APIContext);
 
   const queryClient = useQueryClient();
@@ -31,8 +31,10 @@ const Dashboard: React.FC = () => {
   const _useApplication = useApplication(queryClient);
   const getApplications = _useApplication.getAll();
 
+  const _useSource = useSource(queryClient);
+  const getSources = _useSource.getAll();
+
   React.useEffect(() => {
-    handleSetCounts();
     handleSetLogs();
   }, [API]);
 
@@ -58,16 +60,6 @@ const Dashboard: React.FC = () => {
       });
   };
 
-  const handleSetCounts = (): void => {
-    API.Source.getAll()
-      .then((res) => {
-        setSourcesCount(res.data.length);
-      })
-      .catch((err) => {
-        throw new Error(`GET sources error: ${err}`);
-      });
-  };
-
   return (
     <div className="dashboard">
       <div>
@@ -83,7 +75,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={sourcesCount}
+            amount={getSources.isSuccess ? getSources.data.length : 0}
             title="Sources"
             iconBackgroundColor="FFAD46"
             icon={<img src={sourcesIcon} alt="sources" />}

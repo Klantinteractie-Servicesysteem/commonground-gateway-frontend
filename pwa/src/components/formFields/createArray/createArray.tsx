@@ -60,6 +60,10 @@ const CreateArrayComponent: React.FC<CreateArrayComponentProps> = ({ data, handl
     handleChange(values);
   }, [values]);
 
+  React.useEffect(() => {
+    data && setValues(data);
+  }, [data]);
+
   return (
     <div className="CreateArray">
       {values && (
