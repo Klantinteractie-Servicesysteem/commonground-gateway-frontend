@@ -1,5 +1,6 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
+import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 
 export default class Entity {
   private _instance: AxiosInstance;
@@ -8,23 +9,40 @@ export default class Entity {
     this._instance = _instance;
   }
 
-  public getAll = (): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", "/entities");
+  public getAll = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/entities");
+
+    return data;
   };
 
-  public getOne = (id: string): Promise<AxiosResponse> => {
-    return Send(this._instance, "GET", `/entities/${id}`);
+  public getOne = async (id: string): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", `/entities/${id}`);
+
+    return data;
   };
 
-  public createOrUpdate = (data: any, id?: string): Promise<AxiosResponse> => {
+  public getSelect = async (): Promise<any> => {
+    const { data } = await Send(this._instance, "GET", "/entities");
+
+    return resourceArrayToSelectArray(data, "entities");
+  };
+
+  public createOrUpdate = async (variables: { payload: any; id?: string }): Promise<any> => {
+    const { id, payload } = variables;
     if (id) {
-      return Send(this._instance, "PUT", `/entities/${id}`, data);
+      const { data } = await Send(this._instance, "PUT", `/entities/${id}`, payload);
+      return data;
     }
 
-    return Send(this._instance, "POST", "/entities", data);
+    const { data } = await Send(this._instance, "POST", "/entities", payload);
+    return data;
   };
 
-  public delete = (variables: { id: string }): Promise<AxiosResponse> => {
-    return Send(this._instance, "DELETE", `/entities/${variables.id}`);
+  public delete = async (variables: { id: string }): Promise<any> => {
+    const { id } = variables;
+
+    const { data } = await Send(this._instance, "DELETE", `/entities/${id}`);
+
+    return data;
   };
 }

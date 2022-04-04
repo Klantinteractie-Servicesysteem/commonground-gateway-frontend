@@ -1,30 +1,27 @@
 import * as React from "react";
 import { Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useForm } from "react-hook-form";
 import { InputText, InputCheckbox, SelectSingle, Textarea } from "../formFields";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { ISelectValue } from "../formFields/types";
+import { useQueryClient } from "react-query";
+import { useEntity } from "../../hooks/entity";
+import { useSource } from "../../hooks/source";
 
 interface EntityFormProps {
   entityId: string;
 }
 
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [sources, setSources] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = entityId ? "Edit Object type" : "Create Object type";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const functionSelectOptions: ISelectValue[] = [
     { label: "Organization", value: "organization" },
@@ -32,11 +29,29 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     { label: "User group", value: "userGroup" },
   ];
 
+  const queryClient = useQueryClient();
+
+  const _useEntity = useEntity(queryClient);
+  const getEntity = _useEntity.getOne(entityId);
+  const createOrEditEntity = _useEntity.createOrEdit(entityId);
+
+  const _useSource = useSource(queryClient);
+  const getSourcesSelect = _useSource.getSelect();
+
   React.useEffect(() => {
     setHeader("Object Type");
-    handleSetSources();
-    entityId && handleSetEntity();
-  }, [API, entityId]);
+
+    if (getEntity.isSuccess) {
+      const entity = getEntity.data;
+      setHeader(
+        <>
+          Object Type: <i>{entity.name}</i>
+        </>,
+      );
+
+      handleSetFormValues(entity);
+    }
+  }, [getEntity.isSuccess]);
 
   const {
     register,
@@ -47,60 +62,23 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay({ isLoading: true });
-
     data.function = data.function && data.function.value;
     data.gateway = data.gateway && data.gateway.value;
 
-    API.Entity.createOrUpdate(data, entityId)
-      .then(() => {
-        setAlert({ message: `${entityId ? "Updated" : "Saved"} object type`, type: "success" });
-        navigate("/entities");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error("Create or update entity error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay({ isLoading: false });
-      });
+    createOrEditEntity.mutate({ payload: data, id: entityId });
   };
 
-  const handleSetEntity = () => {
-    setShowSpinner(true);
+  const handleSetFormValues = (entity): void => {
+    const basicFields: string[] = ["name", "endpoint", "route", "description", "extend"];
+    basicFields.forEach((field) => setValue(field, entity[field]));
 
-    API.Entity.getOne(entityId)
-      .then((res) => {
-        setValue("name", res.data.name);
-        setValue(
-          "function",
-          functionSelectOptions.find((option) => option.value === res.data.function),
-        );
-        setValue("endpoint", res.data.endpoint);
-        setValue("route", res.data.route);
-        res.data.gateway &&
-          setValue("gateway", { label: res.data.gateway.name, value: `/admin/gateways/${res.data.gateway.id}` });
-        setValue("description", res.data.description);
-        setValue("extend", res.data.extend);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET entity error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
+    setValue(
+      "function",
+      functionSelectOptions.find((option) => option.value === entity.function),
+    );
 
-  const handleSetSources = () => {
-    API.Source.getAll()
-      .then((res) => {
-        setSources(resourceArrayToSelectArray(res.data, "gateways"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET sources error: " + err);
-      });
+    entity.gateway &&
+      setValue("gateway", { label: entity.gateway.name, value: `/admin/gateways/${entity.gateway.id}` });
   };
 
   const handleSetDocumentation = (): void => {
@@ -125,7 +103,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                 className="utrecht-link button-no-style"
                 data-bs-toggle="modal"
                 data-bs-target="#entityHelpModal"
-                onClick={(e) => e.preventDefault()}
+                type="button"
               >
                 <i className="fas fa-question mr-1" />
                 <span className="mr-2">Help</span>
@@ -141,7 +119,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                   Back
                 </button>
               </Link>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit" disabled={!sources}>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                type="submit"
+                disabled={!getSourcesSelect.isSuccess}
+              >
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -152,7 +134,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner ? (
+                {getEntity.isLoading ? (
                   <Spinner />
                 ) : (
                   <div>
@@ -180,7 +162,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <SelectSingle name="gateway" label="Source" options={sources ?? []} {...{ control, errors }} />
+                        <SelectSingle
+                          name="gateway"
+                          label="Source"
+                          options={getSourcesSelect.data ?? []}
+                          {...{ control, errors }}
+                        />
                       </div>
                       <div className="col-6">
                         <Textarea name="description" label="Description" {...{ register, errors }} />
