@@ -9,8 +9,6 @@ import { useQueryClient } from "react-query";
 import { useSubscriber } from "../../hooks/subscriber";
 
 export default function SubscribersTable({ entityId }) {
-  const title: string = entityId === "new" ? "Create Subscriber" : "Edit Subscriber";
-
   const queryClient = useQueryClient();
   const _useSubscriber = useSubscriber(queryClient);
   const getSubscribers = _useSubscriber.getAllFromEntity(entityId);
@@ -18,7 +16,7 @@ export default function SubscribersTable({ entityId }) {
 
   return (
     <Card
-      title={title}
+      title={"Subscribers"}
       cardHeader={function () {
         return (
           <>

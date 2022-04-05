@@ -11,6 +11,7 @@ import { ISelectValue } from "../formFields/types";
 import { useQueryClient } from "react-query";
 import { useEntity } from "../../hooks/entity";
 import { useSource } from "../../hooks/source";
+import { validateLength } from "../../services/validateLength";
 
 interface EntityFormProps {
   entityId: string;
@@ -59,6 +60,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
     handleSubmit,
     control,
     setValue,
+    getValues,
   } = useForm();
 
   const onSubmit = (data): void => {
@@ -147,17 +149,27 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                           name="function"
                           label="Function"
                           options={functionSelectOptions}
-                          validation={{ required: true }}
+                          validation={{ validate: () => validateLength(getValues("name")), required: true }}
                           {...{ control, errors }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="endpoint" label="Endpoint" {...{ register, errors }} />
+                        <InputText
+                          name="endpoint"
+                          label="Endpoint"
+                          {...{ register, errors }}
+                          validation={{ validate: () => validateLength(getValues("endpoint")) }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputText name="route" label="Route" {...{ register, errors }} />
+                        <InputText
+                          name="route"
+                          label="Route"
+                          {...{ register, errors }}
+                          validation={{ validate: () => validateLength(getValues("route")) }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -170,7 +182,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                         />
                       </div>
                       <div className="col-6">
-                        <Textarea name="description" label="Description" {...{ register, errors }} />
+                        <Textarea
+                          name="description"
+                          label="Description"
+                          {...{ register, errors }}
+                          validation={{ validate: () => validateLength(getValues("description")) }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">

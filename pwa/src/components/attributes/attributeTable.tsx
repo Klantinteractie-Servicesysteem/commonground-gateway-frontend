@@ -9,14 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-
 export default function AttributeTable({ entityId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [attributes, setAttributes] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const API: APIService = React.useContext(APIContext);
-  const title: string = entityId === "new" ? "Create Attribute" : "Edit Attribute";
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
@@ -72,7 +69,7 @@ export default function AttributeTable({ entityId }) {
 
   return (
     <Card
-      title={title}
+      title={"Attributes"}
       cardHeader={function () {
         return (
           <>

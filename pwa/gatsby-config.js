@@ -92,7 +92,7 @@ module.exports = {
           },
           {
             pathname: "/collections/[collectionId]",
-            crumbLabel: "Collections",
+            crumbLabel: "Collection",
           },
           {
             pathname: "/sessions/[sessionId]",

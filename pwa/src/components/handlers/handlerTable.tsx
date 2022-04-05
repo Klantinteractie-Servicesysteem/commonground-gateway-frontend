@@ -13,7 +13,6 @@ import { useHandler } from "./../../hooks/handler";
 export default function HandlersTable({ endpointId }) {
   const [documentation, setDocumentation] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
-  const title: string = endpointId === "new" ? "Create Handler" : "Edit Handler";
   const [_, setAlert] = React.useContext(AlertContext);
 
   const queryClient = useQueryClient();
@@ -38,7 +37,7 @@ export default function HandlersTable({ endpointId }) {
 
   return (
     <Card
-      title={title}
+      title={"Handlers"}
       cardHeader={function () {
         return (
           <>
