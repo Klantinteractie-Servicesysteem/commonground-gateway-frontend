@@ -40,7 +40,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     formIOSchema &&
       import("@formio/react").then((formio) => {
         const { Form } = formio;
-        setFormIO(<Form src={formIOSchema} onSubmit={saveObject} options={{ noAlerts: false }} />);
+        setFormIO(<Form src={formIOSchema} onSubmit={saveObject} options={{ noAlerts: true }} />);
       });
   }, [formIOSchema]);
 
@@ -93,30 +93,28 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
   };
 
   const saveObject = (event) => {
-    setShowSpinner(true);
     let body = event.data;
     body.submit = undefined;
 
     if (!objectId) {
       API.ApiCalls.createObject(entity?.handlers[0].endpoints[0].path.join("/"), body)
         .then(() => {
+          setAlert({ message: "Saved object", type: "success" });
           navigate(`/entities/${entityId}`, { state: { activeTab: "objects" } });
         })
         .catch((err) => {
           throw new Error("Create object error: " + err);
-        });
+        })
+        .finally(() => {});
     }
     if (objectId) {
       API.ApiCalls.updateObject(entity?.handlers[0].endpoints[0].path.join("/"), objectId, body)
-        .then((res) => {
-          setObject(res);
+        .then(() => {
+          setAlert({ message: "Saved object", type: "success" });
+          navigate(`/entities/${entityId}`, { state: { activeTab: "objects" } });
         })
         .catch((err) => {
           throw new Error("Update object error: " + err);
-        })
-        .finally(() => {
-          setAlert({ message: "Saved object", type: "success" });
-          setShowSpinner(false);
         });
     }
   };
