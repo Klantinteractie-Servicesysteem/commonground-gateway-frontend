@@ -1,5 +1,5 @@
 import * as React from "react";
-import ObjectEntityFormNew from "../../../../components/objectEntities/objectEntityFormNew/ObjectEntityFormNew";
+import ObjectEntityFormNew from "../../../../components/objectEntities/objectEntityForm/ObjectEntityForm";
 import { HeaderContext } from "../../../../context/headerContext";
 
 const IndexPage = (props) => {

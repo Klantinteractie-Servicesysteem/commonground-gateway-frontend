@@ -1,20 +1,19 @@
 import * as React from "react";
-import { Card, Spinner, Modal, Accordion } from "@conductionnl/nl-design-system/lib";
+import { Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../../apiService/apiService";
 import APIContext from "../../../apiService/apiContext";
 import { AlertContext } from "../../../context/alertContext";
 import { Link, navigate } from "gatsby";
-import "./ObjectEntityFormNew.css";
+import "./objectEntityForm.css";
 
-interface ObjectEntityFormNewProps {
+interface ObjectEntityFormProps {
   objectId?: string;
   entityId: string;
 }
 
-export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ objectId, entityId }) => {
+export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, entityId }) => {
   const API: APIService = React.useContext(APIContext);
   const [entity, setEntity] = React.useState(null);
-  const [object, setObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(true);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
@@ -23,7 +22,6 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
 
   React.useEffect(() => {
     if (!entity) {
-      console.log(entity);
       getEntity();
     }
   }, [API]);
@@ -153,40 +151,10 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
           <>
             {showSpinner && <Spinner />}
             {formIO && formIO}
-            {formIO && (
-              <>
-                {/* <Accordion
-                  id="errorsAccordion"
-                  items={[
-                    {
-                      title: "Errors",
-                      id: "errorsAccordion2",
-                      render: function () {
-                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                      },
-                    },
-                    {
-                      title: "Promises",
-                      id: "promisesAccordion",
-                      render: function () {
-                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                      },
-                    },
-                    {
-                      title: "External Result",
-                      id: "externalResultAccordion",
-                      render: function () {
-                        return <h6>IN PROGRESS: needs refinement, no info on how to show data</h6>;
-                      },
-                    },
-                  ]}
-                /> */}
-              </>
-            )}
           </>
         );
       }}
     />
   );
 };
-export default ObjectEntityFormNew;
+export default ObjectEntityForm;
