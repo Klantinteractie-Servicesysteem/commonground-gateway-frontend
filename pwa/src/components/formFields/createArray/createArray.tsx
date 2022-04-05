@@ -29,7 +29,7 @@ export const CreateArray: React.FC<CreateArrayProps & IFormFieldProps & IReactHo
         {...{ control, name }}
         rules={validation}
         render={({ field: { onChange } }) => {
-          return <KeyValueComponent handleChange={onChange} {...{ data }} />;
+          return <CreateArrayComponent handleChange={onChange} {...{ data }} />;
         }}
       />
     </FormFieldGroup>
@@ -44,7 +44,7 @@ interface CreateArrayComponentProps {
   handleChange: (...event: any[]) => void;
 }
 
-const KeyValueComponent: React.FC<CreateArrayComponentProps> = ({ data, handleChange }) => {
+const CreateArrayComponent: React.FC<CreateArrayComponentProps> = ({ data, handleChange }) => {
   const [currentValue, setCurrentValue] = React.useState<string>("");
   const [values, setValues] = React.useState<string[]>(data ?? []);
 
@@ -59,6 +59,10 @@ const KeyValueComponent: React.FC<CreateArrayComponentProps> = ({ data, handleCh
   React.useEffect(() => {
     handleChange(values);
   }, [values]);
+
+  React.useEffect(() => {
+    data && setValues(data);
+  }, [data]);
 
   return (
     <div className="CreateArray">

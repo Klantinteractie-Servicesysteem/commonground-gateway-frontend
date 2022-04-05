@@ -1,10 +1,10 @@
 import * as React from "react";
-import { GenericInputComponent, Card, Modal, SelectInputComponent, Spinner } from "@conductionnl/nl-design-system/lib";
+import { Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
 import { Link, navigate } from "gatsby";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { Control, FieldErrors, FieldValues, useForm, UseFormRegister } from "react-hook-form";
 import { InputText, SelectSingle } from "../formFields";
 import { ISelectValue } from "../formFields/types";
@@ -16,12 +16,12 @@ interface TranslationFormProps {
 
 export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = id ? "Edit Translation" : "Create Translation";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_tableName, setTableName] = React.useState<string>(null);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
+  const [__, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   const {
     register,
@@ -32,7 +32,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.translationTable = _tableName;
     data.language = data.language && data.language.value;
@@ -47,7 +47,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
       })
       .finally(() => {
         setShowSpinner(false);
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
         navigate(`/translation-tables/${tableName}/translations`);
       });
   };
@@ -149,14 +149,7 @@ export const TranslationForm: React.FC<TranslationFormProps> = ({ id, tableName 
             return (
               <div className="row">
                 <div className="col-12">
-                  {showSpinner === true ? (
-                    <Spinner />
-                  ) : (
-                    <>
-                      {loadingOverlay && <LoadingOverlay />}
-                      <TranslationFormFields {...{ control, errors, register }} />
-                    </>
-                  )}
+                  {showSpinner === true ? <Spinner /> : <TranslationFormFields {...{ control, errors, register }} />}
                 </div>
               </div>
             );

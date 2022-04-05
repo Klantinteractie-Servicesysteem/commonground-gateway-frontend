@@ -2,22 +2,20 @@ import * as React from "react";
 import { Link } from "gatsby";
 import { Accordion, Card, Spinner, Modal } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
-import { navigate } from "gatsby-link";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
 import { useForm } from "react-hook-form";
 import { ISelectValue } from "../formFields/types";
 import { CreateArray, CreateKeyValue, InputText, SelectSingle, InputUrl } from "../formFields";
+import { useQueryClient } from "react-query";
+import { useSource } from "../../hooks/source";
 
 interface SourceFormProps {
   sourceId: string;
 }
 
 export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const title: string = sourceId ? "Edit Source" : "Create Source";
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -38,6 +36,12 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
     { label: "Username and Password", value: "username-password" },
   ];
 
+  const queryClient = useQueryClient();
+
+  const _useSource = useSource(queryClient);
+  const getSource = _useSource.getOne(sourceId);
+  const createOrEditSource = _useSource.createOrEdit(sourceId);
+
   const {
     register,
     control,
@@ -48,30 +52,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
   } = useForm();
 
   React.useEffect(() => {
-    setHeader("Source");
-
     handleSetDocumentation();
-    sourceId && handleSetSource();
-  }, [sourceId, API, setHeader]);
+  }, [setHeader]);
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
-
     data.type = data.type && data.type.value;
     data.auth = data.auth && data.auth.value;
 
-    API.Source.createOrUpdate(data, sourceId)
-      .then(() => {
-        setAlert({ type: "success", message: `${sourceId ? "Updated" : "Created"} source` });
-        navigate("/sources");
-      })
-      .catch((err) => {
-        setAlert({ type: "danger", message: err.message });
-        throw new Error("Create or update source error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
-      });
+    createOrEditSource.mutate({ payload: data, id: sourceId });
   };
 
   const handleSetFormValues = (source): void => {
@@ -104,29 +92,21 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
     );
   };
 
-  const handleSetSource = () => {
-    setShowSpinner(true);
+  React.useEffect(() => {
+    setHeader("Source");
 
-    API.Source.getOne(sourceId)
-      .then((res) => {
-        const source = res.data;
+    if (getSource.isSuccess) {
+      const source = getSource.data;
+      setHeader(
+        <>
+          Source: <i>{source.name}</i>
+        </>,
+      );
 
-        setHeader(
-          <>
-            Source <i>{source && source.name}</i>
-          </>,
-        );
+      handleSetFormValues(source);
+    }
+  }, [getSource.isSuccess]);
 
-        handleSetFormValues(source);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET gateway error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
   const handleSetDocumentation = (): void => {
     API.Documentation.get("sources")
       .then((res) => {
@@ -176,11 +156,10 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
           return (
             <div className="row">
               <div className="col-12">
-                {showSpinner === true ? (
+                {getSource.isLoading ? (
                   <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} />
@@ -269,7 +248,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="headers"
                               label="Headers"
                               data={getValues("headers")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },
@@ -277,12 +256,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           title: "OAS",
                           id: "oasAccordion",
                           render: () => (
-                            <CreateArray
-                              name="oas"
-                              label="OAS"
-                              data={getValues("oas")}
-                              {...{ register, control, errors }}
-                            />
+                            <CreateArray name="oas" label="OAS" data={getValues("oas")} {...{ control, errors }} />
                           ),
                         },
                         {
@@ -293,7 +267,7 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                               name="paths"
                               label="Paths"
                               data={getValues("paths")}
-                              {...{ register, control, errors }}
+                              {...{ control, errors }}
                             />
                           ),
                         },

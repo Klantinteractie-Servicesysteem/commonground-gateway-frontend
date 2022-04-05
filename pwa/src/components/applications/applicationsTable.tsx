@@ -8,47 +8,27 @@ import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { useQueryClient } from "react-query";
+import { useApplication } from "../../hooks/application";
 
 export default function ApplicationsTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [applications, setApplications] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
+  const queryClient = useQueryClient();
+  const _useApplication = useApplication(queryClient);
+  const getApplications = _useApplication.getAll();
+  const deleteApplication = _useApplication.remove();
+
   React.useEffect(() => {
-    setHeader(
-      <>
-        Application <i>{applications && applications.name}</i>
-      </>,
-    );
-  }, [setHeader, applications]);
+    setHeader("Applications");
+  }, [setHeader]);
 
   React.useEffect(() => {
     handleSetDocumentation();
   });
-
-  React.useEffect(() => {
-    handleSetApplications();
-  }, [API]);
-
-  const handleSetApplications = (): void => {
-    setShowSpinner(true);
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Applications error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
 
   const handleSetDocumentation = (): void => {
     API.Documentation.get("applications")
@@ -58,22 +38,6 @@ export default function ApplicationsTable() {
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteApplication = (id): void => {
-    setLoadingOverlay(true);
-    API.Application.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted application", type: "success" });
-        handleSetApplications();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE application error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
       });
   };
 
@@ -96,10 +60,16 @@ export default function ApplicationsTable() {
               id="applicationHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetApplications}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getApplications.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("applications");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getApplications.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to="/applications/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -113,51 +83,8 @@ export default function ApplicationsTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getApplications.isLoading ? (
                 <Spinner />
-              ) : applications ? (
-                <>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <Table
-                    columns={[
-                      {
-                        headerName: "Name",
-                        field: "name",
-                      },
-                      {
-                        headerName: "Description",
-                        field: "description",
-                      },
-                      {
-                        field: "id",
-                        headerName: " ",
-                        renderCell: (item: { id: string }) => {
-                          return (
-                            <div className="utrecht-link d-flex justify-content-end">
-                              <button
-                                className="utrecht-button btn-sm btn-danger mr-2"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
-                              >
-                                <FontAwesomeIcon icon={faTrash} /> Delete
-                              </button>
-                              <DeleteModal
-                                resourceDelete={() => handleDeleteApplication({ id: item.id })}
-                                resourceId={item.id}
-                              />
-                              <Link to={`/applications/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success">
-                                  <FontAwesomeIcon icon={faEdit} /> Edit
-                                </button>
-                              </Link>
-                            </div>
-                          );
-                        },
-                      },
-                    ]}
-                    rows={applications}
-                  />
-                </>
               ) : (
                 <Table
                   columns={[
@@ -169,8 +96,34 @@ export default function ApplicationsTable() {
                       headerName: "Description",
                       field: "description",
                     },
+                    {
+                      field: "id",
+                      headerName: " ",
+                      renderCell: (item: { id: string }) => {
+                        return (
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
+                            </button>
+                            <DeleteModal
+                              resourceDelete={() => deleteApplication.mutateAsync({ id: item.id })}
+                              resourceId={item.id}
+                            />
+                            <Link to={`/applications/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
+                        );
+                      },
+                    },
                   ]}
-                  rows={[{ name: "No results found", description: " " }]}
+                  rows={getApplications.data ?? []}
                 />
               )}
             </div>

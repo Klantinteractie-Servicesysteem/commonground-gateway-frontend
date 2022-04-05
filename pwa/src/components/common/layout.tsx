@@ -5,9 +5,11 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.css";
 import { APIProvider } from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
-import { isLoggedIn, logout, validateSession } from "../../services/auth";
+import { isLoggedIn } from "../../services/auth";
 import Login from "../../pages/login";
 import { AlertProvider, AlertProps } from "../../context/alertContext";
+import { LoadingOverlayProvider, LoadingOverlayProps } from "../../context/loadingOverlayContext";
+import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import WelcomeModal from "../welcomeModal/welcomeModal";
 import Alert from "../alert/alert";
 import { HeaderProvider } from "../../context/headerContext";
@@ -22,6 +24,7 @@ import Header from "./header";
 export default function Layout({ children, pageContext }) {
   const [API, setAPI] = React.useState<APIService>(null);
   const [alert, setAlert] = React.useState<AlertProps>(null);
+  const [loadingOverlay, setLoadingOverlay] = React.useState<LoadingOverlayProps>({ isLoading: false });
   const [header, setHeader] = React.useState(null);
 
   React.useEffect(() => {
@@ -37,25 +40,28 @@ export default function Layout({ children, pageContext }) {
   return API ? (
     <APIProvider value={API}>
       <AlertProvider value={[alert, setAlert]}>
-        <HeaderProvider value={[header, setHeader]}>
-          <Alert />
-          <Helmet>
-            <title>Conductor Admin Dashboard</title>
-          </Helmet>
-          <div className="utrecht-document conduction-theme">
-            <div className="utrecht-page">
-              <MainMenu />
-              <div className="utrecht-page__content">
-                <header className="utrecht-page-header">
-                  <Header {...{ pageContext }} />
-                </header>
-                <div className="container py-4">{children}</div>
+        <LoadingOverlayProvider value={[loadingOverlay, setLoadingOverlay]}>
+          <HeaderProvider value={[header, setHeader]}>
+            <Alert />
+            <LoadingOverlay />
+            <Helmet>
+              <title>Conductor Admin Dashboard</title>
+            </Helmet>
+            <div className="utrecht-document conduction-theme">
+              <div className="utrecht-page">
+                <MainMenu />
+                <div className="utrecht-page__content">
+                  <header className="utrecht-page-header">
+                    <Header {...{ pageContext }} />
+                  </header>
+                  <div className="container py-4">{children}</div>
+                </div>
+                <Footer />
               </div>
-              <Footer />
             </div>
-          </div>
-          <WelcomeModal />
-        </HeaderProvider>
+            <WelcomeModal />
+          </HeaderProvider>
+        </LoadingOverlayProvider>
       </AlertProvider>
     </APIProvider>
   ) : (

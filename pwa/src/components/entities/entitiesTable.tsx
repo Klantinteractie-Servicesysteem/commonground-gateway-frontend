@@ -8,16 +8,20 @@ import { HeaderContext } from "../../context/headerContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../deleteModal/DeleteModal";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
+import { useQueryClient } from "react-query";
+import { useEntity } from "../../hooks/entity";
 
 export default function EntitiesTable() {
   const [documentation, setDocumentation] = React.useState<string>(null);
-  const [entities, setEntities] = React.useState(null);
-  const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const API: APIService = React.useContext(APIContext);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+
+  const queryClient = useQueryClient();
+
+  const _useEntity = useEntity(queryClient);
+  const getEntities = _useEntity.getAll();
+  const deleteEntity = _useEntity.remove();
 
   React.useEffect(() => {
     setHeader("Object types");
@@ -27,25 +31,6 @@ export default function EntitiesTable() {
     handleSetDocumentation();
   });
 
-  React.useEffect(() => {
-    handleSetEntities();
-  }, [API]);
-
-  const handleSetEntities = () => {
-    setShowSpinner(true);
-    API.Entity.getAll()
-      .then((res) => {
-        setEntities(res.data);
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET Entities error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const handleSetDocumentation = (): void => {
     API.Documentation.get("object_types")
       .then((res) => {
@@ -54,22 +39,6 @@ export default function EntitiesTable() {
       .catch((err) => {
         setAlert({ message: err, type: "danger" });
         throw new Error("GET Documentation error: " + err);
-      });
-  };
-
-  const handleDeleteObjectType = (id): void => {
-    setLoadingOverlay(true);
-    API.Entity.delete(id)
-      .then(() => {
-        setAlert({ message: "Deleted object type", type: "success" });
-        handleSetEntities();
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("DELETE Sources error: " + err);
-      })
-      .finally(() => {
-        setLoadingOverlay(false);
       });
   };
 
@@ -88,10 +57,16 @@ export default function EntitiesTable() {
               id="entityHelpModal"
               body={() => <div dangerouslySetInnerHTML={{ __html: documentation }} />}
             />
-            <a className="utrecht-link" onClick={handleSetEntities}>
+            <button
+              className="button-no-style utrecht-link"
+              disabled={getEntities.isFetching}
+              onClick={() => {
+                queryClient.invalidateQueries("endpoints");
+              }}
+            >
               <i className="fas fa-sync-alt mr-1" />
-              <span className="mr-2">Refresh</span>
-            </a>
+              <span className="mr-2">{getEntities.isFetching ? "Fetching data..." : "Refresh"}</span>
+            </button>
             <Link to="/entities/new">
               <button className="utrecht-button utrecht-button-sm btn-sm btn-success">
                 <i className="fas fa-plus mr-2" />
@@ -105,62 +80,8 @@ export default function EntitiesTable() {
         return (
           <div className="row">
             <div className="col-12">
-              {showSpinner === true ? (
+              {getEntities.isLoading ? (
                 <Spinner />
-              ) : entities ? (
-                <>
-                  {loadingOverlay && <LoadingOverlay />}
-                  <Table
-                    columns={[
-                      {
-                        headerName: "Name",
-                        field: "name",
-                      },
-                      {
-                        headerName: "Endpoint",
-                        field: "endpoint",
-                      },
-                      {
-                        headerName: "Path",
-                        field: "route",
-                      },
-                      {
-                        headerName: "Source",
-                        field: "gateway",
-                        valueFormatter: (item) => {
-                          return item ? item.name : "";
-                        },
-                      },
-                      {
-                        field: "id",
-                        headerName: "",
-                        renderCell: (item) => {
-                          return (
-                            <div className="utrecht-link d-flex justify-content-end">
-                              <button
-                                className="utrecht-button btn-sm btn-danger mr-2"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
-                              >
-                                <FontAwesomeIcon icon={faTrash} /> Delete
-                              </button>
-                              <DeleteModal
-                                resourceDelete={() => handleDeleteObjectType({ id: item.id })}
-                                resourceId={item.id}
-                              />
-                              <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
-                                <button className="utrecht-button btn-sm btn-success">
-                                  <FontAwesomeIcon icon={faEdit} /> Edit
-                                </button>
-                              </Link>
-                            </div>
-                          );
-                        },
-                      },
-                    ]}
-                    rows={entities}
-                  />
-                </>
               ) : (
                 <Table
                   columns={[
@@ -178,10 +99,39 @@ export default function EntitiesTable() {
                     },
                     {
                       headerName: "Source",
-                      field: "gateway.name",
+                      field: "gateway",
+                      valueFormatter: (item) => {
+                        return item ? item.name : "";
+                      },
+                    },
+                    {
+                      field: "id",
+                      headerName: "",
+                      renderCell: (item) => {
+                        return (
+                          <div className="utrecht-link d-flex justify-content-end">
+                            <button
+                              className="utrecht-button btn-sm btn-danger mr-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${item.id.replace(new RegExp("-", "g"), "")}`}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Delete
+                            </button>
+                            <DeleteModal
+                              resourceDelete={() => deleteEntity.mutateAsync({ id: item.id })}
+                              resourceId={item.id}
+                            />
+                            <Link className="utrecht-link d-flex justify-content-end" to={`/entities/${item.id}`}>
+                              <button className="utrecht-button btn-sm btn-success">
+                                <FontAwesomeIcon icon={faEdit} /> Edit
+                              </button>
+                            </Link>
+                          </div>
+                        );
+                      },
                     },
                   ]}
-                  rows={[{ name: "No results found" }]}
+                  rows={getEntities.data ?? []}
                 />
               )}
             </div>

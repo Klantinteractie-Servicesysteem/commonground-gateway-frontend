@@ -13,9 +13,9 @@ import { navigate } from "gatsby-link";
 import ElementCreationNew from "../common/elementCreationNew";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { isValidUUIDV4 } from "is-valid-uuid-v4";
 
 interface ObjectEntityFormProps {
@@ -26,13 +26,13 @@ interface ObjectEntityFormProps {
 export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, entityId }) => {
   const [objectEntity, setObjectEntity] = React.useState<any>(null);
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const [applications, setApplications] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = objectId ? "Edit object" : "Create object";
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
 
   React.useEffect(() => {
     setHeader("Object");
@@ -85,7 +85,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
   const saveObjectEntity = (event) => {
     event.preventDefault();
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     let errors = retrieveFormArrayAsOArray(event.target, "errors");
     let promises = retrieveFormArrayAsOArray(event.target, "promises");
@@ -108,13 +108,13 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
 
     if (!checkValues([body["uri"]])) {
       setAlert({ type: "danger", message: "Required fields are empty" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
     if (body["externalId"] !== null && !isValidUUIDV4(body["externalId"])) {
       setAlert({ type: "danger", message: "External Id is not a valid UUID" });
-      setLoadingOverlay(false);
+      setLoadingOverlay({ isLoading: false });
       return;
     }
 
@@ -128,7 +128,7 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
         throw new Error(`Create or update object entity error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -178,7 +178,6 @@ export const ObjectEntityForm: React.FC<ObjectEntityFormProps> = ({ objectId, en
                   <Spinner />
                 ) : (
                   <>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">

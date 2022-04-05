@@ -2,8 +2,9 @@ import * as React from "react";
 import { Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { Link } from "gatsby";
+import { useQueryClient } from "react-query";
+import { useEntity } from "../../hooks/entity";
 
 interface ObjectEntityFormNewProps {
   objectId: string;
@@ -12,22 +13,25 @@ interface ObjectEntityFormNewProps {
 
 export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ objectId, entityId }) => {
   const API: APIService = React.useContext(APIContext);
-  const [entity, setEntity] = React.useState(null);
   const [object, setObject] = React.useState(null);
   const [showSpinner, setShowSpinner] = React.useState(null);
   const [formIOSchema, setFormIOSchema] = React.useState(null);
   const [formIO, setFormIO] = React.useState(null);
 
+  const queryClient = useQueryClient();
+
+  const _useEntity = useEntity(queryClient);
+  const getEntity = _useEntity.getOne(entityId);
+
   React.useEffect(() => {
-    getEntity();
     getObject();
   }, [API]);
 
   React.useEffect(() => {
     setShowSpinner(true);
-    entity && object && getFormIOSchema();
+    getEntity.isSuccess && object && getFormIOSchema();
     setShowSpinner(false);
-  }, [entity, object]);
+  }, [getEntity.isSuccess, object]);
 
   React.useEffect(() => {
     if (!formIOSchema) return;
@@ -54,24 +58,10 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       });
   };
 
-  const getEntity = () => {
-    setShowSpinner(true);
-    API.Entity.getOne(entityId)
-      .then((res) => {
-        setEntity(res.data);
-      })
-      .catch((err) => {
-        throw new Error("GET entity error: " + err);
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const getFormIOSchema = () => {
     if (formIOSchema && object) setFormIOSchema(fillFormIOSchema(formIOSchema));
     setShowSpinner(true);
-    API.FormIO.getSchema(entity.endpoint)
+    API.FormIO.getSchema(getEntity.data.endpoint)
       .then((res) => {
         setFormIOSchema(object ? fillFormIOSchema(res.data) : res.data);
       })
@@ -101,7 +91,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
     body.submit = undefined;
 
     if (!objectId) {
-      API.ApiCalls.createObject(entity?.endpoint, body)
+      API.ApiCalls.createObject(getEntity.data?.endpoint, body)
         .then((res) => {
           setObject(res.data);
         })
@@ -113,7 +103,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
         });
     }
     if (objectId) {
-      API.ApiCalls.updateObject(entity?.endpoint, objectId, body)
+      API.ApiCalls.updateObject(getEntity.data?.endpoint, objectId, body)
         .then((res) => {
           setObject(res.data);
         })
@@ -148,7 +138,7 @@ export const ObjectEntityFormNew: React.FC<ObjectEntityFormNewProps> = ({ object
       cardBody={function () {
         return (
           <div className="row">
-            <div className="col-12">{showSpinner === true ? <Spinner /> : formIO && formIO}</div>
+            <div className="col-12">{showSpinner ? <Spinner /> : formIO && formIO}</div>
           </div>
         );
       }}

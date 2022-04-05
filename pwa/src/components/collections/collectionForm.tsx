@@ -5,14 +5,18 @@ import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { useQuery } from "react-query";
+import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
+import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
 import { ISelectValue } from "../formFields/types";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
+import { useApplication } from "../../hooks/application";
+import { useEndpoint } from "../../hooks/endpoint";
+import { useEntity } from "../../hooks/entity";
+import { useSource } from "../../hooks/source";
 
 interface CollectionFormProps {
   collectionId: string;
@@ -21,21 +25,32 @@ interface CollectionFormProps {
 export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) => {
   const [showSpinner, setShowSpinner] = React.useState<boolean>(false);
   const [collection, setCollection] = React.useState<any>(null);
-  const [sources, setSources] = React.useState<any>(null);
-  const [applications, setApplications] = React.useState<any>(null);
-  const [entities, setEntities] = React.useState<any>(null);
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
   const title: string = collectionId ? "Edit Collection" : "Create Collection";
   const API: APIService = React.useContext(APIContext);
   const [documentation, setDocumentation] = React.useState<string>(null);
   const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
+  const [___, setLoadingOverlay] = React.useContext(LoadingOverlayContext);
   const [selectedSourceType, setSelectedSourceType] = React.useState<any>(null);
 
   const sourceTypeSelectOptions: ISelectValue[] = [
     { label: "URL", value: "url" },
     { label: "GitHub", value: "GitHub" },
   ];
+
+  const queryClient = useQueryClient();
+
+  const _useApplication = useApplication(queryClient);
+  const getApplicationsSelect = _useApplication.getSelect();
+
+  const _useEndpoint = useEndpoint(queryClient);
+  const getEndpointsSelect = _useEndpoint.getSelect();
+
+  const _useEntity = useEntity(queryClient);
+  const getEntitiesSelect = _useEntity.getSelect();
+
+  const _useSource = useSource(queryClient);
+  const getSourcesSelect = _useSource.getSelect();
 
   const {
     register,
@@ -48,7 +63,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   } = useForm();
 
   const onSubmit = (data): void => {
-    setLoadingOverlay(true);
+    setLoadingOverlay({ isLoading: true });
 
     data.sourceType = data.sourceType && data.sourceType.value;
     data.source = data.source && data.source.value;
@@ -66,7 +81,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
         throw new Error(`Create or update collection error: ${err}`);
       })
       .finally(() => {
-        setLoadingOverlay(false);
+        setLoadingOverlay({ isLoading: false });
       });
   };
 
@@ -95,12 +110,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
     setSelectedSourceType(sourceType?.value);
   }, [watch("sourceType")]);
 
-  const getEndpointsSelectQuery = useQuery<any[], Error>("endpoints-select", API.Endpoint.getSelect, {
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-  });
-
   React.useEffect(() => {
     setHeader(
       <>
@@ -110,9 +119,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
   }, [setHeader, collection]);
 
   React.useEffect(() => {
-    handleSetSources();
-    handleSetApplications();
-    handleSetEntities();
     collectionId && handleSetCollection();
   }, [API, collectionId]);
 
@@ -136,39 +142,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
       })
       .finally(() => {
         setShowSpinner(false);
-      });
-  };
-
-  const handleSetSources = () => {
-    API.Source.getAll()
-      .then((res) => {
-        setSources(resourceArrayToSelectArray(res.data, "gateways"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET sources error: " + err);
-      });
-  };
-
-  const handleSetApplications = () => {
-    API.Application.getAll()
-      .then((res) => {
-        setApplications(resourceArrayToSelectArray(res.data, "applications"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET application error: " + err);
-      });
-  };
-
-  const handleSetEntities = () => {
-    API.Entity.getAll()
-      .then((res) => {
-        setEntities(resourceArrayToSelectArray(res.data, "entities"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET entities error: " + err);
       });
   };
 
@@ -214,7 +187,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                   <Spinner />
                 ) : (
                   <div>
-                    {loadingOverlay && <LoadingOverlay />}
                     <div className="row form-row">
                       <div className="col-6">
                         <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
@@ -250,7 +222,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           <SelectSingle
                             name="source"
                             label="Source URL"
-                            options={sources}
+                            options={getSourcesSelect.data ?? []}
                             validation={{ required: true }}
                             {...{ control, errors }}
                           />
@@ -271,11 +243,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Applications",
                           id: "applicationsAccordion",
                           render: () =>
-                            applications ? (
+                            getApplicationsSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Applications"
                                 name="applications"
-                                options={applications}
+                                options={getApplicationsSelect.data ?? []}
                                 {...{ control, register, errors }}
                               />
                             ) : (
@@ -286,11 +258,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Endpoints",
                           id: "endpointsAccordion",
                           render: () =>
-                            getEndpointsSelectQuery.isSuccess ? (
+                            getEndpointsSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Endpoints"
                                 name="endpoints"
-                                options={getEndpointsSelectQuery.data}
+                                options={getEndpointsSelect.data}
                                 {...{ control, register, errors }}
                               />
                             ) : (
@@ -301,11 +273,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           title: "Entities",
                           id: "entitiesAccordion",
                           render: () =>
-                            entities ? (
+                            getEntitiesSelect.isSuccess ? (
                               <SelectMultiple
                                 label="Entities"
                                 name="entities"
-                                options={entities}
+                                options={getEntitiesSelect.data ?? []}
                                 {...{ control, register, errors }}
                               />
                             ) : (
