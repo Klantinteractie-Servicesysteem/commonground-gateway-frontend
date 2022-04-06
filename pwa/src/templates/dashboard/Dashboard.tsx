@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./dashboard.css";
-import { DashboardCard, DashboardCardSmall } from "./../../components/dashboardCard/DashboardCard";
+import { DashboardCard, DashboardCardSmall } from "../../components/dashboardCard/DashboardCard";
 import CallHealthQuickview from "./../../components/callHealthQuickview/CallHealthQuickview";
 import LogsTable from "../../components/logs/logTable/logTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,11 +13,11 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
 import { useSource } from "../../hooks/source";
-import { Link } from "gatsby";
+import { useRepository } from "../../hooks/repository";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
@@ -35,11 +35,12 @@ const Dashboard: React.FC = () => {
   const _useSource = useSource(queryClient);
   const getSources = _useSource.getAll();
 
+  const _useRepository = useRepository(queryClient);
+  const getRepositories = _useRepository.getAll();
+
   React.useEffect(() => {
     handleSetLogs();
   }, [API]);
-
-  const getRepositoriesQuery = useQuery<any[], Error>("repositories", API.Repository.getAll);
 
   const handleSetLogs = (): void => {
     logs && setLogs(null);
@@ -94,53 +95,53 @@ const Dashboard: React.FC = () => {
             subtitle="View all endpoints"
             linkTo="endpoints"
           />
-      </div>
+        </div>
 
-      <div className="dashboard-row-stores">
-        <h3 className="dashboard-dividerTitle">Store's</h3>
+        <div className="dashboard-row-stores">
+          <h3 className="dashboard-dividerTitle">Store's</h3>
           <DashboardCard
-            amount={getRepositoriesQuery.isSuccess ? getRepositoriesQuery.data?.length : 0}
+            amount={getRepositories.isSuccess ? getRepositories.data["total_count"] : 0}
             title="Collection Store"
             iconBackgroundColor="5bc0de"
-            icon={<i className="fas fa-shopping-cart fa-lg"/>}
+            icon={<i className="fas fa-shopping-cart fa-lg" />}
             subtitle="View all github repositories"
             linkTo="collectionStore"
           />
-      </div>
-
-      <div className="dashboard-row-logsAndDocumentation">
-        <div className="dashboard-logsTable">
-          <h3 className="dashboard-dividerTitle">Recent activity</h3>
-
-          <Card
-            title="Incoming calls"
-            cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
-            cardHeader={() => (
-              <>
-                <button
-                  className="utrecht-link button-no-style"
-                  data-bs-toggle="modal"
-                  data-bs-target="#logsHelpModal"
-                  onClick={handleSetLogsDocumentation}
-                >
-                  <i className="fas fa-question mr-1" />
-                  <span className="mr-2">Help</span>
-                </button>
-                <Modal
-                  title="Logs Documentation"
-                  id="logsHelpModal"
-                  body={() =>
-                    logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
-                  }
-                />
-                <a className="utrecht-link" onClick={handleSetLogs}>
-                  <i className="fas fa-sync-alt mr-1" />
-                  <span className="mr-2">Refresh</span>
-                </a>
-              </>
-            )}
-          />
         </div>
+
+        <div className="dashboard-row-logsAndDocumentation">
+          <div className="dashboard-logsTable">
+            <h3 className="dashboard-dividerTitle">Recent activity</h3>
+
+            <Card
+              title="Incoming calls"
+              cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
+              cardHeader={() => (
+                <>
+                  <button
+                    className="utrecht-link button-no-style"
+                    data-bs-toggle="modal"
+                    data-bs-target="#logsHelpModal"
+                    onClick={handleSetLogsDocumentation}
+                  >
+                    <i className="fas fa-question mr-1" />
+                    <span className="mr-2">Help</span>
+                  </button>
+                  <Modal
+                    title="Logs Documentation"
+                    id="logsHelpModal"
+                    body={() =>
+                      logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
+                    }
+                  />
+                  <a className="utrecht-link" onClick={handleSetLogs}>
+                    <i className="fas fa-sync-alt mr-1" />
+                    <span className="mr-2">Refresh</span>
+                  </a>
+                </>
+              )}
+            />
+          </div>
         </div>
 
         <div className="dashboard-externalLinks">
