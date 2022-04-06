@@ -1,5 +1,5 @@
 import { Send } from "../apiService";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 
 export default class Repository {
   private _instance: AxiosInstance;
@@ -10,8 +10,7 @@ export default class Repository {
 
   public getAll = async (): Promise<any> => {
     const { data } = await Send(this._instance, "GET", "/publiccode");
-    return data.repositories;
-
+    return data;
   };
 
   public getOne = async (id: string): Promise<any> => {
