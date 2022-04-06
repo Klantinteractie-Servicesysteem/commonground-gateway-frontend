@@ -95,6 +95,14 @@ module.exports = {
             crumbLabel: "Collections",
           },
           {
+            pathname: "/packagesStore",
+            crumbLabel: "Packages Store",
+          },
+          {
+            pathname: "/packagesStore/[packageName]",
+            crumbLabel: "Package",
+          },
+          {
             pathname: "/sessions/[sessionId]",
             crumbLabel: "Session",
           },
