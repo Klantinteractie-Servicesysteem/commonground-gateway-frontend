@@ -10,7 +10,7 @@ import { HeaderContext } from "../../context/headerContext";
 import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
-import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea } from "../formFields";
+import { InputText, InputUrl, SelectMultiple, SelectSingle, Textarea, InputCheckbox } from "../formFields";
 import { ISelectValue } from "../formFields/types";
 import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { useApplication } from "../../hooks/application";
@@ -234,6 +234,16 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                           <InputText name="sourceBranch" label="GitHub Branch" {...{ register, errors }} />
                         )}
                       </div>
+                    </div>
+
+                    <div className="row form-row">
+                    <div className="col-12">
+                      <InputCheckbox
+                        name="loadTestData"
+                        label="Load test data"
+                        {...{ register, errors }}
+                      />
+                    </div>
                     </div>
 
                     <Accordion
