@@ -162,14 +162,14 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                   <>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} />
+                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ maxLength: 255 }} />
                       </div>
                       <div className="col-6">
                         <InputUrl
                           name="location"
                           label="Location (URL)"
                           {...{ register, errors }}
-                          validation={{ required: true }}
+                          validation={{ maxLength: 255, required: true }}
                         />
                       </div>
                     </div>
@@ -199,10 +199,16 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                           name="accept"
                           label="Accept (accept header used for this source)"
                           {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
                         />
                       </div>
                       <div className="col-6">
-                        <InputText name="locale" label="Locale" {...{ register, errors }} />
+                        <InputText
+                          name="locale"
+                          label="Locale"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 10 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -218,23 +224,48 @@ export const SourceForm: React.FC<SourceFormProps> = ({ sourceId }) => {
                         <InputText name="secret" label="Secret" {...{ register, errors }} />
                       </div>
                       <div className="col-6">
-                        <InputText name="apikey" label="API Key" {...{ register, errors }} />
+                        <InputText
+                          name="apikey"
+                          label="API Key"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputUrl name="documentation" label="Documentation (URL)" {...{ register, errors }} />
+                        <InputUrl
+                          name="documentation"
+                          label="Documentation (URL)"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputText name="authorizationHeader" label="Authorization Header" {...{ register, errors }} />
+                        <InputText
+                          name="authorizationHeader"
+                          label="Authorization Header"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="username" label="Username" {...{ register, errors }} />
+                        <InputText
+                          name="username"
+                          label="Username"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputText name="password" label="Password" {...{ register, errors }} />
+                        <InputText
+                          name="password"
+                          label="Password"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
                     <Accordion

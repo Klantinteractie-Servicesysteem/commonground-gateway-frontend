@@ -115,7 +115,7 @@ export const TranslationTableForm: React.FC<TranslationTableFormProps> = ({ tabl
                               name="translationTable"
                               label="Table name"
                               {...{ errors, register }}
-                              validation={{ required: true }}
+                              validation={{ maxLength: 255, required: true }}
                             />
                           </div>
                         </div>

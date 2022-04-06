@@ -132,7 +132,12 @@ export const EndpointForm: React.FC<EndpointFormProps> = ({ endpointId }) => {
                   <div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText label="Name" name="name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          label="Name"
+                          name="name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
                         <SelectSingle

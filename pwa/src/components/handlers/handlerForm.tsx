@@ -167,7 +167,12 @@ export const HandlerForm: React.FC<HandlerFormProps> = ({ handlerId, endpointId 
                   <>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          name="name"
+                          label="Name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
                         <Textarea name="description" label="Description" {...{ register, errors }} />

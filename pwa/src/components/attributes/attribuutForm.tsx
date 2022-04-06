@@ -253,7 +253,12 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                   <div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          name="name"
+                          label="Name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
                         <SelectSingle
@@ -285,10 +290,20 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="defaultValue" label="Default value" {...{ register, errors }} />
+                        <InputText
+                          name="defaultValue"
+                          label="Default value"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputNumber name="multipleOf" label="Multiple of" {...{ register, errors }} />
+                        <InputNumber
+                          name="multipleOf"
+                          label="Multiple of"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 10 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -307,10 +322,20 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                               <>
                                 <div className="row form-row">
                                   <div className="col-6">
-                                    <InputNumber name="minimum" label="Minimum" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="minimum"
+                                      label="Minimum"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10, required: true }}
+                                    />
                                   </div>
                                   <div className="col-6">
-                                    <InputNumber name="maximum" label="Maximum" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="maximum"
+                                      label="Maximum"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
+                                    />
                                   </div>
                                 </div>
                                 <div className="row form-row">
@@ -319,6 +344,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                       name="exclusiveMinimum"
                                       label="Exclusive minimum"
                                       {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
                                     />
                                   </div>
                                   <div className="col-6">
@@ -326,23 +352,44 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                       name="exclusiveMaximum"
                                       label="Exclusive maximum"
                                       {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
                                     />
                                   </div>
                                 </div>
                                 <div className="row form-row">
                                   <div className="col-6">
-                                    <InputNumber name="minLength" label="Minimum length" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="minLength"
+                                      label="Minimum length"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
+                                    />
                                   </div>
                                   <div className="col-6">
-                                    <InputNumber name="maxLength" label="Maximum length" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="maxLength"
+                                      label="Maximum length"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
+                                    />
                                   </div>
                                 </div>
                                 <div className="row form-row">
                                   <div className="col-6">
-                                    <InputNumber name="minItems" label="Minimum items" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="minItems"
+                                      label="Minimum items"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
+                                    />
                                   </div>
                                   <div className="col-6">
-                                    <InputNumber name="maxItems" label="Maximum items" {...{ register, errors }} />
+                                    <InputNumber
+                                      name="maxItems"
+                                      label="Maximum items"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
+                                    />
                                   </div>
                                 </div>
                                 <div className="row form-row">
@@ -359,6 +406,7 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                       name="minProperties"
                                       label="Minimum properties"
                                       {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
                                     />
                                   </div>
                                   <div className="col-6">
@@ -366,18 +414,25 @@ export const AttributeForm: React.FC<AttributeFormProps> = ({ attributeId, entit
                                       name="maxProperties"
                                       label="Maximum properties"
                                       {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
                                     />
                                   </div>
                                 </div>
                                 <div className="row form-row">
                                   <div className="col-6">
-                                    <InputText name="example" label="Example" {...{ register, errors }} />
+                                    <InputText
+                                      name="example"
+                                      label="Example"
+                                      {...{ register, errors }}
+                                      validation={{ maxLength: 255 }}
+                                    />
                                   </div>
                                   <div className="col-6">
                                     <InputNumber
                                       name="maxFileSize"
                                       label="Maximum file size"
                                       {...{ register, errors }}
+                                      validation={{ maxLength: 10 }}
                                     />
                                   </div>
                                 </div>

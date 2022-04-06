@@ -124,19 +124,39 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ applicationId 
                   <div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          name="name"
+                          label="Name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputText name="resource" label="Resource" {...{ register, errors }} />
+                        <InputText
+                          name="resource"
+                          label="Resource"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
 
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="public" label="Public" {...{ register, errors }} />
+                        <InputText
+                          name="public"
+                          label="Public"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                       <div className="col-6">
-                        <InputText name="secret" label="Secret" {...{ register, errors }} />
+                        <InputText
+                          name="secret"
+                          label="Secret"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
 

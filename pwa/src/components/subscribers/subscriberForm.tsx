@@ -188,10 +188,20 @@ export const SubscriberForm: React.FC<SubscriberFormProps> = ({ subscriberId, en
                   <div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          name="name"
+                          label="Name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
-                        <Textarea name="description" label="Description" {...{ register, errors }} />
+                        <Textarea
+                          name="description"
+                          label="Description"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">

@@ -172,12 +172,22 @@ export const TranslationFormFields: React.FC<TranslationFormFields> = ({ registe
     <div className="row form-row">
       <div className="col-4">
         <div className="form-group">
-          <InputText name="translateFrom" label="From" {...{ register, errors }} validation={{ required: true }} />
+          <InputText
+            name="translateFrom"
+            label="From"
+            {...{ register, errors }}
+            validation={{ maxLength: 255, required: true }}
+          />
         </div>
       </div>
       <div className="col-4">
         <div className="form-group">
-          <InputText name="translateTo" label="To" {...{ register, errors }} validation={{ required: true }} />
+          <InputText
+            name="translateTo"
+            label="To"
+            {...{ register, errors }}
+            validation={{ maxLength: 255, required: true }}
+          />
         </div>
       </div>
       <div className="col-4">

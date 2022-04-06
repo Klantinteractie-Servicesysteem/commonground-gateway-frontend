@@ -189,10 +189,20 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                   <div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <InputText name="name" label="Name" {...{ register, errors }} validation={{ required: true }} />
+                        <InputText
+                          name="name"
+                          label="Name"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255, required: true }}
+                        />
                       </div>
                       <div className="col-6">
-                        <Textarea name="description" label="Description" {...{ register, errors }} />
+                        <Textarea
+                          name="description"
+                          label="Description"
+                          {...{ register, errors }}
+                          validation={{ maxLength: 255 }}
+                        />
                       </div>
                     </div>
                     <div className="row form-row">
@@ -231,7 +241,12 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
 
                       <div className="col-6">
                         {selectedSourceType === "GitHub" && (
-                          <InputText name="sourceBranch" label="GitHub Branch" {...{ register, errors }} />
+                          <InputText
+                            name="sourceBranch"
+                            label="GitHub Branch"
+                            {...{ register, errors }}
+                            validation={{ maxLength: 255 }}
+                          />
                         )}
                       </div>
                     </div>
