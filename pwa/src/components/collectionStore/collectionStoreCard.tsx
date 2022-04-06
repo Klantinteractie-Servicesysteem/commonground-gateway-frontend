@@ -1,16 +1,12 @@
 import * as React from "react";
-import { Card, InfoTooltip } from "@conductionnl/nl-design-system/lib";
+import { Card } from "@conductionnl/nl-design-system/lib";
 import { HeaderContext } from "../../context/headerContext";
 import { Link } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
-import { useMutation } from "react-query";
-import { AlertContext } from "../../context/alertContext";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import { navigate } from "gatsby-link";
+import { useQueryClient } from "react-query";
 import "./collectionStoreCard.css";
-import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
+import { useRepository } from "../../hooks/repository";
 
 interface CollectionStoreCardProps {
   repository: any;
@@ -18,27 +14,10 @@ interface CollectionStoreCardProps {
 
 export const CollectionStoreCard: React.FC<CollectionStoreCardProps> = ({ repository }) => {
   const [__, setHeader] = React.useContext(HeaderContext);
-  const [___, setLoadingOverlay] = React.useState<boolean>(false);
-  const [_, setAlert] = React.useContext(AlertContext);
-  const API: APIService = React.useContext(APIContext);
+  const queryClient = useQueryClient();
+  const _useRepository = useRepository(queryClient);
+  const installRepository = _useRepository.install(repository.id);
 
-  const installRepository = useMutation<any, Error, any>(["repositories", repository.id], () => API.Repository.install(repository.id), {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSuccess: async (_) => {
-      setAlert({ message: "Installed repository", type: "success" });
-      navigate("/collections");
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    }
-  });
-
-  console.log({repository})
 
   React.useEffect(() => {
     setHeader("Repositories");
@@ -79,29 +58,6 @@ export const CollectionStoreCard: React.FC<CollectionStoreCardProps> = ({ reposi
                 <div className="col-4">
                   <span className="card-text">Repo: </span>
                   <span className="text-truncate">{repository.name}</span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <span className="card-text">Languages: </span>
-                  {repository.languages?.map(([$key, _], idx) => (
-                    <span key={idx} className="text-truncate">{$key} </span>
-                  ))}
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12">
-                  <span className="card-text">Labels: </span>
-                  {repository.labels?.map(($item, idx) => (
-                    <span key={idx} className="text-truncate">
-                    <InfoTooltip
-                      content={$item.description}
-                      placement={"bottom"}
-                      layoutClassName="genericInput-tooltip"
-                    />
-                    <LabelWithBackground color={$item.color} label={$item.name} />
-                  </span>
-                  ))}
                 </div>
               </div>
               <div className="row card-description">
