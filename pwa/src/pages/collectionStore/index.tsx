@@ -40,7 +40,7 @@ const IndexPage = () => {
         <div className="container">
           <Spinner />
         </div>
-      ) : (getRepositoriesQuery.data?.map((repository) => (
+      ) : (getRepositoriesQuery.data['items'].map((repository) => (
         <div className="row" key={`row-${repository.id}`}>
           <div className="col-12">
             <CollectionStoreCard repository={repository.repository} />
