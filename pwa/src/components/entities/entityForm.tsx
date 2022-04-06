@@ -25,8 +25,10 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
 
   const functionSelectOptions: ISelectValue[] = [
     { label: "Organization", value: "organization" },
+    { label: "Person", value: "person" },
     { label: "User", value: "user" },
     { label: "User group", value: "userGroup" },
+    { label: "Processing Log", value: "processingLog" },
   ];
 
   const queryClient = useQueryClient();
@@ -63,22 +65,18 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
 
   const onSubmit = (data): void => {
     data.function = data.function && data.function.value;
-    data.gateway = data.gateway && data.gateway.value;
 
     createOrEditEntity.mutate({ payload: data, id: entityId });
   };
 
   const handleSetFormValues = (entity): void => {
-    const basicFields: string[] = ["name", "endpoint", "route", "description", "extend"];
+    const basicFields: string[] = ["name", "description", "extend"];
     basicFields.forEach((field) => setValue(field, entity[field]));
 
     setValue(
       "function",
       functionSelectOptions.find((option) => option.value === entity.function),
     );
-
-    entity.gateway &&
-      setValue("gateway", { label: entity.gateway.name, value: `/admin/gateways/${entity.gateway.id}` });
   };
 
   const handleSetDocumentation = (): void => {
@@ -147,33 +145,14 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                           name="function"
                           label="Function"
                           options={functionSelectOptions}
-                          validation={{ required: true }}
                           {...{ control, errors }}
                         />
                       </div>
                     </div>
                     <div className="row form-row">
-                      <div className="col-6">
-                        <InputText name="endpoint" label="Endpoint" {...{ register, errors }} />
-                      </div>
-                      <div className="col-6">
-                        <InputText name="route" label="Route" {...{ register, errors }} />
-                      </div>
-                    </div>
-                    <div className="row form-row">
-                      <div className="col-6">
-                        <SelectSingle
-                          name="gateway"
-                          label="Source"
-                          options={getSourcesSelect.data ?? []}
-                          {...{ control, errors }}
-                        />
-                      </div>
                       <div className="col-6">
                         <Textarea name="description" label="Description" {...{ register, errors }} />
                       </div>
-                    </div>
-                    <div className="row form-row">
                       <div className="col-6">
                         <InputCheckbox name="extend" label="Extend" {...{ register, errors }} />
                       </div>
