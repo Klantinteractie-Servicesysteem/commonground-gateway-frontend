@@ -211,7 +211,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId }) 
                       <div className="col-6">
                         {selectedSourceType === "GitHub" && (
                           <InputUrl
-                            name="source"
+                            name="sourceUrl"
                             label="GitHub URL"
                             {...{ register, errors }}
                             validation={{ required: true }}
