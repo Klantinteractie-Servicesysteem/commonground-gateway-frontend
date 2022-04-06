@@ -1,35 +1,21 @@
 import * as React from "react";
-import { Spinner, Card } from "@conductionnl/nl-design-system/lib";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { AlertContext } from "../../context/alertContext";
+import { Card, Spinner } from "@conductionnl/nl-design-system/lib";
 import { HeaderContext } from "../../context/headerContext";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { navigate } from "gatsby-link";
+import { useQueryClient } from "react-query";
+import { useRepository } from "../../hooks/repository";
 
 interface OrganizationDetailProps {
   repositoryId: string;
 }
 
 export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ repositoryId }) => {
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext);
-  const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
 
-  /**
-   * Queries and mutations
-   */
   const queryClient = useQueryClient();
 
-  const getRepository = useQuery<any, Error>(["repositories", repositoryId], () => API.Repository.getOne(repositoryId), {
-    initialData: () => queryClient.getQueryData<any[]>("repositories")?.find((repository) => repository.repository.id === repositoryId),
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    enabled: !!repositoryId,
-  });
+  const _useRepository = useRepository(queryClient);
+  const getRepository = _useRepository.getOne(repositoryId);
+  const installRepository = _useRepository.install(repositoryId);
 
   const ownerDetail = [];
   if (getRepository?.data?.owner) {
@@ -37,22 +23,6 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
       ownerDetail.push({ ...{ key, value } });
     }
   }
-
-  const installRepository = useMutation<any, Error, any>(["repositories", repositoryId], () => API.Repository.install(repositoryId), {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSuccess: async (_) => {
-      setAlert({ message: "Installed repository", type: "success" });
-      navigate("/collections");
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    },
-  });
 
   /**
    * Effects
@@ -64,7 +34,7 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
       setHeader(
         <>
           Repository: <i>{getRepository.data.name}</i>
-        </>,
+        </>
       );
     }
   }, [getRepository.isSuccess]);
@@ -76,7 +46,7 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
       <div className="row">
         <div className="col-8">
           <Card
-            title={"getRepository.data"}
+            title={getRepository.data.name}
             cardHeader={function() {
               return (
                 <div>
@@ -100,24 +70,11 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
                 <div className="row">
                   <div className="col-12">
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
                         <div className="container">
-                          <div>
-                            <div className="row">
+                          <div className="row">
+                            <div className="col-12">
                               <span>{getRepository.data.description}</span>
-                              <span>{getRepository.data.subscribers ? getRepository.data.subscribers["login"] : null}</span>
-                              <span>{getRepository.data?.subscribers?.map(($item, idx) => (
-                                <span key={idx} className="text-truncate">
-                                  {$item["login"]}
-                                </span>
-                              ))}
-                              </span>
-                              <span>{getRepository.data.owner?.repos?.map(($item, idx) => (
-                                <span key={idx} className="text-truncate">
-                                  {$item?.name} {$item?.full_name} {$item?.private}
-                                </span>))}
-                              </span>
                             </div>
                           </div>
                         </div>
@@ -146,11 +103,16 @@ export const OrganizationDetails: React.FC<OrganizationDetailProps> = ({ reposit
                 <div className="row">
                   <div className="col-12">
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
                       <div className="container">
                         <div className="row">
                           <div className="col-12">
-                            <img src={getRepository.data?.owner?.publiccode?.logo} alt="url" />
+                            <img src={getRepository.data?.owner?.avatar_url} alt="url" />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-12">
+                            <span className="card-text">Owning repositories: </span>
+                            <span className="text-truncate">{getRepository.data.owner?.repos.length}</span>
                           </div>
                         </div>
                       </div>

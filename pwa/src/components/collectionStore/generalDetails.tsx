@@ -1,51 +1,21 @@
 import * as React from "react";
-import { Spinner, Card } from "@conductionnl/nl-design-system/lib";
-import APIService from "../../apiService/apiService";
-import APIContext from "../../apiService/apiContext";
-import LoadingOverlay from "../loadingOverlay/loadingOverlay";
-import { AlertContext } from "../../context/alertContext";
+import { Card, InfoTooltip, Spinner } from "@conductionnl/nl-design-system/lib";
 import { HeaderContext } from "../../context/headerContext";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { navigate } from "gatsby-link";
+import { useQueryClient } from "react-query";
+import { useRepository } from "../../hooks/repository";
+import LabelWithBackground from "../LabelWithBackground/LabelWithBackground";
 
 interface GeneralDetailsProps {
   repositoryId: string;
 }
 
 export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) => {
-  const [loadingOverlay, setLoadingOverlay] = React.useState<boolean>(false);
-  const API: APIService = React.useContext(APIContext);
-  const [_, setAlert] = React.useContext(AlertContext);
   const [__, setHeader] = React.useContext(HeaderContext);
-
-  /**
-   * Queries and mutations
-   */
   const queryClient = useQueryClient();
 
-  const getRepository = useQuery<any, Error>(["repositories", repositoryId], () => API.Repository.getOne(repositoryId), {
-    initialData: () => queryClient.getQueryData<any[]>("repositories")?.find((repository) => repository.repository.id === repositoryId),
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    enabled: !!repositoryId,
-  });
-
-  const installRepository = useMutation<any, Error, any>(["repositories", repositoryId], () => API.Repository.install(repositoryId), {
-    onMutate: () => {
-      setLoadingOverlay(true);
-    },
-    onError: (error) => {
-      setAlert({ message: error.message, type: "danger" });
-    },
-    onSuccess: async (_) => {
-      setAlert({ message: "Installed repository", type: "success" });
-      navigate("/collections");
-    },
-    onSettled: () => {
-      setLoadingOverlay(false);
-    },
-  });
+  const _useRepository = useRepository(queryClient);
+  const getRepository = _useRepository.getOne(repositoryId);
+  const installRepository = _useRepository.install(repositoryId);
 
   /**
    * Effects
@@ -57,7 +27,7 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
       setHeader(
         <>
           Repository: <i>{getRepository.data.name}</i>
-        </>,
+        </>
       );
     }
   }, [getRepository.isSuccess]);
@@ -93,12 +63,10 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
                 <div className="row">
                   <div className="col-12">
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
                       <div className="row">
-                        <span>{getRepository.data.description}</span>
-                        <span>{getRepository.data.subscribers ? getRepository.data.subscribers["login"] : null}</span>
-                        <span>{getRepository.data.labels?.map(($item, idx) => (<span key={idx}
-                                                                                     className="text-truncate">{$item.name} {$item.color} {$item.description}</span>))}</span>
+                        <div className="col-12">
+                          <span>{getRepository.data.description}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -106,6 +74,68 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
               );
             }}
           />
+          <div className="row">
+            <div className="col-6">
+            {
+              getRepository.data?.tags && (
+                <Card
+                  title={"Tags"}
+                  cardHeader={function() {
+                    return (<p />);
+                  }}
+                  cardBody={function() {
+                    return (
+                      <table className="mt-3 logTable-table">
+                        <tbody>
+                        {getRepository.data?.tags?.map((item, idx) => {
+                          return (
+                            <tr key={idx}>
+                              <th><a href={item?.zipball_url}>{item.name}</a></th>
+                              <td></td>
+                            </tr>
+                          );
+                        })}
+                        </tbody>
+                      </table>
+                    );
+                  }}
+                />
+              )
+            }
+            </div>
+            <div className="col-6">
+              {
+                getRepository.data?.languages && (
+                  <Card
+                    title={"Languages"}
+                    cardHeader={function() {
+                      return (<p />);
+                    }}
+                    cardBody={function() {
+                      const languages = [];
+                      for (const [key, value] of Object.entries(getRepository.data?.languages)) {
+                        languages.push({ ...{ key, value } });
+                      }
+                      return (
+                        <table className="mt-3 logTable-table">
+                          <tbody>
+                          {languages.map((language, idx) => {
+                            return (
+                              <tr key={idx}>
+                                <th>{language.key}</th>
+                                <td>{language.value}</td>
+                              </tr>
+                            );
+                          })}
+                          </tbody>
+                        </table>
+                      );
+                    }}
+                  />
+                )
+              }
+            </div>
+          </div>
         </div>
         <div className="col-4">
           <Card
@@ -114,7 +144,7 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
               return (
                 <a href={getRepository.data?.owner?.publiccode?.url}>
                   <button className="utrecht-button utrecht-button btn btn btn-light mr-2">
-                    {getRepository.data?.owner?.publiccode?.name}
+                    {getRepository.data?.owner?.login ?? "GitHub repo"}
                   </button>
                 </a>
               );
@@ -124,19 +154,26 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
                 <div className="row">
                   <div className="col-12">
                     <div>
-                      {loadingOverlay && <LoadingOverlay />}
                       <div className="container">
+                        {
+                          getRepository.data?.owner?.publiccode?.logo && (
+                            <div className="row">
+                              <div className="col-12">
+                                <img src={getRepository.data?.owner?.publiccode?.logo} alt="url" />
+                              </div>
+                            </div>
+                          )
+                        }
                         <div className="row">
-                          <div className="col-12">
-                            <img src={getRepository.data?.owner?.publiccode?.logo} alt="url" />
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-12">
-                            <span className="card-text">Software Version: </span>
-                            <span
-                              className="text-truncate">{getRepository.data?.owner?.publiccode?.softwareVersion}</span>
-                          </div>
+                          {
+                            getRepository.data?.owner?.publiccode?.softwareVersion && (
+                              <div className="col-12">
+                                <span className="card-text">Software Version: </span>
+                                <span
+                                  className="text-truncate">{getRepository.data?.owner?.publiccode?.softwareVersion}</span>
+                              </div>
+                            )
+                          }
                         </div>
                         <div className="row">
                           <div className="col-12">
@@ -151,81 +188,123 @@ export const GeneralDetails: React.FC<GeneralDetailsProps> = ({ repositoryId }) 
               );
             }}
           />
-          <Card
-            title={"Maintainers"}
-            cardHeader={function() {
-              return (
-                <a href={getRepository.data?.owner?.publiccode?.maintenance?.contractors?.website}>
-                  <button className="utrecht-button utrecht-button btn btn btn-light mr-2 small">
-                    {getRepository.data?.owner?.publiccode?.maintenance?.contractors?.name}
-                  </button>
-                </a>
-              );
-            }}
-            cardBody={function() {
-              return (
-                <div className="row">
-                  <div className="col-12">
-                    <div>
-                      {loadingOverlay && <LoadingOverlay />}
-                      <div className="row">
-                        <div className="col-12">
-                          <span className="card-text">Name: </span>
-                          <span
-                            className="text-truncate">{getRepository.data?.owner?.publiccode?.maintenance?.contractors?.name}</span>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <span className="card-text">Email: </span>
-                          <span
-                            className="text-truncate">{getRepository.data?.owner?.publiccode?.maintenance?.contractors?.email}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }}
-          />
-          <Card
-            title={"Dependencies"}
-            cardHeader={function() {
-              return (<span />);
-            }}
-            cardBody={function() {
-              return (
-                <div className="row">
-                  <div className="col-12">
-                    <div>
-                      {loadingOverlay && <LoadingOverlay />}
-                      <div className="row">
-                        <div className="col-12">
-                          <span className="card-text">Name: </span>
-                          <span
-                            className="text-truncate">{getRepository.data?.owner?.publiccode?.dependsOn?.open?.name}</span>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <span className="card-text">Optional: </span>
-                          <span
-                            className="text-truncate">{getRepository.data?.owner?.publiccode?.dependsOn?.open?.optional}</span>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <span className="card-text">Minimal Version: </span>
-                          <span
-                            className="text-truncate">{getRepository.data?.owner?.publiccode?.dependsOn?.open?.versionMin}</span>
+          {
+            getRepository.data?.owner?.publiccode?.maintenance && (
+              <Card
+                title={"Maintainers"}
+                cardHeader={function() {
+                  return (
+                    <a href={getRepository.data?.owner?.publiccode?.maintenance?.contractors[0]?.website}>
+                      <button className="utrecht-button utrecht-button btn btn btn-light mr-2 small">
+                        {getRepository.data?.owner?.publiccode?.maintenance?.contractors[0]?.name}
+                      </button>
+                    </a>
+                  );
+                }}
+                cardBody={function() {
+                  return (
+                    <div className="row">
+                      <div className="col-12">
+                        <div>
+                          <div className="row">
+                            <div className="col-12">
+                              <span className="card-text">Name: </span>
+                              <span
+                                className="text-truncate">{getRepository.data?.owner?.publiccode?.maintenance?.contractors[0]?.name}</span>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-12">
+                              <span className="card-text">Email: </span>
+                              <span
+                                className="text-truncate">{getRepository.data?.owner?.publiccode?.maintenance?.contractors[0]?.email}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            }}
-          />
+                  );
+                }}
+              />
+            )
+          }
+          {
+            getRepository.data?.owner?.publiccode?.dependsOn && (
+              <Card
+                title={"Dependencies"}
+                cardHeader={function() {
+                  return (<span />);
+                }}
+                cardBody={function() {
+                  return (
+                    <div className="row">
+                      <div className="col-12">
+                        <div>
+                          {getRepository.data.owner?.publiccode?.dependsOn?.open?.map((item, idx) => (
+                            <span>
+                              <div className="container">
+                                 <div className="row">
+                                   <div className="col-12">
+                                     <span className="card-text">Name: </span>
+                                     <span className="text-truncate">{item.name}</span>
+                                   </div>
+                                 </div>
+                                <div className="row">
+                                  <div className="col-12">
+                                    <span className="card-text">Optional: </span>
+                              <span
+                                className="text-truncate">{item.optional}</span>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-12">
+                              <span className="card-text">Minimal Version: </span>
+                              <span
+                                className="text-truncate">{item.versionMin}</span>
+                            </div>
+                          </div>
+                              </div>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            )
+          }
+          {
+            getRepository.data?.labels && (
+              <Card
+                title={"Labels"}
+                cardHeader={function() {
+                  return (<p />);
+                }}
+                cardBody={function() {
+                  return (
+                    <table className="mt-3 logTable-table">
+                      <tbody>
+                      {getRepository.data?.labels?.map((item, idx) => {
+                        return (
+                          <tr key={idx}>
+                            <th><LabelWithBackground color={`#${item.color}`} label={item.name} /></th>
+                            <td>{
+                              item?.description && (
+                                <InfoTooltip content={item.description} placement={"bottom"}
+                                             layoutClassName="genericInput-tooltip" />
+                              )
+                            }</td>
+                          </tr>
+                        );
+                      })}
+                      </tbody>
+                    </table>
+                  );
+                }}
+              />
+            )
+          }
         </div>
       </div>
     )
