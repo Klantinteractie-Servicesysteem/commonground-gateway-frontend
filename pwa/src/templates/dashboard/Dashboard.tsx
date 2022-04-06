@@ -13,10 +13,11 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
 import { useSource } from "../../hooks/source";
+import { usePackage } from "../../hooks/package";
 
 const Dashboard: React.FC = () => {
   const [logs, setLogs] = React.useState(null);
@@ -33,6 +34,9 @@ const Dashboard: React.FC = () => {
 
   const _useSource = useSource(queryClient);
   const getSources = _useSource.getAll();
+
+  const _usePackage = usePackage();
+  const getPackage = _usePackage.getAll();
 
   React.useEffect(() => {
     handleSetLogs();
@@ -92,6 +96,18 @@ const Dashboard: React.FC = () => {
             linkTo="endpoints"
           />
         </div>
+      </div>
+
+      <div className="dashboard-row-stores">
+        <h3 className="dashboard-dividerTitle">Store's</h3>
+        <DashboardCard
+          amount={getPackage.isSuccess ? getPackage.data['total'] : 0}
+          title="Packages Store"
+          iconBackgroundColor="5bc0de"
+          icon={<i className="fas fa-shopping-cart fa-lg" />}
+          subtitle="View all packagist packages"
+          linkTo="packagesStore"
+        />
       </div>
 
       <div className="dashboard-row-logsAndDocumentation">
