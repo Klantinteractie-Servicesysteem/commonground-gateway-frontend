@@ -13,13 +13,13 @@ import endpointsIcon from "./../../images/icon-endpoints.svg";
 import conductionIcon from "./../../images/icon-conduction.svg";
 import Spinner from "../../components/common/spinner";
 import { Card, Modal } from "@conductionnl/nl-design-system";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
+import { useLog } from "../../hooks/log";
 import { useSource } from "../../hooks/source";
 
 const Dashboard: React.FC = () => {
-  const [logs, setLogs] = React.useState(null);
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
   const API: APIService = React.useContext(APIContext);
 
@@ -31,24 +31,11 @@ const Dashboard: React.FC = () => {
   const _useApplication = useApplication(queryClient);
   const getApplications = _useApplication.getAll();
 
+  const _useLog = useLog();
+  const getAllIncomingLogs = _useLog.getAllIncoming();
+
   const _useSource = useSource(queryClient);
   const getSources = _useSource.getAll();
-
-  React.useEffect(() => {
-    handleSetLogs();
-  }, [API]);
-
-  const handleSetLogs = (): void => {
-    logs && setLogs(null);
-
-    API.Log.getAllIncoming()
-      .then((res) => {
-        setLogs(res.data);
-      })
-      .catch((err) => {
-        throw new Error(`GET Incoming Logs error: ${err}`);
-      });
-  };
 
   const handleSetLogsDocumentation = (): void => {
     API.Documentation.get("logs")
@@ -100,7 +87,9 @@ const Dashboard: React.FC = () => {
 
           <Card
             title="Incoming calls"
-            cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
+            cardBody={() =>
+              getAllIncomingLogs.isLoading ? <Spinner /> : <LogsTable logs={getAllIncomingLogs.data ?? []} />
+            }
             cardHeader={() => (
               <>
                 <button
@@ -119,10 +108,16 @@ const Dashboard: React.FC = () => {
                     logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
                   }
                 />
-                <a className="utrecht-link" onClick={handleSetLogs}>
+                <button
+                  className="button-no-style utrecht-link"
+                  disabled={getAllIncomingLogs.isFetching}
+                  onClick={() => {
+                    getAllIncomingLogs.refetch();
+                  }}
+                >
                   <i className="fas fa-sync-alt mr-1" />
-                  <span className="mr-2">Refresh</span>
-                </a>
+                  <span className="mr-2">{getAllIncomingLogs.isFetching ? "Fetching data..." : "Refresh"}</span>
+                </button>
               </>
             )}
           />

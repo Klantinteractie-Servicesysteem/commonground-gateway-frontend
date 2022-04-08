@@ -1,41 +1,25 @@
 import { Card, Modal } from "@conductionnl/nl-design-system";
-import { navigate } from "gatsby-link";
 import * as React from "react";
 import APIContext from "../../apiService/apiContext";
 import APIService from "../../apiService/apiService";
 import Spinner from "../../components/common/spinner";
 import LogsTable from "../../components/logs/logTable/logTable";
-import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
+import { useLog } from "../../hooks/log";
 
 const IndexPage = (props) => {
-  const [logs, setLogs] = React.useState(null);
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
   const [_, setHeader] = React.useContext(HeaderContext);
-  const [__, setAlert] = React.useContext(AlertContext);
 
   const API: APIService = React.useContext(APIContext);
   const sessionId: string = props.params.sessionId;
 
+  const _useLog = useLog();
+  const getLogsFromSession = _useLog.getAllFromSession(sessionId);
+
   React.useEffect(() => {
     setHeader("Session");
   }, [setHeader]);
-
-  React.useEffect(() => {
-    handleSetLogs();
-  }, [API]);
-
-  const handleSetLogs = (): void => {
-    API.Log.getAllFromSession(sessionId)
-      .then((res) => {
-        setLogs(res.data);
-      })
-      .catch((err) => {
-        navigate("/");
-        setAlert({ message: "Error getting session logs", type: "danger" });
-        throw new Error(`GET Session Logs error: ${err}`);
-      });
-  };
 
   const handleSetLogsDocumentation = (): void => {
     API.Documentation.get("logs")
@@ -50,7 +34,7 @@ const IndexPage = (props) => {
   return (
     <Card
       title={`All logs in session: ${sessionId}`}
-      cardBody={() => (logs ? <LogsTable {...{ logs }} /> : <Spinner />)}
+      cardBody={() => (getLogsFromSession.isLoading ? <Spinner /> : <LogsTable logs={getLogsFromSession.data ?? []} />)}
       cardHeader={() => (
         <>
           <button
@@ -69,10 +53,16 @@ const IndexPage = (props) => {
               logsDocumentation ? <div dangerouslySetInnerHTML={{ __html: logsDocumentation }} /> : <Spinner />
             }
           />
-          <a className="utrecht-link" onClick={handleSetLogs}>
+          <button
+            className="button-no-style utrecht-link"
+            disabled={getLogsFromSession.isFetching}
+            onClick={() => {
+              getLogsFromSession.refetch();
+            }}
+          >
             <i className="fas fa-sync-alt mr-1" />
-            <span className="mr-2">Refresh</span>
-          </a>
+            <span className="mr-2">{getLogsFromSession.isFetching ? "Fetching data..." : "Refresh"}</span>
+          </button>
         </>
       )}
     />
