@@ -1,25 +1,22 @@
 import * as React from "react";
 import { Card, Modal, Spinner } from "@conductionnl/nl-design-system/lib";
-import { navigate } from "gatsby-link";
 import { Link } from "gatsby";
 import APIService from "../../apiService/apiService";
 import APIContext from "../../apiService/apiContext";
 import { AlertContext } from "../../context/alertContext";
 import { HeaderContext } from "../../context/headerContext";
-import { LoadingOverlayContext } from "../../context/loadingOverlayContext";
 import { useForm } from "react-hook-form";
 import { InputText, InputCheckbox, SelectSingle, Textarea } from "../formFields";
-import { resourceArrayToSelectArray } from "../../services/resourceArrayToSelectArray";
 import { ISelectValue } from "../formFields/types";
 import { useQueryClient } from "react-query";
 import { useEntity } from "../../hooks/entity";
+import { useSource } from "../../hooks/source";
 
 interface EntityFormProps {
   entityId: string;
 }
 
 export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
-  const [sources, setSources] = React.useState<any>(null);
   const API: APIService = React.useContext(APIContext);
   const title: string = entityId ? "Edit Object type" : "Create Object type";
   const [documentation, setDocumentation] = React.useState<string>(null);
@@ -38,6 +35,9 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
   const getEntity = _useEntity.getOne(entityId);
   const createOrEditEntity = _useEntity.createOrEdit(entityId);
 
+  const _useSource = useSource(queryClient);
+  const getSourcesSelect = _useSource.getSelect();
+
   React.useEffect(() => {
     setHeader("Object Type");
 
@@ -52,10 +52,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
       handleSetFormValues(entity);
     }
   }, [getEntity.isSuccess]);
-
-  React.useEffect(() => {
-    handleSetSources();
-  }, [API]);
 
   const {
     register,
@@ -83,17 +79,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
 
     entity.gateway &&
       setValue("gateway", { label: entity.gateway.name, value: `/admin/gateways/${entity.gateway.id}` });
-  };
-
-  const handleSetSources = () => {
-    API.Source.getAll()
-      .then((res) => {
-        setSources(resourceArrayToSelectArray(res.data, "gateways"));
-      })
-      .catch((err) => {
-        setAlert({ message: err, type: "danger" });
-        throw new Error("GET sources error: " + err);
-      });
   };
 
   const handleSetDocumentation = (): void => {
@@ -134,7 +119,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                   Back
                 </button>
               </Link>
-              <button className="utrecht-button utrecht-button-sm btn-sm btn-success" type="submit" disabled={!sources}>
+              <button
+                className="utrecht-button utrecht-button-sm btn-sm btn-success"
+                type="submit"
+                disabled={!getSourcesSelect.isSuccess}
+              >
                 <i className="fas fa-save mr-2" />
                 Save
               </button>
@@ -173,7 +162,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({ entityId }) => {
                     </div>
                     <div className="row form-row">
                       <div className="col-6">
-                        <SelectSingle name="gateway" label="Source" options={sources ?? []} {...{ control, errors }} />
+                        <SelectSingle
+                          name="gateway"
+                          label="Source"
+                          options={getSourcesSelect.data ?? []}
+                          {...{ control, errors }}
+                        />
                       </div>
                       <div className="col-6">
                         <Textarea name="description" label="Description" {...{ register, errors }} />

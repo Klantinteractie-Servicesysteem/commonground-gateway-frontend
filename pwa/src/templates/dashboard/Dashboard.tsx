@@ -17,10 +17,10 @@ import { useQueryClient } from "react-query";
 import { useApplication } from "../../hooks/application";
 import { useEndpoint } from "../../hooks/endpoint";
 import { useLog } from "../../hooks/log";
+import { useSource } from "../../hooks/source";
 
 const Dashboard: React.FC = () => {
   const [logsDocumentation, setLogsDocumentation] = React.useState(null);
-  const [sourcesCount, setSourcesCount] = React.useState<number>(0);
   const API: APIService = React.useContext(APIContext);
 
   const queryClient = useQueryClient();
@@ -34,9 +34,8 @@ const Dashboard: React.FC = () => {
   const _useLog = useLog();
   const getAllIncomingLogs = _useLog.getAllIncoming();
 
-  React.useEffect(() => {
-    handleSetCounts();
-  }, [API]);
+  const _useSource = useSource(queryClient);
+  const getSources = _useSource.getAll();
 
   const handleSetLogsDocumentation = (): void => {
     API.Documentation.get("logs")
@@ -45,16 +44,6 @@ const Dashboard: React.FC = () => {
       })
       .catch((err) => {
         throw new Error(`GET Logs documentation error: ${err}`);
-      });
-  };
-
-  const handleSetCounts = (): void => {
-    API.Source.getAll()
-      .then((res) => {
-        setSourcesCount(res.data.length);
-      })
-      .catch((err) => {
-        throw new Error(`GET sources error: ${err}`);
       });
   };
 
@@ -73,7 +62,7 @@ const Dashboard: React.FC = () => {
           />
 
           <DashboardCard
-            amount={sourcesCount}
+            amount={getSources.isSuccess ? getSources.data.length : 0}
             title="Sources"
             iconBackgroundColor="FFAD46"
             icon={<img src={sourcesIcon} alt="sources" />}
