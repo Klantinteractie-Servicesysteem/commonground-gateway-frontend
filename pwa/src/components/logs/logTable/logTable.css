@@ -44,3 +44,7 @@
 .logTable-table tr th {
   width: 30%;
 }
+
+.logsTable tr{
+    white-space: nowrap;
+}

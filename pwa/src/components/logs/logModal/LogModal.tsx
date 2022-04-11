@@ -336,7 +336,7 @@ const LogModal: React.FC<LogModalProps> = ({ log }) => {
                     {getAllOutgoingLogs.isLoading ? (
                       <Spinner />
                     ) : (
-                      <LogTable logs={getAllOutgoingLogs.data ?? []} modal={false} />
+                      <LogTable hideApplication logs={getAllOutgoingLogs.data ?? []} hideModal />
                     )}
                   </div>
                 </div>
