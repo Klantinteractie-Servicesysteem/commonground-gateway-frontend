@@ -1,0 +1,36 @@
+name: Deploy
+on:
+    workflow_run:
+        workflows: ["Docker CI"]
+        branches: 
+            - development
+        types:
+            - completed
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Add helm repository to helm
+              run: helm repo add kiss-gateway-frontend https://raw.githubusercontent.com/Klantinteractie-Servicesysteem/commonground-gateway-frontend/main/helm
+            - name: Set kubeconfig
+              id: kubeconfig
+              run: |
+                  if [ "${{ secrets.KISS_ACC_KUBECONFIG }}" != "" ]; then
+                    printf "${{ secrets.KISS_ACC_KUBECONFIG }}" > kubeconfig.yaml
+                    echo "##[set-output name=success]true"
+                  else
+                    echo "##[set-output name=success]false"
+                  fi
+            - name: Upgrade helm installation
+              if: steps.kubeconfig.outputs.success == 'true' && success()
+              run: helm upgrade --install commonground-gateway-frontend kiss-gateway-frontend/commonground-gateway-frontend --reuse-values --kubeconfig="kubeconfig.yaml" --namespace=kiss-backend --description https://raw.githubusercontent.com/Klantinteractie-Servicesysteem/commonground-gateway-frontend/main/helm
+            - name: Rollout new containers
+              if: steps.kubeconfig.outputs.success == 'true' && success()
+              run: kubectl rollout restart deployment/commonground-gateway-frontend --kubeconfig="kubeconfig.yaml"  --namespace=kiss-backend
+            - name: Cleanup
+              run: |
+                  helm repo remove kiss-frontend
+                  rm -rf ~/.helm/cache/archive/*
+                  rm -rf ~/.helm/repository/cache/*
