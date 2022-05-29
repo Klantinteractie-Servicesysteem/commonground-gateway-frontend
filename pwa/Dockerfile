@@ -6,6 +6,6 @@ COPY . .
 # install node modules and build assets
 RUN yarn install && yarn build
 
-FROM nginx
+FROM nginx:1.22
 EXPOSE 80
 COPY --from=builder /app/public /usr/share/nginx/html
