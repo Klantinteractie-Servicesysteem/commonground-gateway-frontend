@@ -1,3 +1,10 @@
+# NOTE
+
+**This repository has been archived and will no longer be maintained.**
+
+---
+
+
 # Common Ground Gateway GUI
 
 The Common Ground Gateway GUI makes spinning up a Common Ground API interface easy.
